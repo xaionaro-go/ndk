@@ -9,9 +9,9 @@ import (
 	"log"
 	"time"
 
-	app "github.com/gooid/gooid"
-	camera "github.com/gooid/gooid/camera24"
-	"github.com/gooid/gooid/util"
+	"github.com/xaionaro-go/ndk"
+	camera "github.com/xaionaro-go/ndk/camera24"
+	"github.com/xaionaro-go/ndk/util"
 )
 
 func (s *CameraState) AddDevice(device *camera.Device) {
@@ -140,7 +140,7 @@ func (mgr *CameraManager) GetSupportPixels(id string) [][2]int {
 
 	ps := [][2]int{}
 	ds := cfgs.Data().([]int32)
-	// 去除重复的
+	// Remove duplicates
 	ms := map[string]bool{}
 	for i := 0; i < cfgs.Count()/4; i++ {
 		w, h := int(ds[i*4+1]), int(ds[i*4+2])
@@ -180,7 +180,7 @@ const (
 )
 
 type CaptureRequestInfo struct {
-	outputNativeWindow *app.Window
+	outputNativeWindow *ndk.Window
 	sessionOutput      *camera.CaptureSessionOutput
 	target             *camera.OutputTarget
 	request            *camera.CaptureRequest
@@ -271,7 +271,7 @@ func (o *NDKCamera) removeSessionOutput(out *camera.CaptureSessionOutput) error 
 	return err
 }
 
-func (o *NDKCamera) CreateRequest(req *CaptureRequestInfo, win *app.Window, imageRotation int, template camera.DeviceRequestTemplate) *CaptureRequestInfo {
+func (o *NDKCamera) CreateRequest(req *CaptureRequestInfo, win *ndk.Window, imageRotation int, template camera.DeviceRequestTemplate) *CaptureRequestInfo {
 	req.outputNativeWindow = win
 	req.template = template
 
@@ -396,7 +396,7 @@ func (o *NDKCamera) TakePhoto() bool {
 	return true
 }
 
-func (o *NDKCamera) resetTakePhoto(win *app.Window, imageRotation int) {
+func (o *NDKCamera) resetTakePhoto(win *ndk.Window, imageRotation int) {
 	util.Assert(o.requests[JPG_CAPTURE_REQUEST_IDX].sessionOutput == nil)
 	o.CreateRequest(&o.requests[JPG_CAPTURE_REQUEST_IDX], win, imageRotation, camera.TEMPLATE_STILL_CAPTURE)
 
@@ -421,11 +421,11 @@ func (o *NDKCamera) StartPreview(start bool) {
 	}
 }
 
-func (o *NDKCamera) releasetPreview() {
+func (o *NDKCamera) releasePreview() {
 	o.Release(&o.requests[PREVIEW_REQUEST_IDX])
 }
 
-func (o *NDKCamera) resetPreview(win *app.Window, imageRotation int) {
+func (o *NDKCamera) resetPreview(win *ndk.Window, imageRotation int) {
 	util.Assert(o.requests[PREVIEW_REQUEST_IDX].sessionOutput == nil)
 	o.CreateRequest(&o.requests[PREVIEW_REQUEST_IDX], win, imageRotation, camera.TEMPLATE_PREVIEW)
 

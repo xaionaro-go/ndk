@@ -9,13 +9,13 @@ import (
 	"log"
 	"sync"
 
-	app "github.com/gooid/gooid"
-	camera "github.com/gooid/gooid/camera24"
-	"github.com/gooid/gooid/util"
-	media "github.com/gooid/gooid/media24"
+	"github.com/xaionaro-go/ndk"
+	camera "github.com/xaionaro-go/ndk/camera24"
+	media "github.com/xaionaro-go/ndk/media24"
+	"github.com/xaionaro-go/ndk/util"
 )
 
-func winRedraw(act *app.Activity, win *app.Window) {
+func winRedraw(act *ndk.Activity, win *ndk.Window) {
 	manager := CameraManagerInstance()
 	ids, status := manager.GetCameraIdList()
 	log.Println("GetCameraIdList>>", ids, status)
@@ -49,7 +49,7 @@ type ndkCamera struct {
 	imgLock sync.Mutex
 	bStart  bool
 
-	// 为了适应 camera2 的 planes，这里允许以多份数据方式传入
+	// In order to adapt to the planes of camera2, multiple copies of data can be passed in here
 	previewCB func(w, h, formatIdx int, ds ...[]byte)
 }
 
@@ -127,7 +127,7 @@ func (cam *ndkCamera) StartPreview(w, h, formatIdx int, cb func(w, h, formatIdx 
 		defer cam.imgLock.Unlock()
 
 		cam.bStart = true
-		cam.dev.releasetPreview()
+		cam.dev.releasePreview()
 		if cam.yuvReader != nil {
 			cam.yuvReader.Delete()
 		}

@@ -13,11 +13,11 @@ import (
 	"time"
 
 	gl "github.com/gooid/gl/es2"
-	"github.com/gooid/gooid/audio"
-	"github.com/gooid/gooid/audio/al"
-	"github.com/gooid/gooid/audio/alc"
 	"github.com/gooid/imgui"
 	"github.com/gooid/imgui/util"
+	"github.com/xaionaro-go/ndk/audio"
+	"github.com/xaionaro-go/ndk/audio/al"
+	"github.com/xaionaro-go/ndk/audio/alc"
 )
 
 var mouseLeft = false

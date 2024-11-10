@@ -5,36 +5,36 @@ import (
 	"strconv"
 
 	"github.com/gooid/gl/egl"
-	app "github.com/gooid/gooid"
-	"github.com/gooid/gooid/audio/al"
-	"github.com/gooid/gooid/input"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/audio/al"
+	"github.com/xaionaro-go/ndk/input"
 )
 
 func main() {
-	context := app.Callbacks{
+	context := ndk.Callbacks{
 		WindowDraw:         drawAudio,
 		WindowRedrawNeeded: redraw,
 		WindowDestroyed:    destroyed,
 		Event:              event,
-		Create: func(act *app.Activity, _ []byte) {
+		Create: func(act *ndk.Activity, _ []byte) {
 			create()
 			// 需手动 Load libopenal.so
-			libs := app.FindMatchLibrary("libopenal*.so")
+			libs := ndk.FindMatchLibrary("libopenal*.so")
 			if len(libs) > 0 {
 				al.InitPath(libs[0])
 			}
 		},
 	}
-	app.SetMainCB(func(ctx *app.Context) {
+	ndk.SetMainCB(func(ctx *ndk.Context) {
 		ctx.Debug(true)
 		ctx.Run(context)
 	})
-	for app.Loop() {
+	for ndk.Loop() {
 	}
 	log.Println("done.")
 }
 
-func event(act *app.Activity, e *app.InputEvent) {
+func event(act *ndk.Activity, e *ndk.InputEvent) {
 	if mot := e.Motion(); mot != nil {
 		lastX = int(float32(mot.GetX(0)) / WINDOWSCALE)
 		lastY = int(float32(mot.GetY(0)) / WINDOWSCALE)
@@ -61,10 +61,10 @@ func event(act *app.Activity, e *app.InputEvent) {
 	}
 }
 
-var curAct *app.Activity
+var curAct *ndk.Activity
 var eglctx *egl.EGLContext
 
-func redraw(act *app.Activity, win *app.Window) {
+func redraw(act *ndk.Activity, win *ndk.Window) {
 	curAct = act
 	act.Context().Call(func() {
 		releaseEGL()
@@ -78,11 +78,11 @@ func redraw(act *app.Activity, win *app.Window) {
 	}, false)
 }
 
-func destroyed(act *app.Activity, win *app.Window) {
+func destroyed(act *ndk.Activity, win *ndk.Window) {
 	releaseEGL()
 }
 
-func drawAudio(act *app.Activity, win *app.Window) {
+func drawAudio(act *ndk.Activity, win *ndk.Window) {
 	if eglctx != nil {
 		draw()
 	}
@@ -91,9 +91,9 @@ func drawAudio(act *app.Activity, win *app.Window) {
 const RECORDPATH = "/sdcard/records"
 
 func getDensity() int {
-	dstr := app.PropGet("hw.lcd.density")
+	dstr := ndk.PropGet("hw.lcd.density")
 	if dstr == "" {
-		dstr = app.PropGet("qemu.sf.lcd_density")
+		dstr = ndk.PropGet("qemu.sf.lcd_density")
 	}
 
 	log.Println(" lcd_density:", dstr)

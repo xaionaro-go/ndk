@@ -7,12 +7,12 @@ import (
 	"path/filepath"
 	"unsafe"
 
-	app "github.com/gooid/gooid"
-	"github.com/gooid/gooid/storage"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/storage"
 )
 
 type nativeInfo struct {
-	win *app.Window
+	win *ndk.Window
 }
 
 func (e *nativeInfo) NativeDisplay() unsafe.Pointer {
@@ -31,13 +31,13 @@ func (e *nativeInfo) SetBuffersGeometry(format int) int {
 
 // create
 func preCreate(ctx interface{}) {
-	//act := ctx.(*app.Activity)
+	//act := ctx.(*ndk.Activity)
 }
 
 func postCreate(ctx interface{}) {
-	act := ctx.(*app.Activity)
+	act := ctx.(*ndk.Activity)
 	libPath := ""
-	ls := app.FindMatchLibrary("libopencv_*.so")
+	ls := ndk.FindMatchLibrary("libopencv_*.so")
 	if len(ls) > 0 {
 		libPath = ls[0]
 	}
@@ -46,9 +46,9 @@ func postCreate(ctx interface{}) {
 	faceDetect.LoadOpenCV(libPath, cascadePath)
 }
 
-// 加载 CascadeClassifier，但因为只有加载文件的接口，
-// 因此只能从asset中读出，生成临时文件的方式加载。
-func loadCascade(act *app.Activity) string {
+// Load CascadeClassifier, but since there is only an interface for loading files,
+// it can only be read from the asset and loaded by generating a temporary file.
+func loadCascade(act *ndk.Activity) string {
 	assetMgr := act.AssetManager()
 	altname := "haarcascade_frontalface_alt2.xml"
 	tmpPath := filepath.Join("/data/data", act.Context().Package(), "files")

@@ -6,11 +6,11 @@ import (
 	"math"
 	"sync"
 
-	"github.com/gooid/gooid/examples/CameraDemo/render"
 	"github.com/gooid/imgui"
+	"github.com/xaionaro-go/ndk/examples/CameraDemo/render"
 )
 
-type CameraI interface {
+type CameraInterface interface {
 	GetIds() []string
 	GetName(id string) string
 	GetSupportPixels() [][2]int // [2]int{w, h}
@@ -22,22 +22,22 @@ type CameraI interface {
 	Close()
 }
 
-type cameraIInfo struct {
-	o func(int) (CameraI, error)
+type cameraInterfaceInfo struct {
+	o func(int) (CameraInterface, error)
 	n string
-	p int // priority; 值越小优先级越高
+	p int // priority; the smaller the value, the higher the priority
 }
 
-var cameraIs = []*cameraIInfo{}
+var cameraIs = []*cameraInterfaceInfo{}
 
-func registerCamera(dev string, priority int, open func(int) (CameraI, error)) {
-	cameraIs = append(cameraIs, &cameraIInfo{o: open, n: dev, p: priority})
+func registerCamera(dev string, priority int, open func(int) (CameraInterface, error)) {
+	cameraIs = append(cameraIs, &cameraInterfaceInfo{o: open, n: dev, p: priority})
 }
 
-func openCamera(dev string, id int) CameraI {
-	var get func(d string) *cameraIInfo
-	get = func(d string) *cameraIInfo {
-		var ret *cameraIInfo
+func openCamera(dev string, id int) CameraInterface {
+	var get func(d string) *cameraInterfaceInfo
+	get = func(d string) *cameraInterfaceInfo {
+		var ret *cameraInterfaceInfo
 		if d == "" {
 			p := math.MaxInt32
 			for _, i := range cameraIs {
@@ -103,7 +103,7 @@ type propCombo struct {
 }
 
 type cameraUI struct {
-	dev CameraI
+	dev CameraInterface
 
 	props []propCombo
 
@@ -115,7 +115,7 @@ type cameraUI struct {
 }
 
 // TODO ???
-//func (ui *cameraUI) Init(act *app.Activity) {
+//func (ui *cameraUI) Init(act *ndk.Activity) {
 //	faceDetect.LoadOpenCV(act)
 //}
 
@@ -206,7 +206,7 @@ func (ui *cameraUI) startPreview(w, h int) {
 		})
 }
 
-func (ui *cameraUI) SetCamera(cam CameraI) {
+func (ui *cameraUI) SetCamera(cam CameraInterface) {
 	ui.dev = cam
 	ui.props = nil
 

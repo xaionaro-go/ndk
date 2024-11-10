@@ -9,9 +9,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/gooid/gooid/camera"
-	"github.com/gooid/gooid/examples/CameraDemo/render"
 	"github.com/gooid/imgui"
+	"github.com/xaionaro-go/ndk/camera"
+	"github.com/xaionaro-go/ndk/examples/CameraDemo/render"
 )
 
 const (
@@ -90,7 +90,7 @@ func cameraInit(id int, usercb func(w, h int, img []byte) bool) *cameraObj {
 
 	cam.Camera = camera.Connect(id, cb)
 	if cam.Camera == 0 {
-		log.Println("Cammera connect fail")
+		log.Println("Camera connect fail")
 		return nil
 	}
 
@@ -101,12 +101,12 @@ func cameraInit(id int, usercb func(w, h int, img []byte) bool) *cameraObj {
 
 	cam.cameraUI.Init(cam.Camera)
 
-	// 第一个为默认分辨率
-	// 因 camera 还未初始化完，需就异步执行
+	// The first one is the default resolution
+	// Because the camera has not been initialized yet, it needs to be executed asynchronously
 	go func() {
 		runtime.LockOSThread()
 		for cam.camStat == NONE {
-			time.Sleep(time.Millisecond * 100)
+			time.Sleep(time.Millisecond * 100) // TODO: fix it, it looks racy
 		}
 		cam.setPreviewSize(0)
 	}()

@@ -3,7 +3,7 @@
 //go:build android
 // +build android
 
-package app
+package ndk
 
 /*
 #include <android/input.h>
@@ -32,7 +32,7 @@ const (
 )
 
 /*
- * Meta key / modifer state.
+ * Meta key / modifier state.
  */
 const (
 	/* No meta keys are pressed. */
@@ -924,9 +924,9 @@ type callbackParam struct {
 }
 
 //export cgoCallback
-func cgoCallback(fd, events int, data unsafe.Pointer) int {
+func cgoCallback(fd, events C.int, data unsafe.Pointer) C.int {
 	param := (*callbackParam)(data)
-	return param.callback(fd, events, param.data)
+	return C.int(param.callback(int(fd), int(events), param.data))
 }
 
 func (queue *InputQueue) AttachLooper(looper *Looper, ident int, callback LooperCallback, data unsafe.Pointer) {
@@ -973,7 +973,7 @@ func (queue *InputQueue) GetEvent() *InputEvent {
 
 /*
  * Sends the key for standard pre-dispatching -- that is, possibly deliver
- * it to the current IME to be consumed before the app.  Returns 0 if it
+ * it to the current IME to be consumed before the ndk.  Returns 0 if it
  * was not pre-dispatched, meaning you can process it right now.  If non-zero
  * is returned, you must abandon the current event processing and allow the
  * event to appear again in the event queue (if it does not get consumed during

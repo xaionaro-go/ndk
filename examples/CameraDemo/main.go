@@ -9,15 +9,15 @@ import (
 
 	"github.com/gooid/gl/egl"
 	gl "github.com/gooid/gl/es2"
-	"github.com/gooid/gooid"
-	"github.com/gooid/gooid/camera"
-	"github.com/gooid/gooid/input"
 	"github.com/gooid/imgui"
 	"github.com/gooid/imgui/util"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/camera"
+	"github.com/xaionaro-go/ndk/input"
 )
 
 func main() {
-	context := app.Callbacks{
+	context := ndk.Callbacks{
 		WindowDraw: draw,
 		//WindowCreated:      winCreate,
 		WindowRedrawNeeded: redraw,
@@ -25,11 +25,11 @@ func main() {
 		Event:              event,
 		Create:             create,
 	}
-	app.SetMainCB(func(ctx *app.Context) {
+	ndk.SetMainCB(func(ctx *ndk.Context) {
 		ctx.Debug(true)
 		ctx.Run(context)
 	})
-	for app.Loop() {
+	for ndk.Loop() {
 	}
 	log.Println("done.")
 }
@@ -39,7 +39,7 @@ var mouseLeft = false
 var mouseRight = false
 var lastX, lastY int
 
-func event(act *app.Activity, e *app.InputEvent) {
+func event(act *ndk.Activity, e *ndk.InputEvent) {
 	if mot := e.Motion(); mot != nil {
 		lastTouch = time.Now()
 
@@ -83,7 +83,7 @@ var (
 	flashOn bool
 )
 
-func initEGL(act *app.Activity, win *app.Window) {
+func initEGL(act *ndk.Activity, win *ndk.Window) {
 	width, height = win.Width(), win.Height()
 	log.Println("WINSIZE:", width, height)
 	width = int(float32(width) / WINDOWSCALE)
@@ -101,7 +101,7 @@ func initEGL(act *app.Activity, win *app.Window) {
 
 	log.Printf("%s %s", gl.GoStr(gl.GetString(gl.RENDERER)), gl.GoStr(gl.GetString(gl.VERSION)))
 
-	// 设置完字体再调用
+	// After setting the font, call
 	im.CreateDeviceObjects()
 
 	io := imgui.GetIO()
@@ -132,7 +132,7 @@ func releaseEGL() {
 	}
 }
 
-func create(act *app.Activity, _ []byte) {
+func create(act *ndk.Activity, _ []byte) {
 	// gl init
 	gl.Init()
 
@@ -160,17 +160,17 @@ func create(act *app.Activity, _ []byte) {
 		}
 		if fontName != "" {
 			_ = fonts
-			// 加载所有中文Glyph，但内存开销太大
+			// Loading all Chinese Glyphs, but the memory overhead is too high
 			//fonts.AddFontFromFileTTF(fontName, 24.0, imgui.SwigcptrFontConfig(0), fonts.GetGlyphRangesChineseSimplifiedCommon())
-			// 仅仅加载需要显示的中文Glyph
+			// Only load the Chinese Glyphs that need to be displayed
 			fonts.AddFontFromFileTTF(fontName, 24.0, imgui.SwigcptrFontConfig(0), util.GetFontGlyphRanges(title))
 		}
 	}
 
 	if runtime.GOOS == "android" {
-		dstr := app.PropGet("hw.lcd.density")
+		dstr := ndk.PropGet("hw.lcd.density")
 		if dstr == "" {
-			dstr = app.PropGet("qemu.sf.lcd_density")
+			dstr = ndk.PropGet("qemu.sf.lcd_density")
 		}
 
 		log.Println(" lcd_density:", dstr)
@@ -179,7 +179,7 @@ func create(act *app.Activity, _ []byte) {
 		}
 	}
 
-	// 通过调整 Style 中元素大小，来控制显示大小，但同时要调整字体大小
+	// By adjusting the size of the elements in Style, you can control the display size, but you also need to adjust the font size.
 	if density > 160 {
 		iScale := float32(density) / 160 / float32(WINDOWSCALE)
 		io.SetFontGlobalScale(iScale)
@@ -187,20 +187,20 @@ func create(act *app.Activity, _ []byte) {
 		style.ScaleAllSizes(iScale)
 	}
 
-	// 通过缩放 DisplayFramebuffer 来控制显示大小
+	// Controlling display size by scaling the DisplayFramebuffer
 	scale := imgui.NewVec2((float32)(WINDOWSCALE), (float32)(WINDOWSCALE))
 	defer scale.Delete()
 	io.SetDisplayFramebufferScale(scale)
 
 	io.SetConfigFlags(io.GetConfigFlags() | int(imgui.ConfigFlags_IsTouchScreen))
 
-	// render 只需初始化一次
+	// Render only needs to be initialized once
 	im = util.NewRender("#version 100")
 
 	lastTouch = time.Now()
 }
 
-func redraw(act *app.Activity, win *app.Window) {
+func redraw(act *ndk.Activity, win *ndk.Window) {
 	act.Context().Call(func() {
 		releaseEGL()
 		initEGL(act, win)
@@ -210,11 +210,11 @@ func redraw(act *app.Activity, win *app.Window) {
 	}, false)
 }
 
-func destroyed(act *app.Activity, win *app.Window) {
+func destroyed(act *ndk.Activity, win *ndk.Window) {
 	releaseEGL()
 }
 
-func draw(act *app.Activity, _ *app.Window) {
+func draw(act *ndk.Activity, _ *ndk.Window) {
 	if eglctx != nil {
 		io := imgui.GetIO()
 

@@ -1,13 +1,41 @@
-package app
+package ndk
 
 import (
 	"fmt"
 	"log"
 )
 
+import "C"
+
 func (ctx *Context) String() string {
 	return fmt.Sprintf("Context#%s{Destory: %v, Focus: %v}",
-		ctx.className, ctx.willDestory, ctx.isFocus)
+		ctx.ClassName, ctx.WillDestoryValue, ctx.IsFocus)
+}
+
+func Assert(con interface{}, infos ...interface{}) {
+	if con == nil {
+		return
+	}
+	switch obj := con.(type) {
+	case bool:
+		if !obj {
+			Info(append([]interface{}{"ASSERT:"}, infos...)...)
+		}
+
+	case error:
+		Info(append([]interface{}{"ASSERT:(", con, "):"}, infos...)...)
+
+	default:
+		Info("ASSERT:(", con, "):", "condition must is bool/error.")
+	}
+}
+
+func Fatal(v ...interface{}) {
+	log.Fatal(v...)
+}
+
+func Info(v ...interface{}) {
+	log.Println(v...)
 }
 
 func (act *Activity) String() string {
@@ -68,7 +96,7 @@ func (e *InputEvent) String() string {
 		str += (*MotionEvent)(e).String() + " }"
 
 	default:
-		str += fmt.Sprintf("UNKONW, %p }", e)
+		str += fmt.Sprintf("UNKNOWN, %p }", e)
 	}
 
 	return str
@@ -90,33 +118,4 @@ func (e *InputEvent) Motion() *MotionEvent {
 
 func (act *Activity) Context() *Context {
 	return (*Context)(act.Instance())
-}
-
-// assert
-func assert(con interface{}, infos ...interface{}) {
-	if con == nil {
-		return
-	}
-	switch obj := con.(type) {
-	case bool:
-		if !obj {
-			info(append([]interface{}{"ASSERT:"}, infos...)...)
-		}
-
-	case error:
-		info(append([]interface{}{"ASSERT:(", con, "):"}, infos...)...)
-
-	default:
-		info("ASSERT:(", con, "):", "condition must is bool/error.")
-	}
-}
-
-// fatal
-func fatal(v ...interface{}) {
-	log.Fatal(v...)
-}
-
-// info
-func info(v ...interface{}) {
-	log.Println(v...)
 }

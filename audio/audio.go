@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gooid/gooid/audio/al"
-	"github.com/gooid/gooid/audio/alc"
+	"github.com/xaionaro-go/ndk/audio/al"
+	"github.com/xaionaro-go/ndk/audio/alc"
 )
 
 // Format represents an audio file format.

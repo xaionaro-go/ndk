@@ -3,11 +3,11 @@ package main
 import (
 	"unsafe"
 
-	"github.com/gooid/gooid"
+	"github.com/xaionaro-go/ndk"
 )
 
 type nativeInfo struct {
-	win *app.Window
+	win *ndk.Window
 }
 
 func (e *nativeInfo) NativeDisplay() unsafe.Pointer {

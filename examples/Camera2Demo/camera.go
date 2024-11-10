@@ -11,8 +11,6 @@ import (
 	"github.com/gooid/imgui/util"
 )
 
-//
-
 const (
 	WINDOWSCALE  = 1
 	AUTOHIDETIME = time.Second * 5
@@ -52,7 +50,7 @@ func initEGL() {
 
 	log.Printf("%s %s", gl.GoStr(gl.GetString(gl.RENDERER)), gl.GoStr(gl.GetString(gl.VERSION)))
 
-	// 设置完字体再调用
+	// After setting the font, call
 	im.CreateDeviceObjects()
 
 	io := imgui.GetIO()
@@ -107,16 +105,16 @@ func create() {
 		}
 		if fontName != "" {
 			_ = fonts
-			// 加载所有中文Glyph，但内存开销太大
+			// Loading all Chinese Glyphs, but the memory overhead is too high
 			//fonts.AddFontFromFileTTF(fontName, 24.0, imgui.SwigcptrFontConfig(0), fonts.GetGlyphRangesChineseSimplifiedCommon())
-			// 仅仅加载需要显示的中文Glyph
+			// Only load the Chinese Glyphs that need to be displayed
 			fonts.AddFontFromFileTTF(fontName, 24.0, imgui.SwigcptrFontConfig(0), util.GetFontGlyphRanges(title))
 		}
 	}
 
 	density = getDensity()
 
-	// 通过调整 Style 中元素大小，来控制显示大小，但同时要调整字体大小
+	// By adjusting the size of the elements in Style, you can control the display size, but you also need to adjust the font size.
 	if density > 160 {
 		iScale := float32(density) / 160 / float32(WINDOWSCALE)
 		io.SetFontGlobalScale(iScale)
@@ -124,14 +122,14 @@ func create() {
 		style.ScaleAllSizes(iScale)
 	}
 
-	// 通过缩放 DisplayFramebuffer 来控制显示大小
+	// Controlling display size by scaling the DisplayFramebuffer
 	scale := imgui.NewVec2((float32)(WINDOWSCALE), (float32)(WINDOWSCALE))
 	defer scale.Delete()
 	io.SetDisplayFramebufferScale(scale)
 
 	io.SetConfigFlags(io.GetConfigFlags() | int(imgui.ConfigFlags_IsTouchScreen))
 
-	// render 只需初始化一次
+	// Render only needs to be initialized once
 	im = util.NewRender("#version 100")
 	// TODO libpath, cas...
 	//CameraUI().Init()
@@ -156,7 +154,7 @@ func draw() {
 
 	imgui.NewFrame()
 
-	// 设置为全屏
+	// Set to full screen
 	pos = imgui.NewVec2(0, 0)
 	defer pos.Delete()
 	imgui.SetNextWindowPos(pos)

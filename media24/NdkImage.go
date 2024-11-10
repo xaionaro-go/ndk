@@ -1,4 +1,4 @@
-// Copyright 2018 The gooid Authors. All rights reserved.
+// Copyright 2018-2024 The gooid Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -787,7 +787,7 @@ func (i *Image) GetPlaneData(planeIdx int) ([]byte, error) {
 func (f Formats) String() string {
 	switch f {
 	default:
-		return fmt.Sprintf("FORMAT_UNKNOW_%d", f)
+		return fmt.Sprintf("FORMAT_UNKNOWN_%d", f)
 	case FORMAT_RGBA_8888:
 		return "FORMAT_RGBA_8888"
 	case FORMAT_RGBX_8888:

@@ -9,7 +9,7 @@ import (
 	"github.com/gooid/gocv/opencv3/core"
 	"github.com/gooid/gocv/opencv3/imgproc"
 	"github.com/gooid/gocv/opencv3/objdetect"
-	"github.com/gooid/gooid/examples/CameraDemo/render"
+	"github.com/xaionaro-go/ndk/examples/CameraDemo/render"
 )
 
 type faceDetectStat struct {

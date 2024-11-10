@@ -8,7 +8,7 @@ package alc
 import (
 	"fmt"
 
-	"github.com/gooid/gooid/audio/al"
+	"github.com/xaionaro-go/ndk/audio/al"
 )
 
 // Error returns one of these values.

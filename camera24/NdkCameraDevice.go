@@ -1,4 +1,4 @@
-// Copyright 2018 The gooid Authors. All rights reserved.
+// Copyright 2018-2024 The gooid Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -52,7 +52,7 @@ import "C"
 import (
 	"unsafe"
 
-	app "github.com/gooid/gooid/ndk"
+	"github.com/xaionaro-go/ndk/ndk"
 )
 
 /**
@@ -387,7 +387,7 @@ func (container *CaptureSessionOutputContainer) Free() {
  */
 //camera_status_t ACaptureSessionOutput_create(
 //        ANativeWindow* anw, /*out*/ACaptureSessionOutput** output);
-func CaptureSessionOutputCreate(anw *app.Window) (*CaptureSessionOutput, error) {
+func CaptureSessionOutputCreate(anw *ndk.Window) (*CaptureSessionOutput, error) {
 	var output *C.ACaptureSessionOutput
 	ret := Status(C.ACaptureSessionOutput_create((*C.ANativeWindow)(anw.Pointer()), &output))
 	return (*CaptureSessionOutput)(output), ret
@@ -633,7 +633,7 @@ func (container *CaptureSessionOutputContainer) Remove(output *CaptureSessionOut
  * <tr><th>Type</th><th id="rb">Max size</th><th>Type</th><th id="rb">Max size</th><th>Type</th><th id="rb">Max size</th> </tr>
  * <tr> <td>`PRIV`</td><td id="rb">`PREVIEW`</td> <td>`PRIV`</td><td id="rb">`MAXIMUM`</td> <td colspan="2" id="rb"></td> <td>Maximum-resolution GPU processing with preview.</td> </tr>
  * <tr> <td>`PRIV`</td><td id="rb">`PREVIEW`</td> <td>`YUV `</td><td id="rb">`MAXIMUM`</td> <td colspan="2" id="rb"></td> <td>Maximum-resolution in-app processing with preview.</td> </tr>
- * <tr> <td>`YUV `</td><td id="rb">`PREVIEW`</td> <td>`YUV `</td><td id="rb">`MAXIMUM`</td> <td colspan="2" id="rb"></td> <td>Maximum-resolution two-input in-app processsing.</td> </tr>
+ * <tr> <td>`YUV `</td><td id="rb">`PREVIEW`</td> <td>`YUV `</td><td id="rb">`MAXIMUM`</td> <td colspan="2" id="rb"></td> <td>Maximum-resolution two-input in-app processing.</td> </tr>
  * <tr> <td>`PRIV`</td><td id="rb">`PREVIEW`</td> <td>`PRIV`</td><td id="rb">`PREVIEW`</td> <td>`JPEG`</td><td id="rb">`MAXIMUM`</td> <td>Video recording with maximum-size video snapshot</td> </tr>
  * <tr> <td>`YUV `</td><td id="rb">`640x480`</td> <td>`PRIV`</td><td id="rb">`PREVIEW`</td> <td>`YUV `</td><td id="rb">`MAXIMUM`</td> <td>Standard video recording plus maximum-resolution in-app processing.</td> </tr>
  * <tr> <td>`YUV `</td><td id="rb">`640x480`</td> <td>`YUV `</td><td id="rb">`PREVIEW`</td> <td>`YUV `</td><td id="rb">`MAXIMUM`</td> <td>Preview plus two-input maximum-resolution in-app processing.</td> </tr>
@@ -675,7 +675,7 @@ func (container *CaptureSessionOutputContainer) Remove(output *CaptureSessionOut
  * <tr><th>Type</th><th id="rb">Max size</th><th>Type</th><th id="rb">Max size</th> </tr>
  * <tr> <td>`PRIV`</td><td id="rb">`PREVIEW`</td> <td>`PRIV`</td><td id="rb">`MAXIMUM`</td> <td>Maximum-resolution GPU processing with preview.</td> </tr>
  * <tr> <td>`PRIV`</td><td id="rb">`PREVIEW`</td> <td>`YUV `</td><td id="rb">`MAXIMUM`</td> <td>Maximum-resolution in-app processing with preview.</td> </tr>
- * <tr> <td>`YUV `</td><td id="rb">`PREVIEW`</td> <td>`YUV `</td><td id="rb">`MAXIMUM`</td> <td>Maximum-resolution two-input in-app processsing.</td> </tr>
+ * <tr> <td>`YUV `</td><td id="rb">`PREVIEW`</td> <td>`YUV `</td><td id="rb">`MAXIMUM`</td> <td>Maximum-resolution two-input in-app processing.</td> </tr>
  * </table><br>
  * </p>
  *

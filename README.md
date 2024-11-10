@@ -1,4 +1,23 @@
-# gooid
+# NDK
+
+This is an attempt to make to work the NDK Go-bindings left in old repository github.com/gooid/gooid.
+
+I haven't tried the provided examples, but I copied camera-related files from `Camera2Demo` into `FyneCameraDemo` and made it work using [`fyne`](https://github.com/fyne-io/fyne) to package it for Android:
+
+[FyneCameraDemo](https://github.com/xaionaro-go/ndk/tree/master/examples/FyneCameraDemo)
+
+To try it:
+```sh
+go install fyne.io/fyne/v2/cmd/fyne@latest
+
+cd ./examples/FyneCameraDemo
+~/go/bin/fyne package -os android/arm64
+```
+
+---
+
+# OLD `README.md (originally from github.com/gooid/gooid)
+
 ## Go bindings for Android NDK
 用 Go 开发 APK
 

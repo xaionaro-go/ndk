@@ -11,14 +11,14 @@ import (
 
 	"github.com/gooid/gl/egl"
 	gl "github.com/gooid/gl/es2"
-	"github.com/gooid/gooid"
-	"github.com/gooid/gooid/input"
 	"github.com/gooid/imgui"
 	"github.com/gooid/imgui/util"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/input"
 )
 
 func main() {
-	context := app.Callbacks{
+	context := ndk.Callbacks{
 		FocusChanged:       focus,
 		WindowCreated:      create,
 		WindowDraw:         draw,
@@ -29,11 +29,11 @@ func main() {
 		//Resume:
 
 	}
-	app.SetMainCB(func(ctx *app.Context) {
+	ndk.SetMainCB(func(ctx *ndk.Context) {
 		ctx.Debug(true)
 		ctx.Run(context)
 	})
-	for app.Loop() {
+	for ndk.Loop() {
 	}
 	log.Println("done.")
 }
@@ -42,7 +42,7 @@ var mouseLeft = false
 var mouseRight = false
 var lastX, lastY int
 
-func event(act *app.Activity, e *app.InputEvent) {
+func event(act *ndk.Activity, e *ndk.InputEvent) {
 	if mot := e.Motion(); mot != nil {
 		lastX = int(float32(mot.GetX(0)) / WINDOWSCALE)
 		lastY = int(float32(mot.GetY(0)) / WINDOWSCALE)
@@ -71,7 +71,7 @@ func event(act *app.Activity, e *app.InputEvent) {
 
 var isFocus = false
 
-func focus(_ *app.Activity, f bool) {
+func focus(_ *ndk.Activity, f bool) {
 	isFocus = f
 }
 
@@ -86,7 +86,7 @@ var (
 	im        *util.Render
 )
 
-func initEGL(win *app.Window) {
+func initEGL(win *ndk.Window) {
 	eglctx = egl.CreateEGLContext(&nativeInfo{win: win})
 	if eglctx == nil {
 		return
@@ -137,9 +137,9 @@ func initEGL(win *app.Window) {
 	}
 
 	if runtime.GOOS == "android" {
-		dstr := app.PropGet("hw.lcd.density")
+		dstr := ndk.PropGet("hw.lcd.density")
 		if dstr == "" {
-			dstr = app.PropGet("qemu.sf.lcd_density")
+			dstr = ndk.PropGet("qemu.sf.lcd_density")
 		}
 
 		log.Println(" lcd_density:", dstr)
@@ -185,11 +185,11 @@ func releaseEGL() {
 	}
 }
 
-func create(act *app.Activity, win *app.Window) {
+func create(act *ndk.Activity, win *ndk.Window) {
 	loadProps()
 }
 
-func redraw(act *app.Activity, win *app.Window) {
+func redraw(act *ndk.Activity, win *ndk.Window) {
 	act.Context().Call(func() {
 		releaseEGL()
 		initEGL(win)
@@ -202,11 +202,11 @@ func redraw(act *app.Activity, win *app.Window) {
 	}, false)
 }
 
-func destroyed(act *app.Activity, win *app.Window) {
+func destroyed(act *ndk.Activity, win *ndk.Window) {
 	releaseEGL()
 }
 
-func draw(act *app.Activity, win *app.Window) {
+func draw(act *ndk.Activity, win *ndk.Window) {
 	if isFocus && eglctx != nil {
 		io := imgui.GetIO()
 
@@ -264,7 +264,7 @@ type prop struct {
 var props []prop
 
 func loadProps() {
-	app.PropVisit(func(k, v string) {
+	ndk.PropVisit(func(k, v string) {
 		props = append(props, prop{k: k, v: v})
 	})
 	sort.SliceStable(props, func(i, j int) bool {

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package app
+package ndk
 
 // Android redirects stdout and stderr to /dev/null.
 // As these are common debugging utilities in Go,

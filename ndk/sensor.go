@@ -1,4 +1,4 @@
-package app
+package ndk
 
 /*
  * Copyright (C) 2010 The Android Open Source Project
@@ -434,7 +434,7 @@ func (manager *SensorManager) GetDefaultSensor(typ SENSOR_TYPE) *Sensor {
  */
 //ASensorEventQueue* ASensorManager_createEventQueue(ASensorManager* manager,
 //        ALooper* looper, int ident, ALooper_callbackFunc callback, void* data);
-func (manager *SensorManager) createEventQueue(looper *Looper, ident int, callback LooperCallback, data unsafe.Pointer) *SensorEventQueue {
+func (manager *SensorManager) CreateEventQueue(looper *Looper, ident int, callback LooperCallback, data unsafe.Pointer) *SensorEventQueue {
 	if callback != nil {
 		return (*SensorEventQueue)(C.ASensorManager_createEventQueue(manager.cptr(), looper.cptr(),
 			C.int(ident), (C.ALooper_callbackFunc)(C.cgoCallback),
@@ -449,7 +449,7 @@ func (manager *SensorManager) createEventQueue(looper *Looper, ident int, callba
  * Destroys the event queue and free all resources associated to it.
  */
 //int ASensorManager_destroyEventQueue(ASensorManager* manager, ASensorEventQueue* queue);
-func (manager *SensorManager) destroy(queue *SensorEventQueue) int {
+func (manager *SensorManager) Destroy(queue *SensorEventQueue) int {
 	return int(C.ASensorManager_destroyEventQueue(manager.cptr(), queue.cptr()))
 }
 
@@ -535,7 +535,7 @@ func (queue *SensorEventQueue) setEventRate(sensor *Sensor, t time.Duration) int
  *         or a negative value if there is an error.
  */
 //int ASensorEventQueue_hasEvents(ASensorEventQueue* queue);
-func (queue *SensorEventQueue) hasEvents() int {
+func (queue *SensorEventQueue) HasEvents() int {
 	return int(C.ASensorEventQueue_hasEvents(queue.cptr()))
 }
 
@@ -561,7 +561,7 @@ func (queue *SensorEventQueue) hasEvents() int {
  */
 //ssize_t ASensorEventQueue_getEvents(ASensorEventQueue* queue,
 //                ASensorEvent* events, size_t count);
-func (queue *SensorEventQueue) getEvents(count int) ([]SensorEvent, int) {
+func (queue *SensorEventQueue) GetEvents(count int) ([]SensorEvent, int) {
 	if count == 0 {
 		return nil, 0
 	}
@@ -728,8 +728,31 @@ func (event *SensorEvent) GetData(data interface{}) {
 	case *uint64, []uint64:
 	case *int64, []int64:
 	default:
-		assert(false, "SensorEvent.GetData error format.")
+		Assert(false, "SensorEvent.GetData error format.")
 		return
 	}
 	binary.Read(bytes.NewBuffer(event.getDatas()), binary.LittleEndian, data)
+}
+
+func (s *Sensor) Enable(act *Activity) {
+	ctx := act.Context()
+	if ctx.sensorQueue == nil {
+		ctx.sensorQueue = SensorManagerInstance().CreateEventQueue(ctx.Looper,
+			Looper_ID_SENSOR, nil, unsafe.Pointer(uintptr(Looper_ID_SENSOR)))
+	}
+	ctx.sensorQueue.enableSensor(s)
+}
+
+func (s *Sensor) Disable(act *Activity) {
+	act.Context().sensorQueue.disableSensor(s)
+}
+
+// Sets the delivery rate of events in microseconds for the given sensor.
+//
+// This function has to be called after Enable.
+// Note that this is a hint only, generally event will arrive at a higher
+// rate. It is an error to set a rate inferior to the value returned by
+// GetMinDelay().
+func (s *Sensor) SetEventRate(act *Activity, t time.Duration) {
+	act.Context().sensorQueue.setEventRate(s, t)
 }

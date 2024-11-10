@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/gooid/gooid"
-	"github.com/gooid/gooid/sensor"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/sensor"
 )
 
 type sensorInfo struct {
@@ -19,7 +19,7 @@ type sensorInfo struct {
 	sensor       *sensor.Sensor
 }
 
-func SensorInfo(act *app.Activity) []sensorInfo {
+func SensorInfo(act *ndk.Activity) []sensorInfo {
 	sensorManager := sensor.ManagerInstance()
 	sensorList := sensorManager.GetSensorList()
 	log.Println("SensorInfo:", len(sensorList))
@@ -41,7 +41,7 @@ func SensorInfo(act *app.Activity) []sensorInfo {
 
 var enableSensors = map[*sensor.Sensor]bool{}
 
-func EnableSensor(act *app.Activity, s *sensor.Sensor, t time.Duration) {
+func EnableSensor(act *ndk.Activity, s *sensor.Sensor, t time.Duration) {
 	if b, _ := enableSensors[s]; !b {
 		s.Enable(act)
 		s.SetEventRate(act, t)
@@ -49,14 +49,14 @@ func EnableSensor(act *app.Activity, s *sensor.Sensor, t time.Duration) {
 	}
 }
 
-func DisableSensor(act *app.Activity, s *sensor.Sensor) {
+func DisableSensor(act *ndk.Activity, s *sensor.Sensor) {
 	if b, _ := enableSensors[s]; b {
 		s.Disable(act)
 		enableSensors[s] = false
 	}
 }
 
-func SetEventRate(act *app.Activity, s *sensor.Sensor, t time.Duration) {
+func SetEventRate(act *ndk.Activity, s *sensor.Sensor, t time.Duration) {
 	if b, _ := enableSensors[s]; b {
 		s.SetEventRate(act, t)
 	}
@@ -70,7 +70,7 @@ var gRotation = ROTATION0
 
 var eventMap = map[sensor.TYPE]map[int]sensor.Event{}
 
-func sensorEevent(act *app.Activity, events []sensor.Event) {
+func sensorEvent(act *ndk.Activity, events []sensor.Event) {
 	n := len(events) - 1
 	log.Println("sensor:", events[n].GetType(), events[n].GetTimestamp())
 	var vec sensor.Vector

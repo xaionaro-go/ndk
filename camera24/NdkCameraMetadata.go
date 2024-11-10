@@ -1,4 +1,4 @@
-// Copyright 2018 The gooid Authors. All rights reserved.
+// Copyright 2018-2024 The gooid Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -285,7 +285,7 @@ func (entry *MetadataConstEntry) Data() interface{} {
  * @param metadata the {@link ACameraMetadata} of interest.
  * @param tag the tag value of the camera metadata entry to be get.
  * @param entry the output {@link ACameraMetadata_const_entry} will be filled here if the method
- *        call succeeeds.
+ *        call succeeds.
  *
  * @return <ul>
  *         <li>{@link ACAMERA_OK} if the method call succeeds.</li>
@@ -356,7 +356,6 @@ func (metadata *Metadata) Free() {
 	C.ACameraMetadata_free(metadata.cptr())
 }
 
-// //
 func (t Type) String() string {
 	switch t {
 	case TYPE_BYTE:
@@ -372,6 +371,6 @@ func (t Type) String() string {
 	case TYPE_RATIONAL:
 		return "RATIONAL"
 	default:
-		return "UNKNOW"
+		return "UNKNOWN"
 	}
 }

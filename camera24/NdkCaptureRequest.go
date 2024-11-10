@@ -1,4 +1,4 @@
-// Copyright 2018 The gooid Authors. All rights reserved.
+// Copyright 2018-2024 The gooid Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -47,7 +47,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/gooid/gooid/ndk"
+	"github.com/xaionaro-go/ndk/ndk"
 )
 
 // Container for output targets
@@ -114,7 +114,7 @@ func (request *CaptureRequest) cptr() *C.ACaptureRequest {
  * @see ACaptureRequest_addTarget
  */
 //camera_status_t ACameraOutputTarget_create(ANativeWindow* window, ACameraOutputTarget** output);
-func CameraOutputTargetCreate(window *app.Window) (*OutputTarget, error) {
+func CameraOutputTargetCreate(window *ndk.Window) (*OutputTarget, error) {
 	var output *C.ACameraOutputTarget
 	ret := Status(C.ACameraOutputTarget_create((*C.ANativeWindow)(window.Pointer()), &output))
 	return (*OutputTarget)(output), ret

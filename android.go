@@ -1,40 +1,40 @@
-// Copyright 2017 The gooid Authors. All rights reserved.
+// Copyright 2017-2024 The gooid Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-package app
+package ndk
 
 import (
-	app "github.com/gooid/gooid/ndk"
+	"github.com/xaionaro-go/ndk/ndk"
 )
 
-type Callbacks = app.Callbacks
-type Activity = app.Activity
-type Window = app.Window
-type InputEvent = app.InputEvent
-type Context = app.Context
+type Callbacks = ndk.Callbacks
+type Activity = ndk.Activity
+type Window = ndk.Window
+type InputEvent = ndk.InputEvent
+type Context = ndk.Context
 
 func SetMainCB(fn func(*Context)) {
-	app.SetMainCB(fn)
+	ndk.SetMainCB(fn)
 }
 
 func Loop() bool {
-	return app.Loop()
+	return ndk.Loop()
 }
 
 // getprop
 func PropGet(k string) string {
-	return app.PropGet(k)
+	return ndk.PropGet(k)
 }
 
 // visitor all properties
 func PropVisit(cb func(k, v string)) {
-	app.PropVisit(cb)
+	ndk.PropVisit(cb)
 }
 
 // FindMatchLibrary find library path
 //
 //	see filepath.Glob(pattern string)
 func FindMatchLibrary(pattern string) []string {
-	return app.FindMatchLibrary(pattern)
+	return ndk.FindMatchLibrary(pattern)
 }

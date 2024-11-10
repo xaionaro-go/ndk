@@ -1,4 +1,4 @@
-// Copyright 2018 The gooid Authors. All rights reserved.
+// Copyright 2018-2024 The gooid Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -49,7 +49,7 @@ import "C"
 import (
 	"unsafe"
 
-	app "github.com/gooid/gooid/ndk"
+	"github.com/xaionaro-go/ndk/ndk"
 )
 
 /**
@@ -138,11 +138,11 @@ func (reader *ImageReader) Delete() {
  *         <li>{@link AMEDIA_ERROR_INVALID_PARAMETER} if reader or window is NULL.</li></ul>
  */
 //media_status_t AImageReader_getWindow(AImageReader* reader, /*out*/ANativeWindow** window) __INTRODUCED_IN(24);
-func (reader *ImageReader) GetWindow() (*app.Window, error) {
+func (reader *ImageReader) GetWindow() (*ndk.Window, error) {
 	var win *C.ANativeWindow
 	ret := Status(C.AImageReader_getWindow(reader.cptr(), &win))
 	if ret == nil {
-		return (*app.Window)(win), ret
+		return (*ndk.Window)(win), ret
 	}
 	return nil, ret
 }

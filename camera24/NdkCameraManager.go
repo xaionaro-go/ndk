@@ -1,4 +1,4 @@
-// Copyright 2018 The gooid Authors. All rights reserved.
+// Copyright 2018-2024 The gooid Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -280,7 +280,7 @@ func (manager *Manager) UnregisterAvailabilityCallback(cbs AvailabilityCallbacks
  * @param manager the {@link ACameraManager} of interest.
  * @param cameraId the ID string of the camera device of interest.
  * @param characteristics the output {@link ACameraMetadata} will be filled here if the method call
- *        succeeeds.
+ *        succeeds.
  *
  * @return <ul>
  *         <li>{@link ACAMERA_OK} if the method call succeeds.</li>

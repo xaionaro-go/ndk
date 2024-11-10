@@ -1,4 +1,4 @@
-// Copyright 2018 The gooid Authors. All rights reserved.
+// Copyright 2018-2024 The gooid Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
@@ -80,7 +80,7 @@ import (
 	"time"
 	"unsafe"
 
-	app "github.com/gooid/gooid"
+	"github.com/xaionaro-go/ndk"
 )
 
 /**
@@ -224,7 +224,7 @@ func (f *CaptureFailure) WasImageCaptured() bool {
  *                capture request sent by application, so the address is different to what
  *                application sent but the content will match. This request will be freed by
  *                framework immediately after this callback returns.
- * @param timestamp The timestamp when the capture is started. This timestmap will match
+ * @param timestamp The timestamp when the capture is started. This timestamp will match
  *                  {@link ACAMERA_SENSOR_TIMESTAMP} of the {@link ACameraMetadata} in
  *                  {@link ACameraCaptureSession_captureCallbacks#onCaptureCompleted} callback.
  */
@@ -259,7 +259,7 @@ func (f *CaptureFailure) WasImageCaptured() bool {
  *                capture request sent by application, so the address is different to what
  *                application sent but the content will match. This request will be freed by
  *                framework immediately after this callback returns.
- * @param failure The {@link ACameraCaptureFailure} desribes the capture failure. The memory is
+ * @param failure The {@link ACameraCaptureFailure} describes the capture failure. The memory is
  *                managed by camera framework. Do not access this pointer after this callback
  *                returns.
  */
@@ -731,7 +731,7 @@ type OnCaptureSequenceAborted interface {
 }
 
 type OnCaptureBufferLost interface {
-	OnCaptureBufferLost(*CaptureSession, *CaptureRequest, *app.Window, int64)
+	OnCaptureBufferLost(*CaptureSession, *CaptureRequest, *ndk.Window, int64)
 }
 
 //export cgoCaptureProgressed
@@ -794,7 +794,7 @@ func cgoCaptureBufferLost(context unsafe.Pointer, session *C.ACameraCaptureSessi
 	if o, ok := captureSessionCaptureMap[context]; ok && o != nil {
 		if i, ok := o.(OnCaptureBufferLost); ok {
 			i.OnCaptureBufferLost((*CaptureSession)(session),
-				(*CaptureRequest)(request), (*app.Window)(window), int64(frameNumber))
+				(*CaptureRequest)(request), (*ndk.Window)(window), int64(frameNumber))
 		}
 	}
 }

@@ -1,0 +1,8 @@
+Website = "https://github.com/xaionaro-go/cam2ip"
+
+[Details]
+  Icon = "assets/icon.png"
+  Name = "FyneCameraDemo"
+  ID = "FyneCameraDemo.dx.streampanel"
+  Version = "0.1.0"
+  Build = 28

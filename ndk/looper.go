@@ -1,4 +1,4 @@
-package app
+package ndk
 
 /*
 #include <android/looper.h>
@@ -26,7 +26,7 @@ const (
  *
  * The opts may be ALOOPER_PREPARE_ALLOW_NON_CALLBACKS or 0.
  */
-func looperPrepare(opts int) (looper *Looper) {
+func LooperPrepare(opts int) (looper *Looper) {
 	return (*Looper)(C.ALooper_prepare(C.int(opts)))
 }
 
@@ -162,23 +162,11 @@ type LooperCallback func(fd, events int, data unsafe.Pointer) int
  * This method does not return until it has finished invoking the appropriate callbacks
  * for all file descriptors that were signalled.
  */
-func looperPollOnce(timeoutMillis int) (ident, outFD, outEvents int, outData uintptr) {
+func LooperPollOnce(timeoutMillis int) (ident, outFD, outEvents int, outData uintptr) {
 	var coutFd, coutEvents C.int
 	var coutData unsafe.Pointer
 	cret := C.ALooper_pollOnce(C.int(timeoutMillis), &coutFd, &coutEvents, &coutData)
 	return int(cret), int(coutFd), int(coutEvents), uintptr(coutData)
-}
-
-/**
- * Like ALooper_pollOnce(), but performs all pending callbacks until all
- * data has been consumed or a file descriptor is available with no callback.
- * This function will never return ALOOPER_POLL_CALLBACK.
- */
-func looperPollAll(timeoutMillis int) (ident, outFD, outEvents int, outData uintptr) {
-	var coutFd, coutEvents C.int
-	var coutData unsafe.Pointer
-	cident := C.ALooper_pollAll(C.int(timeoutMillis), &coutFd, &coutEvents, &coutData)
-	return int(cident), int(coutFd), int(coutEvents), uintptr(coutData)
 }
 
 /**

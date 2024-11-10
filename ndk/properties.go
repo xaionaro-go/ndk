@@ -1,4 +1,4 @@
-package app
+package ndk
 
 /*
 #include <stdlib.h>

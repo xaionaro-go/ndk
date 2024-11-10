@@ -1137,7 +1137,6 @@ func (context Context) GetDevice() *Device {
 	return &Device{d: d}
 }
 
-//
 func (d *Device) GetEnumValue(enumname string) int {
 	cenumname := C.CString(enumname)
 	defer C.free(unsafe.Pointer(cenumname))

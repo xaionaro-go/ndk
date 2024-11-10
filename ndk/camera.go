@@ -1,135 +1,34 @@
-package app
+//go:build android
+// +build android
+
+package ndk
 
 /*
+#include "camera.c"
 
-#include <stdlib.h>
-#include <dlfcn.h>
-
-#include "camera_properties.h"
-typedef int (*CameraCallback)(void* buffer, size_t bufferSize, void* userData);
-static void* (*initCameraConnectC)(void* cameraCallback, int cameraId, void* userData);
-static void (*closeCameraConnectC)(void*); //(void**);
-static double (*getCameraPropertyC)(void* camera, int propIdx);
-static void (*setCameraPropertyC)(void* camera, int propIdx, double value);
-static void (*applyCameraPropertiesC)(void* camera); //(void** camera);
-
-static void* initCameraConnect(void* cameraCallback, int cameraId, void* userData) {
-	return initCameraConnectC(cameraCallback, cameraId, userData);
-}
-static void closeCameraConnect(void* camera) {
-	closeCameraConnectC(camera);
-}
-static double getCameraProperty(void* camera, int propIdx) {
-	return getCameraPropertyC(camera, propIdx);
-}
-static void setCameraProperty(void* camera, int propIdx, double value) {
-	setCameraPropertyC(camera, propIdx, value);
-}
-static void applyCameraProperties(void* camera) {
-	applyCameraPropertiesC(camera);
-}
-
-static int initCamera(char* native_camera) {
-	void *handler = dlopen(native_camera, RTLD_LAZY);
-	if (handler == NULL) return 0;
-	initCameraConnectC = dlsym(handler, "initCameraConnectC");
-	closeCameraConnectC = dlsym(handler, "closeCameraConnectC");
-	getCameraPropertyC = dlsym(handler, "getCameraPropertyC");
-	setCameraPropertyC = dlsym(handler, "setCameraPropertyC");
-	applyCameraPropertiesC = dlsym(handler, "applyCameraPropertiesC");
-	if (initCameraConnectC == NULL ||
-		closeCameraConnectC == NULL||
-		getCameraPropertyC == NULL ||
-		setCameraPropertyC == NULL ||
-		applyCameraPropertiesC == NULL) {
-			return 0;
-	}
-	return 1;
-}
-
-static char* getCameraPropertyString(void* camera, int propIdx) {
-	union {char* str;double res;} u;
-	u.res = getCameraPropertyC(camera, propIdx);
-	return u.str;
-}
-int cgoCameraCallback(char* buffer, size_t bufferSize, void* userData);
-
-void Yuv420spToRgb565(int width, int height, const char *src, short *dst);
+#cgo android CFLAGS: -D__ANDROID_API__=24
+#cgo android LDFLAGS: -lcamera2ndk -lmediandk -llog -landroid
 */
 import "C"
 
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"unsafe"
 )
 
-const (
-	iUNINIT = iota
-	iINITFAIL
-	iINITOK
-)
-
-var initStat = iUNINIT
-
-func initCamera() {
-	if initStat != iUNINIT {
-		return
-	}
-	initStat = iINITFAIL
-
-	ver := "r5"
-	api := 18
-	fmt.Sscanf(PropGet("ro.build.version.sdk"), "%d", &api)
-	if api >= 23 {
-		ver = "r6"
-	} else if api >= 21 {
-		ver = "r5"
-	} else if api >= 19 {
-		ver = "r4.4"
-	} else {
-		ver = "r4.3"
-	}
-
-	info("initCamera:", ver)
-	names := FindMatchLibrary("libnative_camera_" + ver + "*.so")
-	if len(names) == 0 {
-		return
-	}
-
-	cname := C.CString(names[0])
-	defer C.free(unsafe.Pointer(cname))
-
-	ret := C.initCamera(cname)
-	if ret != 0 {
-		initStat = iINITOK
-	}
-}
-
 type Camera uintptr
 type CameraCallback func([]byte) bool
 
 func CameraConnect(cameraId int, cb CameraCallback) Camera {
-	initCamera()
-	if initStat != iINITOK {
-		return Camera(0)
-	}
-
-	userData := uintptr(0)
-	if cb != nil {
-		userData = ^(*(*uintptr)(unsafe.Pointer(&cb)))
-	}
-
-	info("CameraConnect:", cameraId, cb, userData)
-	return Camera(C.initCameraConnect(unsafe.Pointer(C.cgoCameraCallback), C.int(cameraId), unsafe.Pointer(userData)))
+	panic("not implemented")
 }
 
 //export cgoCameraCallback
-func cgoCameraCallback(buffer *C.char, bufferSize C.size_t, userData unsafe.Pointer) int {
+func cgoCameraCallback(buffer *C.char, bufferSize C.size_t, userData unsafe.Pointer) C.int {
 	if userData != nil {
 		userData = unsafe.Pointer(^(uintptr(userData)))
 		buf := (*[1 << 28]byte)(unsafe.Pointer(buffer))[:int(bufferSize)]
@@ -142,34 +41,31 @@ func cgoCameraCallback(buffer *C.char, bufferSize C.size_t, userData unsafe.Poin
 }
 
 func (c Camera) Disconnect() {
-	C.closeCameraConnect(unsafe.Pointer(&c))
+	panic("not implemented")
 }
 
 func (c Camera) getProperty(propIdx int) float64 {
-	return float64(C.getCameraProperty(unsafe.Pointer(c), C.int(propIdx)))
+	panic("not implemented")
 }
 
 func (c Camera) setProperty(propIdx int, value float64) {
-	C.setCameraProperty(unsafe.Pointer(c), C.int(propIdx), C.double(value))
+	panic("not implemented")
 }
 
 func (c Camera) ApplyProperties() {
-	C.applyCameraProperties(unsafe.Pointer(&c))
+	panic("not implemented")
 }
 
-// GET
 func (c Camera) FrameSize() (int, int) {
 	return int(c.getProperty(iCAMERA_PROPERTY_FRAMEWIDTH)), int(c.getProperty(iCAMERA_PROPERTY_FRAMEHEIGHT))
 }
 
 func (c Camera) SupportedPreviewSizes() string {
-	cstr := C.getCameraPropertyString(unsafe.Pointer(c), iCAMERA_PROPERTY_SUPPORTED_PREVIEW_SIZES_STRING)
-	return C.GoString(cstr)
+	panic("not implemented")
 }
 
 func (c Camera) PreviewFormat() string {
-	cstr := C.getCameraPropertyString(unsafe.Pointer(c), iCAMERA_PROPERTY_PREVIEW_FORMAT_STRING)
-	return C.GoString(cstr)
+	panic("not implemented")
 }
 
 func (c Camera) Fps() int {
@@ -327,7 +223,7 @@ const (
 
 func GetPackageName() string {
 	smapsName := fmt.Sprint("/proc/", os.Getpid(), "/cmdline")
-	b, err := ioutil.ReadFile(smapsName)
+	b, err := os.ReadFile(smapsName)
 	if err != nil {
 		return ""
 	}
@@ -340,7 +236,7 @@ func GetPackageName() string {
 
 func GetLibraryPath() string {
 	smapsName := fmt.Sprint("/proc/", os.Getpid(), "/smaps")
-	b, err := ioutil.ReadFile(smapsName)
+	b, err := os.ReadFile(smapsName)
 	if err != nil {
 		return ""
 	}
@@ -375,7 +271,7 @@ func FindMatchLibrary(pattern string) []string {
 	for _, dir := range dirs {
 		fns, err := filepath.Glob(filepath.Join(dir, pattern))
 		if err != nil {
-			info("FindMatchLibrary:", err)
+			Info("FindMatchLibrary:", err)
 		}
 		if len(fns) > 0 {
 			return fns

@@ -61,7 +61,7 @@ func (d demoCamera) StopPreview() {
 	}
 }
 
-func _openVCamera(idx int) (CameraI, error) { return demoCamera(0), nil }
+func _openVCamera(idx int) (CameraInterface, error) { return demoCamera(0), nil }
 
 const VIRTUALCAMERA = "vcamera"
 

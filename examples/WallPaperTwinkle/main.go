@@ -3,34 +3,34 @@ package main
 import (
 	"log"
 
-	"github.com/gooid/gooid"
-	"github.com/gooid/gooid/input"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/input"
 )
 
 func main() {
-	context := app.Callbacks{
+	context := ndk.Callbacks{
 		Event: event,
 	}
-	app.SetMainCB(func(ctx *app.Context) {
+	ndk.SetMainCB(func(ctx *ndk.Context) {
 		ctx.Run(context)
 	})
-	for app.Loop() {
+	for ndk.Loop() {
 	}
 	log.Println("done.")
 }
 
 var bWallpaper = false
 
-func event(act *app.Activity, e *app.InputEvent) {
+func event(act *ndk.Activity, e *ndk.InputEvent) {
 	if mot := e.Motion(); mot != nil {
 		if mot.GetAction() == input.MOTION_EVENT_ACTION_UP {
 			log.Println("event:", mot)
 
 			bWallpaper = !bWallpaper
 			if bWallpaper {
-				act.SetWindowFlags(app.FLAG_SHOW_WALLPAPER, 0)
+				act.SetWindowFlags(ndk.FLAG_SHOW_WALLPAPER, 0)
 			} else {
-				act.SetWindowFlags(0, app.FLAG_SHOW_WALLPAPER)
+				act.SetWindowFlags(0, ndk.FLAG_SHOW_WALLPAPER)
 			}
 		}
 	}

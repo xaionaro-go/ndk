@@ -18,26 +18,26 @@ import (
 
 	"github.com/gooid/gl/egl"
 	gl "github.com/gooid/gl/es2"
-	"github.com/gooid/gooid"
-	"github.com/gooid/gooid/input"
-	"github.com/gooid/gooid/storage"
 	"github.com/gooid/imgui"
 	"github.com/gooid/imgui/util"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/input"
+	"github.com/xaionaro-go/ndk/storage"
 )
 
 func main() {
-	context := app.Callbacks{
+	context := ndk.Callbacks{
 		WindowDraw:         draw,
 		WindowRedrawNeeded: redraw,
 		WindowDestroyed:    destroyed,
 		Event:              event,
 		Create:             create,
 	}
-	app.SetMainCB(func(ctx *app.Context) {
+	ndk.SetMainCB(func(ctx *ndk.Context) {
 		ctx.Debug(true)
 		ctx.Run(context)
 	})
-	for app.Loop() {
+	for ndk.Loop() {
 	}
 	log.Println("done.")
 }
@@ -46,7 +46,7 @@ var mouseLeft = false
 var mouseRight = false
 var lastX, lastY int
 
-func event(act *app.Activity, e *app.InputEvent) {
+func event(act *ndk.Activity, e *ndk.InputEvent) {
 	if mot := e.Motion(); mot != nil {
 		lastX = int(float32(mot.GetX(0)) / WINDOWSCALE)
 		lastY = int(float32(mot.GetY(0)) / WINDOWSCALE)
@@ -86,7 +86,7 @@ var (
 	imageScale float32 = 5
 )
 
-func initEGL(act *app.Activity, win *app.Window) {
+func initEGL(act *ndk.Activity, win *ndk.Window) {
 	width, height = win.Width(), win.Height()
 	log.Println("WINSIZE:", width, height)
 	width = int(float32(width) / WINDOWSCALE)
@@ -134,7 +134,7 @@ func releaseEGL() {
 	}
 }
 
-func create(act *app.Activity, _ []byte) {
+func create(act *ndk.Activity, _ []byte) {
 	// gl init
 	gl.Init()
 
@@ -170,9 +170,9 @@ func create(act *app.Activity, _ []byte) {
 	}
 
 	if runtime.GOOS == "android" {
-		dstr := app.PropGet("hw.lcd.density")
+		dstr := ndk.PropGet("hw.lcd.density")
 		if dstr == "" {
-			dstr = app.PropGet("qemu.sf.lcd_density")
+			dstr = ndk.PropGet("qemu.sf.lcd_density")
 		}
 
 		log.Println(" lcd_density:", dstr)
@@ -200,7 +200,7 @@ func create(act *app.Activity, _ []byte) {
 	imagData = ReadImage(act, "label_icon.png")
 }
 
-func redraw(act *app.Activity, win *app.Window) {
+func redraw(act *ndk.Activity, win *ndk.Window) {
 	act.Context().Call(func() {
 		releaseEGL()
 		initEGL(act, win)
@@ -213,11 +213,11 @@ func redraw(act *app.Activity, win *app.Window) {
 	}, false)
 }
 
-func destroyed(act *app.Activity, win *app.Window) {
+func destroyed(act *ndk.Activity, win *ndk.Window) {
 	releaseEGL()
 }
 
-func draw(act *app.Activity, win *app.Window) {
+func draw(act *ndk.Activity, win *ndk.Window) {
 	if eglctx != nil {
 		io := imgui.GetIO()
 
@@ -283,7 +283,7 @@ func draw(act *app.Activity, win *app.Window) {
 	}
 }
 
-func AssetInfo(act *app.Activity, dir string) {
+func AssetInfo(act *ndk.Activity, dir string) {
 	assetMgr := act.AssetManager()
 	assetDir := assetMgr.OpenDir(dir)
 	defer assetDir.Close()
@@ -334,7 +334,7 @@ func AssetInfo(act *app.Activity, dir string) {
 	}
 }
 
-func ReadImage(act *app.Activity, fname string) image.Image {
+func ReadImage(act *ndk.Activity, fname string) image.Image {
 	// load image
 	m := act.AssetManager()
 	fa := m.Open(fname, storage.ASSET_MODE_BUFFER)

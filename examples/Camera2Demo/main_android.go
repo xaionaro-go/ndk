@@ -5,15 +5,15 @@ import (
 	"strconv"
 
 	"github.com/gooid/gl/egl"
-	app "github.com/gooid/gooid"
-	"github.com/gooid/gooid/input"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/input"
 )
 
 func main() {
-	context := app.Callbacks{
+	context := ndk.Callbacks{
 		WindowDraw:         _draw,
 		WindowRedrawNeeded: redraw,
-		WindowDestroyed: func(act *app.Activity, win *app.Window) {
+		WindowDestroyed: func(act *ndk.Activity, win *ndk.Window) {
 			releaseEGL()
 			if eglctx != nil {
 				eglctx.Terminate()
@@ -22,24 +22,24 @@ func main() {
 			destroyed()
 		},
 		Event: event,
-		Create: func(act *app.Activity, _ []byte) {
+		Create: func(act *ndk.Activity, _ []byte) {
 			preCreate(act)
 			create()
 			postCreate(act)
 		},
 	}
-	app.SetMainCB(func(ctx *app.Context) {
+	ndk.SetMainCB(func(ctx *ndk.Context) {
 		ctx.Debug(true)
 		ctx.Run(context)
 	})
-	for app.Loop() {
+	for ndk.Loop() {
 	}
 	log.Println("done.")
 }
 
 var aMouseLeft = false
 
-func event(act *app.Activity, e *app.InputEvent) {
+func event(act *ndk.Activity, e *ndk.InputEvent) {
 	if mot := e.Motion(); mot != nil {
 		x := int(float32(mot.GetX(0)) / WINDOWSCALE)
 		y := int(float32(mot.GetY(0)) / WINDOWSCALE)
@@ -67,10 +67,10 @@ func event(act *app.Activity, e *app.InputEvent) {
 	}
 }
 
-var curAct *app.Activity
+var curAct *ndk.Activity
 var eglctx *egl.EGLContext
 
-func redraw(act *app.Activity, win *app.Window) {
+func redraw(act *ndk.Activity, win *ndk.Window) {
 	curAct = act
 	act.Context().Call(func() {
 		releaseEGL()
@@ -88,16 +88,16 @@ func redraw(act *app.Activity, win *app.Window) {
 	}, false)
 }
 
-func _draw(act *app.Activity, win *app.Window) {
+func _draw(act *ndk.Activity, win *ndk.Window) {
 	if eglctx != nil {
 		draw()
 	}
 }
 
 func getDensity() int {
-	dstr := app.PropGet("hw.lcd.density")
+	dstr := ndk.PropGet("hw.lcd.density")
 	if dstr == "" {
-		dstr = app.PropGet("qemu.sf.lcd_density")
+		dstr = ndk.PropGet("qemu.sf.lcd_density")
 	}
 
 	log.Println(" lcd_density:", dstr)

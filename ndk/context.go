@@ -2,17 +2,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package app
+package ndk
 
 import (
 	"os"
 	"runtime"
 	"sync"
-	"time"
 	"unsafe"
 )
 
-// Callbacks is the set of functions called by the activity.
+// Callbacks is the set of functions called by the Activity.
 type Callbacks struct {
 	Create               func(*Activity, []byte)
 	Start                func(*Activity)
@@ -42,29 +41,29 @@ type Callbacks struct {
 type Context struct {
 	Callbacks
 
-	act    *Activity
-	window *Window // 在 onStart 后不一定调用 onNativeWindowCreated
-	input  *InputQueue
+	Act    *Activity
+	Window *Window // onNativeWindowCreated may not be called after onStart
+	Input  *InputQueue
 
-	isResume,
-	isFocus, // 在 onStart/onStop 之后不一定会调用 onWindowFocusChanged
-	willDestory bool
+	IsResume,
+	IsFocus, // onWindowFocusChanged may not be called after onStart/onStop
+	WillDestoryValue bool
 
-	looper      *Looper
+	Looper      *Looper
 	read, write *os.File
 	sensorQueue *SensorEventQueue
-	funcChan    chan func()
+	FuncChan    chan func()
 	wait        *sync.WaitGroup
 	isReady     bool
 	isDebug     bool
 
-	className   string
+	ClassName   string
 	packageName string
-	savedState  []byte
+	SavedState  []byte
 }
 
 func (ctx *Context) init() {
-	ctx.funcChan = make(chan func(), 3)
+	ctx.FuncChan = make(chan func(), 3)
 	ctx.wait = &sync.WaitGroup{}
 }
 
@@ -74,9 +73,9 @@ func (ctx *Context) setCB(cb *Callbacks) {
 	}
 }
 
-func (ctx *Context) reset() {
-	ctx.isResume = false
-	ctx.willDestory = false
+func (ctx *Context) Reset() {
+	ctx.IsResume = false
+	ctx.WillDestoryValue = false
 }
 
 func (ctx *Context) Debug(enable bool) {
@@ -84,60 +83,60 @@ func (ctx *Context) Debug(enable bool) {
 }
 
 func (ctx *Context) WillDestory() bool {
-	return ctx.willDestory
+	return ctx.WillDestoryValue
 }
 
 const (
-	looper_ID_MAIN   = 1
-	looper_ID_INPUT  = 2
-	looper_ID_SENSOR = 3
+	Looper_ID_MAIN   = 1
+	Looper_ID_INPUT  = 2
+	Looper_ID_SENSOR = 3
 )
 
 // Init looper
 func (ctx *Context) initLooper() {
 	var err error
 	ctx.read, ctx.write, err = os.Pipe()
-	assert(err)
-	ctx.looper = looperPrepare(LOOPER_PREPARE_ALLOW_NON_CALLBACKS)
-	ctx.looper.AddFd(int(ctx.read.Fd()), looper_ID_MAIN, LOOPER_EVENT_INPUT, nil, unsafe.Pointer(uintptr(looper_ID_MAIN)))
+	Assert(err)
+	ctx.Looper = LooperPrepare(LOOPER_PREPARE_ALLOW_NON_CALLBACKS)
+	ctx.Looper.AddFd(int(ctx.read.Fd()), Looper_ID_MAIN, LOOPER_EVENT_INPUT, nil, unsafe.Pointer(uintptr(Looper_ID_MAIN)))
 }
 
 func (ctx *Context) begin(cb Callbacks) {
 	ctx.setCB(&cb)
 	ctx.initLooper()
-	ctx.funcChan <- func() {}
+	ctx.FuncChan <- func() {}
 }
 
-// Run starts the activity.
+// Run starts the Activity.
 //
 // It must be called directly from from the main function and will
 // block until the app exits.
 func (ctx *Context) Run(cb Callbacks) {
-	info("ctx.Run")
+	Info("ctx.Run")
 	ctx.begin(cb)
 	ctx.Loop()
 }
 
 func (ctx *Context) Begin(cb Callbacks) {
-	info("ctx.Begin")
+	Info("ctx.Begin")
 	ctx.begin(cb)
 }
 
 func (ctx *Context) Release() {
-	ctx.looper.RemoveFd(int(ctx.read.Fd()))
+	ctx.Looper.RemoveFd(int(ctx.read.Fd()))
 	if ctx.sensorQueue != nil {
-		SensorManagerInstance().destroy(ctx.sensorQueue)
+		SensorManagerInstance().Destroy(ctx.sensorQueue)
 	}
 	//ctx.looper.Release()
 	ctx.read.Close()
 	ctx.write.Close()
 }
 
-func (ctx *Context) runFunc(fun func(), sync bool) {
+func (ctx *Context) RunFunc(fun func(), sync bool) {
 	if !ctx.isDebug {
 		defer func() {
 			if r := recover(); r != nil {
-				info("runFunc.recover:", r)
+				Info("RunFunc.recover:", r)
 			}
 		}()
 	}
@@ -147,13 +146,13 @@ func (ctx *Context) runFunc(fun func(), sync bool) {
 	//Assert(false)
 	//util.Mode(oldM)
 
-	var cmd = []byte{looper_ID_MAIN}
+	var cmd = []byte{Looper_ID_MAIN}
 	ctx.write.Write(cmd)
 	if !sync {
-		ctx.funcChan <- fun
+		ctx.FuncChan <- fun
 	} else {
 		ctx.wait.Add(1)
-		ctx.funcChan <- func() { defer ctx.wait.Done(); fun() }
+		ctx.FuncChan <- func() { defer ctx.wait.Done(); fun() }
 		ctx.wait.Wait()
 	}
 	//Info("...wait<<<", forceEsace)
@@ -165,7 +164,7 @@ func (ctx *Context) doFunc() {
 	if !ctx.isDebug {
 		defer func() {
 			if r := recover(); r != nil {
-				info("execFunc.recover:", r)
+				Info("execFunc.recover:", r)
 			}
 		}()
 	}
@@ -178,12 +177,12 @@ func (ctx *Context) doFunc() {
 		entryDoFunc = frame.Entry
 	}
 
-	(<-ctx.funcChan)()
+	(<-ctx.FuncChan)()
 }
 
 func (ctx *Context) Call(fun func(), sync bool) {
 	if sync {
-		// 如果是在 doFunc 中被调用，则直接执行，否则会导致死锁。
+		// If it is called in doFunc, it will be executed directly, otherwise it will cause deadlock.
 		pc := make([]uintptr, 10000)
 		n := runtime.Callers(2, pc)
 		frames := runtime.CallersFrames(pc[:n])
@@ -199,69 +198,69 @@ func (ctx *Context) Call(fun func(), sync bool) {
 		}
 	}
 
-	ctx.runFunc(fun, sync)
+	ctx.RunFunc(fun, sync)
 }
 
 func (ctx *Context) loopEvents(timeoutMillis int) bool {
-	assert(!ctx.willDestory, "!ctx.willDestory")
+	Assert(!ctx.WillDestoryValue, "!ctx.willDestory")
 
 	for {
-		ident, _, event, data := looperPollAll(timeoutMillis)
+		ident, _, event, data := LooperPollOnce(timeoutMillis)
 		//Info("LooperPollAll is", int(ident))
 		switch ident {
-		case looper_ID_MAIN:
+		case Looper_ID_MAIN:
 			//Info("LooperPollAll is MAIN")
 			var cmd = []byte{0}
 			n, err := ctx.read.Read(cmd)
-			assert(n == 1 && err == nil)
-			assert(ident == int(cmd[0]))
-			assert(ident == int(data))
-			assert(event == int(data))
+			Assert(n == 1 && err == nil)
+			Assert(ident == int(cmd[0]))
+			Assert(ident == int(data))
+			Assert(event == int(data))
 			ctx.doFunc()
-			if ctx.willDestory {
+			if ctx.WillDestoryValue {
 				return false
 			}
 			return true
 
-		case looper_ID_INPUT:
+		case Looper_ID_INPUT:
 			//Info("LooperPollAll is INPUT")
-			for ctx.input != nil {
-				event := ctx.input.GetEvent()
+			for ctx.Input != nil {
+				event := ctx.Input.GetEvent()
 				if event == nil {
 					break
 				}
-				if !ctx.input.PreDispatchEvent(event) {
-					if !ctx.willDestory {
+				if !ctx.Input.PreDispatchEvent(event) {
+					if !ctx.WillDestoryValue {
 						ctx.processEvent(event)
 					}
-					ctx.input.FinishEvent(event, 0)
+					ctx.Input.FinishEvent(event, 0)
 				}
 			}
-			if ctx.willDestory {
+			if ctx.WillDestoryValue {
 				return false
 			}
 			return true
 
-		case looper_ID_SENSOR:
+		case Looper_ID_SENSOR:
 			//Info("LooperPollAll is SENSOR")
 			if ctx.sensorQueue != nil {
 				var events []SensorEvent
-				errno := ctx.sensorQueue.hasEvents()
+				errno := ctx.sensorQueue.HasEvents()
 				if errno > 0 {
-					events, errno = ctx.sensorQueue.getEvents(32)
+					events, errno = ctx.sensorQueue.GetEvents(32)
 				}
 
 				if errno < 0 {
-					info("SensorEventQueue GetEvents error :", errno)
+					Info("SensorEventQueue GetEvents error :", errno)
 				} else {
 					if ctx.Sensor != nil && len(events) > 0 {
 						//for _, event := range events {
 						//}
-						ctx.Sensor(ctx.act, events)
+						ctx.Sensor(ctx.Act, events)
 					}
 				}
 			} else {
-				info("looper_ID_SENSOR ...")
+				Info("looper_ID_SENSOR ...")
 			}
 			return true
 
@@ -272,10 +271,10 @@ func (ctx *Context) loopEvents(timeoutMillis int) bool {
 			//Info("LooperPollAll is LOOPER_POLL_TIMEOUT")
 			return true
 		case LOOPER_POLL_ERROR:
-			info("LooperPollAll is LOOPER_POLL_ERROR")
+			Info("LooperPollAll is LOOPER_POLL_ERROR")
 			return true
 		default:
-			info("LooperPollAll is ", ident)
+			Info("LooperPollAll is ", ident)
 			return true
 		}
 	}
@@ -284,16 +283,16 @@ func (ctx *Context) loopEvents(timeoutMillis int) bool {
 func (ctx *Context) processEvent(e *InputEvent) {
 	//Info("processEvent:", e)
 	if ctx.Event != nil {
-		ctx.Event(ctx.act, e)
+		ctx.Event(ctx.Act, e)
 	}
 }
 
 func (ctx *Context) pollEvent(timeoutMillis int) bool {
 	if ctx.loopEvents(timeoutMillis) {
-		if ctx.isFocus && ctx.isResume {
-			if ctx.window != nil &&
+		if ctx.IsFocus && ctx.IsResume {
+			if ctx.Window != nil &&
 				ctx.WindowDraw != nil {
-				ctx.WindowDraw(ctx.act, ctx.window)
+				ctx.WindowDraw(ctx.Act, ctx.Window)
 			}
 		}
 		return true
@@ -319,36 +318,13 @@ func (ctx *Context) WaitEvent() bool {
 }
 
 func (ctx *Context) Wake() {
-	ctx.looper.Wake()
+	ctx.Looper.Wake()
 }
 
 func (ctx *Context) Name() string {
-	return ctx.className
+	return ctx.ClassName
 }
 
 func (ctx *Context) Package() string {
 	return ctx.packageName
-}
-
-func (s *Sensor) Enable(act *Activity) {
-	ctx := act.Context()
-	if ctx.sensorQueue == nil {
-		ctx.sensorQueue = SensorManagerInstance().createEventQueue(ctx.looper,
-			looper_ID_SENSOR, nil, unsafe.Pointer(uintptr(looper_ID_SENSOR)))
-	}
-	ctx.sensorQueue.enableSensor(s)
-}
-
-func (s *Sensor) Disable(act *Activity) {
-	act.Context().sensorQueue.disableSensor(s)
-}
-
-// Sets the delivery rate of events in microseconds for the given sensor.
-//
-// This function has to be called after Enable.
-// Note that this is a hint only, generally event will arrive at a higher
-// rate. It is an error to set a rate inferior to the value returned by
-// GetMinDelay().
-func (s *Sensor) SetEventRate(act *Activity, t time.Duration) {
-	act.Context().sensorQueue.setEventRate(s, t)
 }

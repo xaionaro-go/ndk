@@ -10,9 +10,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/gooid/gooid/camera"
-	"github.com/gooid/gooid/examples/CameraDemo/render"
 	"github.com/gooid/imgui"
+	"github.com/xaionaro-go/ndk/camera"
+	"github.com/xaionaro-go/ndk/examples/CameraDemo/render"
 )
 
 const (
@@ -133,7 +133,7 @@ func cameraInit(id int, usercb func(w, h int, img []byte) bool) *cameraObj {
 
 	cam.Camera = camera.Connect(id, cb)
 	if cam.Camera == 0 {
-		log.Println("Cammera connect fail")
+		log.Println("Camera connect fail")
 		return nil
 	}
 	cam.callback = cb

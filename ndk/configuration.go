@@ -3,7 +3,7 @@
 //go:build android
 // +build android
 
-package app
+package ndk
 
 import (
 	"unsafe"

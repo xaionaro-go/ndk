@@ -1,4 +1,4 @@
-package app
+package ndk
 
 /*
 #include <android/native_activity.h>

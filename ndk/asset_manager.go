@@ -1,4 +1,4 @@
-package app
+package ndk
 
 /*
 #include <stdlib.h>
@@ -158,7 +158,7 @@ func (asset *Asset) Close() error {
 }
 
 /**
- * Get a pointer to a buffer holding the entire contents of the assset.
+ * Get a pointer to a buffer holding the entire contents of the asset.
  *
  * Returns NULL on failure.
  */
@@ -179,7 +179,7 @@ func (asset *Asset) GetBuffer() []byte {
 
 /**
  * Report the total size of the asset data. Reports the size using a 64-bit
- * number insted of 32-bit as AAsset_getLength.
+ * number instead of 32-bit as AAsset_getLength.
  */
 //off64_t AAsset_getLength64(AAsset* asset);
 func (asset *Asset) Length() int64 {

@@ -5,27 +5,27 @@ import (
 
 	"github.com/gooid/gl/egl"
 	gl "github.com/gooid/gl/es2"
-	"github.com/gooid/gooid"
-	"github.com/gooid/gooid/input"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/input"
 )
 
 func main() {
-	context := app.Callbacks{
+	context := ndk.Callbacks{
 		FocusChanged:       focus,
 		WindowDraw:         draw,
 		WindowRedrawNeeded: redraw,
 		WindowDestroyed:    destroyed,
 		Event:              event,
 	}
-	app.SetMainCB(func(ctx *app.Context) {
+	ndk.SetMainCB(func(ctx *ndk.Context) {
 		ctx.Run(context)
 	})
-	for app.Loop() {
+	for ndk.Loop() {
 	}
 	log.Println("done.")
 }
 
-func event(act *app.Activity, e *app.InputEvent) {
+func event(act *ndk.Activity, e *ndk.InputEvent) {
 	if mot := e.Motion(); mot != nil {
 		if mot.GetAction() == input.MOTION_EVENT_ACTION_UP {
 			log.Println("event:", mot)
@@ -42,7 +42,7 @@ func event(act *app.Activity, e *app.InputEvent) {
 
 var isFocus = false
 
-func focus(_ *app.Activity, f bool) {
+func focus(_ *ndk.Activity, f bool) {
 	isFocus = f
 }
 
@@ -63,7 +63,7 @@ var (
 			1.0, -0.5, 0.0}}
 )
 
-func initEGL(win *app.Window) {
+func initEGL(win *ndk.Window) {
 	eglctx = egl.CreateEGLContext(&nativeInfo{win: win})
 	if eglctx == nil {
 		return
@@ -100,16 +100,16 @@ func releaseEGL() {
 	}
 }
 
-func redraw(act *app.Activity, win *app.Window) {
+func redraw(act *ndk.Activity, win *ndk.Window) {
 	releaseEGL()
 	initEGL(win)
 }
 
-func destroyed(act *app.Activity, win *app.Window) {
+func destroyed(act *ndk.Activity, win *ndk.Window) {
 	releaseEGL()
 }
 
-func draw(act *app.Activity, win *app.Window) {
+func draw(act *ndk.Activity, win *ndk.Window) {
 	if isFocus && eglctx != nil {
 		gl.Viewport(0, 0, int32(width), int32(height))
 		gl.ClearColor(1.0, 1.0, 1.0, 0.0)

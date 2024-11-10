@@ -11,9 +11,9 @@ import (
 
 	"github.com/gooid/gocv/opencv3/core"
 	"github.com/gooid/gocv/opencv3/objdetect"
-	"github.com/gooid/gooid"
-	"github.com/gooid/gooid/examples/CameraDemo/render"
-	"github.com/gooid/gooid/storage"
+	"github.com/xaionaro-go/ndk"
+	"github.com/xaionaro-go/ndk/examples/CameraDemo/render"
+	"github.com/xaionaro-go/ndk/storage"
 )
 
 type faceDetectStat struct {
@@ -31,8 +31,8 @@ type faceDetectStat struct {
 
 var faceDetect faceDetectStat
 
-func (s *faceDetectStat) LoadOpenCV(act *app.Activity) {
-	ls := app.FindMatchLibrary("libopencv_*.so")
+func (s *faceDetectStat) LoadOpenCV(act *ndk.Activity) {
+	ls := ndk.FindMatchLibrary("libopencv_*.so")
 	if len(ls) > 0 {
 		log.Println("LoadCvLib:", ls[0])
 		err := core.LoadCvLib(ls[0])
@@ -56,7 +56,7 @@ func (s *faceDetectStat) LoadOpenCV(act *app.Activity) {
 
 // 加载 CascadeClassifier，但因为只有加载文件的接中，
 // 因此只能从asset中读出，生成临时文件的方式加载。
-func loadCascade(act *app.Activity) *objdetect.CascadeClassifier {
+func loadCascade(act *ndk.Activity) *objdetect.CascadeClassifier {
 	assetMgr := act.AssetManager()
 	altname := "haarcascade_frontalface_alt2.xml"
 	tmpPath := filepath.Join("/data/data", act.Context().Package(), "files")
