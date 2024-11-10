@@ -5,7 +5,7 @@
 package app
 
 import (
-	"github.com/gooid/gooid/internal/ndk"
+	app "github.com/gooid/gooid/ndk"
 )
 
 type Callbacks = app.Callbacks

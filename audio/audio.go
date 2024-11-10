@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/al"
-	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/alc"
+	"github.com/gooid/gooid/audio/al"
+	"github.com/gooid/gooid/audio/alc"
 )
 
 // Format represents an audio file format.

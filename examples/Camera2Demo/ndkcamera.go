@@ -11,7 +11,7 @@ import (
 
 	app "github.com/gooid/gooid"
 	camera "github.com/gooid/gooid/camera24"
-	"github.com/gooid/gooid/examples/Camera2Demo/vendor/github.com/gooid/util"
+	"github.com/gooid/gooid/util"
 )
 
 func (s *CameraState) AddDevice(device *camera.Device) {

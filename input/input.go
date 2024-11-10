@@ -5,7 +5,7 @@
 package input
 
 import (
-	"github.com/gooid/gooid/internal/ndk"
+	"github.com/gooid/gooid/ndk"
 )
 
 type InputEvent = app.InputEvent

@@ -10,7 +10,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/al"
+	"github.com/gooid/gooid/audio/al"
 )
 
 // WaveSpecs describes the characterists of the audio encoded in a wave file.

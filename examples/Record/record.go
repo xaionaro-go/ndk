@@ -13,9 +13,9 @@ import (
 	"time"
 
 	gl "github.com/gooid/gl/es2"
-	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio"
-	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/al"
-	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/alc"
+	"github.com/gooid/gooid/audio"
+	"github.com/gooid/gooid/audio/al"
+	"github.com/gooid/gooid/audio/alc"
 	"github.com/gooid/imgui"
 	"github.com/gooid/imgui/util"
 )

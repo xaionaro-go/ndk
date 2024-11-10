@@ -52,7 +52,7 @@ import "C"
 import (
 	"unsafe"
 
-	app "github.com/gooid/gooid/internal/ndk"
+	app "github.com/gooid/gooid/ndk"
 )
 
 /**

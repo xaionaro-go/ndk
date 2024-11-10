@@ -5,7 +5,7 @@
 package config
 
 import (
-	"github.com/gooid/gooid/internal/ndk"
+	"github.com/gooid/gooid/ndk"
 )
 
 const (

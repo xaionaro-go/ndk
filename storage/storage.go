@@ -5,7 +5,7 @@
 package storage
 
 import (
-	"github.com/gooid/gooid/internal/ndk"
+	"github.com/gooid/gooid/ndk"
 )
 
 type AssetManager = app.AssetManager

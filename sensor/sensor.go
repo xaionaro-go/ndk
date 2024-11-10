@@ -5,7 +5,7 @@
 package sensor
 
 import (
-	"github.com/gooid/gooid/internal/ndk"
+	"github.com/gooid/gooid/ndk"
 )
 
 type TYPE = app.SENSOR_TYPE

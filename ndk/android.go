@@ -96,7 +96,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/gooid/gooid/internal/callfn"
+	"github.com/gooid/gooid/callfn"
 )
 
 var appContext struct {

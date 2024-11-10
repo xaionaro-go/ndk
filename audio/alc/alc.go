@@ -8,7 +8,7 @@ package alc
 import (
 	"fmt"
 
-	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/al"
+	"github.com/gooid/gooid/audio/al"
 )
 
 // Error returns one of these values.

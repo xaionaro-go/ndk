@@ -47,7 +47,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/gooid/gooid/internal/ndk"
+	"github.com/gooid/gooid/ndk"
 )
 
 // Container for output targets

@@ -6,7 +6,7 @@ import (
 
 	"github.com/gooid/gl/egl"
 	app "github.com/gooid/gooid"
-	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/al"
+	"github.com/gooid/gooid/audio/al"
 	"github.com/gooid/gooid/input"
 )
 
