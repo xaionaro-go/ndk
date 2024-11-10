@@ -12,10 +12,10 @@ import (
 	"sync"
 	"time"
 
-	audio "github.com/gooid/audio"
-	"github.com/gooid/audio/al"
-	"github.com/gooid/audio/alc"
 	gl "github.com/gooid/gl/es2"
+	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio"
+	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/al"
+	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/alc"
 	"github.com/gooid/imgui"
 	"github.com/gooid/imgui/util"
 )

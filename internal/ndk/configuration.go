@@ -1,5 +1,6 @@
 // android app
 
+//go:build android
 // +build android
 
 package app

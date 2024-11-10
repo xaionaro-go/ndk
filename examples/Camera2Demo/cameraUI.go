@@ -30,8 +30,8 @@ type cameraIInfo struct {
 
 var cameraIs = []*cameraIInfo{}
 
-func registerCamera(dev string, prority int, open func(int) (CameraI, error)) {
-	cameraIs = append(cameraIs, &cameraIInfo{o: open, n: dev, p: prority})
+func registerCamera(dev string, priority int, open func(int) (CameraI, error)) {
+	cameraIs = append(cameraIs, &cameraIInfo{o: open, n: dev, p: priority})
 }
 
 func openCamera(dev string, id int) CameraI {
@@ -71,7 +71,7 @@ func openCamera(dev string, id int) CameraI {
 	return nil
 }
 
-// 为了避免数据拷贝，防止数据在使用过程中被改写
+// To avoid data copying and prevent data from being overwritten during use
 type DataUnit struct {
 	rwlock sync.RWMutex
 	data   []byte
@@ -131,7 +131,7 @@ func (ui *cameraUI) DrawFrame() {
 
 func (ui *cameraUI) DrawFrameMark(ds imgui.DrawList) {
 	if ui.frameRender != nil {
-		// 绘制检测到的人脸所在区域
+		// Draw the detected face area
 		c := imgui.NewColor(127, 255, 255).U32()
 		for _, r := range faceDetect.LastRects() {
 			x1, y1 := ui.frameRender.Pos(r.X, r.Y)

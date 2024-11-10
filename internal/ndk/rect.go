@@ -5,7 +5,7 @@ package app
 */
 import "C"
 
-//import "unsafe"
+// import "unsafe"
 type Rect C.ARect
 
 func (rc *Rect) cptr() *C.ARect {

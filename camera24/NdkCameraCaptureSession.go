@@ -103,7 +103,7 @@ func (session *CaptureSession) cptr() *C.ACameraCaptureSession {
  */
 //typedef void (*ACameraCaptureSession_stateCallback)(void* context, ACameraCaptureSession *session);
 
-//typedef struct ACameraCaptureSession_stateCallbacks {
+// typedef struct ACameraCaptureSession_stateCallbacks {
 type CaptureSessionStateCallbacks interface {
 	/// optional application context.
 	//     void*                               context;
@@ -141,7 +141,7 @@ type CaptureSessionStateCallbacks interface {
 	OnActive(*CaptureSession)
 } //ACameraCaptureSession_stateCallbacks;
 
-/// Enum for describing error reason in {@link ACameraCaptureFailure}
+// / Enum for describing error reason in {@link ACameraCaptureFailure}
 const (
 	/**
 	 * The capture session has dropped this frame due to an
@@ -799,7 +799,6 @@ func cgoCaptureBufferLost(context unsafe.Pointer, session *C.ACameraCaptureSessi
 	}
 }
 
-//
 func getCaptureCallbacks(o interface{}, context unsafe.Pointer) *C.ACameraCaptureSession_captureCallbacks {
 	var captureListener C.ACameraCaptureSession_captureCallbacks
 	captureListener.context = context

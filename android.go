@@ -33,7 +33,8 @@ func PropVisit(cb func(k, v string)) {
 }
 
 // FindMatchLibrary find library path
-//  see filepath.Glob(pattern string)
+//
+//	see filepath.Glob(pattern string)
 func FindMatchLibrary(pattern string) []string {
 	return app.FindMatchLibrary(pattern)
 }

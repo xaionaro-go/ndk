@@ -6,6 +6,7 @@
 // Sets up everything the runtime needs and exposes
 // the entry point to JNI.
 
+//go:build android
 // +build android
 
 package app

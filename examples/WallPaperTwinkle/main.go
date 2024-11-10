@@ -9,7 +9,7 @@ import (
 
 func main() {
 	context := app.Callbacks{
-		Event:              event,
+		Event: event,
 	}
 	app.SetMainCB(func(ctx *app.Context) {
 		ctx.Run(context)

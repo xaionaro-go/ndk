@@ -356,7 +356,7 @@ func (metadata *Metadata) Free() {
 	C.ACameraMetadata_free(metadata.cptr())
 }
 
-////
+// //
 func (t Type) String() string {
 	switch t {
 	case TYPE_BYTE:

@@ -1,3 +1,4 @@
+//go:build android
 // +build android
 
 package main
@@ -10,8 +11,8 @@ import (
 
 	app "github.com/gooid/gooid"
 	camera "github.com/gooid/gooid/camera24"
+	"github.com/gooid/gooid/examples/Camera2Demo/vendor/github.com/gooid/util"
 	media "github.com/gooid/gooid/media24"
-	"github.com/gooid/util"
 )
 
 func winRedraw(act *app.Activity, win *app.Window) {
@@ -78,7 +79,7 @@ func (cam *ndkCamera) OnImage(r *media.ImageReader) {
 			cam.previewCB(w, h, 0, dataY, dataUV)
 		} else {
 			log.Println(" ImageListener: ", format, w, h, planes, pixelStride, rowStride, t)
-			// 保存照片
+			// Save photos
 		}
 	} else {
 		log.Println("   ImageListener:", err)

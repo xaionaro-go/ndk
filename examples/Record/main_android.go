@@ -4,9 +4,9 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/gooid/audio/al"
 	"github.com/gooid/gl/egl"
-	"github.com/gooid/gooid"
+	app "github.com/gooid/gooid"
+	"github.com/gooid/gooid/examples/Record/vendor/github.com/gooid/audio/al"
 	"github.com/gooid/gooid/input"
 )
 

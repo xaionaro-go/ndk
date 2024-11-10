@@ -181,7 +181,6 @@ func (ctx *Context) doFunc() {
 	(<-ctx.funcChan)()
 }
 
-//
 func (ctx *Context) Call(fun func(), sync bool) {
 	if sync {
 		// 如果是在 doFunc 中被调用，则直接执行，否则会导致死锁。

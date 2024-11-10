@@ -66,7 +66,7 @@ func (device *Device) cptr() *C.ACameraDevice {
 	return (*C.ACameraDevice)(device)
 }
 
-/// Enum for ACameraDevice_ErrorStateCallback error code
+// / Enum for ACameraDevice_ErrorStateCallback error code
 const (
 	/**
 	 * The camera device is in use already.
@@ -128,7 +128,7 @@ const (
  */
 //typedef void (*ACameraDevice_ErrorStateCallback)(void* context, ACameraDevice* device, int error);
 
-//typedef struct ACameraDevice_StateCallbacks {
+// typedef struct ACameraDevice_StateCallbacks {
 type DeviceStateCallbacks interface {
 	/// optional application context.
 	//     void*                             context;
@@ -317,14 +317,14 @@ func (device *Device) CreateCaptureRequest(templateId DeviceRequestTemplate) (*C
 	return (*CaptureRequest)(request), ret
 }
 
-//typedef struct ACaptureSessionOutputContainer ACaptureSessionOutputContainer;
+// typedef struct ACaptureSessionOutputContainer ACaptureSessionOutputContainer;
 type CaptureSessionOutputContainer C.ACaptureSessionOutputContainer
 
 func (container *CaptureSessionOutputContainer) cptr() *C.ACaptureSessionOutputContainer {
 	return (*C.ACaptureSessionOutputContainer)(container)
 }
 
-//typedef struct ACaptureSessionOutput ACaptureSessionOutput;
+// typedef struct ACaptureSessionOutput ACaptureSessionOutput;
 type CaptureSessionOutput C.ACaptureSessionOutput
 
 func (output *CaptureSessionOutput) cptr() *C.ACaptureSessionOutput {

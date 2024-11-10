@@ -5,7 +5,6 @@ import (
 	"log"
 )
 
-//
 func (ctx *Context) String() string {
 	return fmt.Sprintf("Context#%s{Destory: %v, Focus: %v}",
 		ctx.className, ctx.willDestory, ctx.isFocus)
