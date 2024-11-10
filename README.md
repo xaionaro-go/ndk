@@ -14,6 +14,9 @@ cd ./examples/FyneCameraDemo
 ~/go/bin/fyne package -os android/arm64
 ```
 
+And when I've launched the app, I got this:
+![FyneCameraDemo_screenshot.png](doc/FyneCameraDemo_screenshot.png "FyneCameraDemo_screenshot.png")
+
 ---
 
 # OLD `README.md (originally from github.com/gooid/gooid)
