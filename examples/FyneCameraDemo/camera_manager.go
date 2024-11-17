@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	camera "github.com/xaionaro-go/ndk/camera24"
-	media "github.com/xaionaro-go/ndk/media24"
+	"github.com/xaionaro-go/ndk/camera"
 	"github.com/xaionaro-go/ndk/util"
 )
 
@@ -167,7 +166,6 @@ func (mgr *CameraManager) OpenCamera(
 	mgr.cameraState(cameraID).AddDevice(dev)
 
 	return &Camera{
-		Device:    dev,
-		ImageChan: make(chan *media.Image, 1),
+		Device: dev,
 	}, nil
 }

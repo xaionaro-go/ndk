@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	_ "net/http/pprof"
+	"runtime"
 	"runtime/debug"
 
 	"fyne.io/fyne/v2"
@@ -16,7 +17,8 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/widget"
 	"github.com/spf13/pflag"
-	media "github.com/xaionaro-go/ndk/media24"
+	"github.com/xaionaro-go/ndk/camera"
+	"github.com/xaionaro-go/ndk/media"
 )
 
 import "C"
@@ -28,14 +30,17 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Display camera")
 
+	if *netPprofAddr == "" && runtime.GOOS == "android" {
+		*netPprofAddr = "0.0.0.0:0"
+	}
 	if *netPprofAddr != "" {
 		go func() {
-			defer func() { displayPanic(w, recover()) }()
+			defer func() { processRecover(w, recover()) }()
 			log.Println(http.ListenAndServe(*netPprofAddr, nil))
 		}()
 	}
 
-	defer func() { displayPanic(w, recover()) }()
+	defer func() { processRecover(w, recover()) }()
 
 	camID := "0"
 
@@ -46,12 +51,23 @@ func main() {
 	}
 	defer cam.Close()
 
-	err = cam.StartStreaming(1920, 1080, media.FORMAT_YUV_420_888)
+	imageListener, err := NewImageListener(
+		1920, 1080,
+		media.FORMAT_YUV_420_888,
+	)
+	if err != nil {
+		panicInUI(w, fmt.Errorf("NewImageListener: %w", err))
+	}
+
+	err = cam.StartStreaming(
+		camera.TEMPLATE_ZERO_SHUTTER_LAG,
+		imageListener.Window,
+	)
 	if err != nil {
 		panicInUI(w, fmt.Errorf("StartStreaming: %w", err))
 	}
 
-	mImg := <-cam.ImageChan
+	mImg := <-imageListener.ImageChan
 	if mImg == nil {
 		panicInUI(w, fmt.Errorf("mImg == nil"))
 	}
@@ -87,24 +103,25 @@ func main() {
 
 	fyneImg := canvas.NewImageFromImage(img)
 	fyneImg.ScaleMode = canvas.ImageScaleFastest
-	fyneImg.FillMode = canvas.ImageFillOriginal
+	fyneImg.FillMode = canvas.ImageFillContain
 
 	c := w.Canvas()
 	c.SetContent(fyneImg)
 
-	if false {
-		go func() {
-			defer func() { displayPanic(w, recover()) }()
-			for mImg := range cam.ImageChan {
-				img, err := ConvertImage(mImg)
-				if err != nil {
-					panicInUI(w, fmt.Errorf("ConvertImage: %w", err))
-				}
-				fyneImg.Image = img
-				fyneImg.Refresh()
+	go func() {
+		defer func() { processRecover(w, recover()) }()
+		for newMImg := range imageListener.ImageChan {
+			_, err := ConvertImage(newMImg)
+			if err != nil {
+				newMImg.Delete()
+				panicInUI(w, fmt.Errorf("ConvertImage: %w", err))
 			}
-		}()
-	}
+			fyneImg.Image = img
+			fyneImg.Refresh()
+			mImg.Delete()
+			mImg = newMImg
+		}
+	}()
 
 	w.ShowAndRun()
 	<-context.Background().Done()
@@ -114,7 +131,7 @@ func panicInUI(
 	w fyne.Window,
 	err error,
 ) {
-	log.Panicln(err.Error())
+	log.Println(err.Error())
 	text := widget.NewLabel(err.Error())
 	text.Wrapping = fyne.TextWrapWord
 	w.SetContent(text)
@@ -122,7 +139,7 @@ func panicInUI(
 	<-context.Background().Done()
 }
 
-func displayPanic(
+func processRecover(
 	w fyne.Window,
 	r any,
 ) {

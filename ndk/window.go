@@ -2,11 +2,15 @@ package ndk
 
 /*
 #include <android/window.h>
+#include <android/native_window.h>
 #include <android/native_window_jni.h>
+
+#cgo LDFLAGS: -lnativewindow
 */
 import "C"
 
 import (
+	"syscall"
 	"unsafe"
 )
 
@@ -43,6 +47,24 @@ const (
 	FLAG_SHOW_WALLPAPER             = C.AWINDOW_FLAG_SHOW_WALLPAPER
 	FLAG_TURN_SCREEN_ON             = C.AWINDOW_FLAG_TURN_SCREEN_ON
 	FLAG_DISMISS_KEYGUARD           = C.AWINDOW_FLAG_DISMISS_KEYGUARD
+)
+
+type WindowTransform int32
+
+const (
+	WINDOW_TRANSFORM_IDENTITY          = WindowTransform(C.ANATIVEWINDOW_TRANSFORM_IDENTITY)
+	WINDOW_TRANSFORM_MIRROR_HORIZONTAL = WindowTransform(C.ANATIVEWINDOW_TRANSFORM_MIRROR_HORIZONTAL)
+	WINDOW_TRANSFORM_MIRROR_VERTICAL   = WindowTransform(C.ANATIVEWINDOW_TRANSFORM_MIRROR_VERTICAL)
+	WINDOW_TRANSFORM_ROTATE_90         = WindowTransform(C.ANATIVEWINDOW_TRANSFORM_ROTATE_90)
+	WINDOW_TRANSFORM_ROTATE_180        = WindowTransform(C.ANATIVEWINDOW_TRANSFORM_ROTATE_180)
+	WINDOW_TRANSFORM_ROTATE_270        = WindowTransform(C.ANATIVEWINDOW_TRANSFORM_ROTATE_270)
+)
+
+type WindowFrameRateCompatibility int32
+
+const (
+	WINDOW_FRAME_RATE_COMPATIBILITY_DEFAULT      = WindowFrameRateCompatibility(C.ANATIVEWINDOW_FRAME_RATE_COMPATIBILITY_DEFAULT)
+	WINDOW_FRAME_RATE_COMPATIBILITY_FIXED_SOURCE = WindowFrameRateCompatibility(C.ANATIVEWINDOW_FRAME_RATE_COMPATIBILITY_FIXED_SOURCE)
 )
 
 type WindowBuffer C.ANativeWindow_Buffer
@@ -152,8 +174,17 @@ func (w *Window) Format() int {
  * width and height must be either both zero or both non-zero.
  *
  */
-func (w *Window) SetBuffersGeometry(width, height, format int) int {
-	return int(C.ANativeWindow_setBuffersGeometry(w.cptr(), C.int32_t(width), C.int32_t(height), C.int32_t(format)))
+func (w *Window) SetBuffersGeometry(width, height, format int) int32 {
+	return int32(C.ANativeWindow_setBuffersGeometry(w.cptr(), C.int32_t(width), C.int32_t(height), C.int32_t(format)))
+}
+
+// See https://developer.android.com/ndk/reference/group/a-native-window#anativewindow_setbufferstransform
+func (w *Window) SetBuffersTransform(transform WindowTransform) error {
+	rc := int32(C.ANativeWindow_setBuffersTransform(w.cptr(), C.int32_t(transform)))
+	if rc != 0 {
+		return syscall.Errno(-rc)
+	}
+	return nil
 }
 
 /**
