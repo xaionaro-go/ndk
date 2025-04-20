@@ -562,7 +562,7 @@ func (i *Image) Delete() {
 //media_status_t AImage_getWidth(const AImage* image, /*out*/int32_t* width);
 func (i *Image) GetWidth() (int, error) {
 	var width C.int32_t
-	ret := Status(C.AImage_getWidth(i.cptr(), &width))
+	ret := CMediaStatusToError(C.AImage_getWidth(i.cptr(), &width))
 	return int(width), ret
 }
 
@@ -581,7 +581,7 @@ func (i *Image) GetWidth() (int, error) {
 //media_status_t AImage_getHeight(const AImage* image, /*out*/int32_t* height);
 func (i *Image) GetHeight() (int, error) {
 	var height C.int32_t
-	ret := Status(C.AImage_getHeight(i.cptr(), &height))
+	ret := CMediaStatusToError(C.AImage_getHeight(i.cptr(), &height))
 	return int(height), ret
 }
 
@@ -602,7 +602,7 @@ func (i *Image) GetHeight() (int, error) {
 //media_status_t AImage_getFormat(const AImage* image, /*out*/int32_t* format);
 func (i *Image) GetFormat() (Formats, error) {
 	var format C.int32_t
-	ret := Status(C.AImage_getFormat(i.cptr(), &format))
+	ret := CMediaStatusToError(C.AImage_getFormat(i.cptr(), &format))
 	return Formats(format), ret
 }
 
@@ -624,7 +624,7 @@ func (i *Image) GetFormat() (Formats, error) {
 //media_status_t AImage_getCropRect(const AImage* image, /*out*/AImageCropRect* rect);
 func (i *Image) GetCropRect() (ImageCropRect, error) {
 	var cropRect C.AImageCropRect
-	ret := Status(C.AImage_getCropRect(i.cptr(), &cropRect))
+	ret := CMediaStatusToError(C.AImage_getCropRect(i.cptr(), &cropRect))
 	return (ImageCropRect)(cropRect), ret
 }
 
@@ -653,7 +653,7 @@ func (i *Image) GetCropRect() (ImageCropRect, error) {
 //media_status_t AImage_getTimestamp(const AImage* image, /*out*/int64_t* timestampNs);
 func (i *Image) GetTimestamp() (time.Duration, error) {
 	var timestamp C.int64_t
-	ret := Status(C.AImage_getTimestamp(i.cptr(), &timestamp))
+	ret := CMediaStatusToError(C.AImage_getTimestamp(i.cptr(), &timestamp))
 	return time.Duration(timestamp) * time.Nanosecond, ret
 }
 
@@ -676,7 +676,7 @@ func (i *Image) GetTimestamp() (time.Duration, error) {
 //media_status_t AImage_getNumberOfPlanes(const AImage* image, /*out*/int32_t* numPlanes);
 func (i *Image) GetNumberOfPlanes() (int, error) {
 	var numPlanes C.int32_t
-	ret := Status(C.AImage_getNumberOfPlanes(i.cptr(), &numPlanes))
+	ret := CMediaStatusToError(C.AImage_getNumberOfPlanes(i.cptr(), &numPlanes))
 	return int(numPlanes), ret
 }
 
@@ -709,7 +709,7 @@ func (i *Image) GetNumberOfPlanes() (int, error) {
 //        const AImage* image, int planeIdx, /*out*/int32_t* pixelStride);
 func (i *Image) GetPlanePixelStride(planeIdx int) (int, error) {
 	var pixelStride C.int32_t
-	ret := Status(C.AImage_getPlanePixelStride(i.cptr(), C.int(planeIdx), &pixelStride))
+	ret := CMediaStatusToError(C.AImage_getPlanePixelStride(i.cptr(), C.int(planeIdx), &pixelStride))
 	return (int)(pixelStride), ret
 }
 
@@ -741,7 +741,7 @@ func (i *Image) GetPlanePixelStride(planeIdx int) (int, error) {
 //        const AImage* image, int planeIdx, /*out*/int32_t* rowStride);
 func (i *Image) GetPlaneRowStride(planeIdx int) (int, error) {
 	var rowStride C.int32_t
-	ret := Status(C.AImage_getPlaneRowStride(i.cptr(), C.int(planeIdx), &rowStride))
+	ret := CMediaStatusToError(C.AImage_getPlaneRowStride(i.cptr(), C.int(planeIdx), &rowStride))
 	return (int)(rowStride), ret
 }
 
@@ -772,7 +772,7 @@ func (i *Image) GetPlaneRowStride(planeIdx int) (int, error) {
 func (i *Image) GetPlaneData(planeIdx int) ([]byte, error) {
 	var data *C.uint8_t
 	var dataLength C.int
-	ret := Status(C.AImage_getPlaneData(i.cptr(), C.int(planeIdx), &data, &dataLength))
+	ret := CMediaStatusToError(C.AImage_getPlaneData(i.cptr(), C.int(planeIdx), &data, &dataLength))
 	if ret == nil {
 		return ((*[1 << 30]byte)(unsafe.Pointer(data)))[:dataLength], ret
 	}

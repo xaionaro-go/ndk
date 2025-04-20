@@ -101,7 +101,7 @@ func (reader *ImageReader) cptr() *C.AImageReader {
 //        /*out*/AImageReader** reader) __INTRODUCED_IN(24);
 func NewImageReader(width, height int, format Formats, maxImages int) (*ImageReader, error) {
 	var reader *C.AImageReader
-	ret := Status(C.AImageReader_new(C.int32_t(width), C.int32_t(height),
+	ret := CMediaStatusToError(C.AImageReader_new(C.int32_t(width), C.int32_t(height),
 		C.int32_t(format), C.int32_t(maxImages), &reader))
 	if ret == nil {
 		return (*ImageReader)(reader), ret
@@ -140,7 +140,7 @@ func (reader *ImageReader) Delete() {
 //media_status_t AImageReader_getWindow(AImageReader* reader, /*out*/ANativeWindow** window) __INTRODUCED_IN(24);
 func (reader *ImageReader) GetWindow() (*ndk.Window, error) {
 	var win *C.ANativeWindow
-	ret := Status(C.AImageReader_getWindow(reader.cptr(), &win))
+	ret := CMediaStatusToError(C.AImageReader_getWindow(reader.cptr(), &win))
 	if ret == nil {
 		return (*ndk.Window)(win), ret
 	}
@@ -164,7 +164,7 @@ func (reader *ImageReader) GetWindow() (*ndk.Window, error) {
 //media_status_t AImageReader_getWidth(const AImageReader* reader, /*out*/int32_t* width) __INTRODUCED_IN(24);
 func (reader *ImageReader) GetWidth() (int, error) {
 	var width C.int32_t
-	ret := Status(C.AImageReader_getWidth(reader.cptr(), &width))
+	ret := CMediaStatusToError(C.AImageReader_getWidth(reader.cptr(), &width))
 	return int(width), ret
 }
 
@@ -185,7 +185,7 @@ func (reader *ImageReader) GetWidth() (int, error) {
 //media_status_t AImageReader_getHeight(const AImageReader* reader, /*out*/int32_t* height) __INTRODUCED_IN(24);
 func (reader *ImageReader) GetHeight() (int, error) {
 	var height C.int32_t
-	ret := Status(C.AImageReader_getHeight(reader.cptr(), &height))
+	ret := CMediaStatusToError(C.AImageReader_getHeight(reader.cptr(), &height))
 	return int(height), ret
 }
 
@@ -203,7 +203,7 @@ func (reader *ImageReader) GetHeight() (int, error) {
 //media_status_t AImageReader_getFormat(const AImageReader* reader, /*out*/int32_t* format) __INTRODUCED_IN(24);
 func (reader *ImageReader) GetFormat() (Formats, error) {
 	var format C.int32_t
-	ret := Status(C.AImageReader_getFormat(reader.cptr(), &format))
+	ret := CMediaStatusToError(C.AImageReader_getFormat(reader.cptr(), &format))
 	return Formats(format), ret
 }
 
@@ -221,7 +221,7 @@ func (reader *ImageReader) GetFormat() (Formats, error) {
 //media_status_t AImageReader_getMaxImages(const AImageReader* reader, /*out*/int32_t* maxImages) __INTRODUCED_IN(24);
 func (reader *ImageReader) GetMaxImages() (int, error) {
 	var maxImages C.int32_t
-	ret := Status(C.AImageReader_getMaxImages(reader.cptr(), &maxImages))
+	ret := CMediaStatusToError(C.AImageReader_getMaxImages(reader.cptr(), &maxImages))
 	return int(maxImages), ret
 }
 
@@ -262,7 +262,7 @@ func (reader *ImageReader) GetMaxImages() (int, error) {
 //media_status_t AImageReader_acquireNextImage(AImageReader* reader, /*out*/AImage** image) __INTRODUCED_IN(24);
 func (reader *ImageReader) AcquireNextImage() (*Image, error) {
 	var image *C.AImage
-	ret := Status(C.AImageReader_acquireNextImage(reader.cptr(), &image))
+	ret := CMediaStatusToError(C.AImageReader_acquireNextImage(reader.cptr(), &image))
 	return (*Image)(image), ret
 }
 
@@ -311,7 +311,7 @@ func (reader *ImageReader) AcquireNextImage() (*Image, error) {
 //media_status_t AImageReader_acquireLatestImage(AImageReader* reader, /*out*/AImage** image) __INTRODUCED_IN(24);
 func (reader *ImageReader) AcquireLatestImage() (*Image, error) {
 	var image *C.AImage
-	ret := Status(C.AImageReader_acquireLatestImage(reader.cptr(), &image))
+	ret := CMediaStatusToError(C.AImageReader_acquireLatestImage(reader.cptr(), &image))
 	return (*Image)(image), ret
 }
 
@@ -362,7 +362,7 @@ func (reader *ImageReader) SetImageListener(onImageAvailable func(*ImageReader))
 	listener.context = unsafe.Pointer(reader.cptr())
 	listener.onImageAvailable = (C.AImageReader_ImageCallback)(C.cgoImageListenerCallback)
 	listenerCallbackMap[listener.context] = onImageAvailable
-	return Status(C.AImageReader_setImageListener(reader.cptr(), &listener))
+	return CMediaStatusToError(C.AImageReader_setImageListener(reader.cptr(), &listener))
 }
 
 var listenerCallbackMap = map[unsafe.Pointer]func(*ImageReader){}
