@@ -5,8 +5,8 @@ package media
 // #include "media/NdkMediaFormat.h"
 import "C"
 
-type AMediaFormat C.AMediaFormat
+type MediaFormat C.AMediaFormat
 
-func (mf *AMediaFormat) CPointer() *C.AMediaFormat {
+func (mf *MediaFormat) CPointer() *C.AMediaFormat {
 	return (*C.AMediaFormat)(mf)
 }

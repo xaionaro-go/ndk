@@ -12,7 +12,7 @@ func (mc *MediaCodec) CPointer() *C.AMediaCodec {
 	return (*C.AMediaCodec)(mc)
 }
 
-func (mc *MediaCodec) SetParameters(params *AMediaFormat) error {
+func (mc *MediaCodec) SetParameters(params *MediaFormat) error {
 	status := C.AMediaCodec_setParameters(mc.CPointer(), params.CPointer())
 	return CMediaStatusToError(status)
 }
