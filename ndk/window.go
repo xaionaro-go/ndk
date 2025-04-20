@@ -10,7 +10,6 @@ package ndk
 import "C"
 
 import (
-	"syscall"
 	"unsafe"
 )
 
@@ -176,15 +175,6 @@ func (w *Window) Format() int {
  */
 func (w *Window) SetBuffersGeometry(width, height, format int) int32 {
 	return int32(C.ANativeWindow_setBuffersGeometry(w.cptr(), C.int32_t(width), C.int32_t(height), C.int32_t(format)))
-}
-
-// See https://developer.android.com/ndk/reference/group/a-native-window#anativewindow_setbufferstransform
-func (w *Window) SetBuffersTransform(transform WindowTransform) error {
-	rc := int32(C.ANativeWindow_setBuffersTransform(w.cptr(), C.int32_t(transform)))
-	if rc != 0 {
-		return syscall.Errno(-rc)
-	}
-	return nil
 }
 
 /**
