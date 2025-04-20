@@ -1,13 +1,13 @@
 {
     "go.buildTags": "linux,android",
     "go.toolsEnvVars": {
+        "CC": "${env:ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android35-clang --sysroot=${env:ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/sysroot",
         "GOOS": "android",
         "GOARCH": "arm64",
         "CGO_ENABLED": "1",
-        "CGO_CFLAGS": "-I/home/streaming/Android/android-ndk-r27b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/",
     },
     "C_Cpp.default.includePath": [
-        "/home/streaming/Android/android-ndk-r27b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/"
+        "${env:ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/"
     ],
     "files.associations": {
         "ndkimagereader.h": "c"
