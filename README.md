@@ -11,7 +11,7 @@ To try it:
 go install fyne.io/fyne/v2/cmd/fyne@latest
 
 cd ./examples/FyneCameraDemo
-~/go/bin/fyne package -os android/arm64
+~/go/bin/fyne package -tags fyne -os android/arm64
 ```
 
 And when I've launched the app, I got this:

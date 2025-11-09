@@ -1,4 +1,6 @@
 
+all: signer-sign-FyneCameraDemo-arm64-apk
+
 priv/android-apk.keystore:
 	mkdir -p priv
 	keytool -genkey -v -keystore priv/android-apk.keystore -alias FyneCameraDemo -keyalg RSA -keysize 2048 -validity 36500
