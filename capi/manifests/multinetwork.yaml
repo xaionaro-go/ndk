@@ -1,0 +1,13 @@
+GENERATOR:
+  PackageName: multinetwork
+  PackageDescription: "Raw CGo bindings for Android Multi-Network"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/multinetwork.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}
+TRANSLATOR:
+  Rules:
+    global:
+      # References struct addrinfo from <netdb.h> which is not included in the CGo preamble.
+      - {action: ignore, from: "^android_getaddrinfofornetwork$"}
+      - {action: accept, from: "."}

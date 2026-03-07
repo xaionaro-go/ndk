@@ -1,0 +1,45 @@
+module: looper
+
+package:
+  go_name: looper
+  go_import: github.com/xaionaro-go/ndk/looper
+  doc: "Package looper provides Go bindings for Android ALooper."
+
+types:
+  ALooper:
+    go_name: Looper
+    destructor: ALooper_release
+    pattern: ref_counted
+
+  ALOOPER_EVENT:
+    go_name: Event
+    strip_prefix: ALOOPER_
+
+functions:
+  ALooper_prepare:
+    go_name: Prepare
+    returns_new: Looper
+
+  ALooper_acquire:
+    receiver: Looper
+    go_name: Acquire
+
+  ALooper_release:
+    skip: true
+
+  ALooper_pollOnce:
+    go_name: PollOnce
+
+  ALooper_pollAll:
+    go_name: PollAll
+
+  ALooper_wake:
+    receiver: Looper
+    go_name: Wake
+
+  ALooper_addFd:
+    skip: true
+
+  ALooper_removeFd:
+    receiver: Looper
+    go_name: RemoveFd

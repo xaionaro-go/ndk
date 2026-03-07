@@ -1,0 +1,25 @@
+/discussion
+
+# Compiled E2E test binary
+e2e/e2e_test
+
+*.apk
+_build/
+capi/manifests/.gen_*.yaml
+
+# Built binaries (go build outputs)
+/basic-loop
+/capigen
+/check-permissions
+/headerspec
+/idiomgen
+/manager
+/null
+/obb-manager
+/overview
+/specgen
+/sync-fences
+/timeout-poll
+/vsync
+/display
+

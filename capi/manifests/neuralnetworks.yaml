@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: neuralnetworks
+  PackageDescription: "Raw CGo bindings for Android Neural Networks"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/NeuralNetworks.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lneuralnetworks]}

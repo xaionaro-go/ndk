@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: hardwarebuffer
+  PackageDescription: "Raw CGo bindings for Android hardware buffer"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/hardware_buffer.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lnativewindow]}

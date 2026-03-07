@@ -1,0 +1,285 @@
+module: camera
+
+package:
+  go_name: camera
+  go_import: github.com/xaionaro-go/ndk/camera
+  doc: "Package camera provides Go bindings for Android Camera2 NDK."
+
+types:
+  camera_status_t:
+    go_error: true
+    success_value: ACAMERA_OK
+    error_prefix: "camera"
+    strip_prefix: ACAMERA_ERROR_
+
+  ACameraManager:
+    go_name: Manager
+    constructor: ACameraManager_create
+    destructor: ACameraManager_delete
+
+  ACameraDevice:
+    go_name: Device
+    destructor: ACameraDevice_close
+
+  ACameraCaptureSession:
+    go_name: CaptureSession
+    destructor: ACameraCaptureSession_close
+
+  ACaptureRequest:
+    go_name: CaptureRequest
+    destructor: ACaptureRequest_free
+
+  ACameraOutputTarget:
+    go_name: OutputTarget
+    constructor: ACameraOutputTarget_create
+    destructor: ACameraOutputTarget_free
+
+  ACaptureSessionOutputContainer:
+    go_name: SessionOutputContainer
+    constructor: ACaptureSessionOutputContainer_create
+    destructor: ACaptureSessionOutputContainer_free
+
+  ACaptureSessionOutput:
+    go_name: SessionOutput
+    constructor: ACaptureSessionOutput_create
+    destructor: ACaptureSessionOutput_free
+
+  ACameraMetadata:
+    go_name: Metadata
+    destructor: ACameraMetadata_free
+
+  ACameraDevice_request_template:
+    go_name: TemplateType
+    strip_prefix: TEMPLATE_
+
+  MetadataTag:
+    go_name: MetadataTag
+    strip_prefix: ACAMERA_
+
+callback_structs:
+  ACameraDevice_StateCallbacks:
+    go_name: DeviceStateCallbacks
+    context_field: context
+    fields:
+      onDisconnected:
+        go_name: OnDisconnected
+        go_signature: "func()"
+        callback_type: ACameraDevice_StateCallback
+      onError:
+        go_name: OnError
+        go_signature: "func(int)"
+        go_param_count: 1
+        callback_type: ACameraDevice_ErrorStateCallback
+
+  ACameraCaptureSession_stateCallbacks:
+    go_name: SessionStateCallbacks
+    context_field: context
+    fields:
+      onClosed:
+        go_name: OnClosed
+        go_signature: "func()"
+        callback_type: ACameraCaptureSession_stateCallback
+      onReady:
+        go_name: OnReady
+        go_signature: "func()"
+        callback_type: ACameraCaptureSession_stateCallback
+      onActive:
+        go_name: OnActive
+        go_signature: "func()"
+        callback_type: ACameraCaptureSession_stateCallback
+
+struct_accessors:
+  ACameraIdList:
+    count_field: numCameras
+    items_field: cameraIds
+    item_type: string
+    delete_func: ACameraManager_deleteCameraIdList
+
+extra_enums:
+  camera_status_t:
+    - name: ACAMERA_OK
+      value: 0
+    - name: ACAMERA_ERROR_UNKNOWN
+      value: -10000
+    - name: ACAMERA_ERROR_INVALID_PARAMETER
+      value: -10001
+    - name: ACAMERA_ERROR_CAMERA_DISCONNECTED
+      value: -10002
+    - name: ACAMERA_ERROR_NOT_ENOUGH_MEMORY
+      value: -10003
+    - name: ACAMERA_ERROR_METADATA_NOT_FOUND
+      value: -10004
+    - name: ACAMERA_ERROR_CAMERA_DEVICE
+      value: -10005
+    - name: ACAMERA_ERROR_CAMERA_SERVICE
+      value: -10006
+    - name: ACAMERA_ERROR_SESSION_CLOSED
+      value: -10007
+    - name: ACAMERA_ERROR_INVALID_OPERATION
+      value: -10008
+    - name: ACAMERA_ERROR_STREAM_CONFIGURE_FAIL
+      value: -10009
+    - name: ACAMERA_ERROR_CAMERA_IN_USE
+      value: -10010
+    - name: ACAMERA_ERROR_MAX_CAMERAS_IN_USE
+      value: -10011
+    - name: ACAMERA_ERROR_CAMERA_DISABLED
+      value: -10012
+    - name: ACAMERA_ERROR_PERMISSION_DENIED
+      value: -10013
+    - name: ACAMERA_ERROR_UNSUPPORTED_OPERATION
+      value: -10014
+  MetadataTag:
+    - name: ACAMERA_SENSOR_ORIENTATION
+      value: 917518
+    - name: ACAMERA_SCALER_AVAILABLE_STREAM_CONFIGURATIONS
+      value: 851978
+
+extra_bridge_c: |
+  static inline int32_t bridge_metadataI32Count(
+      const ACameraMetadata* metadata, uint32_t tag
+  ) {
+      ACameraMetadata_const_entry entry;
+      if (ACameraMetadata_getConstEntry(metadata, tag, &entry) != ACAMERA_OK) return 0;
+      return (int32_t)entry.count;
+  }
+
+  static inline int32_t bridge_metadataI32At(
+      const ACameraMetadata* metadata, uint32_t tag, int32_t idx
+  ) {
+      ACameraMetadata_const_entry entry;
+      if (ACameraMetadata_getConstEntry(metadata, tag, &entry) != ACAMERA_OK) return 0;
+      if ((uint32_t)idx >= entry.count) return 0;
+      return entry.data.i32[idx];
+  }
+
+extra_bridge_go: |
+  // BridgeMetadataI32Count returns the count of i32 values for a metadata tag.
+  func BridgeMetadataI32Count(metadata *ACameraMetadata, tag uint32) int32 {
+  	return int32(C.bridge_metadataI32Count((*C.ACameraMetadata)(unsafe.Pointer(metadata)), C.uint32_t(tag)))
+  }
+
+  // BridgeMetadataI32At returns the i32 value at the given index for a metadata tag.
+  func BridgeMetadataI32At(metadata *ACameraMetadata, tag uint32, idx int32) int32 {
+  	return int32(C.bridge_metadataI32At((*C.ACameraMetadata)(unsafe.Pointer(metadata)), C.uint32_t(tag), C.int32_t(idx)))
+  }
+
+functions:
+  # Manager functions
+  ACameraManager_getCameraCharacteristics:
+    receiver: Manager
+    go_name: GetCameraCharacteristics
+    returns_new: Metadata
+
+  ACameraManager_getCameraIdList:
+    receiver: Manager
+    go_name: CameraIdList
+    returns_list_struct: ACameraIdList
+
+  # Metadata bridge functions (defined in extra_bridge_go, not in spec)
+  BridgeMetadataI32Count:
+    receiver: Metadata
+    go_name: I32Count
+    pure: true
+    bridge_params:
+      - {name: metadata, type: "*ACameraMetadata"}
+      - {name: tag, type: uint32}
+    bridge_returns: int32
+
+  BridgeMetadataI32At:
+    receiver: Metadata
+    go_name: I32At
+    pure: true
+    bridge_params:
+      - {name: metadata, type: "*ACameraMetadata"}
+      - {name: tag, type: uint32}
+      - {name: idx, type: int32}
+    bridge_returns: int32
+
+  ACameraManager_deleteCameraIdList:
+    skip: true
+
+  ACameraManager_openCamera:
+    receiver: Manager
+    go_name: OpenCamera
+    callback_param: callback
+    returns_new: Device
+
+  # Device functions
+  ACameraDevice_createCaptureRequest:
+    receiver: Device
+    returns_new: CaptureRequest
+
+  ACameraDevice_createCaptureSession:
+    receiver: Device
+    go_name: CreateCaptureSession
+    callback_param: callbacks
+    returns_new: CaptureSession
+
+  # CaptureRequest functions
+  ACaptureRequest_addTarget:
+    receiver: CaptureRequest
+    chain: true
+
+  ACaptureRequest_removeTarget:
+    receiver: CaptureRequest
+
+  # OutputTarget functions
+  ACameraOutputTarget_create:
+    skip: true  # handled as constructor on OutputTarget type
+
+  ACameraOutputTarget_free:
+    skip: true
+
+  # SessionOutputContainer functions
+  ACaptureSessionOutputContainer_create:
+    skip: true  # handled as constructor on SessionOutputContainer type
+
+  ACaptureSessionOutputContainer_free:
+    skip: true
+
+  ACaptureSessionOutputContainer_add:
+    receiver: SessionOutputContainer
+    go_name: Add
+
+  ACaptureSessionOutputContainer_remove:
+    receiver: SessionOutputContainer
+    go_name: Remove
+
+  # SessionOutput functions
+  ACaptureSessionOutput_create:
+    skip: true  # handled as constructor on SessionOutput type
+
+  ACaptureSessionOutput_free:
+    skip: true
+
+  # CaptureSession functions
+  ACameraCaptureSession_setRepeatingRequest:
+    receiver: CaptureSession
+    go_name: SetRepeatingRequest
+    custom_call:
+      params:
+        - name: req
+          go_type: "*CaptureRequest"
+      args: "nil, 1, &req.ptr, nil"
+
+  ACameraCaptureSession_stopRepeating:
+    receiver: CaptureSession
+
+  ACameraCaptureSession_capture:
+    skip: true
+
+api_levels:
+  ACameraDevice_createCaptureSessionWithSessionParameters: 28
+  ACameraDevice_isSessionConfigurationSupported: 29
+  ACameraCaptureSession_updateSharedOutput: 28
+  ACameraCaptureSession_logicalCamera_capture: 29
+  ACameraCaptureSession_logicalCamera_setRepeatingRequest: 29
+  ACaptureSessionSharedOutput_create: 28
+  ACaptureSessionSharedOutput_add: 28
+  ACaptureSessionSharedOutput_remove: 28
+  ACaptureSessionPhysicalOutput_create: 29
+  ACameraManager_registerExtendedAvailabilityCallback: 29
+  ACameraManager_unregisterExtendedAvailabilityCallback: 29
+  ACameraMetadata_isLogicalMultiCamera: 29
+  ACameraMetadata_getPhysicalCameraIds: 29

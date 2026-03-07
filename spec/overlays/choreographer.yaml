@@ -1,0 +1,29 @@
+module: choreographer
+
+package:
+  go_name: choreographer
+  go_import: github.com/xaionaro-go/ndk/choreographer
+  doc: "Package choreographer provides Go bindings for Android AChoreographer."
+
+types:
+  AChoreographer:
+    go_name: Choreographer
+    pattern: singleton
+
+functions:
+  AChoreographer_getInstance:
+    go_name: GetInstance
+    returns_new: Choreographer
+
+  # Callback functions require CGo trampoline — skipped for now
+  AChoreographer_postFrameCallback:
+    skip: true
+  AChoreographer_postFrameCallbackDelayed:
+    skip: true
+  AChoreographer_postFrameCallback64:
+    skip: true
+  AChoreographer_postFrameCallbackDelayed64:
+    skip: true
+
+api_levels:
+  AChoreographer_getInstance: 24

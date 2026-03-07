@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: thermal
+  PackageDescription: "Raw CGo bindings for Android thermal"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/thermal.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

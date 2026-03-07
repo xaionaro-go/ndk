@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: performancehint
+  PackageDescription: "Raw CGo bindings for Android Performance Hint"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/performance_hint.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

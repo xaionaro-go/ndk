@@ -1,0 +1,16 @@
+module: logging
+
+package:
+  go_name: log
+  go_import: github.com/xaionaro-go/ndk/log
+  doc: "Package log provides Go bindings for Android logging."
+
+types:
+  android_LogPriority:
+    go_name: Priority
+    strip_prefix: ANDROID_LOG_
+    string_method: true
+
+functions:
+  __android_log_write:
+    go_name: Write

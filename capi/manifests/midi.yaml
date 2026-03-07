@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: midi
+  PackageDescription: "Raw CGo bindings for Android MIDI"
+  PackageLicense: "Apache-2.0"
+  Includes: ["amidi/AMidi.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lamidi]}

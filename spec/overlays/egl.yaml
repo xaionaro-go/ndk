@@ -1,0 +1,152 @@
+module: egl
+
+package:
+  go_name: egl
+  go_import: github.com/xaionaro-go/ndk/egl
+  doc: "Package egl provides Go bindings for EGL."
+
+types:
+  EGLint:
+    go_name: Int
+    strip_prefix: EGL_
+
+  EGLBoolean:
+    go_name: Boolean
+    strip_prefix: EGL_
+
+  EGLDisplay:
+    go_name: EGLDisplay
+    transparent: true
+
+  EGLConfig:
+    go_name: EGLConfig
+    transparent: true
+
+  EGLContext:
+    go_name: EGLContext
+    transparent: true
+
+  EGLSurface:
+    go_name: EGLSurface
+    transparent: true
+
+  EGLNativeWindowType:
+    go_name: EGLNativeWindowType
+    transparent: true
+
+  EGLNativeDisplayType:
+    go_name: EGLNativeDisplayType
+    transparent: true
+
+  EGLImage:
+    go_name: EGLImage
+    transparent: true
+
+  EGLClientBuffer:
+    go_name: EGLClientBuffer
+    transparent: true
+
+  EGLSync:
+    go_name: EGLSync
+    transparent: true
+
+  ANativeWindow:
+    go_name: ANativeWindow
+
+functions:
+  eglGetDisplay:
+    go_name: GetDisplay
+  eglInitialize:
+    go_name: Initialize
+  eglTerminate:
+    go_name: Terminate
+  eglGetError:
+    go_name: GetError
+  eglChooseConfig:
+    go_name: ChooseConfig
+  eglGetConfigAttrib:
+    go_name: GetConfigAttrib
+  eglCreateWindowSurface:
+    go_name: CreateWindowSurface
+  eglCreatePbufferSurface:
+    go_name: CreatePbufferSurface
+  eglDestroySurface:
+    go_name: DestroySurface
+  eglCreateContext:
+    go_name: CreateContext
+  eglDestroyContext:
+    go_name: DestroyContext
+  eglMakeCurrent:
+    go_name: MakeCurrent
+  eglSwapBuffers:
+    go_name: SwapBuffers
+  eglSwapInterval:
+    go_name: SwapInterval
+  eglGetCurrentDisplay:
+    go_name: GetCurrentDisplay
+  eglGetCurrentSurface:
+    go_name: GetCurrentSurface
+  eglGetCurrentContext:
+    go_name: GetCurrentContext
+  eglQuerySurface:
+    go_name: QuerySurface
+  eglQueryString:
+    go_name: QueryString
+  eglReleaseThread:
+    go_name: ReleaseThread
+  eglWaitGL:
+    go_name: WaitGL
+  eglWaitNative:
+    go_name: WaitNative
+  eglBindAPI:
+    go_name: BindAPI
+  eglQueryAPI:
+    go_name: QueryAPI
+
+extra_enums:
+  EGLint:
+    - name: EGL_NONE
+      value: 12344
+    - name: EGL_RENDERABLE_TYPE
+      value: 12352
+    - name: EGL_OPENGL_ES2_BIT
+      value: 4
+    - name: EGL_OPENGL_ES3_BIT
+      value: 64
+    - name: EGL_SURFACE_TYPE
+      value: 12339
+    - name: EGL_WINDOW_BIT
+      value: 4
+    - name: EGL_PBUFFER_BIT
+      value: 1
+    - name: EGL_RED_SIZE
+      value: 12324
+    - name: EGL_GREEN_SIZE
+      value: 12323
+    - name: EGL_BLUE_SIZE
+      value: 12322
+    - name: EGL_ALPHA_SIZE
+      value: 12321
+    - name: EGL_DEPTH_SIZE
+      value: 12325
+    - name: EGL_STENCIL_SIZE
+      value: 12326
+    - name: EGL_CONFIG_ID
+      value: 12328
+    - name: EGL_BUFFER_SIZE
+      value: 12320
+    - name: EGL_WIDTH
+      value: 12375
+    - name: EGL_HEIGHT
+      value: 12374
+    - name: EGL_CONTEXT_CLIENT_VERSION
+      value: 12440
+    - name: EGL_CONTEXT_MAJOR_VERSION
+      value: 12440
+    - name: EGL_OPENGL_ES_API
+      value: 12448
+  EGLBoolean:
+    - name: EGL_FALSE
+      value: 0
+    - name: EGL_TRUE
+      value: 1

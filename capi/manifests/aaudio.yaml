@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: aaudio
+  PackageDescription: "Raw CGo bindings for Android AAudio"
+  PackageLicense: "Apache-2.0"
+  Includes: ["aaudio/AAudio.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-laaudio]}

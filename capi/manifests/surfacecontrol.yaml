@@ -1,0 +1,23 @@
+GENERATOR:
+  PackageName: surfacecontrol
+  PackageDescription: "Raw CGo bindings for Android SurfaceControl"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/surface_control.h", "android/hdr_metadata.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}
+TRANSLATOR:
+  Rules:
+    global:
+      # API level 36 function not available at API 35.
+      - {action: ignore, from: "^ASurfaceTransaction_setBufferWithRelease$"}
+      # Functions with enum parameters that cause int32/uint32 type mismatches.
+      - {action: ignore, from: "^ASurfaceTransaction_setHdrMetadata_smpte2086$"}
+      - {action: ignore, from: "^ASurfaceTransaction_setHdrMetadata_cta861_3$"}
+      - {action: ignore, from: "^ASurfaceTransaction_setVisibility$"}
+      - {action: ignore, from: "^ASurfaceTransaction_setColor$"}
+      - {action: ignore, from: "^ASurfaceTransaction_setBufferTransparency$"}
+      - {action: ignore, from: "^ASurfaceTransaction_setBufferDataSpace$"}
+      # Triple-pointer parameters not supported by capigen.
+      - {action: ignore, from: "^ASurfaceTransactionStats_getASurfaceControls$"}
+      - {action: ignore, from: "^ASurfaceTransactionStats_releaseASurfaceControls$"}
+      - {action: accept, from: "."}

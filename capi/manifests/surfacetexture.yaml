@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: surfacetexture
+  PackageDescription: "Raw CGo bindings for Android SurfaceTexture"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/surface_texture.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

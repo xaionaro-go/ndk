@@ -1,0 +1,39 @@
+module: storage
+
+package:
+  go_name: storage
+  go_import: github.com/xaionaro-go/ndk/storage
+  doc: "Package storage provides Go bindings for Android Storage Manager."
+
+types:
+  AStorageManager:
+    go_name: Manager
+    constructor: AStorageManager_new
+    destructor: AStorageManager_delete
+
+functions:
+  AStorageManager_mountObb:
+    receiver: Manager
+    go_name: MountObb
+
+  AStorageManager_unmountObb:
+    receiver: Manager
+    go_name: UnmountObb
+
+  AStorageManager_isObbMounted:
+    receiver: Manager
+    go_name: IsObbMounted
+    pure: true
+
+  AStorageManager_getMountedObbPath:
+    receiver: Manager
+    go_name: MountedObbPath
+    pure: true
+
+api_levels:
+  AStorageManager_new: 24
+  AStorageManager_delete: 24
+  AStorageManager_mountObb: 24
+  AStorageManager_unmountObb: 24
+  AStorageManager_isObbMounted: 24
+  AStorageManager_getMountedObbPath: 24

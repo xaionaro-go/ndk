@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: asset
+  PackageDescription: "Raw CGo bindings for Android asset manager"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/asset_manager.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

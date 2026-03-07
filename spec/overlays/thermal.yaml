@@ -1,0 +1,35 @@
+module: thermal
+
+package:
+  go_name: thermal
+  go_import: github.com/xaionaro-go/ndk/thermal
+  doc: "Package thermal provides Go bindings for Android thermal management."
+
+types:
+  AThermalManager:
+    go_name: Manager
+    constructor: AThermal_acquireManager
+    destructor: AThermal_releaseManager
+
+  AThermalStatus:
+    go_name: ThermalStatus
+    strip_prefix: ATHERMAL_
+    string_method: true
+
+functions:
+  AThermal_acquireManager:
+    skip: true
+
+  AThermal_releaseManager:
+    skip: true
+
+  AThermal_getCurrentThermalStatus:
+    receiver: Manager
+    go_name: CurrentStatus
+    pure: true
+
+  AThermal_registerThermalStatusListener:
+    skip: true
+
+  AThermal_unregisterThermalStatusListener:
+    skip: true

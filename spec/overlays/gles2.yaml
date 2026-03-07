@@ -1,0 +1,256 @@
+module: gles2
+
+package:
+  go_name: gles2
+  go_import: github.com/xaionaro-go/ndk/gles2
+  doc: "Package gles2 provides Go bindings for OpenGL ES 2.0."
+
+types:
+  GLenum:
+    go_name: Enum
+    strip_prefix: GL_
+
+  GLbitfield:
+    go_name: Bitfield
+    strip_prefix: GL_
+
+  GLboolean:
+    go_name: Boolean
+    strip_prefix: GL_
+
+# Constants from extension headers and core GL not parsed by specgen.
+extra_enums:
+  GLenum:
+    - name: GL_FALSE
+      value: 0
+    - name: GL_TRUE
+      value: 1
+    - name: GL_POINTS
+      value: 0
+    - name: GL_TRIANGLES
+      value: 4
+    - name: GL_TRIANGLE_STRIP
+      value: 5
+    - name: GL_TRIANGLE_FAN
+      value: 6
+    - name: GL_NO_ERROR
+      value: 0
+    - name: GL_DEPTH_TEST
+      value: 2929
+    - name: GL_BLEND
+      value: 3042
+    - name: GL_TEXTURE_2D
+      value: 3553
+    - name: GL_UNSIGNED_BYTE
+      value: 5121
+    - name: GL_FLOAT
+      value: 5126
+    - name: GL_RGBA
+      value: 6408
+    - name: GL_NEAREST
+      value: 9728
+    - name: GL_LINEAR
+      value: 9729
+    - name: GL_TEXTURE_MAG_FILTER
+      value: 10240
+    - name: GL_TEXTURE_MIN_FILTER
+      value: 10241
+    - name: GL_TEXTURE_WRAP_S
+      value: 10242
+    - name: GL_TEXTURE_WRAP_T
+      value: 10243
+    - name: GL_COLOR_BUFFER_BIT
+      value: 16384
+    - name: GL_DEPTH_BUFFER_BIT
+      value: 256
+    - name: GL_CLAMP_TO_EDGE
+      value: 33071
+    - name: GL_DEPTH_COMPONENT16
+      value: 33189
+    - name: GL_TEXTURE0
+      value: 33984
+    - name: GL_ARRAY_BUFFER
+      value: 34962
+    - name: GL_ELEMENT_ARRAY_BUFFER
+      value: 34963
+    - name: GL_STATIC_DRAW
+      value: 35044
+    - name: GL_DYNAMIC_DRAW
+      value: 35048
+    - name: GL_VERTEX_SHADER
+      value: 35633
+    - name: GL_FRAGMENT_SHADER
+      value: 35632
+    - name: GL_COMPILE_STATUS
+      value: 35713
+    - name: GL_LINK_STATUS
+      value: 35714
+    - name: GL_COLOR_ATTACHMENT0
+      value: 36064
+    - name: GL_DEPTH_ATTACHMENT
+      value: 36096
+    - name: GL_FRAMEBUFFER_COMPLETE
+      value: 36053
+    - name: GL_FRAMEBUFFER
+      value: 36160
+    - name: GL_RENDERBUFFER
+      value: 36161
+    - name: GL_TEXTURE_EXTERNAL_OES
+      value: 36197
+    - name: GL_SRC_ALPHA
+      value: 770
+    - name: GL_ONE_MINUS_SRC_ALPHA
+      value: 771
+
+functions:
+  # State functions
+  glClearColor:
+    go_name: ClearColor
+  glClear:
+    go_name: Clear
+  glEnable:
+    go_name: Enable
+  glDisable:
+    go_name: Disable
+  glViewport:
+    go_name: Viewport
+  glScissor:
+    go_name: Scissor
+
+  # Shader functions
+  glCreateShader:
+    go_name: CreateShader
+  glDeleteShader:
+    go_name: DeleteShader
+  glShaderSource:
+    go_name: ShaderSource
+  glCompileShader:
+    go_name: CompileShader
+  glGetShaderiv:
+    go_name: GetShaderiv
+
+  # Program functions
+  glCreateProgram:
+    go_name: CreateProgram
+  glDeleteProgram:
+    go_name: DeleteProgram
+  glAttachShader:
+    go_name: AttachShader
+  glLinkProgram:
+    go_name: LinkProgram
+  glUseProgram:
+    go_name: UseProgram
+  glGetProgramiv:
+    go_name: GetProgramiv
+
+  # Uniform functions
+  glGetUniformLocation:
+    go_name: GetUniformLocation
+  glUniform1f:
+    go_name: Uniform1f
+  glUniform1i:
+    go_name: Uniform1i
+  glUniform4fv:
+    go_name: Uniform4fv
+  glUniformMatrix4fv:
+    go_name: UniformMatrix4fv
+
+  # Vertex attribute functions
+  glGetAttribLocation:
+    go_name: GetAttribLocation
+  glEnableVertexAttribArray:
+    go_name: EnableVertexAttribArray
+  glDisableVertexAttribArray:
+    go_name: DisableVertexAttribArray
+  glVertexAttribPointer:
+    go_name: VertexAttribPointer
+
+  # Buffer functions
+  glGenBuffers:
+    go_name: GenBuffers
+  glDeleteBuffers:
+    go_name: DeleteBuffers
+  glBindBuffer:
+    go_name: BindBuffer
+  glBufferData:
+    go_name: BufferData
+  glBufferSubData:
+    go_name: BufferSubData
+
+  # Texture functions
+  glGenTextures:
+    go_name: GenTextures
+  glDeleteTextures:
+    go_name: DeleteTextures
+  glBindTexture:
+    go_name: BindTexture
+  glTexImage2D:
+    go_name: TexImage2D
+  glTexParameteri:
+    go_name: TexParameteri
+  glActiveTexture:
+    go_name: ActiveTexture
+
+  # Draw functions
+  glDrawArrays:
+    go_name: DrawArrays
+  glDrawElements:
+    go_name: DrawElements
+
+  # Framebuffer functions
+  glGenFramebuffers:
+    go_name: GenFramebuffers
+  glDeleteFramebuffers:
+    go_name: DeleteFramebuffers
+  glBindFramebuffer:
+    go_name: BindFramebuffer
+  glFramebufferTexture2D:
+    go_name: FramebufferTexture2D
+  glCheckFramebufferStatus:
+    go_name: CheckFramebufferStatus
+
+  # Renderbuffer functions
+  glGenRenderbuffers:
+    go_name: GenRenderbuffers
+  glDeleteRenderbuffers:
+    go_name: DeleteRenderbuffers
+  glBindRenderbuffer:
+    go_name: BindRenderbuffer
+  glRenderbufferStorage:
+    go_name: RenderbufferStorage
+  glFramebufferRenderbuffer:
+    go_name: FramebufferRenderbuffer
+
+  # Query functions
+  glGetError:
+    go_name: GetError
+  glGetString:
+    go_name: GetString
+  glGetIntegerv:
+    go_name: GetIntegerv
+  glFlush:
+    go_name: Flush
+  glFinish:
+    go_name: Finish
+
+  # Blending and depth functions
+  glBlendFunc:
+    go_name: BlendFunc
+  glBlendFuncSeparate:
+    go_name: BlendFuncSeparate
+  glDepthFunc:
+    go_name: DepthFunc
+  glDepthMask:
+    go_name: DepthMask
+  glStencilFunc:
+    go_name: StencilFunc
+  glStencilOp:
+    go_name: StencilOp
+
+  # Pixel functions
+  glPixelStorei:
+    go_name: PixelStorei
+  glReadPixels:
+    go_name: ReadPixels
+  glLineWidth:
+    go_name: LineWidth

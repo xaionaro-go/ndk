@@ -1,0 +1,13 @@
+GENERATOR:
+  PackageName: sync
+  PackageDescription: "Raw CGo bindings for Android Sync"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/sync.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lsync]}
+TRANSLATOR:
+  Rules:
+    global:
+      # Static inline function not callable from CGo.
+      - {action: ignore, from: "^sync_get_fence_info$"}
+      - {action: accept, from: "."}

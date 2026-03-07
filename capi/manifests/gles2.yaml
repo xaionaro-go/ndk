@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: gles2
+  PackageDescription: "Raw CGo bindings for OpenGL ES 2.0"
+  PackageLicense: "Apache-2.0"
+  Includes: ["GLES2/gl2.h", "GLES2/gl2ext.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lGLESv2]}

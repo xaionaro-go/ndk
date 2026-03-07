@@ -1,0 +1,13 @@
+GENERATOR:
+  PackageName: media
+  PackageDescription: "Raw CGo bindings for Android Media NDK"
+  PackageLicense: "Apache-2.0"
+  Includes:
+    - "media/NdkMediaCodec.h"
+    - "media/NdkMediaExtractor.h"
+    - "media/NdkMediaFormat.h"
+    - "media/NdkMediaMuxer.h"
+    - "media/NdkMediaDrm.h"
+    - "media/NdkMediaCrypto.h"
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lmediandk]}

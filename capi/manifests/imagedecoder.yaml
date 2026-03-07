@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: imagedecoder
+  PackageDescription: "Raw CGo bindings for Android Image Decoder"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/imagedecoder.h", "android/asset_manager.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-ljnigraphics, -landroid]}

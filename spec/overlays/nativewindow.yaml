@@ -1,0 +1,46 @@
+module: nativewindow
+
+package:
+  go_name: window
+  go_import: github.com/xaionaro-go/ndk/window
+  doc: "Package window provides Go bindings for Android NativeWindow."
+
+types:
+  ANativeWindow:
+    go_name: Window
+    ref_counted: true
+    acquire: ANativeWindow_acquire
+    release: ANativeWindow_release
+    doc: "Window represents a native window surface."
+
+  ANativeWindow_LegacyFormat:
+    go_name: Format
+    strip_prefix: WINDOW_FORMAT_
+    string_method: true
+
+functions:
+  # Window getters
+  ANativeWindow_getWidth:
+    receiver: Window
+    go_name: Width
+    pure: true
+  ANativeWindow_getHeight:
+    receiver: Window
+    go_name: Height
+    pure: true
+  ANativeWindow_getFormat:
+    receiver: Window
+    go_name: Format
+    pure: true
+
+  # Window configuration
+  ANativeWindow_setBuffersGeometry:
+    receiver: Window
+    go_name: SetBuffersGeometry
+
+  # Buffer operations
+  ANativeWindow_lock:
+    skip: true
+  ANativeWindow_unlockAndPost:
+    receiver: Window
+    go_name: UnlockAndPost

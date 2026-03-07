@@ -1,0 +1,13 @@
+GENERATOR:
+  PackageName: nativeactivity
+  PackageDescription: "Raw CGo bindings for Android NativeActivity"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/native_activity.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}
+TRANSLATOR:
+  Rules:
+    global:
+      # Extern variable (user-implemented), not an NDK function to call.
+      - {action: ignore, from: "^ANativeActivity_onCreate$"}
+      - {action: accept, from: "."}

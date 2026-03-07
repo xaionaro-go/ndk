@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: sharedmem
+  PackageDescription: "Raw CGo bindings for Android Shared Memory"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/sharedmem.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

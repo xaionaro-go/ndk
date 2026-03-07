@@ -1,0 +1,86 @@
+module: sensor
+
+package:
+  go_name: sensor
+  go_import: github.com/xaionaro-go/ndk/sensor
+  doc: "Package sensor provides Go bindings for Android Sensor NDK."
+
+types:
+  ASENSOR_TYPE:
+    go_name: Type
+    strip_prefix: ASENSOR_TYPE_
+    string_method: true
+
+  ASENSOR_STATUS:
+    go_name: Status
+    strip_prefix: ASENSOR_STATUS_
+    string_method: true
+
+  ASensorManager:
+    go_name: Manager
+    pattern: singleton
+
+  ASensor:
+    go_name: Sensor
+
+  ASensorEventQueue:
+    go_name: EventQueue
+
+functions:
+  # Manager — singleton accessor
+  ASensorManager_getInstance:
+    go_name: GetInstance
+    returns_new: Manager
+
+  # Manager — get default sensor by type
+  ASensorManager_getDefaultSensor:
+    receiver: Manager
+    go_name: DefaultSensor
+    returns_new: Sensor
+
+  # Manager — enumerate sensors
+  ASensorManager_getSensorList:
+    skip: true  # needs **ASensor out-param
+
+  # Manager — event queue lifecycle
+  ASensorManager_createEventQueue:
+    skip: true  # needs unsafe.Pointer params (looper, callback, data)
+
+  ASensorManager_destroyEventQueue:
+    skip: true  # needs manager+queue params, can't be a simple method
+
+  # EventQueue operations (skipped: no way to create EventQueue in idiomatic API)
+  ASensorEventQueue_enableSensor:
+    skip: true
+  ASensorEventQueue_disableSensor:
+    skip: true
+  ASensorEventQueue_setEventRate:
+    skip: true
+  ASensorEventQueue_hasEvents:
+    skip: true
+
+  # Sensor info getters
+  ASensor_getName:
+    receiver: Sensor
+    go_name: Name
+    pure: true
+
+  ASensor_getVendor:
+    receiver: Sensor
+    go_name: Vendor
+    pure: true
+
+  ASensor_getType:
+    receiver: Sensor
+    go_name: Type
+    pure: true
+
+  ASensor_getResolution:
+    receiver: Sensor
+    go_name: Resolution
+    pure: true
+
+  ASensor_getMinDelay:
+    receiver: Sensor
+    go_name: MinDelay
+    pure: true

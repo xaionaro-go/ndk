@@ -1,0 +1,17 @@
+GENERATOR:
+  PackageName: binder
+  PackageDescription: "Raw CGo bindings for Android Binder NDK"
+  PackageLicense: "Apache-2.0"
+  Includes:
+    - "android/binder_ibinder.h"
+    - "android/binder_parcel.h"
+    - "android/binder_status.h"
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lbinder_ndk]}
+TRANSLATOR:
+  Rules:
+    global:
+      # API level 36 functions not available at API 35.
+      - {action: ignore, from: "^AIBinder_Class_getFunctionName$"}
+      - {action: ignore, from: "^AIBinder_Class_setTransactionCodeToFunctionNameMap$"}
+      - {action: accept, from: "."}

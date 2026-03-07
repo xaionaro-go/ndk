@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: permission
+  PackageDescription: "Raw CGo bindings for Android Permission Manager"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/permission_manager.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

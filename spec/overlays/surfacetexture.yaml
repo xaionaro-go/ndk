@@ -1,0 +1,49 @@
+module: surfacetexture
+
+package:
+  go_name: surfacetexture
+  go_import: github.com/xaionaro-go/ndk/surfacetexture
+  doc: "Package surfacetexture provides Go bindings for Android SurfaceTexture."
+
+types:
+  ASurfaceTexture:
+    go_name: SurfaceTexture
+    destructor: ASurfaceTexture_release
+  ANativeWindow:
+    go_name: NativeWindow
+
+functions:
+  ASurfaceTexture_fromSurfaceTexture:
+    skip: true
+
+  ASurfaceTexture_release:
+    skip: true
+
+  ASurfaceTexture_acquireANativeWindow:
+    receiver: SurfaceTexture
+    go_name: AcquireWindow
+    returns_new: NativeWindow
+
+  ASurfaceTexture_attachToGLContext:
+    receiver: SurfaceTexture
+    go_name: AttachToGLContext
+
+  ASurfaceTexture_detachFromGLContext:
+    receiver: SurfaceTexture
+    go_name: DetachFromGLContext
+
+  ASurfaceTexture_updateTexImage:
+    receiver: SurfaceTexture
+    go_name: UpdateTexImage
+
+  ASurfaceTexture_getTransformMatrix:
+    receiver: SurfaceTexture
+    go_name: TransformMatrix
+
+  ASurfaceTexture_getTimestamp:
+    receiver: SurfaceTexture
+    go_name: Timestamp
+    pure: true
+
+  ASurfaceTexture_setOnFrameAvailableListener:
+    skip: true

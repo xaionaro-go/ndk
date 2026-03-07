@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: storage
+  PackageDescription: "Raw CGo bindings for Android Storage Manager"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/storage_manager.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

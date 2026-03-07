@@ -1,0 +1,13 @@
+GENERATOR:
+  PackageName: camera
+  PackageDescription: "Raw CGo bindings for Android Camera2 NDK"
+  PackageLicense: "Apache-2.0"
+  Includes:
+    - "camera/NdkCameraManager.h"
+    - "camera/NdkCameraDevice.h"
+    - "camera/NdkCaptureRequest.h"
+    - "camera/NdkCameraCaptureSession.h"
+    - "camera/NdkCameraMetadata.h"
+    - "camera/NdkCameraMetadataTags.h"
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lcamera2ndk]}

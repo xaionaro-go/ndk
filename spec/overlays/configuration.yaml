@@ -1,0 +1,90 @@
+module: configuration
+
+package:
+  go_name: config
+  go_import: github.com/xaionaro-go/ndk/config
+  doc: "Package config provides Go bindings for Android AConfiguration."
+
+types:
+  AConfiguration:
+    go_name: Config
+    constructor: AConfiguration_new
+    destructor: AConfiguration_delete
+
+  Configuration_orientation:
+    go_name: Orientation
+    strip_prefix: ACONFIGURATION_
+
+  Configuration_screenSize:
+    go_name: ScreenSize
+    strip_prefix: ACONFIGURATION_
+
+functions:
+  AConfiguration_new:
+    skip: true
+
+  AConfiguration_delete:
+    skip: true
+
+  AConfiguration_fromAssetManager:
+    skip: true
+
+  AConfiguration_getLanguage:
+    receiver: Config
+    go_name: Language
+
+  AConfiguration_getCountry:
+    receiver: Config
+    go_name: Country
+
+  AConfiguration_getOrientation:
+    receiver: Config
+    go_name: Orientation
+    pure: true
+
+  AConfiguration_getDensity:
+    receiver: Config
+    go_name: Density
+    pure: true
+
+  AConfiguration_getScreenSize:
+    receiver: Config
+    go_name: ScreenSize
+    pure: true
+
+  AConfiguration_getScreenWidthDp:
+    receiver: Config
+    go_name: ScreenWidthDp
+    pure: true
+
+  AConfiguration_getScreenHeightDp:
+    receiver: Config
+    go_name: ScreenHeightDp
+    pure: true
+
+  AConfiguration_getSdkVersion:
+    receiver: Config
+    go_name: SdkVersion
+    pure: true
+
+extra_enums:
+  Configuration_orientation:
+    - name: ACONFIGURATION_ORIENTATION_ANY
+      value: 0
+    - name: ACONFIGURATION_ORIENTATION_PORT
+      value: 1
+    - name: ACONFIGURATION_ORIENTATION_LAND
+      value: 2
+    - name: ACONFIGURATION_ORIENTATION_SQUARE
+      value: 3
+  Configuration_screenSize:
+    - name: ACONFIGURATION_SCREENSIZE_ANY
+      value: 0
+    - name: ACONFIGURATION_SCREENSIZE_SMALL
+      value: 1
+    - name: ACONFIGURATION_SCREENSIZE_NORMAL
+      value: 2
+    - name: ACONFIGURATION_SCREENSIZE_LARGE
+      value: 3
+    - name: ACONFIGURATION_SCREENSIZE_XLARGE
+      value: 4

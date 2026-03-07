@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: logging
+  PackageDescription: "Raw CGo bindings for Android logging"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/log.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-llog]}

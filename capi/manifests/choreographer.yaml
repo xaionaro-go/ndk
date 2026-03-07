@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: choreographer
+  PackageDescription: "Raw CGo bindings for Android choreographer"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/choreographer.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid, -lnativewindow]}

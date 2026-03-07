@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: egl
+  PackageDescription: "Raw CGo bindings for EGL"
+  PackageLicense: "Apache-2.0"
+  Includes: ["EGL/egl.h", "android/native_window.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lEGL, -landroid, -lnativewindow]}

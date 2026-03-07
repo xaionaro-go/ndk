@@ -1,0 +1,13 @@
+GENERATOR:
+  PackageName: looper
+  PackageDescription: "Raw CGo bindings for Android looper"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/looper.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}
+TRANSLATOR:
+  Rules:
+    global:
+      # Removed in API level 1 (__REMOVED_IN); use ALooper_pollOnce instead.
+      - {action: ignore, from: "^ALooper_pollAll$"}
+      - {action: accept, from: "."}

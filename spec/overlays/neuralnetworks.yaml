@@ -1,0 +1,296 @@
+module: neuralnetworks
+
+package:
+  go_name: nnapi
+  go_import: github.com/xaionaro-go/ndk/nnapi
+  doc: "Package nnapi provides Go bindings for Android Neural Networks API (NNAPI)."
+
+types:
+  Nnapi_result_t:
+    go_error: true
+    success_value: ANEURALNETWORKS_NO_ERROR
+    error_prefix: "nnapi"
+    strip_prefix: ANEURALNETWORKS_
+
+  Nnapi_operand_type_t:
+    go_name: OperandType
+    strip_prefix: ANEURALNETWORKS_
+
+  Nnapi_operation_type_t:
+    go_name: OperationType
+    strip_prefix: ANEURALNETWORKS_
+
+  Nnapi_fuse_code_t:
+    go_name: FuseCode
+    strip_prefix: ANEURALNETWORKS_
+
+  Nnapi_preference_t:
+    go_name: Preference
+    strip_prefix: ANEURALNETWORKS_PREFER_
+
+  Nnapi_device_type_t:
+    go_name: DeviceType
+    strip_prefix: ANEURALNETWORKS_DEVICE_
+
+  Nnapi_priority_t:
+    go_name: Priority
+    strip_prefix: ANEURALNETWORKS_PRIORITY_
+
+  ANeuralNetworksModel:
+    go_name: Model
+    constructor: ANeuralNetworksModel_create
+    destructor: ANeuralNetworksModel_free
+
+  ANeuralNetworksCompilation:
+    go_name: Compilation
+    destructor: ANeuralNetworksCompilation_free
+
+  ANeuralNetworksExecution:
+    go_name: Execution
+    destructor: ANeuralNetworksExecution_free
+
+  ANeuralNetworksMemory:
+    go_name: Memory
+    destructor: ANeuralNetworksMemory_free
+
+  ANeuralNetworksBurst:
+    go_name: Burst
+    destructor: ANeuralNetworksBurst_free
+
+  ANeuralNetworksEvent:
+    go_name: Event
+    destructor: ANeuralNetworksEvent_free
+
+  ANeuralNetworksDevice:
+    go_name: Device
+
+functions:
+  # Model
+  ANeuralNetworksModel_create:
+    skip: true
+  ANeuralNetworksModel_free:
+    skip: true
+  ANeuralNetworksModel_finish:
+    receiver: Model
+    go_name: Finish
+  ANeuralNetworksModel_addOperand:
+    skip: true  # references undefined ANeuralNetworksOperandType
+  ANeuralNetworksModel_setOperandValue:
+    receiver: Model
+    go_name: SetOperandValue
+  ANeuralNetworksModel_addOperation:
+    receiver: Model
+    go_name: AddOperation
+  ANeuralNetworksModel_identifyInputsAndOutputs:
+    receiver: Model
+    go_name: IdentifyInputsAndOutputs
+  ANeuralNetworksModel_relaxComputationFloat32toFloat16:
+    receiver: Model
+    go_name: RelaxFloat32toFloat16
+
+  # Compilation
+  ANeuralNetworksCompilation_create:
+    receiver: Model
+    go_name: NewCompilation
+    returns_new: Compilation
+  ANeuralNetworksCompilation_free:
+    skip: true
+  ANeuralNetworksCompilation_setPreference:
+    receiver: Compilation
+    go_name: SetPreference
+  ANeuralNetworksCompilation_finish:
+    receiver: Compilation
+    go_name: Finish
+  ANeuralNetworksCompilation_setPriority:
+    receiver: Compilation
+    go_name: SetPriority
+  ANeuralNetworksCompilation_setTimeout:
+    receiver: Compilation
+    go_name: SetTimeout
+  ANeuralNetworksCompilation_setCaching:
+    receiver: Compilation
+    go_name: SetCaching
+
+  # Execution
+  ANeuralNetworksExecution_create:
+    receiver: Compilation
+    go_name: NewExecution
+    returns_new: Execution
+  ANeuralNetworksExecution_free:
+    skip: true
+  ANeuralNetworksExecution_setInput:
+    skip: true  # references undefined ANeuralNetworksOperandType
+  ANeuralNetworksExecution_setOutput:
+    skip: true  # references undefined ANeuralNetworksOperandType
+  ANeuralNetworksExecution_compute:
+    receiver: Execution
+    go_name: Compute
+  ANeuralNetworksExecution_startCompute:
+    receiver: Execution
+    go_name: StartCompute
+    returns_new: Event
+  ANeuralNetworksExecution_setTimeout:
+    receiver: Execution
+    go_name: SetTimeout
+  ANeuralNetworksExecution_setMeasureTiming:
+    receiver: Execution
+    go_name: SetMeasureTiming
+  ANeuralNetworksExecution_getDuration:
+    receiver: Execution
+    go_name: GetDuration
+  ANeuralNetworksExecution_setInputFromMemory:
+    skip: true  # references undefined ANeuralNetworksOperandType
+  ANeuralNetworksExecution_setOutputFromMemory:
+    skip: true  # references undefined ANeuralNetworksOperandType
+
+  # Memory
+  ANeuralNetworksMemory_createFromFd:
+    skip: true  # first param is uint32 (size), not a handle
+  ANeuralNetworksMemory_free:
+    skip: true
+
+  # Burst
+  ANeuralNetworksBurst_create:
+    receiver: Compilation
+    go_name: NewBurst
+    returns_new: Burst
+  ANeuralNetworksBurst_free:
+    skip: true
+
+  # Event
+  ANeuralNetworksEvent_wait:
+    receiver: Event
+    go_name: Wait
+  ANeuralNetworksEvent_free:
+    skip: true
+
+  # Device enumeration
+  ANeuralNetworks_getDeviceCount:
+    skip: true  # has *uint32 out-param, not a simple return
+  ANeuralNetworks_getDevice:
+    skip: true  # free function with returns_new; first param is uint32, not a handle
+  ANeuralNetworksDevice_getName:
+    skip: true  # has **byte out-param
+  ANeuralNetworksDevice_getType:
+    skip: true  # has *Nnapi_device_type_t out-param, not a simple return
+  ANeuralNetworksDevice_getVersion:
+    skip: true  # has **byte out-param
+  ANeuralNetworksDevice_getFeatureLevel:
+    skip: true  # has *int64 out-param
+
+extra_enums:
+  Nnapi_operand_type_t:
+    - name: ANEURALNETWORKS_FLOAT32
+      value: 0
+    - name: ANEURALNETWORKS_INT32
+      value: 1
+    - name: ANEURALNETWORKS_UINT32
+      value: 2
+    - name: ANEURALNETWORKS_TENSOR_FLOAT32
+      value: 3
+    - name: ANEURALNETWORKS_TENSOR_INT32
+      value: 4
+    - name: ANEURALNETWORKS_TENSOR_QUANT8_ASYMM
+      value: 5
+    - name: ANEURALNETWORKS_BOOL
+      value: 6
+    - name: ANEURALNETWORKS_TENSOR_QUANT16_SYMM
+      value: 7
+    - name: ANEURALNETWORKS_TENSOR_FLOAT16
+      value: 8
+    - name: ANEURALNETWORKS_TENSOR_BOOL8
+      value: 9
+    - name: ANEURALNETWORKS_FLOAT16
+      value: 10
+    - name: ANEURALNETWORKS_TENSOR_QUANT8_SYMM_PER_CHANNEL
+      value: 11
+    - name: ANEURALNETWORKS_TENSOR_QUANT16_ASYMM
+      value: 12
+    - name: ANEURALNETWORKS_TENSOR_QUANT8_SYMM
+      value: 13
+    - name: ANEURALNETWORKS_TENSOR_QUANT8_ASYMM_SIGNED
+      value: 14
+  Nnapi_operation_type_t:
+    - name: ANEURALNETWORKS_ADD
+      value: 0
+    - name: ANEURALNETWORKS_MUL
+      value: 18
+    - name: ANEURALNETWORKS_RELU
+      value: 19
+    - name: ANEURALNETWORKS_SOFTMAX
+      value: 25
+    - name: ANEURALNETWORKS_FULLY_CONNECTED
+      value: 9
+    - name: ANEURALNETWORKS_CONV_2D
+      value: 3
+    - name: ANEURALNETWORKS_DEPTHWISE_CONV_2D
+      value: 4
+    - name: ANEURALNETWORKS_AVERAGE_POOL_2D
+      value: 1
+    - name: ANEURALNETWORKS_MAX_POOL_2D
+      value: 17
+    - name: ANEURALNETWORKS_RESHAPE
+      value: 22
+    - name: ANEURALNETWORKS_CONCATENATION
+      value: 2
+  Nnapi_fuse_code_t:
+    - name: ANEURALNETWORKS_FUSED_NONE
+      value: 0
+    - name: ANEURALNETWORKS_FUSED_RELU
+      value: 1
+    - name: ANEURALNETWORKS_FUSED_RELU1
+      value: 2
+    - name: ANEURALNETWORKS_FUSED_RELU6
+      value: 3
+  Nnapi_preference_t:
+    - name: ANEURALNETWORKS_PREFER_LOW_POWER
+      value: 0
+    - name: ANEURALNETWORKS_PREFER_FAST_SINGLE_ANSWER
+      value: 1
+    - name: ANEURALNETWORKS_PREFER_SUSTAINED_SPEED
+      value: 2
+  Nnapi_result_t:
+    - name: ANEURALNETWORKS_NO_ERROR
+      value: 0
+    - name: ANEURALNETWORKS_OUT_OF_MEMORY
+      value: 1
+    - name: ANEURALNETWORKS_INCOMPLETE
+      value: 2
+    - name: ANEURALNETWORKS_UNEXPECTED_NULL
+      value: 3
+    - name: ANEURALNETWORKS_BAD_DATA
+      value: 4
+    - name: ANEURALNETWORKS_OP_FAILED
+      value: 5
+    - name: ANEURALNETWORKS_BAD_STATE
+      value: 6
+    - name: ANEURALNETWORKS_UNMAPPABLE
+      value: 7
+    - name: ANEURALNETWORKS_OUTPUT_INSUFFICIENT_SIZE
+      value: 8
+    - name: ANEURALNETWORKS_UNAVAILABLE_DEVICE
+      value: 9
+    - name: ANEURALNETWORKS_MISSED_DEADLINE_TRANSIENT
+      value: 10
+    - name: ANEURALNETWORKS_MISSED_DEADLINE_PERSISTENT
+      value: 11
+    - name: ANEURALNETWORKS_RESOURCE_EXHAUSTED_TRANSIENT
+      value: 12
+    - name: ANEURALNETWORKS_RESOURCE_EXHAUSTED_PERSISTENT
+      value: 13
+    - name: ANEURALNETWORKS_DEAD_OBJECT
+      value: 14
+
+api_levels:
+  ANeuralNetworksBurst_create: 29
+  ANeuralNetworksBurst_free: 29
+  ANeuralNetworksCompilation_setPriority: 30
+  ANeuralNetworksCompilation_setTimeout: 30
+  ANeuralNetworksCompilation_setCaching: 29
+  ANeuralNetworksExecution_setTimeout: 30
+  ANeuralNetworksExecution_setMeasureTiming: 29
+  ANeuralNetworksExecution_getDuration: 29
+  ANeuralNetworksDevice_getName: 29
+  ANeuralNetworksDevice_getType: 29
+  ANeuralNetworksDevice_getVersion: 29
+  ANeuralNetworksDevice_getFeatureLevel: 29

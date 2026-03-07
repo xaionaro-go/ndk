@@ -1,0 +1,38 @@
+module: performancehint
+
+package:
+  go_name: hint
+  go_import: github.com/xaionaro-go/ndk/hint
+  doc: "Package hint provides Go bindings for Android performance hint management."
+
+types:
+  APerformanceHintManager:
+    go_name: Manager
+
+  APerformanceHintSession:
+    go_name: Session
+    destructor: APerformanceHint_closeSession
+    interfaces:
+      - io.Closer
+
+functions:
+  APerformanceHint_closeSession:
+    skip: true
+
+  APerformanceHint_createSession:
+    receiver: Manager
+    go_name: CreateSession
+    returns_new: Session
+
+  APerformanceHint_getPreferredUpdateRateNanos:
+    receiver: Manager
+    go_name: PreferredUpdateRateNanos
+    pure: true
+
+  APerformanceHint_updateTargetWorkDuration:
+    receiver: Session
+    go_name: UpdateTargetWorkDuration
+
+  APerformanceHint_reportActualWorkDuration:
+    receiver: Session
+    go_name: ReportActualWorkDuration

@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: nativewindow
+  PackageDescription: "Raw CGo bindings for Android native window"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/native_window.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid, -lnativewindow]}

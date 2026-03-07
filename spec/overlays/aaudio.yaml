@@ -1,0 +1,188 @@
+module: aaudio
+
+package:
+  go_name: audio
+  go_import: github.com/xaionaro-go/ndk/audio
+  doc: "Package audio provides Go bindings for Android AAudio."
+
+types:
+  aaudio_result_t:
+    go_error: true
+    success_value: AAUDIO_OK
+    error_prefix: "audio"
+    strip_prefix: AAUDIO_ERROR_
+
+  aaudio_data_callback_result_t:
+    go_name: DataCallbackResult
+    enum_source: AAUDIO_CALLBACK_RESULT
+    strip_prefix: AAUDIO_CALLBACK_RESULT_
+
+  AAudioStreamBuilder:
+    go_name: StreamBuilder
+    constructor: AAudio_createStreamBuilder
+    destructor: AAudioStreamBuilder_delete
+    pattern: builder
+
+  AAudioStream:
+    go_name: Stream
+    destructor: AAudioStream_close
+    interfaces:
+      - io.Closer
+
+  aaudio_direction_t:
+    go_name: Direction
+    enum_source: AAUDIO_DIRECTION
+    strip_prefix: AAUDIO_DIRECTION_
+    string_method: true
+
+  aaudio_format_t:
+    go_name: Format
+    enum_source: AAUDIO_FORMAT
+    strip_prefix: AAUDIO_FORMAT_
+
+  aaudio_sharing_mode_t:
+    go_name: SharingMode
+    enum_source: AAUDIO_SHARING_MODE
+    strip_prefix: AAUDIO_SHARING_MODE_
+
+  aaudio_performance_mode_t:
+    go_name: PerformanceMode
+    enum_source: AAUDIO_PERFORMANCE_MODE
+    strip_prefix: AAUDIO_PERFORMANCE_MODE_
+
+  aaudio_stream_state_t:
+    go_name: StreamState
+    enum_source: AAUDIO_STREAM_STATE
+    strip_prefix: AAUDIO_STREAM_STATE_
+    string_method: true
+
+functions:
+  # Builder setters — all get method chaining
+  AAudioStreamBuilder_setDeviceId:
+    receiver: StreamBuilder
+    go_name: SetDeviceID
+    chain: true
+  AAudioStreamBuilder_setDirection:
+    receiver: StreamBuilder
+    go_name: SetDirection
+    chain: true
+  AAudioStreamBuilder_setSharingMode:
+    receiver: StreamBuilder
+    chain: true
+  AAudioStreamBuilder_setPerformanceMode:
+    receiver: StreamBuilder
+    chain: true
+  AAudioStreamBuilder_setSampleRate:
+    receiver: StreamBuilder
+    chain: true
+  AAudioStreamBuilder_setChannelCount:
+    receiver: StreamBuilder
+    chain: true
+  AAudioStreamBuilder_setFormat:
+    receiver: StreamBuilder
+    chain: true
+  AAudioStreamBuilder_setBufferCapacityInFrames:
+    receiver: StreamBuilder
+    chain: true
+
+  # Builder open
+  AAudioStreamBuilder_openStream:
+    receiver: StreamBuilder
+    go_name: Open
+    returns_new: Stream
+
+  # Callback (requires CGo trampoline — skipped for now)
+  AAudioStreamBuilder_setDataCallback:
+    skip: true
+
+  # Stream getters
+  AAudioStream_getState:
+    receiver: Stream
+    go_name: State
+    pure: true
+  AAudioStream_getFramesPerBurst:
+    receiver: Stream
+    go_name: FramesPerBurst
+    pure: true
+  AAudioStream_getSampleRate:
+    receiver: Stream
+    go_name: SampleRate
+    pure: true
+  AAudioStream_getChannelCount:
+    receiver: Stream
+    go_name: ChannelCount
+    pure: true
+  AAudioStream_getXRunCount:
+    receiver: Stream
+    go_name: XRunCount
+    pure: true
+
+  # Stream control
+  AAudioStream_requestStart:
+    receiver: Stream
+    go_name: Start
+  AAudioStream_requestPause:
+    receiver: Stream
+    go_name: Pause
+  AAudioStream_requestStop:
+    receiver: Stream
+    go_name: Stop
+  AAudioStream_requestFlush:
+    receiver: Stream
+    go_name: Flush
+
+  # Stream I/O
+  AAudioStream_write:
+    receiver: Stream
+    go_name: Write
+    buf_param: audioData
+    buf_frames_param: numFrames
+    timeout_param: timeoutNanos
+    returns_frames: true
+
+extra_enums:
+  aaudio_result_t:
+    - name: AAUDIO_OK
+      value: 0
+    - name: AAUDIO_ERROR_BASE
+      value: -900
+    - name: AAUDIO_ERROR_DISCONNECTED
+      value: -899
+    - name: AAUDIO_ERROR_ILLEGAL_ARGUMENT
+      value: -898
+    - name: AAUDIO_ERROR_INTERNAL
+      value: -896
+    - name: AAUDIO_ERROR_INVALID_STATE
+      value: -895
+    - name: AAUDIO_ERROR_INVALID_HANDLE
+      value: -892
+    - name: AAUDIO_ERROR_UNIMPLEMENTED
+      value: -890
+    - name: AAUDIO_ERROR_UNAVAILABLE
+      value: -889
+    - name: AAUDIO_ERROR_NO_FREE_HANDLES
+      value: -888
+    - name: AAUDIO_ERROR_NO_MEMORY
+      value: -887
+    - name: AAUDIO_ERROR_NULL
+      value: -886
+    - name: AAUDIO_ERROR_TIMEOUT
+      value: -885
+    - name: AAUDIO_ERROR_WOULD_BLOCK
+      value: -884
+    - name: AAUDIO_ERROR_INVALID_FORMAT
+      value: -883
+    - name: AAUDIO_ERROR_OUT_OF_RANGE
+      value: -882
+    - name: AAUDIO_ERROR_NO_SERVICE
+      value: -881
+    - name: AAUDIO_ERROR_INVALID_RATE
+      value: -880
+
+api_levels:
+  AAudioStream_release: 30
+  AAudioStream_getChannelMask: 32
+  AAudioStream_getSpatializationBehavior: 32
+  AAudioStream_getHardwareChannelCount: 34
+  AAudioStream_getHardwareSampleRate: 34
+  AAudioStream_getHardwareFormat: 34

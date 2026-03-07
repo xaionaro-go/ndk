@@ -1,0 +1,9 @@
+GENERATOR:
+  PackageName: configuration
+  PackageDescription: "Raw CGo bindings for Android configuration"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/configuration.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}
+  ExcludeFunctions:
+    - AConfiguration_setScreenRound

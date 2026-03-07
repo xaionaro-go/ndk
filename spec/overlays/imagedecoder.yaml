@@ -1,0 +1,62 @@
+module: imagedecoder
+
+package:
+  go_name: image
+  go_import: github.com/xaionaro-go/ndk/image
+  doc: "Package image provides Go bindings for Android ImageDecoder."
+
+types:
+  ANDROID_IMAGE_DECODER:
+    go_error: true
+    success_value: ANDROID_IMAGE_DECODER_SUCCESS
+    error_prefix: "image"
+    strip_prefix: ANDROID_IMAGE_DECODER_
+
+  AImageDecoder:
+    go_name: Decoder
+    destructor: AImageDecoder_delete
+
+  AImageDecoderHeaderInfo:
+    go_name: HeaderInfo
+
+functions:
+  AImageDecoder_createFromFd:
+    skip: true  # free function with returns_new via out-param, not supported
+
+  AImageDecoder_createFromBuffer:
+    skip: true  # free function with returns_new via out-param, not supported
+
+  AImageDecoder_setTargetSize:
+    receiver: Decoder
+    go_name: SetTargetSize
+
+  AImageDecoder_getHeaderInfo:
+    skip: true  # returns capi pointer, can't convert to idiomatic type
+
+  AImageDecoder_getMinimumStride:
+    receiver: Decoder
+    go_name: MinimumStride
+    pure: true
+
+  AImageDecoder_decodeImage:
+    receiver: Decoder
+    go_name: Decode
+
+  AImageDecoderHeaderInfo_getWidth:
+    skip: true  # no way to obtain HeaderInfo in idiomatic API
+  AImageDecoderHeaderInfo_getHeight:
+    skip: true  # no way to obtain HeaderInfo in idiomatic API
+  AImageDecoderHeaderInfo_getMimeType:
+    skip: true  # no way to obtain HeaderInfo in idiomatic API
+
+api_levels:
+  AImageDecoder_createFromFd: 30
+  AImageDecoder_createFromBuffer: 30
+  AImageDecoder_delete: 30
+  AImageDecoder_setTargetSize: 30
+  AImageDecoder_getHeaderInfo: 30
+  AImageDecoder_getMinimumStride: 30
+  AImageDecoder_decodeImage: 30
+  AImageDecoderHeaderInfo_getWidth: 30
+  AImageDecoderHeaderInfo_getHeight: 30
+  AImageDecoderHeaderInfo_getMimeType: 30

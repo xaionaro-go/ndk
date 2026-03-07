@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: trace
+  PackageDescription: "Raw CGo bindings for Android trace"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/trace.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

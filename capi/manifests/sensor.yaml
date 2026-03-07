@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: sensor
+  PackageDescription: "Raw CGo bindings for Android sensor"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/sensor.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

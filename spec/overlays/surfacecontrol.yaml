@@ -1,0 +1,104 @@
+module: surfacecontrol
+
+package:
+  go_name: surfacecontrol
+  go_import: github.com/xaionaro-go/ndk/surfacecontrol
+  doc: "Package surfacecontrol provides Go bindings for Android SurfaceControl."
+
+types:
+  ASurfaceControl:
+    go_name: SurfaceControl
+    destructor: ASurfaceControl_release
+
+  ASurfaceTransaction:
+    go_name: Transaction
+    constructor: ASurfaceTransaction_create
+    destructor: ASurfaceTransaction_delete
+
+  ASurfaceTransactionVisibility:
+    go_name: Visibility
+    strip_prefix: ASURFACE_TRANSACTION_VISIBILITY_
+
+  ASurfaceTransactionTransparency:
+    go_name: Transparency
+    strip_prefix: ASURFACE_TRANSACTION_TRANSPARENCY_
+
+functions:
+  # SurfaceControl lifecycle
+  ASurfaceControl_createFromWindow:
+    skip: true
+
+  ASurfaceControl_create:
+    go_name: CreateChild
+    receiver: SurfaceControl
+    returns_new: SurfaceControl
+
+  ASurfaceControl_acquire:
+    receiver: SurfaceControl
+    go_name: Acquire
+
+  ASurfaceControl_release:
+    skip: true
+
+  # Transaction lifecycle
+  ASurfaceTransaction_create:
+    skip: true
+
+  ASurfaceTransaction_delete:
+    skip: true
+
+  ASurfaceTransaction_apply:
+    receiver: Transaction
+    go_name: Apply
+
+  # Transaction operations
+  ASurfaceTransaction_setVisibility:
+    receiver: Transaction
+    go_name: SetVisibility
+    chain: true
+
+  ASurfaceTransaction_setZOrder:
+    receiver: Transaction
+    go_name: SetZOrder
+    chain: true
+
+  ASurfaceTransaction_setBuffer:
+    skip: true
+
+  ASurfaceTransaction_setBufferTransparency:
+    receiver: Transaction
+    go_name: SetBufferTransparency
+    chain: true
+
+  ASurfaceTransaction_setDamageRegion:
+    receiver: Transaction
+    go_name: SetDamageRegion
+    chain: true
+
+  ASurfaceTransaction_setPosition:
+    receiver: Transaction
+    go_name: SetPosition
+    chain: true
+
+  ASurfaceTransaction_setBufferAlpha:
+    receiver: Transaction
+    go_name: SetBufferAlpha
+    chain: true
+
+  ASurfaceTransaction_setCrop:
+    receiver: Transaction
+    go_name: SetCrop
+    chain: true
+
+  ASurfaceTransaction_setScale:
+    receiver: Transaction
+    go_name: SetScale
+    chain: true
+
+  ASurfaceTransaction_setColor:
+    receiver: Transaction
+    go_name: SetColor
+    chain: true
+
+  ASurfaceTransaction_setOnComplete:
+    skip: true

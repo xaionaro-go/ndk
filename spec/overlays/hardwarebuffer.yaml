@@ -1,0 +1,51 @@
+module: hardwarebuffer
+
+package:
+  go_name: hwbuf
+  go_import: github.com/xaionaro-go/ndk/hwbuf
+  doc: "Package hwbuf provides Go bindings for Android HardwareBuffer."
+
+types:
+  AHardwareBuffer:
+    go_name: Buffer
+    destructor: AHardwareBuffer_release
+    doc: "Buffer represents a hardware-allocated buffer."
+
+  AHardwareBuffer_Format:
+    go_name: Format
+    strip_prefix: AHARDWAREBUFFER_FORMAT_
+    string_method: true
+
+  AHardwareBuffer_UsageFlags:
+    go_name: Usage
+    strip_prefix: AHARDWAREBUFFER_USAGE_
+
+functions:
+  # Buffer lifecycle
+  AHardwareBuffer_allocate:
+    skip: true
+
+  AHardwareBuffer_acquire:
+    receiver: Buffer
+    go_name: Acquire
+
+  AHardwareBuffer_release:
+    skip: true
+
+  AHardwareBuffer_describe:
+    skip: true
+
+  # Buffer access
+  AHardwareBuffer_lock:
+    skip: true
+
+  AHardwareBuffer_unlock:
+    receiver: Buffer
+    go_name: Unlock
+
+  # Query
+  AHardwareBuffer_isSupported:
+    skip: true
+
+api_levels:
+  AHardwareBuffer_isSupported: 29

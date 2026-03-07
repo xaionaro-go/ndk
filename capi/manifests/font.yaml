@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: font
+  PackageDescription: "Raw CGo bindings for Android Font"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/font.h", "android/font_matcher.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-landroid]}

@@ -1,0 +1,209 @@
+package capigen
+
+import (
+	"fmt"
+	"strings"
+)
+
+// goTypeToCGoType converts a Go type string (from spec) to the CGo
+// type expression used in function wrapper conversions.
+func goTypeToCGoType(goType string) string {
+	switch goType {
+	case "int8":
+		return "C.int8_t"
+	case "uint8":
+		return "C.uint8_t"
+	case "int16":
+		return "C.int16_t"
+	case "uint16":
+		return "C.uint16_t"
+	case "int32":
+		return "C.int"
+	case "uint32":
+		return "C.uint"
+	case "int64":
+		return "C.int64_t"
+	case "uint64":
+		return "C.uint64_t"
+	case "float32":
+		return "C.float"
+	case "float64":
+		return "C.double"
+	case "bool":
+		return "C._Bool"
+	case "unsafe.Pointer":
+		return "unsafe.Pointer"
+	case "":
+		return ""
+	}
+	return "C." + goType
+}
+
+// goTypeToCGoExactType converts a Go type to the exact CGo typedef type.
+// Unlike goTypeToCGoType which maps int32→C.int and uint32→C.uint for
+// value conversions, this uses the exact C typedef names (C.int32_t, C.uint32_t)
+// needed when casting pointer types where CGo enforces type identity.
+func goTypeToCGoExactType(goType string) string {
+	switch goType {
+	case "int32":
+		return "C.int32_t"
+	case "uint32":
+		return "C.uint32_t"
+	}
+	return goTypeToCGoType(goType)
+}
+
+// goTypeToCHeaderType converts a Go type string to its C header representation
+// (for cgo_helpers.h declarations).
+func goTypeToCHeaderType(goType string) string {
+	switch goType {
+	case "int8":
+		return "int8_t"
+	case "uint8":
+		return "uint8_t"
+	case "int16":
+		return "int16_t"
+	case "uint16":
+		return "uint16_t"
+	case "int32":
+		return "int"
+	case "uint32":
+		return "unsigned int"
+	case "int64":
+		return "int64_t"
+	case "uint64":
+		return "uint64_t"
+	case "float32":
+		return "float"
+	case "float64":
+		return "double"
+	case "bool":
+		return "_Bool"
+	case "unsafe.Pointer":
+		return "void*"
+	case "string":
+		return "char*"
+	case "":
+		return "void"
+	}
+
+	// Pointer to type: *ALooper → ALooper*, *int8 → int8_t*
+	if strings.HasPrefix(goType, "*") {
+		base := goType[1:]
+		cBase := goTypeToCHeaderType(base) // recurse for nested pointers
+		return cBase + "*"
+	}
+
+	return goType
+}
+
+// goTypeToCGoCallbackParam converts a Go type string to the CGo type
+// used in //export callback proxy function parameters.
+func goTypeToCGoCallbackParam(goType string) string {
+	if goType == "unsafe.Pointer" {
+		return "unsafe.Pointer"
+	}
+	if goType == "string" {
+		return "*C.char"
+	}
+
+	// Count pointer depth.
+	stars := 0
+	base := goType
+	for strings.HasPrefix(base, "*") {
+		stars++
+		base = base[1:]
+	}
+
+	if stars > 0 {
+		// For scalar base types, use the CGo type.
+		if isScalarGoType(base) {
+			cgoBase := goTypeToCGoType(base)
+			return strings.Repeat("*", stars) + cgoBase
+		}
+		// For named types (structs, etc.).
+		return strings.Repeat("*", stars) + "C." + base
+	}
+
+	return goTypeToCGoType(goType)
+}
+
+// cgoCallbackParamToGo generates code to convert a CGo callback parameter
+// to its Go equivalent. Uses exported Go type names.
+func cgoCallbackParamToGo(cVarName string, goVarName string, goType string) string {
+	if goType == "unsafe.Pointer" {
+		return fmt.Sprintf("\t\t%s := (unsafe.Pointer)(unsafe.Pointer(%s))\n", goVarName, cVarName)
+	}
+	if goType == "string" {
+		return fmt.Sprintf("\t\t%s := C.GoString(%s)\n", goVarName, cVarName)
+	}
+	exported := exportGoType(goType)
+	if strings.HasPrefix(goType, "*") {
+		return fmt.Sprintf("\t\t%s := (%s)(unsafe.Pointer(%s))\n", goVarName, exported, cVarName)
+	}
+	return fmt.Sprintf("\t\t%s := (%s)(%s)\n", goVarName, exported, cVarName)
+}
+
+// goToCGoReturn generates the CGo expression to convert a Go return value
+// back to the CGo type for a callback proxy return.
+func goToCGoReturn(goRetVar string, goRetType string) string {
+	cgoType := goTypeToCGoCallbackParam(goRetType)
+	return fmt.Sprintf("(%s)(%s)", cgoType, goRetVar)
+}
+
+// isScalarGoType returns true for Go scalar types (not pointers, slices, etc.).
+func isScalarGoType(t string) bool {
+	switch t {
+	case "int8", "uint8", "int16", "uint16", "int32", "uint32",
+		"int64", "uint64", "float32", "float64", "bool", "int", "uint":
+		return true
+	}
+	return false
+}
+
+// isGoPointerType returns true if the Go type is a pointer type.
+func isGoPointerType(t string) bool {
+	return strings.HasPrefix(t, "*")
+}
+
+// isFixedArrayType returns true if t is a fixed-size array type like "[16]float32".
+func isFixedArrayType(t string) bool {
+	return len(t) > 2 && t[0] == '[' && t[1] != ']'
+}
+
+// applyCGoStructPrefix converts a CGo type expression to use C.struct_ prefix
+// where needed. E.g., "*C.__android_log_message" → "*C.struct___android_log_message"
+// when "__android_log_message" is in the structPrefixSet.
+func applyCGoStructPrefix(cgoExpr string, structPrefixSet map[string]bool) string {
+	for name := range structPrefixSet {
+		// Replace "C.name" with "C.struct_name" (not already prefixed)
+		old := "C." + name
+		new := "C.struct_" + name
+		if strings.Contains(cgoExpr, old) && !strings.Contains(cgoExpr, new) {
+			cgoExpr = strings.ReplaceAll(cgoExpr, old, new)
+		}
+	}
+	return cgoExpr
+}
+
+// goTypeToCHeaderTypeWithStructPrefix converts a Go type to its C header
+// representation, applying struct_ prefix where needed.
+func goTypeToCHeaderTypeWithStructPrefix(goType string, structPrefixSet map[string]bool) string {
+	base := goTypeToCHeaderType(goType)
+	// Check if the base (without pointer stars) is a struct-prefixed type.
+	trimmed := strings.TrimRight(base, "*")
+	trimmed = strings.TrimSpace(trimmed)
+	if structPrefixSet[trimmed] {
+		return "struct " + base
+	}
+	return base
+}
+
+// goTypeBaseKind returns the underlying Go scalar type for a typedef kind.
+// e.g., "typedef_int32" → "int32".
+func goTypeBaseKind(kind string) string {
+	if !strings.HasPrefix(kind, "typedef_") {
+		return ""
+	}
+	return strings.TrimPrefix(kind, "typedef_")
+}

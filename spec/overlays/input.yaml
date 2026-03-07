@@ -1,0 +1,95 @@
+module: input
+
+package:
+  go_name: input
+  go_import: github.com/xaionaro-go/ndk/input
+  doc: "Package input provides Go bindings for Android Input events."
+
+types:
+  AInputEvent:
+    go_name: Event
+    doc: "Event represents an input event (key or motion)."
+
+  AInputQueue:
+    go_name: Queue
+    doc: "Queue represents an input event queue."
+
+  AINPUT_EVENT_TYPE:
+    go_name: EventType
+    strip_prefix: AINPUT_EVENT_TYPE_
+    string_method: true
+
+  AKEY_EVENT_ACTION:
+    go_name: KeyAction
+    strip_prefix: AKEY_EVENT_ACTION_
+    string_method: true
+
+  AMOTION_EVENT_ACTION:
+    go_name: MotionAction
+    strip_prefix: AMOTION_EVENT_
+    string_method: true
+
+  AINPUT_SOURCE:
+    go_name: Source
+    strip_prefix: AINPUT_SOURCE_
+    string_method: true
+
+functions:
+  # Event getters
+  AInputEvent_getType:
+    receiver: Event
+    go_name: Type
+    pure: true
+  AInputEvent_getSource:
+    receiver: Event
+    go_name: Source
+    pure: true
+
+  # Key event getters
+  AKeyEvent_getAction:
+    receiver: Event
+    go_name: KeyAction
+    pure: true
+  AKeyEvent_getKeyCode:
+    receiver: Event
+    go_name: KeyCode
+    pure: true
+  AKeyEvent_getRepeatCount:
+    receiver: Event
+    go_name: RepeatCount
+    pure: true
+
+  # Motion event getters
+  AMotionEvent_getAction:
+    receiver: Event
+    go_name: MotionAction
+    pure: true
+  AMotionEvent_getPointerCount:
+    receiver: Event
+    go_name: PointerCount
+    pure: true
+  AMotionEvent_getX:
+    receiver: Event
+    go_name: X
+    pure: true
+  AMotionEvent_getY:
+    receiver: Event
+    go_name: Y
+    pure: true
+  AMotionEvent_getPressure:
+    receiver: Event
+    go_name: Pressure
+    pure: true
+
+  # Queue functions
+  AInputQueue_detachLooper:
+    receiver: Queue
+    go_name: DetachLooper
+  AInputQueue_hasEvents:
+    receiver: Queue
+    go_name: HasEvents
+  AInputQueue_getEvent:
+    skip: true
+  AInputQueue_finishEvent:
+    receiver: Queue
+    go_name: FinishEvent

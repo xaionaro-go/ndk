@@ -1,0 +1,150 @@
+module: vulkan
+
+package:
+  go_name: vulkan
+  go_import: github.com/xaionaro-go/ndk/vulkan
+  doc: "Package vulkan provides Go bindings for Vulkan on Android."
+
+types:
+  VkResult:
+    go_error: true
+    success_value: VK_SUCCESS
+    error_prefix: "vulkan"
+    strip_prefix: VK_ERROR_
+
+  VkFormat:
+    go_name: Format
+    strip_prefix: VK_FORMAT_
+
+  VkPresentModeKHR:
+    go_name: PresentMode
+    strip_prefix: VK_PRESENT_MODE_
+
+  VkStructureType:
+    go_name: StructureType
+    strip_prefix: VK_STRUCTURE_TYPE_
+
+functions:
+  # Instance lifecycle
+  vkCreateInstance:
+    go_name: CreateInstance
+    returns_new: Instance
+  vkDestroyInstance:
+    go_name: DestroyInstance
+  vkEnumeratePhysicalDevices:
+    go_name: EnumeratePhysicalDevices
+
+  # Device lifecycle
+  vkCreateDevice:
+    go_name: CreateDevice
+    returns_new: Device
+  vkDestroyDevice:
+    go_name: DestroyDevice
+  vkGetDeviceQueue:
+    go_name: GetDeviceQueue
+  vkDeviceWaitIdle:
+    go_name: DeviceWaitIdle
+  vkQueueWaitIdle:
+    go_name: QueueWaitIdle
+
+  # Memory
+  vkAllocateMemory:
+    go_name: AllocateMemory
+  vkFreeMemory:
+    go_name: FreeMemory
+  vkMapMemory:
+    go_name: MapMemory
+  vkUnmapMemory:
+    go_name: UnmapMemory
+
+  # Buffer
+  vkCreateBuffer:
+    go_name: CreateBuffer
+  vkDestroyBuffer:
+    go_name: DestroyBuffer
+
+  # Image
+  vkCreateImage:
+    go_name: CreateImage
+  vkDestroyImage:
+    go_name: DestroyImage
+  vkCreateImageView:
+    go_name: CreateImageView
+  vkDestroyImageView:
+    go_name: DestroyImageView
+
+  # Pipeline
+  vkCreateGraphicsPipelines:
+    go_name: CreateGraphicsPipelines
+  vkDestroyPipeline:
+    go_name: DestroyPipeline
+  vkCreateShaderModule:
+    go_name: CreateShaderModule
+  vkDestroyShaderModule:
+    go_name: DestroyShaderModule
+
+  # Render pass
+  vkCreateRenderPass:
+    go_name: CreateRenderPass
+  vkDestroyRenderPass:
+    go_name: DestroyRenderPass
+
+  # Framebuffer
+  vkCreateFramebuffer:
+    go_name: CreateFramebuffer
+  vkDestroyFramebuffer:
+    go_name: DestroyFramebuffer
+
+  # Command
+  vkCreateCommandPool:
+    go_name: CreateCommandPool
+  vkDestroyCommandPool:
+    go_name: DestroyCommandPool
+  vkAllocateCommandBuffers:
+    go_name: AllocateCommandBuffers
+  vkBeginCommandBuffer:
+    go_name: BeginCommandBuffer
+  vkEndCommandBuffer:
+    go_name: EndCommandBuffer
+  vkQueueSubmit:
+    go_name: QueueSubmit
+
+  # Synchronization
+  vkCreateSemaphore:
+    go_name: CreateSemaphore
+  vkDestroySemaphore:
+    go_name: DestroySemaphore
+  vkCreateFence:
+    go_name: CreateFence
+  vkDestroyFence:
+    go_name: DestroyFence
+  vkWaitForFences:
+    go_name: WaitForFences
+  vkResetFences:
+    go_name: ResetFences
+
+  # Android surface
+  VkCreateAndroidSurfaceKHR:
+    go_name: CreateAndroidSurface
+  vkDestroySurfaceKHR:
+    go_name: DestroySurface
+  vkGetPhysicalDeviceSurfaceSupportKHR:
+    go_name: GetPhysicalDeviceSurfaceSupport
+  vkGetPhysicalDeviceSurfaceCapabilitiesKHR:
+    go_name: GetPhysicalDeviceSurfaceCapabilities
+  vkGetPhysicalDeviceSurfaceFormatsKHR:
+    go_name: GetPhysicalDeviceSurfaceFormats
+  vkGetPhysicalDeviceSurfacePresentModesKHR:
+    go_name: GetPhysicalDeviceSurfacePresentModes
+
+  # Swapchain
+  vkCreateSwapchainKHR:
+    go_name: CreateSwapchain
+  vkDestroySwapchainKHR:
+    go_name: DestroySwapchain
+  vkGetSwapchainImagesKHR:
+    go_name: GetSwapchainImages
+  vkAcquireNextImageKHR:
+    go_name: AcquireNextImage
+  vkQueuePresentKHR:
+    go_name: QueuePresent

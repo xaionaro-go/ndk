@@ -1,0 +1,63 @@
+module: font
+
+package:
+  go_name: font
+  go_import: github.com/xaionaro-go/ndk/font
+  doc: "Package font provides Go bindings for Android Font."
+
+types:
+  AFONT_WEIGHT:
+    go_name: Weight
+    strip_prefix: AFONT_WEIGHT_
+
+  AFont:
+    go_name: Font
+    destructor: AFont_close
+
+  AFontMatcher:
+    go_name: Matcher
+    constructor: AFontMatcher_create
+    destructor: AFontMatcher_destroy
+    pattern: builder
+
+functions:
+  AFont_getFilePath:
+    receiver: Font
+    go_name: FilePath
+    pure: true
+
+  AFont_getWeight:
+    receiver: Font
+    go_name: Weight
+    pure: true
+
+  AFont_isItalic:
+    receiver: Font
+    go_name: IsItalic
+    pure: true
+
+  AFontMatcher_setFamilyName:
+    receiver: Matcher
+    go_name: SetFamilyName
+    chain: true
+
+  AFontMatcher_setStyle:
+    receiver: Matcher
+    go_name: SetStyle
+    chain: true
+
+  AFontMatcher_match:
+    receiver: Matcher
+    go_name: Match
+    returns_new: Font
+
+api_levels:
+  AFont_close: 29
+  AFont_getFilePath: 29
+  AFont_getWeight: 29
+  AFont_isItalic: 29
+  AFontMatcher_create: 29
+  AFontMatcher_destroy: 29
+  AFontMatcher_setFamilyName: 29
+  AFontMatcher_setStyle: 29
+  AFontMatcher_match: 29

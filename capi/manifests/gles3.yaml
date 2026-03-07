@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: gles3
+  PackageDescription: "Raw CGo bindings for OpenGL ES 3.0"
+  PackageLicense: "Apache-2.0"
+  Includes: ["GLES3/gl3.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lGLESv3]}

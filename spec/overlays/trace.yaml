@@ -1,0 +1,21 @@
+module: trace
+
+package:
+  go_name: trace
+  go_import: github.com/xaionaro-go/ndk/trace
+  doc: "Package trace provides Go bindings for Android native tracing."
+
+functions:
+  ATrace_isEnabled:
+    go_name: IsEnabled
+    pure: true
+  ATrace_beginSection:
+    go_name: BeginSection
+  ATrace_endSection:
+    go_name: EndSection
+  ATrace_beginAsyncSection:
+    go_name: BeginAsyncSection
+  ATrace_endAsyncSection:
+    go_name: EndAsyncSection
+  ATrace_setCounter:
+    go_name: SetCounter

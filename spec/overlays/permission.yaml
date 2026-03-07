@@ -1,0 +1,18 @@
+module: permission
+
+package:
+  go_name: permission
+  go_import: github.com/xaionaro-go/ndk/permission
+  doc: "Package permission provides Go bindings for Android Permission Manager."
+
+types:
+  PERMISSION_MANAGER_PERMISSION:
+    go_name: Result
+    strip_prefix: PERMISSION_MANAGER_PERMISSION_
+
+functions:
+  APermissionManager_checkPermission:
+    go_name: CheckPermission
+
+api_levels:
+  APermissionManager_checkPermission: 31

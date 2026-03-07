@@ -1,0 +1,46 @@
+module: nativeactivity
+
+package:
+  go_name: activity
+  go_import: github.com/xaionaro-go/ndk/activity
+  doc: "Package activity provides Go bindings for Android NativeActivity."
+
+types:
+  ANativeActivity:
+    go_name: Activity
+
+  ANATIVEACTIVITY_SHOW_SOFT_INPUT:
+    go_name: ShowSoftInputFlags
+    strip_prefix: ANATIVEACTIVITY_SHOW_SOFT_INPUT_
+
+  ANATIVEACTIVITY_HIDE_SOFT_INPUT:
+    go_name: HideSoftInputFlags
+    strip_prefix: ANATIVEACTIVITY_HIDE_SOFT_INPUT_
+
+lifecycle:
+  entry_point: ANativeActivity_onCreate
+  activity_type: ANativeActivity
+  callbacks_accessor: "activity->callbacks"
+  callback_struct: ANativeActivityCallbacks
+  entry_callback: OnCreate
+
+functions:
+  ANativeActivity_finish:
+    receiver: Activity
+    go_name: Finish
+
+  ANativeActivity_setWindowFormat:
+    receiver: Activity
+    go_name: SetWindowFormat
+
+  ANativeActivity_setWindowFlags:
+    receiver: Activity
+    go_name: SetWindowFlags
+
+  ANativeActivity_showSoftInput:
+    receiver: Activity
+    go_name: ShowSoftInput
+
+  ANativeActivity_hideSoftInput:
+    receiver: Activity
+    go_name: HideSoftInput

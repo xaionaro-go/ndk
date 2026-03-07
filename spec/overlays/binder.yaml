@@ -1,0 +1,40 @@
+module: binder
+
+package:
+  go_name: binder
+  go_import: github.com/xaionaro-go/ndk/binder
+  doc: "Package binder provides Go bindings for Android Binder IPC."
+
+types:
+  binder_status_t:
+    go_error: true
+    success_value: STATUS_OK
+    error_prefix: "binder"
+    strip_prefix: STATUS_
+    enum_source: STATUS
+
+  binder_exception_t:
+    go_name: ExceptionCode
+    strip_prefix: EX_
+    enum_source: EX
+
+  binder_flags_t:
+    go_name: Flags
+    strip_prefix: FLAG_
+    enum_source: FLAG
+
+  AIBinder:
+    go_name: Binder
+    destructor: AIBinder_decStrong
+    pattern: ref_counted
+
+  AIBinder_Class:
+    go_name: Class
+
+  AParcel:
+    go_name: Parcel
+    destructor: AParcel_delete
+
+  AStatus:
+    go_name: Status
+    destructor: AStatus_delete

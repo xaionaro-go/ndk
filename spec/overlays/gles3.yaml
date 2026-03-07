@@ -1,0 +1,128 @@
+module: gles3
+
+package:
+  go_name: gles3
+  go_import: github.com/xaionaro-go/ndk/gles3
+  doc: "Package gles3 provides Go bindings for OpenGL ES 3.0."
+
+types:
+  GLenum:
+    go_name: GLenum
+    strip_prefix: GL_
+  GLbitfield:
+    go_name: GLbitfield
+    strip_prefix: GL_
+
+extra_enums:
+  GLenum:
+    - name: GL_SYNC_GPU_COMMANDS_COMPLETE
+      value: 37143
+    - name: GL_ALREADY_SIGNALED
+      value: 37146
+    - name: GL_TIMEOUT_EXPIRED
+      value: 37147
+    - name: GL_CONDITION_SATISFIED
+      value: 37148
+    - name: GL_WAIT_FAILED
+      value: 37149
+    - name: GL_TRANSFORM_FEEDBACK
+      value: 36386
+    - name: GL_TRANSFORM_FEEDBACK_BUFFER
+      value: 35982
+    - name: GL_INTERLEAVED_ATTRIBS
+      value: 35980
+    - name: GL_SEPARATE_ATTRIBS
+      value: 35981
+  GLbitfield:
+    - name: GL_SYNC_FLUSH_COMMANDS_BIT
+      value: 1
+
+functions:
+  glGenVertexArrays:
+    go_name: GenVertexArrays
+  glDeleteVertexArrays:
+    go_name: DeleteVertexArrays
+  glBindVertexArray:
+    go_name: BindVertexArray
+  glMapBufferRange:
+    go_name: MapBufferRange
+  glUnmapBuffer:
+    go_name: UnmapBuffer
+  glFlushMappedBufferRange:
+    go_name: FlushMappedBufferRange
+  glBlitFramebuffer:
+    go_name: BlitFramebuffer
+  glRenderbufferStorageMultisample:
+    go_name: RenderbufferStorageMultisample
+  glFramebufferTextureLayer:
+    go_name: FramebufferTextureLayer
+  glBindBufferBase:
+    go_name: BindBufferBase
+  glBindBufferRange:
+    go_name: BindBufferRange
+  glBeginTransformFeedback:
+    go_name: BeginTransformFeedback
+  glEndTransformFeedback:
+    go_name: EndTransformFeedback
+  glTransformFeedbackVaryings:
+    go_name: TransformFeedbackVaryings
+  glGenTransformFeedbacks:
+    go_name: GenTransformFeedbacks
+  glDeleteTransformFeedbacks:
+    go_name: DeleteTransformFeedbacks
+  glBindTransformFeedback:
+    go_name: BindTransformFeedback
+  glFenceSync:
+    go_name: FenceSync
+  glDeleteSync:
+    go_name: DeleteSync
+  glClientWaitSync:
+    go_name: ClientWaitSync
+  glWaitSync:
+    go_name: WaitSync
+  glGenSamplers:
+    go_name: GenSamplers
+  glDeleteSamplers:
+    go_name: DeleteSamplers
+  glBindSampler:
+    go_name: BindSampler
+  glSamplerParameteri:
+    go_name: SamplerParameteri
+  glBeginQuery:
+    go_name: BeginQuery
+  glEndQuery:
+    go_name: EndQuery
+  glGenQueries:
+    go_name: GenQueries
+  glDeleteQueries:
+    go_name: DeleteQueries
+  glGetQueryObjectuiv:
+    go_name: GetQueryObjectuiv
+  glTexStorage2D:
+    go_name: TexStorage2D
+  glTexStorage3D:
+    go_name: TexStorage3D
+  glTexSubImage3D:
+    go_name: TexSubImage3D
+  glCopyBufferSubData:
+    go_name: CopyBufferSubData
+  glDrawArraysInstanced:
+    go_name: DrawArraysInstanced
+  glDrawElementsInstanced:
+    go_name: DrawElementsInstanced
+  glClearBufferfv:
+    go_name: ClearBufferfv
+  glClearBufferiv:
+    go_name: ClearBufferiv
+  glClearBufferfi:
+    go_name: ClearBufferfi
+  glDrawRangeElements:
+    go_name: DrawRangeElements
+  glReadBuffer:
+    go_name: ReadBuffer
+  glDrawBuffers:
+    go_name: DrawBuffers
+  glInvalidateFramebuffer:
+    go_name: InvalidateFramebuffer
+  glGetStringi:
+    go_name: GetStringi

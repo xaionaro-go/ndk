@@ -1,0 +1,91 @@
+module: asset
+
+package:
+  go_name: asset
+  go_import: github.com/xaionaro-go/ndk/asset
+  doc: "Package asset provides Go bindings for Android Asset Manager."
+
+types:
+  AAssetManager:
+    go_name: Manager
+
+  AAssetDir:
+    go_name: Dir
+    destructor: AAssetDir_close
+
+  AAsset:
+    go_name: Asset
+    destructor: AAsset_close
+    interfaces:
+      - io.ReadSeeker
+      - io.Closer
+
+  AASSET_MODE:
+    go_name: Mode
+    strip_prefix: AASSET_MODE_
+
+functions:
+  AAssetManager_openDir:
+    receiver: Manager
+    go_name: OpenDir
+    returns_new: Dir
+
+  AAssetManager_open:
+    receiver: Manager
+    go_name: Open
+    returns_new: Asset
+
+  AAssetDir_getNextFileName:
+    receiver: Dir
+    go_name: NextFileName
+    pure: true
+
+  AAssetDir_rewind:
+    receiver: Dir
+    go_name: Rewind
+
+  AAssetDir_close:
+    skip: true
+
+  AAsset_read:
+    receiver: Asset
+    go_name: Read
+    buf_param: buf
+
+  AAsset_seek:
+    receiver: Asset
+    go_name: Seek
+    pure: true
+
+  AAsset_close:
+    skip: true
+
+  AAsset_getBuffer:
+    receiver: Asset
+    go_name: Buffer
+    pure: true
+
+  AAsset_getLength:
+    receiver: Asset
+    go_name: Length
+    pure: true
+
+  AAsset_getLength64:
+    receiver: Asset
+    go_name: Length64
+    pure: true
+
+  AAsset_getRemainingLength:
+    receiver: Asset
+    go_name: RemainingLength
+    pure: true
+
+  AAsset_getRemainingLength64:
+    receiver: Asset
+    go_name: RemainingLength64
+    pure: true
+
+  AAsset_isAllocated:
+    receiver: Asset
+    go_name: IsAllocated
+    pure: true

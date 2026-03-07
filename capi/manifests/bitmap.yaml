@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: bitmap
+  PackageDescription: "Raw CGo bindings for Android Bitmap"
+  PackageLicense: "Apache-2.0"
+  Includes: ["android/bitmap.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-ljnigraphics]}

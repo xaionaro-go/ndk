@@ -1,0 +1,27 @@
+module: bitmap
+
+package:
+  go_name: bitmap
+  go_import: github.com/xaionaro-go/ndk/bitmap
+  doc: "Package bitmap provides Go bindings for Android Bitmap (jnigraphics)."
+
+types:
+  ANDROID_BITMAP_RESULT:
+    go_error: true
+    success_value: ANDROID_BITMAP_RESULT_SUCCESS
+    error_prefix: "bitmap"
+    strip_prefix: ANDROID_BITMAP_RESULT_
+
+  AndroidBitmapFormat:
+    go_name: Format
+    strip_prefix: ANDROID_BITMAP_FORMAT_
+
+functions:
+  AndroidBitmap_getInfo:
+    go_name: GetInfo
+
+  AndroidBitmap_lockPixels:
+    go_name: LockPixels
+
+  AndroidBitmap_unlockPixels:
+    go_name: UnlockPixels

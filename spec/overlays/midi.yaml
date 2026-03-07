@@ -1,0 +1,73 @@
+module: midi
+
+package:
+  go_name: midi
+  go_import: github.com/xaionaro-go/ndk/midi
+  doc: "Package midi provides Go bindings for Android MIDI."
+
+types:
+  Midi_result_t:
+    go_error: true
+    success_value: AMIDI_OK
+    error_prefix: "midi"
+    strip_prefix: AMIDI_ERROR_
+
+  AMidiDevice:
+    go_name: Device
+    destructor: AMidiDevice_release
+
+  AMidiInputPort:
+    go_name: InputPort
+    destructor: AMidiInputPort_close
+
+  AMidiOutputPort:
+    go_name: OutputPort
+    destructor: AMidiOutputPort_close
+
+functions:
+  AMidiDevice_fromJava:
+    skip: true  # Requires JNI; Device is obtained via NewDeviceFromPointer instead.
+
+  AMidiDevice_getNumInputPorts:
+    receiver: Device
+    go_name: NumInputPorts
+    pure: true
+
+  AMidiDevice_getNumOutputPorts:
+    receiver: Device
+    go_name: NumOutputPorts
+    pure: true
+
+  AMidiInputPort_open:
+    receiver: Device
+    go_name: OpenInputPort
+    returns_new: InputPort
+
+  AMidiInputPort_send:
+    receiver: InputPort
+    go_name: Send
+
+  AMidiOutputPort_open:
+    receiver: Device
+    go_name: OpenOutputPort
+    returns_new: OutputPort
+
+extra_enums:
+  Midi_result_t:
+    - name: AMIDI_OK
+      value: 0
+    - name: AMIDI_ERROR_UNKNOWN
+      value: -1
+    - name: AMIDI_ERROR_WOULD_BLOCK
+      value: -2
+
+api_levels:
+  AMidiDevice_fromJava: 29
+  AMidiDevice_release: 29
+  AMidiDevice_getNumInputPorts: 29
+  AMidiDevice_getNumOutputPorts: 29
+  AMidiInputPort_open: 29
+  AMidiInputPort_close: 29
+  AMidiInputPort_send: 29
+  AMidiOutputPort_open: 29
+  AMidiOutputPort_close: 29

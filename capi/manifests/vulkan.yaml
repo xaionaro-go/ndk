@@ -1,0 +1,7 @@
+GENERATOR:
+  PackageName: vulkan
+  PackageDescription: "Raw CGo bindings for Vulkan"
+  PackageLicense: "Apache-2.0"
+  Includes: ["vulkan/vulkan.h"]
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lvulkan]}
