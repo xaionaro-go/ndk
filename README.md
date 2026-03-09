@@ -1,5 +1,9 @@
 # ndk
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/xaionaro-go/ndk.svg)](https://pkg.go.dev/github.com/xaionaro-go/ndk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/xaionaro-go/ndk)](go.mod)
+
 Idiomatic Go bindings for the Android NDK, auto-generated from C headers to ensure full coverage and easy maintenance.
 
 ## Usage Examples
@@ -182,41 +186,50 @@ More examples: [`examples/`](examples/)
 
 ## Supported Modules
 
-| NDK Module      | Go Package       | Import Path                                 |
-| --------------- | ---------------- | ------------------------------------------- |
-| aaudio          | `audio`          | `github.com/xaionaro-go/ndk/audio`          |
-| asset           | `asset`          | `github.com/xaionaro-go/ndk/asset`          |
-| binder          | `binder`         | `github.com/xaionaro-go/ndk/binder`         |
-| bitmap          | `bitmap`         | `github.com/xaionaro-go/ndk/bitmap`         |
-| camera          | `camera`         | `github.com/xaionaro-go/ndk/camera`         |
-| choreographer   | `choreographer`  | `github.com/xaionaro-go/ndk/choreographer`  |
-| configuration   | `config`         | `github.com/xaionaro-go/ndk/config`         |
-| egl             | `egl`            | `github.com/xaionaro-go/ndk/egl`            |
-| font            | `font`           | `github.com/xaionaro-go/ndk/font`           |
-| gles2           | `gles2`          | `github.com/xaionaro-go/ndk/gles2`          |
-| gles3           | `gles3`          | `github.com/xaionaro-go/ndk/gles3`          |
-| hardwarebuffer  | `hwbuf`          | `github.com/xaionaro-go/ndk/hwbuf`          |
-| imagedecoder    | `image`          | `github.com/xaionaro-go/ndk/image`          |
-| input           | `input`          | `github.com/xaionaro-go/ndk/input`          |
-| logging         | `log`            | `github.com/xaionaro-go/ndk/log`            |
-| looper          | `looper`         | `github.com/xaionaro-go/ndk/looper`         |
-| media           | `media`          | `github.com/xaionaro-go/ndk/media`          |
-| midi            | `midi`           | `github.com/xaionaro-go/ndk/midi`           |
-| multinetwork    | `net`            | `github.com/xaionaro-go/ndk/net`            |
-| nativeactivity  | `activity`       | `github.com/xaionaro-go/ndk/activity`       |
-| nativewindow    | `window`         | `github.com/xaionaro-go/ndk/window`         |
-| neuralnetworks  | `nnapi`          | `github.com/xaionaro-go/ndk/nnapi`          |
-| performancehint | `hint`           | `github.com/xaionaro-go/ndk/hint`           |
-| permission      | `permission`     | `github.com/xaionaro-go/ndk/permission`     |
-| sensor          | `sensor`         | `github.com/xaionaro-go/ndk/sensor`         |
-| sharedmem       | `sharedmem`      | `github.com/xaionaro-go/ndk/sharedmem`      |
-| storage         | `storage`        | `github.com/xaionaro-go/ndk/storage`        |
-| surfacecontrol  | `surfacecontrol` | `github.com/xaionaro-go/ndk/surfacecontrol` |
-| surfacetexture  | `surfacetexture` | `github.com/xaionaro-go/ndk/surfacetexture` |
-| sync            | `sync`           | `github.com/xaionaro-go/ndk/sync`           |
-| thermal         | `thermal`        | `github.com/xaionaro-go/ndk/thermal`        |
-| trace           | `trace`          | `github.com/xaionaro-go/ndk/trace`          |
-| vulkan          | `vulkan`         | `github.com/xaionaro-go/ndk/vulkan`         |
+| NDK Module | Go Package | Import Path |
+| --- | --- | --- |
+| **Graphics & Rendering** | | |
+| [![egl](https://img.shields.io/badge/egl-EGL-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/egl) | `egl` | `github.com/xaionaro-go/ndk/egl` |
+| [![gles2](https://img.shields.io/badge/gles2-OpenGL_ES_2.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles2) | `gles2` | `github.com/xaionaro-go/ndk/gles2` |
+| [![gles3](https://img.shields.io/badge/gles3-OpenGL_ES_3.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles3) | `gles3` | `github.com/xaionaro-go/ndk/gles3` |
+| [![vulkan](https://img.shields.io/badge/vulkan-Vulkan-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/vulkan) | `vulkan` | `github.com/xaionaro-go/ndk/vulkan` |
+| [![surfacecontrol](https://img.shields.io/badge/surfacecontrol-SurfaceControl-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/surfacecontrol) | `surfacecontrol` | `github.com/xaionaro-go/ndk/surfacecontrol` |
+| [![surfacetexture](https://img.shields.io/badge/surfacetexture-SurfaceTexture-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/surfacetexture) | `surfacetexture` | `github.com/xaionaro-go/ndk/surfacetexture` |
+| [![hwbuf](https://img.shields.io/badge/hwbuf-HardwareBuffer-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hwbuf) | `hwbuf` | `github.com/xaionaro-go/ndk/hwbuf` |
+| [![window](https://img.shields.io/badge/window-NativeWindow-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/window) | `window` | `github.com/xaionaro-go/ndk/window` |
+| [![bitmap](https://img.shields.io/badge/bitmap-Bitmap-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/bitmap) | `bitmap` | `github.com/xaionaro-go/ndk/bitmap` |
+| **Camera & Imaging** | | |
+| [![camera](https://img.shields.io/badge/camera-Camera2-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/camera) | `camera` | `github.com/xaionaro-go/ndk/camera` |
+| [![image](https://img.shields.io/badge/image-ImageDecoder-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/image) | `image` | `github.com/xaionaro-go/ndk/image` |
+| **Audio & Media** | | |
+| [![audio](https://img.shields.io/badge/audio-AAudio-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/audio) | `audio` | `github.com/xaionaro-go/ndk/audio` |
+| [![media](https://img.shields.io/badge/media-MediaCodec-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/media) | `media` | `github.com/xaionaro-go/ndk/media` |
+| [![midi](https://img.shields.io/badge/midi-MIDI-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/midi) | `midi` | `github.com/xaionaro-go/ndk/midi` |
+| **Sensors & Input** | | |
+| [![sensor](https://img.shields.io/badge/sensor-Sensors-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sensor) | `sensor` | `github.com/xaionaro-go/ndk/sensor` |
+| [![input](https://img.shields.io/badge/input-Input-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/input) | `input` | `github.com/xaionaro-go/ndk/input` |
+| [![choreographer](https://img.shields.io/badge/choreographer-Choreographer-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/choreographer) | `choreographer` | `github.com/xaionaro-go/ndk/choreographer` |
+| **Activity & Lifecycle** | | |
+| [![activity](https://img.shields.io/badge/activity-NativeActivity-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/activity) | `activity` | `github.com/xaionaro-go/ndk/activity` |
+| [![config](https://img.shields.io/badge/config-Configuration-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/config) | `config` | `github.com/xaionaro-go/ndk/config` |
+| [![thermal](https://img.shields.io/badge/thermal-ThermalManager-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/thermal) | `thermal` | `github.com/xaionaro-go/ndk/thermal` |
+| [![hint](https://img.shields.io/badge/hint-PerformanceHint-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hint) | `hint` | `github.com/xaionaro-go/ndk/hint` |
+| [![permission](https://img.shields.io/badge/permission-Permission-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/permission) | `permission` | `github.com/xaionaro-go/ndk/permission` |
+| **Storage & Assets** | | |
+| [![asset](https://img.shields.io/badge/asset-AssetManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/asset) | `asset` | `github.com/xaionaro-go/ndk/asset` |
+| [![storage](https://img.shields.io/badge/storage-StorageManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/storage) | `storage` | `github.com/xaionaro-go/ndk/storage` |
+| **System & IPC** | | |
+| [![binder](https://img.shields.io/badge/binder-Binder-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/binder) | `binder` | `github.com/xaionaro-go/ndk/binder` |
+| [![looper](https://img.shields.io/badge/looper-ALooper-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/looper) | `looper` | `github.com/xaionaro-go/ndk/looper` |
+| [![log](https://img.shields.io/badge/log-Logging-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/log) | `log` | `github.com/xaionaro-go/ndk/log` |
+| [![sharedmem](https://img.shields.io/badge/sharedmem-SharedMemory-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sharedmem) | `sharedmem` | `github.com/xaionaro-go/ndk/sharedmem` |
+| [![sync](https://img.shields.io/badge/sync-SyncFence-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sync) | `sync` | `github.com/xaionaro-go/ndk/sync` |
+| [![net](https://img.shields.io/badge/net-Multinetwork-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/net) | `net` | `github.com/xaionaro-go/ndk/net` |
+| **Machine Learning** | | |
+| [![nnapi](https://img.shields.io/badge/nnapi-NNAPI-C62828)](https://pkg.go.dev/github.com/xaionaro-go/ndk/nnapi) | `nnapi` | `github.com/xaionaro-go/ndk/nnapi` |
+| **Debugging & Fonts** | | |
+| [![trace](https://img.shields.io/badge/trace-Trace-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/trace) | `trace` | `github.com/xaionaro-go/ndk/trace` |
+| [![font](https://img.shields.io/badge/font-FontManager-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/font) | `font` | `github.com/xaionaro-go/ndk/font` |
 
 ## Architecture
 
