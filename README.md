@@ -1,48 +1,6 @@
 # ndk
 
-Idiomatic Go bindings for the Android NDK, auto-generated from C headers via a three-stage pipeline.
-
-```
-go get github.com/xaionaro-go/ndk
-```
-
-## Supported Modules
-
-| NDK Module      | Go Package       | Import Path                                 |
-| --------------- | ---------------- | ------------------------------------------- |
-| aaudio          | `audio`          | `github.com/xaionaro-go/ndk/audio`          |
-| asset           | `asset`          | `github.com/xaionaro-go/ndk/asset`          |
-| binder          | `binder`         | `github.com/xaionaro-go/ndk/binder`         |
-| bitmap          | `bitmap`         | `github.com/xaionaro-go/ndk/bitmap`         |
-| camera          | `camera`         | `github.com/xaionaro-go/ndk/camera`         |
-| choreographer   | `choreographer`  | `github.com/xaionaro-go/ndk/choreographer`  |
-| configuration   | `config`         | `github.com/xaionaro-go/ndk/config`         |
-| egl             | `egl`            | `github.com/xaionaro-go/ndk/egl`            |
-| font            | `font`           | `github.com/xaionaro-go/ndk/font`           |
-| gles2           | `gles2`          | `github.com/xaionaro-go/ndk/gles2`          |
-| gles3           | `gles3`          | `github.com/xaionaro-go/ndk/gles3`          |
-| hardwarebuffer  | `hwbuf`          | `github.com/xaionaro-go/ndk/hwbuf`          |
-| imagedecoder    | `image`          | `github.com/xaionaro-go/ndk/image`          |
-| input           | `input`          | `github.com/xaionaro-go/ndk/input`          |
-| logging         | `log`            | `github.com/xaionaro-go/ndk/log`            |
-| looper          | `looper`         | `github.com/xaionaro-go/ndk/looper`         |
-| media           | `media`          | `github.com/xaionaro-go/ndk/media`          |
-| midi            | `midi`           | `github.com/xaionaro-go/ndk/midi`           |
-| multinetwork    | `net`            | `github.com/xaionaro-go/ndk/net`            |
-| nativeactivity  | `activity`       | `github.com/xaionaro-go/ndk/activity`       |
-| nativewindow    | `window`         | `github.com/xaionaro-go/ndk/window`         |
-| neuralnetworks  | `nnapi`          | `github.com/xaionaro-go/ndk/nnapi`          |
-| performancehint | `hint`           | `github.com/xaionaro-go/ndk/hint`           |
-| permission      | `permission`     | `github.com/xaionaro-go/ndk/permission`     |
-| sensor          | `sensor`         | `github.com/xaionaro-go/ndk/sensor`         |
-| sharedmem       | `sharedmem`      | `github.com/xaionaro-go/ndk/sharedmem`      |
-| storage         | `storage`        | `github.com/xaionaro-go/ndk/storage`        |
-| surfacecontrol  | `surfacecontrol` | `github.com/xaionaro-go/ndk/surfacecontrol` |
-| surfacetexture  | `surfacetexture` | `github.com/xaionaro-go/ndk/surfacetexture` |
-| sync            | `sync`           | `github.com/xaionaro-go/ndk/sync`           |
-| thermal         | `thermal`        | `github.com/xaionaro-go/ndk/thermal`        |
-| trace           | `trace`          | `github.com/xaionaro-go/ndk/trace`          |
-| vulkan          | `vulkan`         | `github.com/xaionaro-go/ndk/vulkan`         |
+Idiomatic Go bindings for the Android NDK, auto-generated from C headers to ensure full coverage and easy maintenance.
 
 ## Usage Examples
 
@@ -221,6 +179,44 @@ import "github.com/xaionaro-go/ndk/asset"
 All types implement idempotent, nil-safe `Close() error`. Error types wrap NDK status codes and work with `errors.Is`.
 
 More examples: [`examples/`](examples/)
+
+## Supported Modules
+
+| NDK Module      | Go Package       | Import Path                                 |
+| --------------- | ---------------- | ------------------------------------------- |
+| aaudio          | `audio`          | `github.com/xaionaro-go/ndk/audio`          |
+| asset           | `asset`          | `github.com/xaionaro-go/ndk/asset`          |
+| binder          | `binder`         | `github.com/xaionaro-go/ndk/binder`         |
+| bitmap          | `bitmap`         | `github.com/xaionaro-go/ndk/bitmap`         |
+| camera          | `camera`         | `github.com/xaionaro-go/ndk/camera`         |
+| choreographer   | `choreographer`  | `github.com/xaionaro-go/ndk/choreographer`  |
+| configuration   | `config`         | `github.com/xaionaro-go/ndk/config`         |
+| egl             | `egl`            | `github.com/xaionaro-go/ndk/egl`            |
+| font            | `font`           | `github.com/xaionaro-go/ndk/font`           |
+| gles2           | `gles2`          | `github.com/xaionaro-go/ndk/gles2`          |
+| gles3           | `gles3`          | `github.com/xaionaro-go/ndk/gles3`          |
+| hardwarebuffer  | `hwbuf`          | `github.com/xaionaro-go/ndk/hwbuf`          |
+| imagedecoder    | `image`          | `github.com/xaionaro-go/ndk/image`          |
+| input           | `input`          | `github.com/xaionaro-go/ndk/input`          |
+| logging         | `log`            | `github.com/xaionaro-go/ndk/log`            |
+| looper          | `looper`         | `github.com/xaionaro-go/ndk/looper`         |
+| media           | `media`          | `github.com/xaionaro-go/ndk/media`          |
+| midi            | `midi`           | `github.com/xaionaro-go/ndk/midi`           |
+| multinetwork    | `net`            | `github.com/xaionaro-go/ndk/net`            |
+| nativeactivity  | `activity`       | `github.com/xaionaro-go/ndk/activity`       |
+| nativewindow    | `window`         | `github.com/xaionaro-go/ndk/window`         |
+| neuralnetworks  | `nnapi`          | `github.com/xaionaro-go/ndk/nnapi`          |
+| performancehint | `hint`           | `github.com/xaionaro-go/ndk/hint`           |
+| permission      | `permission`     | `github.com/xaionaro-go/ndk/permission`     |
+| sensor          | `sensor`         | `github.com/xaionaro-go/ndk/sensor`         |
+| sharedmem       | `sharedmem`      | `github.com/xaionaro-go/ndk/sharedmem`      |
+| storage         | `storage`        | `github.com/xaionaro-go/ndk/storage`        |
+| surfacecontrol  | `surfacecontrol` | `github.com/xaionaro-go/ndk/surfacecontrol` |
+| surfacetexture  | `surfacetexture` | `github.com/xaionaro-go/ndk/surfacetexture` |
+| sync            | `sync`           | `github.com/xaionaro-go/ndk/sync`           |
+| thermal         | `thermal`        | `github.com/xaionaro-go/ndk/thermal`        |
+| trace           | `trace`          | `github.com/xaionaro-go/ndk/trace`          |
+| vulkan          | `vulkan`         | `github.com/xaionaro-go/ndk/vulkan`         |
 
 ## Architecture
 
