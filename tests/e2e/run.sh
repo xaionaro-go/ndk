@@ -12,7 +12,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 : "${ANDROID_HOME:?ANDROID_HOME must be set}"
 NDK_VERSION="${NDK_VERSION:-27.2.12479018}"
@@ -35,8 +35,8 @@ done
 echo "=== Step 1: Cross-compile ==="
 cd "$PROJECT_DIR"
 CGO_ENABLED=1 GOOS=android GOARCH=amd64 CC="$CC" \
-    go build -o e2e/e2e_test ./e2e
-file e2e/e2e_test
+    go build -o tests/e2e/e2e_test ./tests/e2e
+file tests/e2e/e2e_test
 
 echo "=== Step 2: Create AVD (if needed) ==="
 if [ ! -d "$HOME/.android/avd/${AVD_NAME}.avd" ]; then
@@ -67,7 +67,7 @@ for i in $(seq 1 60); do
 done
 
 echo "=== Step 4: Run E2E test ==="
-"$ADB" push e2e/e2e_test /data/local/tmp/
+"$ADB" push tests/e2e/e2e_test /data/local/tmp/
 "$ADB" shell chmod 755 /data/local/tmp/e2e_test
 "$ADB" shell /data/local/tmp/e2e_test
 EXIT_CODE=$?

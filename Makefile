@@ -83,7 +83,7 @@ fixtures: specs-fixtures idiomatic
 regen: clean specs capi idiomatic
 
 test:
-	go test $$(go list ./... | grep -v -E '/(capi|e2e|examples)/|/ndk/[a-z][a-z0-9]*$$') -count=1
+	go test $$(go list ./... | grep -v -E '/(capi|tests|examples)/|/ndk/[a-z][a-z0-9]*$$') -count=1
 
 lint:
 	golangci-lint run ./tools/...
@@ -98,15 +98,15 @@ check-examples:
 e2e-build:
 	CGO_ENABLED=1 GOOS=android GOARCH=amd64 \
 		CC=$(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android35-clang \
-		go build -o e2e/e2e_test ./e2e
+		go build -o tests/e2e/e2e_test ./tests/e2e
 
 # Run full E2E test on Android emulator (requires SDK + NDK + KVM)
 e2e: e2e-build
-	ANDROID_HOME=$(dir $(NDK_PATH)) ./e2e/run.sh
+	ANDROID_HOME=$(dir $(NDK_PATH)) ./tests/e2e/run.sh
 
 # Run all examples on Android emulator (requires running emulator + NDK)
 e2e-examples:
-	./e2e/run-examples.sh
+	./tests/e2e/run-examples.sh
 
 clean:
 	@for m in $(MODULES); do rm -rf "capi/$$m/"; done

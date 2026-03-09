@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 env:
-  ANDROID_NDK_VERSION: r27c
-  ANDROID_NDK_DIR_NAME: "27.2.12479018"
+  ANDROID_NDK_VERSION: r28
+  ANDROID_NDK_DIR_NAME: "28.0.13004108"
 
 jobs:
   test:

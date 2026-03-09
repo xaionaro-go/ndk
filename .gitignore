@@ -1,7 +1,7 @@
 /discussion
 
 # Compiled E2E test binary
-e2e/e2e_test
+tests/e2e/e2e_test
 
 *.apk
 _build/
