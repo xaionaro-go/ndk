@@ -119,7 +119,7 @@ func ASensorManager_createEventQueue(manager *ASensorManager, looper *ALooper, i
 	runtime.KeepAlive(cidentAllocMap)
 	runtime.KeepAlive(clooperAllocMap)
 	runtime.KeepAlive(cmanagerAllocMap)
-	__v := *(**ASensorEventQueue)(unsafe.Pointer(&__ret))
+	__v := (*ASensorEventQueue)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -171,7 +171,7 @@ func ASensorManager_getDefaultSensor(manager *ASensorManager, _type int32) *ASen
 	__ret := C.ASensorManager_getDefaultSensor(cmanager, c_type)
 	runtime.KeepAlive(c_typeAllocMap)
 	runtime.KeepAlive(cmanagerAllocMap)
-	__v := *(**ASensor)(unsafe.Pointer(&__ret))
+	__v := (*ASensor)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -183,7 +183,7 @@ func ASensorManager_getDefaultSensorEx(manager *ASensorManager, _type int32, wak
 	runtime.KeepAlive(cwakeUpAllocMap)
 	runtime.KeepAlive(c_typeAllocMap)
 	runtime.KeepAlive(cmanagerAllocMap)
-	__v := *(**ASensor)(unsafe.Pointer(&__ret))
+	__v := (*ASensor)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -199,7 +199,7 @@ func ASensorManager_getDynamicSensorList(manager *ASensorManager, list *ASensorL
 
 func ASensorManager_getInstance() *ASensorManager {
 	__ret := C.ASensorManager_getInstance()
-	__v := *(**ASensorManager)(unsafe.Pointer(&__ret))
+	__v := (*ASensorManager)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -207,7 +207,7 @@ func ASensorManager_getInstanceForPackage(packageName string) *ASensorManager {
 	cpackageName, cpackageNameAllocMap := UnpackPCharString(packageName)
 	__ret := C.ASensorManager_getInstanceForPackage(cpackageName)
 	runtime.KeepAlive(cpackageNameAllocMap)
-	__v := *(**ASensorManager)(unsafe.Pointer(&__ret))
+	__v := (*ASensorManager)(unsafe.Pointer(__ret))
 	return __v
 }
 

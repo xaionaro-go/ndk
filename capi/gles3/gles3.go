@@ -1241,7 +1241,7 @@ func GlGetString(name GLenum) *GLubyte {
 	cname, cnameAllocMap := (C.GLenum)(name), cgoAllocsUnknown
 	__ret := C.glGetString(cname)
 	runtime.KeepAlive(cnameAllocMap)
-	__v := *(**GLubyte)(unsafe.Pointer(&__ret))
+	__v := (*GLubyte)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -1251,7 +1251,7 @@ func GlGetStringi(name GLenum, index GLuint) *GLubyte {
 	__ret := C.glGetStringi(cname, cindex)
 	runtime.KeepAlive(cindexAllocMap)
 	runtime.KeepAlive(cnameAllocMap)
-	__v := *(**GLubyte)(unsafe.Pointer(&__ret))
+	__v := (*GLubyte)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -1320,9 +1320,17 @@ func GlGetUniformBlockIndex(program GLuint, uniformBlockName *GLchar) GLuint {
 func GlGetUniformIndices(program GLuint, uniformCount GLsizei, uniformNames **GLchar, uniformIndices *GLuint) {
 	cprogram, cprogramAllocMap := (C.GLuint)(program), cgoAllocsUnknown
 	cuniformCount, cuniformCountAllocMap := (C.GLsizei)(uniformCount), cgoAllocsUnknown
+	cuniformNames, cuniformNamesAllocMap := (**C.GLchar)(unsafe.Pointer(uniformNames)), cgoAllocsUnknown
+	var pinnercuniformNames runtime.Pinner
+	pinnercuniformNames.Pin(uniformNames)
+	if uniformNames != nil {
+		pinnercuniformNames.Pin(unsafe.Pointer(*uniformNames))
+	}
+	defer pinnercuniformNames.Unpin()
 	cuniformIndices, cuniformIndicesAllocMap := (*C.GLuint)(unsafe.Pointer(uniformIndices)), cgoAllocsUnknown
-	C.glGetUniformIndices(cprogram, cuniformCount, (**C.GLchar)(unsafe.Pointer(uniformNames)), cuniformIndices)
+	C.glGetUniformIndices(cprogram, cuniformCount, cuniformNames, cuniformIndices)
 	runtime.KeepAlive(cuniformIndicesAllocMap)
+	runtime.KeepAlive(cuniformNamesAllocMap)
 	runtime.KeepAlive(cuniformCountAllocMap)
 	runtime.KeepAlive(cprogramAllocMap)
 }
@@ -1752,9 +1760,17 @@ func GlShaderBinary(count GLsizei, shaders *GLuint, binaryformat GLenum, binary 
 func GlShaderSource(shader GLuint, count GLsizei, _string **GLchar, length *GLint) {
 	cshader, cshaderAllocMap := (C.GLuint)(shader), cgoAllocsUnknown
 	ccount, ccountAllocMap := (C.GLsizei)(count), cgoAllocsUnknown
+	c_string, c_stringAllocMap := (**C.GLchar)(unsafe.Pointer(_string)), cgoAllocsUnknown
+	var pinnerc_string runtime.Pinner
+	pinnerc_string.Pin(_string)
+	if _string != nil {
+		pinnerc_string.Pin(unsafe.Pointer(*_string))
+	}
+	defer pinnerc_string.Unpin()
 	clength, clengthAllocMap := (*C.GLint)(unsafe.Pointer(length)), cgoAllocsUnknown
-	C.glShaderSource(cshader, ccount, (**C.GLchar)(unsafe.Pointer(_string)), clength)
+	C.glShaderSource(cshader, ccount, c_string, clength)
 	runtime.KeepAlive(clengthAllocMap)
+	runtime.KeepAlive(c_stringAllocMap)
 	runtime.KeepAlive(ccountAllocMap)
 	runtime.KeepAlive(cshaderAllocMap)
 }
@@ -1984,9 +2000,17 @@ func GlTexSubImage3D(target GLenum, level GLint, xoffset GLint, yoffset GLint, z
 func GlTransformFeedbackVaryings(program GLuint, count GLsizei, varyings **GLchar, bufferMode GLenum) {
 	cprogram, cprogramAllocMap := (C.GLuint)(program), cgoAllocsUnknown
 	ccount, ccountAllocMap := (C.GLsizei)(count), cgoAllocsUnknown
+	cvaryings, cvaryingsAllocMap := (**C.GLchar)(unsafe.Pointer(varyings)), cgoAllocsUnknown
+	var pinnercvaryings runtime.Pinner
+	pinnercvaryings.Pin(varyings)
+	if varyings != nil {
+		pinnercvaryings.Pin(unsafe.Pointer(*varyings))
+	}
+	defer pinnercvaryings.Unpin()
 	cbufferMode, cbufferModeAllocMap := (C.GLenum)(bufferMode), cgoAllocsUnknown
-	C.glTransformFeedbackVaryings(cprogram, ccount, (**C.GLchar)(unsafe.Pointer(varyings)), cbufferMode)
+	C.glTransformFeedbackVaryings(cprogram, ccount, cvaryings, cbufferMode)
 	runtime.KeepAlive(cbufferModeAllocMap)
+	runtime.KeepAlive(cvaryingsAllocMap)
 	runtime.KeepAlive(ccountAllocMap)
 	runtime.KeepAlive(cprogramAllocMap)
 }

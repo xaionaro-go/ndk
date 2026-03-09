@@ -17,7 +17,7 @@ FIXTURE_MODULES := $(notdir $(wildcard tools/pkg/specgen/testdata/*/))
 NDK_SYSROOT := $(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include
 C2FFI_BIN   ?= c2ffi
 
-.PHONY: all capi specs idiomatic clean regen fixtures test e2e e2e-build
+.PHONY: all capi specs idiomatic clean regen fixtures test lint check-examples e2e e2e-build e2e-examples
 
 all: specs capi idiomatic
 
@@ -85,6 +85,15 @@ regen: clean specs capi idiomatic
 test:
 	go test $$(go list ./... | grep -v -E '/(capi|e2e|examples)/|/ndk/[a-z][a-z0-9]*$$') -count=1
 
+lint:
+	golangci-lint run ./tools/...
+
+# Cross-compile all examples for Android arm64 to catch compile errors (requires NDK)
+check-examples:
+	CGO_ENABLED=1 GOOS=android GOARCH=arm64 \
+		CC=$(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android35-clang \
+		go build ./examples/...
+
 # Cross-compile E2E test binary for Android x86_64 (requires NDK)
 e2e-build:
 	CGO_ENABLED=1 GOOS=android GOARCH=amd64 \
@@ -94,6 +103,10 @@ e2e-build:
 # Run full E2E test on Android emulator (requires SDK + NDK + KVM)
 e2e: e2e-build
 	ANDROID_HOME=$(dir $(NDK_PATH)) ./e2e/run.sh
+
+# Run all examples on Android emulator (requires running emulator + NDK)
+e2e-examples:
+	./e2e/run-examples.sh
 
 clean:
 	@for m in $(MODULES); do rm -rf "capi/$$m/"; done

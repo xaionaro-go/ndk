@@ -93,13 +93,21 @@ func AInputQueue_fromJava(env *JNIEnv, inputQueue Jobject) *AInputQueue {
 	__ret := C.AInputQueue_fromJava(cenv, cinputQueue)
 	runtime.KeepAlive(cinputQueueAllocMap)
 	runtime.KeepAlive(cenvAllocMap)
-	__v := *(**AInputQueue)(unsafe.Pointer(&__ret))
+	__v := (*AInputQueue)(unsafe.Pointer(__ret))
 	return __v
 }
 
 func AInputQueue_getEvent(queue *AInputQueue, outEvent **AInputEvent) int32 {
 	cqueue, cqueueAllocMap := (*C.AInputQueue)(unsafe.Pointer(queue)), cgoAllocsUnknown
-	__ret := C.AInputQueue_getEvent(cqueue, (**C.AInputEvent)(unsafe.Pointer(outEvent)))
+	coutEvent, coutEventAllocMap := (**C.AInputEvent)(unsafe.Pointer(outEvent)), cgoAllocsUnknown
+	var pinnercoutEvent runtime.Pinner
+	pinnercoutEvent.Pin(outEvent)
+	if outEvent != nil {
+		pinnercoutEvent.Pin(unsafe.Pointer(*outEvent))
+	}
+	defer pinnercoutEvent.Unpin()
+	__ret := C.AInputQueue_getEvent(cqueue, coutEvent)
+	runtime.KeepAlive(coutEventAllocMap)
 	runtime.KeepAlive(cqueueAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -129,7 +137,7 @@ func AKeyEvent_fromJava(env *JNIEnv, keyEvent Jobject) *AInputEvent {
 	__ret := C.AKeyEvent_fromJava(cenv, ckeyEvent)
 	runtime.KeepAlive(ckeyEventAllocMap)
 	runtime.KeepAlive(cenvAllocMap)
-	__v := *(**AInputEvent)(unsafe.Pointer(&__ret))
+	__v := (*AInputEvent)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -203,7 +211,7 @@ func AMotionEvent_fromJava(env *JNIEnv, motionEvent Jobject) *AInputEvent {
 	__ret := C.AMotionEvent_fromJava(cenv, cmotionEvent)
 	runtime.KeepAlive(cmotionEventAllocMap)
 	runtime.KeepAlive(cenvAllocMap)
-	__v := *(**AInputEvent)(unsafe.Pointer(&__ret))
+	__v := (*AInputEvent)(unsafe.Pointer(__ret))
 	return __v
 }
 

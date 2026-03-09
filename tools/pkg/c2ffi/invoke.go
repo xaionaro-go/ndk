@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 )
 
 // InvokeOptions configures how to run c2ffi on NDK headers.
@@ -57,7 +56,7 @@ func Invoke(opts InvokeOptions) ([]byte, error) {
 		if err != nil {
 			return nil, fmt.Errorf("preprocess %s: %w", inc, err)
 		}
-		defer os.Remove(ppPath)
+		defer func() { _ = os.Remove(ppPath) }()
 
 		args := []string{ppPath}
 
@@ -93,7 +92,7 @@ func preprocessHeader(
 	if err != nil {
 		return "", err
 	}
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	args := []string{
 		"-E",
@@ -109,7 +108,7 @@ func preprocessHeader(
 	cmd := exec.Command(ndkClang, args...)
 	out, err := cmd.Output()
 	if err != nil {
-		os.Remove(tmpFile.Name())
+		_ = os.Remove(tmpFile.Name())
 		if exitErr, ok := err.(*exec.ExitError); ok {
 			return "", fmt.Errorf("%s: %s", ndkClang, string(exitErr.Stderr))
 		}
@@ -117,7 +116,7 @@ func preprocessHeader(
 	}
 
 	if err := os.WriteFile(tmpFile.Name(), out, 0o644); err != nil {
-		os.Remove(tmpFile.Name())
+		_ = os.Remove(tmpFile.Name())
 		return "", err
 	}
 
@@ -139,21 +138,4 @@ func findNDKClang(ndkPath string) string {
 	}
 
 	return "clang"
-}
-
-// archSubdir returns the architecture-specific include subdirectory
-// for the given target triple.
-func archSubdir(target string) string {
-	switch {
-	case strings.HasPrefix(target, "aarch64"):
-		return "aarch64-linux-android"
-	case strings.HasPrefix(target, "x86_64"):
-		return "x86_64-linux-android"
-	case strings.HasPrefix(target, "i686"):
-		return "i686-linux-android"
-	case strings.HasPrefix(target, "arm"):
-		return "arm-linux-androideabi"
-	default:
-		return "aarch64-linux-android"
-	}
 }

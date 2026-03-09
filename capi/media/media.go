@@ -116,7 +116,7 @@ func AMediaCodecCryptoInfo_new(numsubsamples int32, key *[16]uint8, iv *[16]uint
 	runtime.KeepAlive(civAllocMap)
 	runtime.KeepAlive(ckeyAllocMap)
 	runtime.KeepAlive(cnumsubsamplesAllocMap)
-	__v := *(**AMediaCodecCryptoInfo)(unsafe.Pointer(&__ret))
+	__v := (*AMediaCodecCryptoInfo)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -148,7 +148,7 @@ func AMediaCodec_createCodecByName(name string) *AMediaCodec {
 	cname, cnameAllocMap := UnpackPCharString(name)
 	__ret := C.AMediaCodec_createCodecByName(cname)
 	runtime.KeepAlive(cnameAllocMap)
-	__v := *(**AMediaCodec)(unsafe.Pointer(&__ret))
+	__v := (*AMediaCodec)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -156,7 +156,7 @@ func AMediaCodec_createDecoderByType(mime_type string) *AMediaCodec {
 	cmime_type, cmime_typeAllocMap := UnpackPCharString(mime_type)
 	__ret := C.AMediaCodec_createDecoderByType(cmime_type)
 	runtime.KeepAlive(cmime_typeAllocMap)
-	__v := *(**AMediaCodec)(unsafe.Pointer(&__ret))
+	__v := (*AMediaCodec)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -164,20 +164,36 @@ func AMediaCodec_createEncoderByType(mime_type string) *AMediaCodec {
 	cmime_type, cmime_typeAllocMap := UnpackPCharString(mime_type)
 	__ret := C.AMediaCodec_createEncoderByType(cmime_type)
 	runtime.KeepAlive(cmime_typeAllocMap)
-	__v := *(**AMediaCodec)(unsafe.Pointer(&__ret))
+	__v := (*AMediaCodec)(unsafe.Pointer(__ret))
 	return __v
 }
 
 func AMediaCodec_createInputSurface(mData *AMediaCodec, surface **ANativeWindow) Media_status_t {
 	cmData, cmDataAllocMap := (*C.AMediaCodec)(unsafe.Pointer(mData)), cgoAllocsUnknown
-	__ret := C.AMediaCodec_createInputSurface(cmData, (**C.ANativeWindow)(unsafe.Pointer(surface)))
+	csurface, csurfaceAllocMap := (**C.ANativeWindow)(unsafe.Pointer(surface)), cgoAllocsUnknown
+	var pinnercsurface runtime.Pinner
+	pinnercsurface.Pin(surface)
+	if surface != nil {
+		pinnercsurface.Pin(unsafe.Pointer(*surface))
+	}
+	defer pinnercsurface.Unpin()
+	__ret := C.AMediaCodec_createInputSurface(cmData, csurface)
+	runtime.KeepAlive(csurfaceAllocMap)
 	runtime.KeepAlive(cmDataAllocMap)
 	__v := (Media_status_t)(__ret)
 	return __v
 }
 
 func AMediaCodec_createPersistentInputSurface(surface **ANativeWindow) Media_status_t {
-	__ret := C.AMediaCodec_createPersistentInputSurface((**C.ANativeWindow)(unsafe.Pointer(surface)))
+	csurface, csurfaceAllocMap := (**C.ANativeWindow)(unsafe.Pointer(surface)), cgoAllocsUnknown
+	var pinnercsurface runtime.Pinner
+	pinnercsurface.Pin(surface)
+	if surface != nil {
+		pinnercsurface.Pin(unsafe.Pointer(*surface))
+	}
+	defer pinnercsurface.Unpin()
+	__ret := C.AMediaCodec_createPersistentInputSurface(csurface)
+	runtime.KeepAlive(csurfaceAllocMap)
 	__v := (Media_status_t)(__ret)
 	return __v
 }
@@ -226,7 +242,7 @@ func AMediaCodec_getBufferFormat(p0 *AMediaCodec, index uint64) *AMediaFormat {
 	__ret := C.AMediaCodec_getBufferFormat(cp0, cindex)
 	runtime.KeepAlive(cindexAllocMap)
 	runtime.KeepAlive(cp0AllocMap)
-	__v := *(**AMediaFormat)(unsafe.Pointer(&__ret))
+	__v := (*AMediaFormat)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -238,7 +254,7 @@ func AMediaCodec_getInputBuffer(p0 *AMediaCodec, idx uint64, out_size *uint64) *
 	runtime.KeepAlive(cout_sizeAllocMap)
 	runtime.KeepAlive(cidxAllocMap)
 	runtime.KeepAlive(cp0AllocMap)
-	__v := *(**uint8)(unsafe.Pointer(&__ret))
+	__v := (*uint8)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -246,7 +262,7 @@ func AMediaCodec_getInputFormat(p0 *AMediaCodec) *AMediaFormat {
 	cp0, cp0AllocMap := (*C.AMediaCodec)(unsafe.Pointer(p0)), cgoAllocsUnknown
 	__ret := C.AMediaCodec_getInputFormat(cp0)
 	runtime.KeepAlive(cp0AllocMap)
-	__v := *(**AMediaFormat)(unsafe.Pointer(&__ret))
+	__v := (*AMediaFormat)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -266,7 +282,7 @@ func AMediaCodec_getOutputBuffer(p0 *AMediaCodec, idx uint64, out_size *uint64) 
 	runtime.KeepAlive(cout_sizeAllocMap)
 	runtime.KeepAlive(cidxAllocMap)
 	runtime.KeepAlive(cp0AllocMap)
-	__v := *(**uint8)(unsafe.Pointer(&__ret))
+	__v := (*uint8)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -274,7 +290,7 @@ func AMediaCodec_getOutputFormat(p0 *AMediaCodec) *AMediaFormat {
 	cp0, cp0AllocMap := (*C.AMediaCodec)(unsafe.Pointer(p0)), cgoAllocsUnknown
 	__ret := C.AMediaCodec_getOutputFormat(cp0)
 	runtime.KeepAlive(cp0AllocMap)
-	__v := *(**AMediaFormat)(unsafe.Pointer(&__ret))
+	__v := (*AMediaFormat)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -450,7 +466,7 @@ func AMediaCrypto_new(uuid AMediaUUID, initData unsafe.Pointer, initDataSize uin
 	__ret := C.AMediaCrypto_new((*C.uint8_t)(unsafe.Pointer(&uuid[0])), cinitData, cinitDataSize)
 	runtime.KeepAlive(cinitDataSizeAllocMap)
 	runtime.KeepAlive(cinitDataAllocMap)
-	__v := *(**AMediaCrypto)(unsafe.Pointer(&__ret))
+	__v := (*AMediaCrypto)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -476,7 +492,7 @@ func AMediaDrm_createByUUID(uuid *uint8) *AMediaDrm {
 	cuuid, cuuidAllocMap := (*C.uint8_t)(unsafe.Pointer(uuid)), cgoAllocsUnknown
 	__ret := C.AMediaDrm_createByUUID(cuuid)
 	runtime.KeepAlive(cuuidAllocMap)
-	__v := *(**AMediaDrm)(unsafe.Pointer(&__ret))
+	__v := (*AMediaDrm)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -533,9 +549,17 @@ func AMediaDrm_getKeyRequest(p0 *AMediaDrm, scope *AMediaDrmScope, init *uint8, 
 	ckeyType, ckeyTypeAllocMap := (C.AMediaDrmKeyType)(keyType), cgoAllocsUnknown
 	coptionalParameters, coptionalParametersAllocMap := (*C.AMediaDrmKeyValue)(unsafe.Pointer(optionalParameters)), cgoAllocsUnknown
 	cnumOptionalParameters, cnumOptionalParametersAllocMap := (C.uint64_t)(numOptionalParameters), cgoAllocsUnknown
+	ckeyRequest, ckeyRequestAllocMap := (**C.uint8_t)(unsafe.Pointer(keyRequest)), cgoAllocsUnknown
+	var pinnerckeyRequest runtime.Pinner
+	pinnerckeyRequest.Pin(keyRequest)
+	if keyRequest != nil {
+		pinnerckeyRequest.Pin(unsafe.Pointer(*keyRequest))
+	}
+	defer pinnerckeyRequest.Unpin()
 	ckeyRequestSize, ckeyRequestSizeAllocMap := (*C.uint64_t)(unsafe.Pointer(keyRequestSize)), cgoAllocsUnknown
-	__ret := C.AMediaDrm_getKeyRequest(cp0, cscope, cinit, cinitSize, cmimeType, ckeyType, coptionalParameters, cnumOptionalParameters, (**C.uint8_t)(unsafe.Pointer(keyRequest)), ckeyRequestSize)
+	__ret := C.AMediaDrm_getKeyRequest(cp0, cscope, cinit, cinitSize, cmimeType, ckeyType, coptionalParameters, cnumOptionalParameters, ckeyRequest, ckeyRequestSize)
 	runtime.KeepAlive(ckeyRequestSizeAllocMap)
+	runtime.KeepAlive(ckeyRequestAllocMap)
 	runtime.KeepAlive(cnumOptionalParametersAllocMap)
 	runtime.KeepAlive(coptionalParametersAllocMap)
 	runtime.KeepAlive(ckeyTypeAllocMap)
@@ -557,11 +581,19 @@ func AMediaDrm_getKeyRequestWithDefaultUrlAndType(p0 *AMediaDrm, scope *AMediaDr
 	ckeyType, ckeyTypeAllocMap := (C.AMediaDrmKeyType)(keyType), cgoAllocsUnknown
 	coptionalParameters, coptionalParametersAllocMap := (*C.AMediaDrmKeyValue)(unsafe.Pointer(optionalParameters)), cgoAllocsUnknown
 	cnumOptionalParameters, cnumOptionalParametersAllocMap := (C.uint64_t)(numOptionalParameters), cgoAllocsUnknown
+	ckeyRequest, ckeyRequestAllocMap := (**C.uint8_t)(unsafe.Pointer(keyRequest)), cgoAllocsUnknown
+	var pinnerckeyRequest runtime.Pinner
+	pinnerckeyRequest.Pin(keyRequest)
+	if keyRequest != nil {
+		pinnerckeyRequest.Pin(unsafe.Pointer(*keyRequest))
+	}
+	defer pinnerckeyRequest.Unpin()
 	ckeyRequestSize, ckeyRequestSizeAllocMap := (*C.uint64_t)(unsafe.Pointer(keyRequestSize)), cgoAllocsUnknown
 	ckeyRequestType, ckeyRequestTypeAllocMap := (*C.AMediaDrmKeyRequestType)(unsafe.Pointer(keyRequestType)), cgoAllocsUnknown
-	__ret := C.AMediaDrm_getKeyRequestWithDefaultUrlAndType(cp0, cscope, cinit, cinitSize, cmimeType, ckeyType, coptionalParameters, cnumOptionalParameters, (**C.uint8_t)(unsafe.Pointer(keyRequest)), ckeyRequestSize, (**C.char)(unsafe.Pointer(defaultUrl)), ckeyRequestType)
+	__ret := C.AMediaDrm_getKeyRequestWithDefaultUrlAndType(cp0, cscope, cinit, cinitSize, cmimeType, ckeyType, coptionalParameters, cnumOptionalParameters, ckeyRequest, ckeyRequestSize, (**C.char)(unsafe.Pointer(defaultUrl)), ckeyRequestType)
 	runtime.KeepAlive(ckeyRequestTypeAllocMap)
 	runtime.KeepAlive(ckeyRequestSizeAllocMap)
+	runtime.KeepAlive(ckeyRequestAllocMap)
 	runtime.KeepAlive(cnumOptionalParametersAllocMap)
 	runtime.KeepAlive(coptionalParametersAllocMap)
 	runtime.KeepAlive(ckeyTypeAllocMap)
@@ -598,9 +630,17 @@ func AMediaDrm_getPropertyString(p0 *AMediaDrm, propertyName string, propertyVal
 
 func AMediaDrm_getProvisionRequest(p0 *AMediaDrm, provisionRequest **uint8, provisionRequestSize *uint64, serverUrl *string) Media_status_t {
 	cp0, cp0AllocMap := (*C.AMediaDrm)(unsafe.Pointer(p0)), cgoAllocsUnknown
+	cprovisionRequest, cprovisionRequestAllocMap := (**C.uint8_t)(unsafe.Pointer(provisionRequest)), cgoAllocsUnknown
+	var pinnercprovisionRequest runtime.Pinner
+	pinnercprovisionRequest.Pin(provisionRequest)
+	if provisionRequest != nil {
+		pinnercprovisionRequest.Pin(unsafe.Pointer(*provisionRequest))
+	}
+	defer pinnercprovisionRequest.Unpin()
 	cprovisionRequestSize, cprovisionRequestSizeAllocMap := (*C.uint64_t)(unsafe.Pointer(provisionRequestSize)), cgoAllocsUnknown
-	__ret := C.AMediaDrm_getProvisionRequest(cp0, (**C.uint8_t)(unsafe.Pointer(provisionRequest)), cprovisionRequestSize, (**C.char)(unsafe.Pointer(serverUrl)))
+	__ret := C.AMediaDrm_getProvisionRequest(cp0, cprovisionRequest, cprovisionRequestSize, (**C.char)(unsafe.Pointer(serverUrl)))
 	runtime.KeepAlive(cprovisionRequestSizeAllocMap)
+	runtime.KeepAlive(cprovisionRequestAllocMap)
 	runtime.KeepAlive(cp0AllocMap)
 	__v := (Media_status_t)(__ret)
 	return __v
@@ -846,7 +886,7 @@ func AMediaExtractor_getFileFormat(p0 *AMediaExtractor) *AMediaFormat {
 	cp0, cp0AllocMap := (*C.AMediaExtractor)(unsafe.Pointer(p0)), cgoAllocsUnknown
 	__ret := C.AMediaExtractor_getFileFormat(cp0)
 	runtime.KeepAlive(cp0AllocMap)
-	__v := *(**AMediaFormat)(unsafe.Pointer(&__ret))
+	__v := (*AMediaFormat)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -854,7 +894,7 @@ func AMediaExtractor_getPsshInfo(p0 *AMediaExtractor) *PsshInfo {
 	cp0, cp0AllocMap := (*C.AMediaExtractor)(unsafe.Pointer(p0)), cgoAllocsUnknown
 	__ret := C.AMediaExtractor_getPsshInfo(cp0)
 	runtime.KeepAlive(cp0AllocMap)
-	__v := *(**PsshInfo)(unsafe.Pointer(&__ret))
+	__v := (*PsshInfo)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -862,7 +902,7 @@ func AMediaExtractor_getSampleCryptoInfo(p0 *AMediaExtractor) *AMediaCodecCrypto
 	cp0, cp0AllocMap := (*C.AMediaExtractor)(unsafe.Pointer(p0)), cgoAllocsUnknown
 	__ret := C.AMediaExtractor_getSampleCryptoInfo(cp0)
 	runtime.KeepAlive(cp0AllocMap)
-	__v := *(**AMediaCodecCryptoInfo)(unsafe.Pointer(&__ret))
+	__v := (*AMediaCodecCryptoInfo)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -922,13 +962,13 @@ func AMediaExtractor_getTrackFormat(p0 *AMediaExtractor, idx uint64) *AMediaForm
 	__ret := C.AMediaExtractor_getTrackFormat(cp0, cidx)
 	runtime.KeepAlive(cidxAllocMap)
 	runtime.KeepAlive(cp0AllocMap)
-	__v := *(**AMediaFormat)(unsafe.Pointer(&__ret))
+	__v := (*AMediaFormat)(unsafe.Pointer(__ret))
 	return __v
 }
 
 func AMediaExtractor_new() *AMediaExtractor {
 	__ret := C.AMediaExtractor_new()
-	__v := *(**AMediaExtractor)(unsafe.Pointer(&__ret))
+	__v := (*AMediaExtractor)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -1138,7 +1178,7 @@ func AMediaFormat_getString(p0 *AMediaFormat, name string, out *string) bool {
 
 func AMediaFormat_new() *AMediaFormat {
 	__ret := C.AMediaFormat_new()
-	__v := *(**AMediaFormat)(unsafe.Pointer(&__ret))
+	__v := (*AMediaFormat)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -1254,7 +1294,7 @@ func AMediaMuxer_append(fd int32, mode AppendMode) *AMediaMuxer {
 	__ret := C.AMediaMuxer_append(cfd, cmode)
 	runtime.KeepAlive(cmodeAllocMap)
 	runtime.KeepAlive(cfdAllocMap)
-	__v := *(**AMediaMuxer)(unsafe.Pointer(&__ret))
+	__v := (*AMediaMuxer)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -1280,7 +1320,7 @@ func AMediaMuxer_getTrackFormat(muxer *AMediaMuxer, idx uint64) *AMediaFormat {
 	__ret := C.AMediaMuxer_getTrackFormat(cmuxer, cidx)
 	runtime.KeepAlive(cidxAllocMap)
 	runtime.KeepAlive(cmuxerAllocMap)
-	__v := *(**AMediaFormat)(unsafe.Pointer(&__ret))
+	__v := (*AMediaFormat)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -1290,7 +1330,7 @@ func AMediaMuxer_new(fd int32, format OutputFormat) *AMediaMuxer {
 	__ret := C.AMediaMuxer_new(cfd, cformat)
 	runtime.KeepAlive(cformatAllocMap)
 	runtime.KeepAlive(cfdAllocMap)
-	__v := *(**AMediaMuxer)(unsafe.Pointer(&__ret))
+	__v := (*AMediaMuxer)(unsafe.Pointer(__ret))
 	return __v
 }
 

@@ -21,7 +21,7 @@ func Sync_file_info(fd int32) *Sync_file_info_s {
 	cfd, cfdAllocMap := (C.int)(fd), cgoAllocsUnknown
 	__ret := C.sync_file_info(cfd)
 	runtime.KeepAlive(cfdAllocMap)
-	__v := *(**Sync_file_info_s)(unsafe.Pointer(&__ret))
+	__v := (*Sync_file_info_s)(unsafe.Pointer(__ret))
 	return __v
 }
 

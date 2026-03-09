@@ -20,7 +20,7 @@ var _ unsafe.Pointer
 
 func AFontMatcher_create() *AFontMatcher {
 	__ret := C.AFontMatcher_create()
-	__v := *(**AFontMatcher)(unsafe.Pointer(&__ret))
+	__v := (*AFontMatcher)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -42,7 +42,7 @@ func AFontMatcher_match(matcher *AFontMatcher, familyName string, text *uint16, 
 	runtime.KeepAlive(ctextAllocMap)
 	runtime.KeepAlive(cfamilyNameAllocMap)
 	runtime.KeepAlive(cmatcherAllocMap)
-	__v := *(**AFont)(unsafe.Pointer(&__ret))
+	__v := (*AFont)(unsafe.Pointer(__ret))
 	return __v
 }
 

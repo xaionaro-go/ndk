@@ -128,54 +128,6 @@ func readManifest(path string) c2ffi.Manifest {
 	return mf
 }
 
-func convertAndWriteNoHeaderFilter(
-	jsonData []byte,
-	mf *c2ffi.Manifest,
-	ndkIncDir string,
-	module string,
-	srcPkg string,
-	outPath string,
-) {
-	if module == "" {
-		module = mf.Generator.PackageName
-	}
-	if module == "" {
-		module = strings.TrimSuffix(filepath.Base(outPath), ".yaml")
-	}
-	if srcPkg == "" {
-		srcPkg = "github.com/xaionaro-go/ndk/capi/" + module
-	}
-
-	var headerDirs []string
-	if ndkIncDir != "" {
-		for _, inc := range mf.Generator.Includes {
-			dir := filepath.Join(ndkIncDir, filepath.Dir(inc))
-			headerDirs = appendUnique(headerDirs, dir)
-		}
-	}
-
-	opts := c2ffi.ConvertOptions{
-		Module:        module,
-		SourcePackage: srcPkg,
-		Rules:         mf.Translator.Rules.Global,
-		NDKHeaderDirs: headerDirs,
-	}
-
-	spec, err := c2ffi.Convert(jsonData, opts)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "convert c2ffi: %v\n", err)
-		os.Exit(1)
-	}
-
-	if err := specgen.WriteSpec(*spec, outPath); err != nil {
-		fmt.Fprintf(os.Stderr, "write: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Printf("specgen: wrote %s (%d types, %d enums, %d functions, %d callbacks, %d structs)\n",
-		outPath, len(spec.Types), len(spec.Enums), len(spec.Functions), len(spec.Callbacks), len(spec.Structs))
-}
-
 func convertAndWrite(
 	jsonData []byte,
 	mf *c2ffi.Manifest,

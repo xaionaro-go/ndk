@@ -1,6 +1,7 @@
 package nnapi
 
 import (
+	"runtime"
 	"unsafe"
 
 	capi "github.com/xaionaro-go/ndk/capi/neuralnetworks"
@@ -34,6 +35,13 @@ func (h *Model) AddOperand(desc OperandTypeDesc) error {
 	}
 	ct.Scale = desc.Scale
 	ct.ZeroPoint = desc.ZeroPoint
+
+	var pinner runtime.Pinner
+	pinner.Pin(&ct)
+	if ct.Dimensions != nil {
+		pinner.Pin(ct.Dimensions)
+	}
+	defer pinner.Unpin()
 
 	goType := (*capi.ANeuralNetworksOperandType)(unsafe.Pointer(&ct))
 	return result(int32(capi.ANeuralNetworksModel_addOperand(h.ptr, goType)))

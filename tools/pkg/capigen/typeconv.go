@@ -161,11 +161,6 @@ func isScalarGoType(t string) bool {
 	return false
 }
 
-// isGoPointerType returns true if the Go type is a pointer type.
-func isGoPointerType(t string) bool {
-	return strings.HasPrefix(t, "*")
-}
-
 // isFixedArrayType returns true if t is a fixed-size array type like "[16]float32".
 func isFixedArrayType(t string) bool {
 	return len(t) > 2 && t[0] == '[' && t[1] != ']'

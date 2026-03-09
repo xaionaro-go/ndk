@@ -19,7 +19,15 @@ var _ unsafe.Pointer
 
 func ANeuralNetworksBurst_create(compilation *ANeuralNetworksCompilation, burst **ANeuralNetworksBurst) int32 {
 	ccompilation, ccompilationAllocMap := (*C.ANeuralNetworksCompilation)(unsafe.Pointer(compilation)), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksBurst_create(ccompilation, (**C.ANeuralNetworksBurst)(unsafe.Pointer(burst)))
+	cburst, cburstAllocMap := (**C.ANeuralNetworksBurst)(unsafe.Pointer(burst)), cgoAllocsUnknown
+	var pinnercburst runtime.Pinner
+	pinnercburst.Pin(burst)
+	if burst != nil {
+		pinnercburst.Pin(unsafe.Pointer(*burst))
+	}
+	defer pinnercburst.Unpin()
+	__ret := C.ANeuralNetworksBurst_create(ccompilation, cburst)
+	runtime.KeepAlive(cburstAllocMap)
 	runtime.KeepAlive(ccompilationAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -33,7 +41,15 @@ func ANeuralNetworksBurst_free(burst *ANeuralNetworksBurst) {
 
 func ANeuralNetworksCompilation_create(model *ANeuralNetworksModel, compilation **ANeuralNetworksCompilation) int32 {
 	cmodel, cmodelAllocMap := (*C.ANeuralNetworksModel)(unsafe.Pointer(model)), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksCompilation_create(cmodel, (**C.ANeuralNetworksCompilation)(unsafe.Pointer(compilation)))
+	ccompilation, ccompilationAllocMap := (**C.ANeuralNetworksCompilation)(unsafe.Pointer(compilation)), cgoAllocsUnknown
+	var pinnerccompilation runtime.Pinner
+	pinnerccompilation.Pin(compilation)
+	if compilation != nil {
+		pinnerccompilation.Pin(unsafe.Pointer(*compilation))
+	}
+	defer pinnerccompilation.Unpin()
+	__ret := C.ANeuralNetworksCompilation_create(cmodel, ccompilation)
+	runtime.KeepAlive(ccompilationAllocMap)
 	runtime.KeepAlive(cmodelAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -41,9 +57,25 @@ func ANeuralNetworksCompilation_create(model *ANeuralNetworksModel, compilation 
 
 func ANeuralNetworksCompilation_createForDevices(model *ANeuralNetworksModel, devices **ANeuralNetworksDevice, numDevices uint32, compilation **ANeuralNetworksCompilation) int32 {
 	cmodel, cmodelAllocMap := (*C.ANeuralNetworksModel)(unsafe.Pointer(model)), cgoAllocsUnknown
+	cdevices, cdevicesAllocMap := (**C.ANeuralNetworksDevice)(unsafe.Pointer(devices)), cgoAllocsUnknown
+	var pinnercdevices runtime.Pinner
+	pinnercdevices.Pin(devices)
+	if devices != nil {
+		pinnercdevices.Pin(unsafe.Pointer(*devices))
+	}
+	defer pinnercdevices.Unpin()
 	cnumDevices, cnumDevicesAllocMap := (C.uint)(numDevices), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksCompilation_createForDevices(cmodel, (**C.ANeuralNetworksDevice)(unsafe.Pointer(devices)), cnumDevices, (**C.ANeuralNetworksCompilation)(unsafe.Pointer(compilation)))
+	ccompilation, ccompilationAllocMap := (**C.ANeuralNetworksCompilation)(unsafe.Pointer(compilation)), cgoAllocsUnknown
+	var pinnerccompilation runtime.Pinner
+	pinnerccompilation.Pin(compilation)
+	if compilation != nil {
+		pinnerccompilation.Pin(unsafe.Pointer(*compilation))
+	}
+	defer pinnerccompilation.Unpin()
+	__ret := C.ANeuralNetworksCompilation_createForDevices(cmodel, cdevices, cnumDevices, ccompilation)
+	runtime.KeepAlive(ccompilationAllocMap)
 	runtime.KeepAlive(cnumDevicesAllocMap)
+	runtime.KeepAlive(cdevicesAllocMap)
 	runtime.KeepAlive(cmodelAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -199,7 +231,15 @@ func ANeuralNetworksDevice_wait(device *ANeuralNetworksDevice) int32 {
 
 func ANeuralNetworksEvent_createFromSyncFenceFd(sync_fence_fd int32, event **ANeuralNetworksEvent) int32 {
 	csync_fence_fd, csync_fence_fdAllocMap := (C.int)(sync_fence_fd), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksEvent_createFromSyncFenceFd(csync_fence_fd, (**C.ANeuralNetworksEvent)(unsafe.Pointer(event)))
+	cevent, ceventAllocMap := (**C.ANeuralNetworksEvent)(unsafe.Pointer(event)), cgoAllocsUnknown
+	var pinnercevent runtime.Pinner
+	pinnercevent.Pin(event)
+	if event != nil {
+		pinnercevent.Pin(unsafe.Pointer(*event))
+	}
+	defer pinnercevent.Unpin()
+	__ret := C.ANeuralNetworksEvent_createFromSyncFenceFd(csync_fence_fd, cevent)
+	runtime.KeepAlive(ceventAllocMap)
 	runtime.KeepAlive(csync_fence_fdAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -249,7 +289,15 @@ func ANeuralNetworksExecution_compute(execution *ANeuralNetworksExecution) int32
 
 func ANeuralNetworksExecution_create(compilation *ANeuralNetworksCompilation, execution **ANeuralNetworksExecution) int32 {
 	ccompilation, ccompilationAllocMap := (*C.ANeuralNetworksCompilation)(unsafe.Pointer(compilation)), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksExecution_create(ccompilation, (**C.ANeuralNetworksExecution)(unsafe.Pointer(execution)))
+	cexecution, cexecutionAllocMap := (**C.ANeuralNetworksExecution)(unsafe.Pointer(execution)), cgoAllocsUnknown
+	var pinnercexecution runtime.Pinner
+	pinnercexecution.Pin(execution)
+	if execution != nil {
+		pinnercexecution.Pin(unsafe.Pointer(*execution))
+	}
+	defer pinnercexecution.Unpin()
+	__ret := C.ANeuralNetworksExecution_create(ccompilation, cexecution)
+	runtime.KeepAlive(cexecutionAllocMap)
 	runtime.KeepAlive(ccompilationAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -417,7 +465,15 @@ func ANeuralNetworksExecution_setTimeout(execution *ANeuralNetworksExecution, du
 
 func ANeuralNetworksExecution_startCompute(execution *ANeuralNetworksExecution, event **ANeuralNetworksEvent) int32 {
 	cexecution, cexecutionAllocMap := (*C.ANeuralNetworksExecution)(unsafe.Pointer(execution)), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksExecution_startCompute(cexecution, (**C.ANeuralNetworksEvent)(unsafe.Pointer(event)))
+	cevent, ceventAllocMap := (**C.ANeuralNetworksEvent)(unsafe.Pointer(event)), cgoAllocsUnknown
+	var pinnercevent runtime.Pinner
+	pinnercevent.Pin(event)
+	if event != nil {
+		pinnercevent.Pin(unsafe.Pointer(*event))
+	}
+	defer pinnercevent.Unpin()
+	__ret := C.ANeuralNetworksExecution_startCompute(cexecution, cevent)
+	runtime.KeepAlive(ceventAllocMap)
 	runtime.KeepAlive(cexecutionAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -425,11 +481,27 @@ func ANeuralNetworksExecution_startCompute(execution *ANeuralNetworksExecution, 
 
 func ANeuralNetworksExecution_startComputeWithDependencies(execution *ANeuralNetworksExecution, dependencies **ANeuralNetworksEvent, num_dependencies uint32, duration uint64, event **ANeuralNetworksEvent) int32 {
 	cexecution, cexecutionAllocMap := (*C.ANeuralNetworksExecution)(unsafe.Pointer(execution)), cgoAllocsUnknown
+	cdependencies, cdependenciesAllocMap := (**C.ANeuralNetworksEvent)(unsafe.Pointer(dependencies)), cgoAllocsUnknown
+	var pinnercdependencies runtime.Pinner
+	pinnercdependencies.Pin(dependencies)
+	if dependencies != nil {
+		pinnercdependencies.Pin(unsafe.Pointer(*dependencies))
+	}
+	defer pinnercdependencies.Unpin()
 	cnum_dependencies, cnum_dependenciesAllocMap := (C.uint)(num_dependencies), cgoAllocsUnknown
 	cduration, cdurationAllocMap := (C.uint64_t)(duration), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksExecution_startComputeWithDependencies(cexecution, (**C.ANeuralNetworksEvent)(unsafe.Pointer(dependencies)), cnum_dependencies, cduration, (**C.ANeuralNetworksEvent)(unsafe.Pointer(event)))
+	cevent, ceventAllocMap := (**C.ANeuralNetworksEvent)(unsafe.Pointer(event)), cgoAllocsUnknown
+	var pinnercevent runtime.Pinner
+	pinnercevent.Pin(event)
+	if event != nil {
+		pinnercevent.Pin(unsafe.Pointer(*event))
+	}
+	defer pinnercevent.Unpin()
+	__ret := C.ANeuralNetworksExecution_startComputeWithDependencies(cexecution, cdependencies, cnum_dependencies, cduration, cevent)
+	runtime.KeepAlive(ceventAllocMap)
 	runtime.KeepAlive(cdurationAllocMap)
 	runtime.KeepAlive(cnum_dependenciesAllocMap)
+	runtime.KeepAlive(cdependenciesAllocMap)
 	runtime.KeepAlive(cexecutionAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -464,7 +536,15 @@ func ANeuralNetworksMemoryDesc_addOutputRole(desc *ANeuralNetworksMemoryDesc, co
 }
 
 func ANeuralNetworksMemoryDesc_create(desc **ANeuralNetworksMemoryDesc) int32 {
-	__ret := C.ANeuralNetworksMemoryDesc_create((**C.ANeuralNetworksMemoryDesc)(unsafe.Pointer(desc)))
+	cdesc, cdescAllocMap := (**C.ANeuralNetworksMemoryDesc)(unsafe.Pointer(desc)), cgoAllocsUnknown
+	var pinnercdesc runtime.Pinner
+	pinnercdesc.Pin(desc)
+	if desc != nil {
+		pinnercdesc.Pin(unsafe.Pointer(*desc))
+	}
+	defer pinnercdesc.Unpin()
+	__ret := C.ANeuralNetworksMemoryDesc_create(cdesc)
+	runtime.KeepAlive(cdescAllocMap)
 	__v := (int32)(__ret)
 	return __v
 }
@@ -507,7 +587,15 @@ func ANeuralNetworksMemory_copy(src *ANeuralNetworksMemory, dst *ANeuralNetworks
 
 func ANeuralNetworksMemory_createFromAHardwareBuffer(ahwb *AHardwareBuffer, memory **ANeuralNetworksMemory) int32 {
 	cahwb, cahwbAllocMap := (*C.AHardwareBuffer)(unsafe.Pointer(ahwb)), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksMemory_createFromAHardwareBuffer(cahwb, (**C.ANeuralNetworksMemory)(unsafe.Pointer(memory)))
+	cmemory, cmemoryAllocMap := (**C.ANeuralNetworksMemory)(unsafe.Pointer(memory)), cgoAllocsUnknown
+	var pinnercmemory runtime.Pinner
+	pinnercmemory.Pin(memory)
+	if memory != nil {
+		pinnercmemory.Pin(unsafe.Pointer(*memory))
+	}
+	defer pinnercmemory.Unpin()
+	__ret := C.ANeuralNetworksMemory_createFromAHardwareBuffer(cahwb, cmemory)
+	runtime.KeepAlive(cmemoryAllocMap)
 	runtime.KeepAlive(cahwbAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -515,7 +603,15 @@ func ANeuralNetworksMemory_createFromAHardwareBuffer(ahwb *AHardwareBuffer, memo
 
 func ANeuralNetworksMemory_createFromDesc(desc *ANeuralNetworksMemoryDesc, memory **ANeuralNetworksMemory) int32 {
 	cdesc, cdescAllocMap := (*C.ANeuralNetworksMemoryDesc)(unsafe.Pointer(desc)), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksMemory_createFromDesc(cdesc, (**C.ANeuralNetworksMemory)(unsafe.Pointer(memory)))
+	cmemory, cmemoryAllocMap := (**C.ANeuralNetworksMemory)(unsafe.Pointer(memory)), cgoAllocsUnknown
+	var pinnercmemory runtime.Pinner
+	pinnercmemory.Pin(memory)
+	if memory != nil {
+		pinnercmemory.Pin(unsafe.Pointer(*memory))
+	}
+	defer pinnercmemory.Unpin()
+	__ret := C.ANeuralNetworksMemory_createFromDesc(cdesc, cmemory)
+	runtime.KeepAlive(cmemoryAllocMap)
 	runtime.KeepAlive(cdescAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -526,7 +622,15 @@ func ANeuralNetworksMemory_createFromFd(size uint64, protect int32, fd int32, of
 	cprotect, cprotectAllocMap := (C.int)(protect), cgoAllocsUnknown
 	cfd, cfdAllocMap := (C.int)(fd), cgoAllocsUnknown
 	coffset, coffsetAllocMap := (C.uint64_t)(offset), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksMemory_createFromFd(csize, cprotect, cfd, coffset, (**C.ANeuralNetworksMemory)(unsafe.Pointer(memory)))
+	cmemory, cmemoryAllocMap := (**C.ANeuralNetworksMemory)(unsafe.Pointer(memory)), cgoAllocsUnknown
+	var pinnercmemory runtime.Pinner
+	pinnercmemory.Pin(memory)
+	if memory != nil {
+		pinnercmemory.Pin(unsafe.Pointer(*memory))
+	}
+	defer pinnercmemory.Unpin()
+	__ret := C.ANeuralNetworksMemory_createFromFd(csize, cprotect, cfd, coffset, cmemory)
+	runtime.KeepAlive(cmemoryAllocMap)
 	runtime.KeepAlive(coffsetAllocMap)
 	runtime.KeepAlive(cfdAllocMap)
 	runtime.KeepAlive(cprotectAllocMap)
@@ -570,7 +674,15 @@ func ANeuralNetworksModel_addOperation(model *ANeuralNetworksModel, _type ANeura
 }
 
 func ANeuralNetworksModel_create(model **ANeuralNetworksModel) int32 {
-	__ret := C.ANeuralNetworksModel_create((**C.ANeuralNetworksModel)(unsafe.Pointer(model)))
+	cmodel, cmodelAllocMap := (**C.ANeuralNetworksModel)(unsafe.Pointer(model)), cgoAllocsUnknown
+	var pinnercmodel runtime.Pinner
+	pinnercmodel.Pin(model)
+	if model != nil {
+		pinnercmodel.Pin(unsafe.Pointer(*model))
+	}
+	defer pinnercmodel.Unpin()
+	__ret := C.ANeuralNetworksModel_create(cmodel)
+	runtime.KeepAlive(cmodelAllocMap)
 	__v := (int32)(__ret)
 	return __v
 }
@@ -591,11 +703,19 @@ func ANeuralNetworksModel_free(model *ANeuralNetworksModel) {
 
 func ANeuralNetworksModel_getSupportedOperationsForDevices(model *ANeuralNetworksModel, devices **ANeuralNetworksDevice, numDevices uint32, supportedOps *bool) int32 {
 	cmodel, cmodelAllocMap := (*C.ANeuralNetworksModel)(unsafe.Pointer(model)), cgoAllocsUnknown
+	cdevices, cdevicesAllocMap := (**C.ANeuralNetworksDevice)(unsafe.Pointer(devices)), cgoAllocsUnknown
+	var pinnercdevices runtime.Pinner
+	pinnercdevices.Pin(devices)
+	if devices != nil {
+		pinnercdevices.Pin(unsafe.Pointer(*devices))
+	}
+	defer pinnercdevices.Unpin()
 	cnumDevices, cnumDevicesAllocMap := (C.uint)(numDevices), cgoAllocsUnknown
 	csupportedOps, csupportedOpsAllocMap := (*C._Bool)(unsafe.Pointer(supportedOps)), cgoAllocsUnknown
-	__ret := C.ANeuralNetworksModel_getSupportedOperationsForDevices(cmodel, (**C.ANeuralNetworksDevice)(unsafe.Pointer(devices)), cnumDevices, csupportedOps)
+	__ret := C.ANeuralNetworksModel_getSupportedOperationsForDevices(cmodel, cdevices, cnumDevices, csupportedOps)
 	runtime.KeepAlive(csupportedOpsAllocMap)
 	runtime.KeepAlive(cnumDevicesAllocMap)
+	runtime.KeepAlive(cdevicesAllocMap)
 	runtime.KeepAlive(cmodelAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -689,7 +809,15 @@ func ANeuralNetworks_getDefaultLoopTimeout() uint64 {
 
 func ANeuralNetworks_getDevice(devIndex uint32, device **ANeuralNetworksDevice) int32 {
 	cdevIndex, cdevIndexAllocMap := (C.uint)(devIndex), cgoAllocsUnknown
-	__ret := C.ANeuralNetworks_getDevice(cdevIndex, (**C.ANeuralNetworksDevice)(unsafe.Pointer(device)))
+	cdevice, cdeviceAllocMap := (**C.ANeuralNetworksDevice)(unsafe.Pointer(device)), cgoAllocsUnknown
+	var pinnercdevice runtime.Pinner
+	pinnercdevice.Pin(device)
+	if device != nil {
+		pinnercdevice.Pin(unsafe.Pointer(*device))
+	}
+	defer pinnercdevice.Unpin()
+	__ret := C.ANeuralNetworks_getDevice(cdevIndex, cdevice)
+	runtime.KeepAlive(cdeviceAllocMap)
 	runtime.KeepAlive(cdevIndexAllocMap)
 	__v := (int32)(__ret)
 	return __v

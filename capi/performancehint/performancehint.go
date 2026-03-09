@@ -33,13 +33,13 @@ func APerformanceHint_createSession(manager *APerformanceHintManager, threadIds 
 	runtime.KeepAlive(csizeAllocMap)
 	runtime.KeepAlive(cthreadIdsAllocMap)
 	runtime.KeepAlive(cmanagerAllocMap)
-	__v := *(**APerformanceHintSession)(unsafe.Pointer(&__ret))
+	__v := (*APerformanceHintSession)(unsafe.Pointer(__ret))
 	return __v
 }
 
 func APerformanceHint_getManager() *APerformanceHintManager {
 	__ret := C.APerformanceHint_getManager()
-	__v := *(**APerformanceHintManager)(unsafe.Pointer(&__ret))
+	__v := (*APerformanceHintManager)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -105,7 +105,7 @@ func APerformanceHint_updateTargetWorkDuration(session *APerformanceHintSession,
 
 func AWorkDuration_create() *AWorkDuration {
 	__ret := C.AWorkDuration_create()
-	__v := *(**AWorkDuration)(unsafe.Pointer(&__ret))
+	__v := (*AWorkDuration)(unsafe.Pointer(__ret))
 	return __v
 }
 

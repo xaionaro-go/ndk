@@ -30,7 +30,7 @@ func ASurfaceControl_create(parent *ASurfaceControl, debug_name string) *ASurfac
 	__ret := C.ASurfaceControl_create(cparent, cdebug_name)
 	runtime.KeepAlive(cdebug_nameAllocMap)
 	runtime.KeepAlive(cparentAllocMap)
-	__v := *(**ASurfaceControl)(unsafe.Pointer(&__ret))
+	__v := (*ASurfaceControl)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -40,7 +40,7 @@ func ASurfaceControl_createFromWindow(parent *ANativeWindow, debug_name string) 
 	__ret := C.ASurfaceControl_createFromWindow(cparent, cdebug_name)
 	runtime.KeepAlive(cdebug_nameAllocMap)
 	runtime.KeepAlive(cparentAllocMap)
-	__v := *(**ASurfaceControl)(unsafe.Pointer(&__ret))
+	__v := (*ASurfaceControl)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -102,7 +102,7 @@ func ASurfaceTransaction_clearFrameRate(transaction *ASurfaceTransaction, surfac
 
 func ASurfaceTransaction_create() *ASurfaceTransaction {
 	__ret := C.ASurfaceTransaction_create()
-	__v := *(**ASurfaceTransaction)(unsafe.Pointer(&__ret))
+	__v := (*ASurfaceTransaction)(unsafe.Pointer(__ret))
 	return __v
 }
 

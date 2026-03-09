@@ -59,7 +59,7 @@ func AStorageManager_mountObb(mgr *AStorageManager, filename string, key string,
 
 func AStorageManager_new() *AStorageManager {
 	__ret := C.AStorageManager_new()
-	__v := *(**AStorageManager)(unsafe.Pointer(&__ret))
+	__v := (*AStorageManager)(unsafe.Pointer(__ret))
 	return __v
 }
 

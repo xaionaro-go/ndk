@@ -21,7 +21,7 @@ func ASurfaceTexture_acquireANativeWindow(st *ASurfaceTexture) *ANativeWindow {
 	cst, cstAllocMap := (*C.ASurfaceTexture)(unsafe.Pointer(st)), cgoAllocsUnknown
 	__ret := C.ASurfaceTexture_acquireANativeWindow(cst)
 	runtime.KeepAlive(cstAllocMap)
-	__v := *(**ANativeWindow)(unsafe.Pointer(&__ret))
+	__v := (*ANativeWindow)(unsafe.Pointer(__ret))
 	return __v
 }
 

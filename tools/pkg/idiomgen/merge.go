@@ -908,9 +908,7 @@ func collectUnresolvedFuncTypes(
 		for strings.HasPrefix(base, "*") {
 			base = base[1:]
 		}
-		if strings.HasPrefix(base, "[]") {
-			base = base[2:]
-		}
+		base = strings.TrimPrefix(base, "[]")
 		// Skip array types like [16]float32.
 		if len(base) > 0 && base[0] == '[' {
 			return

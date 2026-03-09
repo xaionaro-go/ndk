@@ -34,9 +34,17 @@ func ACameraCaptureSession_capture(session *ACameraCaptureSession, callbacks *AC
 	csession, csessionAllocMap := (*C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_captureCallbacks)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
 	cnumRequests, cnumRequestsAllocMap := (C.int)(numRequests), cgoAllocsUnknown
+	crequests, crequestsAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(requests)), cgoAllocsUnknown
+	var pinnercrequests runtime.Pinner
+	pinnercrequests.Pin(requests)
+	if requests != nil {
+		pinnercrequests.Pin(unsafe.Pointer(*requests))
+	}
+	defer pinnercrequests.Unpin()
 	ccaptureSequenceId, ccaptureSequenceIdAllocMap := (*C.int)(unsafe.Pointer(captureSequenceId)), cgoAllocsUnknown
-	__ret := C.ACameraCaptureSession_capture(csession, ccallbacks, cnumRequests, (**C.ACaptureRequest)(unsafe.Pointer(requests)), ccaptureSequenceId)
+	__ret := C.ACameraCaptureSession_capture(csession, ccallbacks, cnumRequests, crequests, ccaptureSequenceId)
 	runtime.KeepAlive(ccaptureSequenceIdAllocMap)
+	runtime.KeepAlive(crequestsAllocMap)
 	runtime.KeepAlive(cnumRequestsAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(csessionAllocMap)
@@ -48,9 +56,17 @@ func ACameraCaptureSession_captureV2(session *ACameraCaptureSession, callbacks *
 	csession, csessionAllocMap := (*C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_captureCallbacksV2)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
 	cnumRequests, cnumRequestsAllocMap := (C.int)(numRequests), cgoAllocsUnknown
+	crequests, crequestsAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(requests)), cgoAllocsUnknown
+	var pinnercrequests runtime.Pinner
+	pinnercrequests.Pin(requests)
+	if requests != nil {
+		pinnercrequests.Pin(unsafe.Pointer(*requests))
+	}
+	defer pinnercrequests.Unpin()
 	ccaptureSequenceId, ccaptureSequenceIdAllocMap := (*C.int)(unsafe.Pointer(captureSequenceId)), cgoAllocsUnknown
-	__ret := C.ACameraCaptureSession_captureV2(csession, ccallbacks, cnumRequests, (**C.ACaptureRequest)(unsafe.Pointer(requests)), ccaptureSequenceId)
+	__ret := C.ACameraCaptureSession_captureV2(csession, ccallbacks, cnumRequests, crequests, ccaptureSequenceId)
 	runtime.KeepAlive(ccaptureSequenceIdAllocMap)
+	runtime.KeepAlive(crequestsAllocMap)
 	runtime.KeepAlive(cnumRequestsAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(csessionAllocMap)
@@ -66,7 +82,15 @@ func ACameraCaptureSession_close(session *ACameraCaptureSession) {
 
 func ACameraCaptureSession_getDevice(session *ACameraCaptureSession, device **ACameraDevice) Camera_status_t {
 	csession, csessionAllocMap := (*C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
-	__ret := C.ACameraCaptureSession_getDevice(csession, (**C.ACameraDevice)(unsafe.Pointer(device)))
+	cdevice, cdeviceAllocMap := (**C.ACameraDevice)(unsafe.Pointer(device)), cgoAllocsUnknown
+	var pinnercdevice runtime.Pinner
+	pinnercdevice.Pin(device)
+	if device != nil {
+		pinnercdevice.Pin(unsafe.Pointer(*device))
+	}
+	defer pinnercdevice.Unpin()
+	__ret := C.ACameraCaptureSession_getDevice(csession, cdevice)
+	runtime.KeepAlive(cdeviceAllocMap)
 	runtime.KeepAlive(csessionAllocMap)
 	__v := (Camera_status_t)(__ret)
 	return __v
@@ -76,9 +100,17 @@ func ACameraCaptureSession_logicalCamera_capture(session *ACameraCaptureSession,
 	csession, csessionAllocMap := (*C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_logicalCamera_captureCallbacks)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
 	cnumRequests, cnumRequestsAllocMap := (C.int)(numRequests), cgoAllocsUnknown
+	crequests, crequestsAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(requests)), cgoAllocsUnknown
+	var pinnercrequests runtime.Pinner
+	pinnercrequests.Pin(requests)
+	if requests != nil {
+		pinnercrequests.Pin(unsafe.Pointer(*requests))
+	}
+	defer pinnercrequests.Unpin()
 	ccaptureSequenceId, ccaptureSequenceIdAllocMap := (*C.int)(unsafe.Pointer(captureSequenceId)), cgoAllocsUnknown
-	__ret := C.ACameraCaptureSession_logicalCamera_capture(csession, ccallbacks, cnumRequests, (**C.ACaptureRequest)(unsafe.Pointer(requests)), ccaptureSequenceId)
+	__ret := C.ACameraCaptureSession_logicalCamera_capture(csession, ccallbacks, cnumRequests, crequests, ccaptureSequenceId)
 	runtime.KeepAlive(ccaptureSequenceIdAllocMap)
+	runtime.KeepAlive(crequestsAllocMap)
 	runtime.KeepAlive(cnumRequestsAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(csessionAllocMap)
@@ -90,9 +122,17 @@ func ACameraCaptureSession_logicalCamera_captureV2(session *ACameraCaptureSessio
 	csession, csessionAllocMap := (*C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_logicalCamera_captureCallbacksV2)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
 	cnumRequests, cnumRequestsAllocMap := (C.int)(numRequests), cgoAllocsUnknown
+	crequests, crequestsAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(requests)), cgoAllocsUnknown
+	var pinnercrequests runtime.Pinner
+	pinnercrequests.Pin(requests)
+	if requests != nil {
+		pinnercrequests.Pin(unsafe.Pointer(*requests))
+	}
+	defer pinnercrequests.Unpin()
 	ccaptureSequenceId, ccaptureSequenceIdAllocMap := (*C.int)(unsafe.Pointer(captureSequenceId)), cgoAllocsUnknown
-	__ret := C.ACameraCaptureSession_logicalCamera_captureV2(csession, ccallbacks, cnumRequests, (**C.ACaptureRequest)(unsafe.Pointer(requests)), ccaptureSequenceId)
+	__ret := C.ACameraCaptureSession_logicalCamera_captureV2(csession, ccallbacks, cnumRequests, crequests, ccaptureSequenceId)
 	runtime.KeepAlive(ccaptureSequenceIdAllocMap)
+	runtime.KeepAlive(crequestsAllocMap)
 	runtime.KeepAlive(cnumRequestsAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(csessionAllocMap)
@@ -104,9 +144,17 @@ func ACameraCaptureSession_logicalCamera_setRepeatingRequest(session *ACameraCap
 	csession, csessionAllocMap := (*C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_logicalCamera_captureCallbacks)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
 	cnumRequests, cnumRequestsAllocMap := (C.int)(numRequests), cgoAllocsUnknown
+	crequests, crequestsAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(requests)), cgoAllocsUnknown
+	var pinnercrequests runtime.Pinner
+	pinnercrequests.Pin(requests)
+	if requests != nil {
+		pinnercrequests.Pin(unsafe.Pointer(*requests))
+	}
+	defer pinnercrequests.Unpin()
 	ccaptureSequenceId, ccaptureSequenceIdAllocMap := (*C.int)(unsafe.Pointer(captureSequenceId)), cgoAllocsUnknown
-	__ret := C.ACameraCaptureSession_logicalCamera_setRepeatingRequest(csession, ccallbacks, cnumRequests, (**C.ACaptureRequest)(unsafe.Pointer(requests)), ccaptureSequenceId)
+	__ret := C.ACameraCaptureSession_logicalCamera_setRepeatingRequest(csession, ccallbacks, cnumRequests, crequests, ccaptureSequenceId)
 	runtime.KeepAlive(ccaptureSequenceIdAllocMap)
+	runtime.KeepAlive(crequestsAllocMap)
 	runtime.KeepAlive(cnumRequestsAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(csessionAllocMap)
@@ -118,9 +166,17 @@ func ACameraCaptureSession_logicalCamera_setRepeatingRequestV2(session *ACameraC
 	csession, csessionAllocMap := (*C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_logicalCamera_captureCallbacksV2)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
 	cnumRequests, cnumRequestsAllocMap := (C.int)(numRequests), cgoAllocsUnknown
+	crequests, crequestsAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(requests)), cgoAllocsUnknown
+	var pinnercrequests runtime.Pinner
+	pinnercrequests.Pin(requests)
+	if requests != nil {
+		pinnercrequests.Pin(unsafe.Pointer(*requests))
+	}
+	defer pinnercrequests.Unpin()
 	ccaptureSequenceId, ccaptureSequenceIdAllocMap := (*C.int)(unsafe.Pointer(captureSequenceId)), cgoAllocsUnknown
-	__ret := C.ACameraCaptureSession_logicalCamera_setRepeatingRequestV2(csession, ccallbacks, cnumRequests, (**C.ACaptureRequest)(unsafe.Pointer(requests)), ccaptureSequenceId)
+	__ret := C.ACameraCaptureSession_logicalCamera_setRepeatingRequestV2(csession, ccallbacks, cnumRequests, crequests, ccaptureSequenceId)
 	runtime.KeepAlive(ccaptureSequenceIdAllocMap)
+	runtime.KeepAlive(crequestsAllocMap)
 	runtime.KeepAlive(cnumRequestsAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(csessionAllocMap)
@@ -142,9 +198,17 @@ func ACameraCaptureSession_setRepeatingRequest(session *ACameraCaptureSession, c
 	csession, csessionAllocMap := (*C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_captureCallbacks)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
 	cnumRequests, cnumRequestsAllocMap := (C.int)(numRequests), cgoAllocsUnknown
+	crequests, crequestsAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(requests)), cgoAllocsUnknown
+	var pinnercrequests runtime.Pinner
+	pinnercrequests.Pin(requests)
+	if requests != nil {
+		pinnercrequests.Pin(unsafe.Pointer(*requests))
+	}
+	defer pinnercrequests.Unpin()
 	ccaptureSequenceId, ccaptureSequenceIdAllocMap := (*C.int)(unsafe.Pointer(captureSequenceId)), cgoAllocsUnknown
-	__ret := C.ACameraCaptureSession_setRepeatingRequest(csession, ccallbacks, cnumRequests, (**C.ACaptureRequest)(unsafe.Pointer(requests)), ccaptureSequenceId)
+	__ret := C.ACameraCaptureSession_setRepeatingRequest(csession, ccallbacks, cnumRequests, crequests, ccaptureSequenceId)
 	runtime.KeepAlive(ccaptureSequenceIdAllocMap)
+	runtime.KeepAlive(crequestsAllocMap)
 	runtime.KeepAlive(cnumRequestsAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(csessionAllocMap)
@@ -156,9 +220,17 @@ func ACameraCaptureSession_setRepeatingRequestV2(session *ACameraCaptureSession,
 	csession, csessionAllocMap := (*C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_captureCallbacksV2)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
 	cnumRequests, cnumRequestsAllocMap := (C.int)(numRequests), cgoAllocsUnknown
+	crequests, crequestsAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(requests)), cgoAllocsUnknown
+	var pinnercrequests runtime.Pinner
+	pinnercrequests.Pin(requests)
+	if requests != nil {
+		pinnercrequests.Pin(unsafe.Pointer(*requests))
+	}
+	defer pinnercrequests.Unpin()
 	ccaptureSequenceId, ccaptureSequenceIdAllocMap := (*C.int)(unsafe.Pointer(captureSequenceId)), cgoAllocsUnknown
-	__ret := C.ACameraCaptureSession_setRepeatingRequestV2(csession, ccallbacks, cnumRequests, (**C.ACaptureRequest)(unsafe.Pointer(requests)), ccaptureSequenceId)
+	__ret := C.ACameraCaptureSession_setRepeatingRequestV2(csession, ccallbacks, cnumRequests, crequests, ccaptureSequenceId)
 	runtime.KeepAlive(ccaptureSequenceIdAllocMap)
+	runtime.KeepAlive(crequestsAllocMap)
 	runtime.KeepAlive(cnumRequestsAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(csessionAllocMap)
@@ -207,7 +279,15 @@ func ACameraDevice_close(device *ACameraDevice) Camera_status_t {
 func ACameraDevice_createCaptureRequest(device *ACameraDevice, templateId ACameraDevice_request_template, request **ACaptureRequest) Camera_status_t {
 	cdevice, cdeviceAllocMap := (*C.ACameraDevice)(unsafe.Pointer(device)), cgoAllocsUnknown
 	ctemplateId, ctemplateIdAllocMap := (C.ACameraDevice_request_template)(templateId), cgoAllocsUnknown
-	__ret := C.ACameraDevice_createCaptureRequest(cdevice, ctemplateId, (**C.ACaptureRequest)(unsafe.Pointer(request)))
+	crequest, crequestAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(request)), cgoAllocsUnknown
+	var pinnercrequest runtime.Pinner
+	pinnercrequest.Pin(request)
+	if request != nil {
+		pinnercrequest.Pin(unsafe.Pointer(*request))
+	}
+	defer pinnercrequest.Unpin()
+	__ret := C.ACameraDevice_createCaptureRequest(cdevice, ctemplateId, crequest)
+	runtime.KeepAlive(crequestAllocMap)
 	runtime.KeepAlive(ctemplateIdAllocMap)
 	runtime.KeepAlive(cdeviceAllocMap)
 	__v := (Camera_status_t)(__ret)
@@ -218,7 +298,15 @@ func ACameraDevice_createCaptureRequest_withPhysicalIds(device *ACameraDevice, t
 	cdevice, cdeviceAllocMap := (*C.ACameraDevice)(unsafe.Pointer(device)), cgoAllocsUnknown
 	ctemplateId, ctemplateIdAllocMap := (C.ACameraDevice_request_template)(templateId), cgoAllocsUnknown
 	cphysicalIdList, cphysicalIdListAllocMap := (*C.ACameraIdList)(unsafe.Pointer(physicalIdList)), cgoAllocsUnknown
-	__ret := C.ACameraDevice_createCaptureRequest_withPhysicalIds(cdevice, ctemplateId, cphysicalIdList, (**C.ACaptureRequest)(unsafe.Pointer(request)))
+	crequest, crequestAllocMap := (**C.ACaptureRequest)(unsafe.Pointer(request)), cgoAllocsUnknown
+	var pinnercrequest runtime.Pinner
+	pinnercrequest.Pin(request)
+	if request != nil {
+		pinnercrequest.Pin(unsafe.Pointer(*request))
+	}
+	defer pinnercrequest.Unpin()
+	__ret := C.ACameraDevice_createCaptureRequest_withPhysicalIds(cdevice, ctemplateId, cphysicalIdList, crequest)
+	runtime.KeepAlive(crequestAllocMap)
 	runtime.KeepAlive(cphysicalIdListAllocMap)
 	runtime.KeepAlive(ctemplateIdAllocMap)
 	runtime.KeepAlive(cdeviceAllocMap)
@@ -230,7 +318,15 @@ func ACameraDevice_createCaptureSession(device *ACameraDevice, outputs *ACapture
 	cdevice, cdeviceAllocMap := (*C.ACameraDevice)(unsafe.Pointer(device)), cgoAllocsUnknown
 	coutputs, coutputsAllocMap := (*C.ACaptureSessionOutputContainer)(unsafe.Pointer(outputs)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_stateCallbacks)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
-	__ret := C.ACameraDevice_createCaptureSession(cdevice, coutputs, ccallbacks, (**C.ACameraCaptureSession)(unsafe.Pointer(session)))
+	csession, csessionAllocMap := (**C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
+	var pinnercsession runtime.Pinner
+	pinnercsession.Pin(session)
+	if session != nil {
+		pinnercsession.Pin(unsafe.Pointer(*session))
+	}
+	defer pinnercsession.Unpin()
+	__ret := C.ACameraDevice_createCaptureSession(cdevice, coutputs, ccallbacks, csession)
+	runtime.KeepAlive(csessionAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(coutputsAllocMap)
 	runtime.KeepAlive(cdeviceAllocMap)
@@ -243,7 +339,15 @@ func ACameraDevice_createCaptureSessionWithSessionParameters(device *ACameraDevi
 	coutputs, coutputsAllocMap := (*C.ACaptureSessionOutputContainer)(unsafe.Pointer(outputs)), cgoAllocsUnknown
 	csessionParameters, csessionParametersAllocMap := (*C.ACaptureRequest)(unsafe.Pointer(sessionParameters)), cgoAllocsUnknown
 	ccallbacks, ccallbacksAllocMap := (*C.ACameraCaptureSession_stateCallbacks)(unsafe.Pointer(callbacks)), cgoAllocsUnknown
-	__ret := C.ACameraDevice_createCaptureSessionWithSessionParameters(cdevice, coutputs, csessionParameters, ccallbacks, (**C.ACameraCaptureSession)(unsafe.Pointer(session)))
+	csession, csessionAllocMap := (**C.ACameraCaptureSession)(unsafe.Pointer(session)), cgoAllocsUnknown
+	var pinnercsession runtime.Pinner
+	pinnercsession.Pin(session)
+	if session != nil {
+		pinnercsession.Pin(unsafe.Pointer(*session))
+	}
+	defer pinnercsession.Unpin()
+	__ret := C.ACameraDevice_createCaptureSessionWithSessionParameters(cdevice, coutputs, csessionParameters, ccallbacks, csession)
+	runtime.KeepAlive(csessionAllocMap)
 	runtime.KeepAlive(ccallbacksAllocMap)
 	runtime.KeepAlive(csessionParametersAllocMap)
 	runtime.KeepAlive(coutputsAllocMap)
@@ -272,7 +376,7 @@ func ACameraDevice_isSessionConfigurationSupported(device *ACameraDevice, sessio
 
 func ACameraManager_create() *ACameraManager {
 	__ret := C.ACameraManager_create()
-	__v := *(**ACameraManager)(unsafe.Pointer(&__ret))
+	__v := (*ACameraManager)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -291,7 +395,15 @@ func ACameraManager_deleteCameraIdList(cameraIdList *ACameraIdList) {
 func ACameraManager_getCameraCharacteristics(manager *ACameraManager, cameraId string, characteristics **ACameraMetadata) Camera_status_t {
 	cmanager, cmanagerAllocMap := (*C.ACameraManager)(unsafe.Pointer(manager)), cgoAllocsUnknown
 	ccameraId, ccameraIdAllocMap := UnpackPCharString(cameraId)
-	__ret := C.ACameraManager_getCameraCharacteristics(cmanager, ccameraId, (**C.ACameraMetadata)(unsafe.Pointer(characteristics)))
+	ccharacteristics, ccharacteristicsAllocMap := (**C.ACameraMetadata)(unsafe.Pointer(characteristics)), cgoAllocsUnknown
+	var pinnerccharacteristics runtime.Pinner
+	pinnerccharacteristics.Pin(characteristics)
+	if characteristics != nil {
+		pinnerccharacteristics.Pin(unsafe.Pointer(*characteristics))
+	}
+	defer pinnerccharacteristics.Unpin()
+	__ret := C.ACameraManager_getCameraCharacteristics(cmanager, ccameraId, ccharacteristics)
+	runtime.KeepAlive(ccharacteristicsAllocMap)
 	runtime.KeepAlive(ccameraIdAllocMap)
 	runtime.KeepAlive(cmanagerAllocMap)
 	__v := (Camera_status_t)(__ret)
@@ -300,7 +412,15 @@ func ACameraManager_getCameraCharacteristics(manager *ACameraManager, cameraId s
 
 func ACameraManager_getCameraIdList(manager *ACameraManager, cameraIdList **ACameraIdList) Camera_status_t {
 	cmanager, cmanagerAllocMap := (*C.ACameraManager)(unsafe.Pointer(manager)), cgoAllocsUnknown
-	__ret := C.ACameraManager_getCameraIdList(cmanager, (**C.ACameraIdList)(unsafe.Pointer(cameraIdList)))
+	ccameraIdList, ccameraIdListAllocMap := (**C.ACameraIdList)(unsafe.Pointer(cameraIdList)), cgoAllocsUnknown
+	var pinnerccameraIdList runtime.Pinner
+	pinnerccameraIdList.Pin(cameraIdList)
+	if cameraIdList != nil {
+		pinnerccameraIdList.Pin(unsafe.Pointer(*cameraIdList))
+	}
+	defer pinnerccameraIdList.Unpin()
+	__ret := C.ACameraManager_getCameraIdList(cmanager, ccameraIdList)
+	runtime.KeepAlive(ccameraIdListAllocMap)
 	runtime.KeepAlive(cmanagerAllocMap)
 	__v := (Camera_status_t)(__ret)
 	return __v
@@ -310,7 +430,15 @@ func ACameraManager_openCamera(manager *ACameraManager, cameraId string, callbac
 	cmanager, cmanagerAllocMap := (*C.ACameraManager)(unsafe.Pointer(manager)), cgoAllocsUnknown
 	ccameraId, ccameraIdAllocMap := UnpackPCharString(cameraId)
 	ccallback, ccallbackAllocMap := (*C.ACameraDevice_StateCallbacks)(unsafe.Pointer(callback)), cgoAllocsUnknown
-	__ret := C.ACameraManager_openCamera(cmanager, ccameraId, ccallback, (**C.ACameraDevice)(unsafe.Pointer(device)))
+	cdevice, cdeviceAllocMap := (**C.ACameraDevice)(unsafe.Pointer(device)), cgoAllocsUnknown
+	var pinnercdevice runtime.Pinner
+	pinnercdevice.Pin(device)
+	if device != nil {
+		pinnercdevice.Pin(unsafe.Pointer(*device))
+	}
+	defer pinnercdevice.Unpin()
+	__ret := C.ACameraManager_openCamera(cmanager, ccameraId, ccallback, cdevice)
+	runtime.KeepAlive(cdeviceAllocMap)
 	runtime.KeepAlive(ccallbackAllocMap)
 	runtime.KeepAlive(ccameraIdAllocMap)
 	runtime.KeepAlive(cmanagerAllocMap)
@@ -362,7 +490,7 @@ func ACameraMetadata_copy(src *ACameraMetadata) *ACameraMetadata {
 	csrc, csrcAllocMap := (*C.ACameraMetadata)(unsafe.Pointer(src)), cgoAllocsUnknown
 	__ret := C.ACameraMetadata_copy(csrc)
 	runtime.KeepAlive(csrcAllocMap)
-	__v := *(**ACameraMetadata)(unsafe.Pointer(&__ret))
+	__v := (*ACameraMetadata)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -378,14 +506,22 @@ func ACameraMetadata_fromCameraMetadata(env *JNIEnv, cameraMetadata Jobject) *AC
 	__ret := C.ACameraMetadata_fromCameraMetadata(cenv, ccameraMetadata)
 	runtime.KeepAlive(ccameraMetadataAllocMap)
 	runtime.KeepAlive(cenvAllocMap)
-	__v := *(**ACameraMetadata)(unsafe.Pointer(&__ret))
+	__v := (*ACameraMetadata)(unsafe.Pointer(__ret))
 	return __v
 }
 
 func ACameraMetadata_getAllTags(metadata *ACameraMetadata, numEntries *int32, tags **uint32) Camera_status_t {
 	cmetadata, cmetadataAllocMap := (*C.ACameraMetadata)(unsafe.Pointer(metadata)), cgoAllocsUnknown
 	cnumEntries, cnumEntriesAllocMap := (*C.int)(unsafe.Pointer(numEntries)), cgoAllocsUnknown
-	__ret := C.ACameraMetadata_getAllTags(cmetadata, cnumEntries, (**C.uint32_t)(unsafe.Pointer(tags)))
+	ctags, ctagsAllocMap := (**C.uint32_t)(unsafe.Pointer(tags)), cgoAllocsUnknown
+	var pinnerctags runtime.Pinner
+	pinnerctags.Pin(tags)
+	if tags != nil {
+		pinnerctags.Pin(unsafe.Pointer(*tags))
+	}
+	defer pinnerctags.Unpin()
+	__ret := C.ACameraMetadata_getAllTags(cmetadata, cnumEntries, ctags)
+	runtime.KeepAlive(ctagsAllocMap)
 	runtime.KeepAlive(cnumEntriesAllocMap)
 	runtime.KeepAlive(cmetadataAllocMap)
 	__v := (Camera_status_t)(__ret)
@@ -419,7 +555,15 @@ func ACameraMetadata_getTagFromName(metadata *ACameraMetadata, name string, tag 
 func ACameraMetadata_isLogicalMultiCamera(staticMetadata *ACameraMetadata, numPhysicalCameras *uint64, physicalCameraIds **string) bool {
 	cstaticMetadata, cstaticMetadataAllocMap := (*C.ACameraMetadata)(unsafe.Pointer(staticMetadata)), cgoAllocsUnknown
 	cnumPhysicalCameras, cnumPhysicalCamerasAllocMap := (*C.uint64_t)(unsafe.Pointer(numPhysicalCameras)), cgoAllocsUnknown
-	__ret := C.ACameraMetadata_isLogicalMultiCamera(cstaticMetadata, cnumPhysicalCameras, (***C.char)(unsafe.Pointer(physicalCameraIds)))
+	cphysicalCameraIds, cphysicalCameraIdsAllocMap := (***C.char)(unsafe.Pointer(physicalCameraIds)), cgoAllocsUnknown
+	var pinnercphysicalCameraIds runtime.Pinner
+	pinnercphysicalCameraIds.Pin(physicalCameraIds)
+	if physicalCameraIds != nil {
+		pinnercphysicalCameraIds.Pin(unsafe.Pointer(*physicalCameraIds))
+	}
+	defer pinnercphysicalCameraIds.Unpin()
+	__ret := C.ACameraMetadata_isLogicalMultiCamera(cstaticMetadata, cnumPhysicalCameras, cphysicalCameraIds)
+	runtime.KeepAlive(cphysicalCameraIdsAllocMap)
 	runtime.KeepAlive(cnumPhysicalCamerasAllocMap)
 	runtime.KeepAlive(cstaticMetadataAllocMap)
 	__v := (bool)(__ret)
@@ -428,7 +572,15 @@ func ACameraMetadata_isLogicalMultiCamera(staticMetadata *ACameraMetadata, numPh
 
 func ACameraOutputTarget_create(window *ANativeWindow, output **ACameraOutputTarget) Camera_status_t {
 	cwindow, cwindowAllocMap := (*C.ANativeWindow)(unsafe.Pointer(window)), cgoAllocsUnknown
-	__ret := C.ACameraOutputTarget_create(cwindow, (**C.ACameraOutputTarget)(unsafe.Pointer(output)))
+	coutput, coutputAllocMap := (**C.ACameraOutputTarget)(unsafe.Pointer(output)), cgoAllocsUnknown
+	var pinnercoutput runtime.Pinner
+	pinnercoutput.Pin(output)
+	if output != nil {
+		pinnercoutput.Pin(unsafe.Pointer(*output))
+	}
+	defer pinnercoutput.Unpin()
+	__ret := C.ACameraOutputTarget_create(cwindow, coutput)
+	runtime.KeepAlive(coutputAllocMap)
 	runtime.KeepAlive(cwindowAllocMap)
 	__v := (Camera_status_t)(__ret)
 	return __v
@@ -454,7 +606,7 @@ func ACaptureRequest_copy(src *ACaptureRequest) *ACaptureRequest {
 	csrc, csrcAllocMap := (*C.ACaptureRequest)(unsafe.Pointer(src)), cgoAllocsUnknown
 	__ret := C.ACaptureRequest_copy(csrc)
 	runtime.KeepAlive(csrcAllocMap)
-	__v := *(**ACaptureRequest)(unsafe.Pointer(&__ret))
+	__v := (*ACaptureRequest)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -467,7 +619,15 @@ func ACaptureRequest_free(request *ACaptureRequest) {
 func ACaptureRequest_getAllTags(request *ACaptureRequest, numTags *int32, tags **uint32) Camera_status_t {
 	crequest, crequestAllocMap := (*C.ACaptureRequest)(unsafe.Pointer(request)), cgoAllocsUnknown
 	cnumTags, cnumTagsAllocMap := (*C.int)(unsafe.Pointer(numTags)), cgoAllocsUnknown
-	__ret := C.ACaptureRequest_getAllTags(crequest, cnumTags, (**C.uint32_t)(unsafe.Pointer(tags)))
+	ctags, ctagsAllocMap := (**C.uint32_t)(unsafe.Pointer(tags)), cgoAllocsUnknown
+	var pinnerctags runtime.Pinner
+	pinnerctags.Pin(tags)
+	if tags != nil {
+		pinnerctags.Pin(unsafe.Pointer(*tags))
+	}
+	defer pinnerctags.Unpin()
+	__ret := C.ACaptureRequest_getAllTags(crequest, cnumTags, ctags)
+	runtime.KeepAlive(ctagsAllocMap)
 	runtime.KeepAlive(cnumTagsAllocMap)
 	runtime.KeepAlive(crequestAllocMap)
 	__v := (Camera_status_t)(__ret)
@@ -721,7 +881,15 @@ func ACaptureSessionOutputContainer_add(container *ACaptureSessionOutputContaine
 }
 
 func ACaptureSessionOutputContainer_create(container **ACaptureSessionOutputContainer) Camera_status_t {
-	__ret := C.ACaptureSessionOutputContainer_create((**C.ACaptureSessionOutputContainer)(unsafe.Pointer(container)))
+	ccontainer, ccontainerAllocMap := (**C.ACaptureSessionOutputContainer)(unsafe.Pointer(container)), cgoAllocsUnknown
+	var pinnerccontainer runtime.Pinner
+	pinnerccontainer.Pin(container)
+	if container != nil {
+		pinnerccontainer.Pin(unsafe.Pointer(*container))
+	}
+	defer pinnerccontainer.Unpin()
+	__ret := C.ACaptureSessionOutputContainer_create(ccontainer)
+	runtime.KeepAlive(ccontainerAllocMap)
 	__v := (Camera_status_t)(__ret)
 	return __v
 }
@@ -744,7 +912,15 @@ func ACaptureSessionOutputContainer_remove(container *ACaptureSessionOutputConta
 
 func ACaptureSessionOutput_create(anw *ANativeWindow, output **ACaptureSessionOutput) Camera_status_t {
 	canw, canwAllocMap := (*C.ANativeWindow)(unsafe.Pointer(anw)), cgoAllocsUnknown
-	__ret := C.ACaptureSessionOutput_create(canw, (**C.ACaptureSessionOutput)(unsafe.Pointer(output)))
+	coutput, coutputAllocMap := (**C.ACaptureSessionOutput)(unsafe.Pointer(output)), cgoAllocsUnknown
+	var pinnercoutput runtime.Pinner
+	pinnercoutput.Pin(output)
+	if output != nil {
+		pinnercoutput.Pin(unsafe.Pointer(*output))
+	}
+	defer pinnercoutput.Unpin()
+	__ret := C.ACaptureSessionOutput_create(canw, coutput)
+	runtime.KeepAlive(coutputAllocMap)
 	runtime.KeepAlive(canwAllocMap)
 	__v := (Camera_status_t)(__ret)
 	return __v
@@ -759,7 +935,15 @@ func ACaptureSessionOutput_free(output *ACaptureSessionOutput) {
 func ACaptureSessionPhysicalOutput_create(anw *ANativeWindow, physicalId string, output **ACaptureSessionOutput) Camera_status_t {
 	canw, canwAllocMap := (*C.ANativeWindow)(unsafe.Pointer(anw)), cgoAllocsUnknown
 	cphysicalId, cphysicalIdAllocMap := UnpackPCharString(physicalId)
-	__ret := C.ACaptureSessionPhysicalOutput_create(canw, cphysicalId, (**C.ACaptureSessionOutput)(unsafe.Pointer(output)))
+	coutput, coutputAllocMap := (**C.ACaptureSessionOutput)(unsafe.Pointer(output)), cgoAllocsUnknown
+	var pinnercoutput runtime.Pinner
+	pinnercoutput.Pin(output)
+	if output != nil {
+		pinnercoutput.Pin(unsafe.Pointer(*output))
+	}
+	defer pinnercoutput.Unpin()
+	__ret := C.ACaptureSessionPhysicalOutput_create(canw, cphysicalId, coutput)
+	runtime.KeepAlive(coutputAllocMap)
 	runtime.KeepAlive(cphysicalIdAllocMap)
 	runtime.KeepAlive(canwAllocMap)
 	__v := (Camera_status_t)(__ret)
@@ -778,7 +962,15 @@ func ACaptureSessionSharedOutput_add(output *ACaptureSessionOutput, anw *ANative
 
 func ACaptureSessionSharedOutput_create(anw *ANativeWindow, output **ACaptureSessionOutput) Camera_status_t {
 	canw, canwAllocMap := (*C.ANativeWindow)(unsafe.Pointer(anw)), cgoAllocsUnknown
-	__ret := C.ACaptureSessionSharedOutput_create(canw, (**C.ACaptureSessionOutput)(unsafe.Pointer(output)))
+	coutput, coutputAllocMap := (**C.ACaptureSessionOutput)(unsafe.Pointer(output)), cgoAllocsUnknown
+	var pinnercoutput runtime.Pinner
+	pinnercoutput.Pin(output)
+	if output != nil {
+		pinnercoutput.Pin(unsafe.Pointer(*output))
+	}
+	defer pinnercoutput.Unpin()
+	__ret := C.ACaptureSessionSharedOutput_create(canw, coutput)
+	runtime.KeepAlive(coutputAllocMap)
 	runtime.KeepAlive(canwAllocMap)
 	__v := (Camera_status_t)(__ret)
 	return __v

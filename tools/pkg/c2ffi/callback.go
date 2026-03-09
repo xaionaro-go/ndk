@@ -185,9 +185,7 @@ func parseInlineFuncPtrFieldsFromSource(source string) map[string]specmodel.Call
 			Returns: cReturnTypeToGo(retType),
 		}
 
-		for _, p := range parseCParamList(paramsStr) {
-			cb.Params = append(cb.Params, p)
-		}
+		cb.Params = append(cb.Params, parseCParamList(paramsStr)...)
 
 		result[name] = cb
 	}
@@ -207,9 +205,7 @@ func parseCallbacksFromSource(source string) map[string]specmodel.CallbackDef {
 			Returns: cReturnTypeToGo(retType),
 		}
 
-		for _, p := range parseCParamList(paramsStr) {
-			cb.Params = append(cb.Params, p)
-		}
+		cb.Params = append(cb.Params, parseCParamList(paramsStr)...)
 
 		result[name] = cb
 	}

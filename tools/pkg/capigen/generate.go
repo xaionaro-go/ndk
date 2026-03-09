@@ -262,7 +262,6 @@ func generateTypesGo(
 			fmt.Fprintf(&sb, "type %s C.%s\n\n", goName, td.CType)
 
 		case "pointer_handle":
-			needsUnsafe = true
 			fmt.Fprintf(&sb, "type %s unsafe.Pointer\n\n", goName)
 
 		default:
@@ -880,6 +879,8 @@ func paramConversion(
 	}
 
 	// Multi-level pointer (output param): e.g., **ACameraIdList, ***ASurfaceControl.
+	// CGo's pointer checker rejects Go pointers containing other pointers
+	// unless they are pinned with runtime.Pinner.
 	if strings.HasPrefix(goType, "**") {
 		// Count pointer depth and extract base type.
 		stars := 0
@@ -889,21 +890,36 @@ func paramConversion(
 			base = base[1:]
 		}
 		starStr := strings.Repeat("*", stars)
-		var cgoExpr string
+		var cgoTypeExpr string
 		if base == "string" {
-			cgoExpr = fmt.Sprintf("(%s*C.char)(unsafe.Pointer(%s))", starStr, p.Name)
+			cgoTypeExpr = fmt.Sprintf("%s*C.char", starStr)
 		} else if isScalarGoType(base) {
 			cgoBase := goTypeToCGoExactType(base)
-			cgoExpr = fmt.Sprintf("(%s%s)(unsafe.Pointer(%s))", starStr, cgoBase, p.Name)
+			cgoTypeExpr = fmt.Sprintf("%s%s", starStr, cgoBase)
 		} else if structPrefixSet[base] {
-			cgoExpr = fmt.Sprintf("(%sC.struct_%s)(unsafe.Pointer(%s))", starStr, base, p.Name)
+			cgoTypeExpr = fmt.Sprintf("%sC.struct_%s", starStr, base)
 		} else {
-			cgoExpr = fmt.Sprintf("(%sC.%s)(unsafe.Pointer(%s))", starStr, base, p.Name)
+			cgoTypeExpr = fmt.Sprintf("%sC.%s", starStr, base)
 		}
+
+		pinnerName := "pinner" + cVar
+		code := fmt.Sprintf("\t%s, %s := (%s)(unsafe.Pointer(%s)), cgoAllocsUnknown\n",
+			cVar, allocVar, cgoTypeExpr, p.Name)
+		code += fmt.Sprintf("\tvar %s runtime.Pinner\n", pinnerName)
+		code += fmt.Sprintf("\t%s.Pin(%s)\n", pinnerName, p.Name)
+		// For **, also pin the inner pointer value to satisfy CGo's check
+		// that Go memory must not contain unpinned Go pointers.
+		if stars == 2 {
+			code += fmt.Sprintf("\tif %s != nil {\n", p.Name)
+			code += fmt.Sprintf("\t\t%s.Pin(unsafe.Pointer(*%s))\n", pinnerName, p.Name)
+			code += "\t}\n"
+		}
+		code += fmt.Sprintf("\tdefer %s.Unpin()\n", pinnerName)
+
 		return conversionResult{
-			code:          "",
-			cVarName:      cgoExpr,
-			keepAliveName: "",
+			code:          code,
+			cVarName:      cVar,
+			keepAliveName: allocVar,
 		}
 	}
 
@@ -1034,9 +1050,9 @@ func returnConversionRenamed(origRetType string, spec *specmodel.Spec, typeRenam
 		return "\t__v := C.GoString(__ret)\n\treturn __v\n"
 	}
 
-	// Pointer return: reinterpret via unsafe.Pointer.
+	// Pointer return: direct pointer cast via unsafe.Pointer.
 	if strings.HasPrefix(goRetType, "*") {
-		return fmt.Sprintf("\t__v := *(*%s)(unsafe.Pointer(&__ret))\n\treturn __v\n", goRetType)
+		return fmt.Sprintf("\t__v := (%s)(unsafe.Pointer(__ret))\n\treturn __v\n", goRetType)
 	}
 
 	// Bool return.
@@ -1129,9 +1145,7 @@ func collectUndeclaredTypes(spec *specmodel.Spec, declared map[string]bool) map[
 			}
 		}
 		// Skip slice types.
-		if strings.HasPrefix(base, "[]") {
-			base = base[2:]
-		}
+		base = strings.TrimPrefix(base, "[]")
 		if base == "" || base == "string" || base == "bool" || base == "unsafe.Pointer" || base == "func_ptr" {
 			return
 		}

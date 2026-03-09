@@ -6,8 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/xaionaro-go/ndk/tools/pkg/capigen"
 	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
@@ -42,11 +40,6 @@ func main() {
 	if err := capigen.GeneratePackage(spec, manifest, *outDir); err != nil {
 		fmt.Fprintf(os.Stderr, "generate: %v\n", err)
 		os.Exit(1)
-	}
-
-	pkgName := manifest.Generator.PackageName
-	if pkgName == "" {
-		pkgName = strings.TrimSuffix(filepath.Base(*specPath), ".yaml")
 	}
 
 	fmt.Printf("capigen: wrote %s/ (%d types, %d enums, %d functions, %d callbacks, %d structs)\n",

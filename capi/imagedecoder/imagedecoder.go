@@ -46,7 +46,7 @@ func AAssetManager_open(mgr *AAssetManager, filename string, mode int32) *AAsset
 	runtime.KeepAlive(cmodeAllocMap)
 	runtime.KeepAlive(cfilenameAllocMap)
 	runtime.KeepAlive(cmgrAllocMap)
-	__v := *(**AAsset)(unsafe.Pointer(&__ret))
+	__v := (*AAsset)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -56,7 +56,7 @@ func AAssetManager_openDir(mgr *AAssetManager, dirName string) *AAssetDir {
 	__ret := C.AAssetManager_openDir(cmgr, cdirName)
 	runtime.KeepAlive(cdirNameAllocMap)
 	runtime.KeepAlive(cmgrAllocMap)
-	__v := *(**AAssetDir)(unsafe.Pointer(&__ret))
+	__v := (*AAssetDir)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -176,7 +176,7 @@ func AAsset_seek64(asset *AAsset, offset Off64_t, whence int32) Off64_t {
 
 func AImageDecoderFrameInfo_create() *AImageDecoderFrameInfo {
 	__ret := C.AImageDecoderFrameInfo_create()
-	__v := *(**AImageDecoderFrameInfo)(unsafe.Pointer(&__ret))
+	__v := (*AImageDecoderFrameInfo)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -298,7 +298,15 @@ func AImageDecoder_computeSampledSize(decoder *AImageDecoder, sampleSize int32, 
 
 func AImageDecoder_createFromAAsset(asset *AAsset, outDecoder **AImageDecoder) int32 {
 	casset, cassetAllocMap := (*C.AAsset)(unsafe.Pointer(asset)), cgoAllocsUnknown
-	__ret := C.AImageDecoder_createFromAAsset(casset, (**C.AImageDecoder)(unsafe.Pointer(outDecoder)))
+	coutDecoder, coutDecoderAllocMap := (**C.AImageDecoder)(unsafe.Pointer(outDecoder)), cgoAllocsUnknown
+	var pinnercoutDecoder runtime.Pinner
+	pinnercoutDecoder.Pin(outDecoder)
+	if outDecoder != nil {
+		pinnercoutDecoder.Pin(unsafe.Pointer(*outDecoder))
+	}
+	defer pinnercoutDecoder.Unpin()
+	__ret := C.AImageDecoder_createFromAAsset(casset, coutDecoder)
+	runtime.KeepAlive(coutDecoderAllocMap)
 	runtime.KeepAlive(cassetAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -307,7 +315,15 @@ func AImageDecoder_createFromAAsset(asset *AAsset, outDecoder **AImageDecoder) i
 func AImageDecoder_createFromBuffer(buffer unsafe.Pointer, length uint64, outDecoder **AImageDecoder) int32 {
 	cbuffer, cbufferAllocMap := buffer, cgoAllocsUnknown
 	clength, clengthAllocMap := (C.uint64_t)(length), cgoAllocsUnknown
-	__ret := C.AImageDecoder_createFromBuffer(cbuffer, clength, (**C.AImageDecoder)(unsafe.Pointer(outDecoder)))
+	coutDecoder, coutDecoderAllocMap := (**C.AImageDecoder)(unsafe.Pointer(outDecoder)), cgoAllocsUnknown
+	var pinnercoutDecoder runtime.Pinner
+	pinnercoutDecoder.Pin(outDecoder)
+	if outDecoder != nil {
+		pinnercoutDecoder.Pin(unsafe.Pointer(*outDecoder))
+	}
+	defer pinnercoutDecoder.Unpin()
+	__ret := C.AImageDecoder_createFromBuffer(cbuffer, clength, coutDecoder)
+	runtime.KeepAlive(coutDecoderAllocMap)
 	runtime.KeepAlive(clengthAllocMap)
 	runtime.KeepAlive(cbufferAllocMap)
 	__v := (int32)(__ret)
@@ -316,7 +332,15 @@ func AImageDecoder_createFromBuffer(buffer unsafe.Pointer, length uint64, outDec
 
 func AImageDecoder_createFromFd(fd int32, outDecoder **AImageDecoder) int32 {
 	cfd, cfdAllocMap := (C.int)(fd), cgoAllocsUnknown
-	__ret := C.AImageDecoder_createFromFd(cfd, (**C.AImageDecoder)(unsafe.Pointer(outDecoder)))
+	coutDecoder, coutDecoderAllocMap := (**C.AImageDecoder)(unsafe.Pointer(outDecoder)), cgoAllocsUnknown
+	var pinnercoutDecoder runtime.Pinner
+	pinnercoutDecoder.Pin(outDecoder)
+	if outDecoder != nil {
+		pinnercoutDecoder.Pin(unsafe.Pointer(*outDecoder))
+	}
+	defer pinnercoutDecoder.Unpin()
+	__ret := C.AImageDecoder_createFromFd(cfd, coutDecoder)
+	runtime.KeepAlive(coutDecoderAllocMap)
 	runtime.KeepAlive(cfdAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -356,7 +380,7 @@ func AImageDecoder_getHeaderInfo(decoder *AImageDecoder) *AImageDecoderHeaderInf
 	cdecoder, cdecoderAllocMap := (*C.AImageDecoder)(unsafe.Pointer(decoder)), cgoAllocsUnknown
 	__ret := C.AImageDecoder_getHeaderInfo(cdecoder)
 	runtime.KeepAlive(cdecoderAllocMap)
-	__v := *(**AImageDecoderHeaderInfo)(unsafe.Pointer(&__ret))
+	__v := (*AImageDecoderHeaderInfo)(unsafe.Pointer(__ret))
 	return __v
 }
 

@@ -249,7 +249,7 @@ func AConfiguration_match(base *AConfiguration, requested *AConfiguration) int32
 
 func AConfiguration_new() *AConfiguration {
 	__ret := C.AConfiguration_new()
-	__v := *(**AConfiguration)(unsafe.Pointer(&__ret))
+	__v := (*AConfiguration)(unsafe.Pointer(__ret))
 	return __v
 }
 

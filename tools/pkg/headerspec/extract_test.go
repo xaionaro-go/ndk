@@ -21,12 +21,12 @@ func TestExtractDeclarationsLooper(t *testing.T) {
 	if err != nil {
 		t.Fatalf("creating temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	if _, err := tmpFile.WriteString("#include <android/looper.h>\n"); err != nil {
 		t.Fatalf("writing temp file: %v", err)
 	}
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	args := []string{
 		"-target", "aarch64-linux-android26",

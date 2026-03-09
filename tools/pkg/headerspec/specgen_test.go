@@ -24,13 +24,13 @@ func runClangForTest(t *testing.T, includes []string) []byte {
 
 	tmpFile, err := os.CreateTemp("", "test-*.c")
 	require.NoError(t, err)
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	for _, inc := range includes {
 		_, err := tmpFile.WriteString("#include <" + inc + ">\n")
 		require.NoError(t, err)
 	}
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	args := []string{
 		"-target", "aarch64-linux-android26",

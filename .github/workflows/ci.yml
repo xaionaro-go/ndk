@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ANDROID_NDK_VERSION: r27c
+  ANDROID_NDK_DIR_NAME: "27.2.12479018"
+
+jobs:
+  test:
+    name: Unit Tests & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Run unit tests
+        run: make test
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: latest
+          args: --timeout=5m ./tools/...
+
+  check-examples:
+    name: Cross-compile Examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Install Android NDK
+        run: |
+          mkdir -p "$HOME/Android/Sdk/ndk"
+          wget -q "https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip" -O /tmp/ndk.zip
+          unzip -q /tmp/ndk.zip -d "$HOME/Android/Sdk/ndk/"
+          mv "$HOME/Android/Sdk/ndk/android-ndk-${ANDROID_NDK_VERSION}" "$HOME/Android/Sdk/ndk/${ANDROID_NDK_DIR_NAME}"
+
+      - name: Cross-compile examples for Android arm64
+        run: make check-examples
+
+  e2e-examples:
+    name: E2E Examples (Emulator)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Install Android SDK components
+        uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platform-tools
+            emulator
+            system-images;android-35;google_apis;x86_64
+            platforms;android-35
+
+      - name: Install Android NDK
+        run: |
+          mkdir -p "$ANDROID_HOME/ndk"
+          wget -q "https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip" -O /tmp/ndk.zip
+          unzip -q /tmp/ndk.zip -d "$ANDROID_HOME/ndk/"
+          mv "$ANDROID_HOME/ndk/android-ndk-${ANDROID_NDK_VERSION}" "$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}"
+
+      - name: Create AVD
+        run: |
+          echo "no" | avdmanager create avd \
+            -n e2e_examples -k "system-images;android-35;google_apis;x86_64" --force
+
+      - name: Start emulator
+        run: |
+          $ANDROID_HOME/emulator/emulator \
+            -avd e2e_examples -no-window -no-audio -no-boot-anim \
+            -gpu swiftshader_indirect -no-metrics &
+          echo "Waiting for emulator boot..."
+          adb wait-for-device
+          for i in $(seq 1 60); do
+            RESULT=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r\n')
+            if [ "$RESULT" = "1" ]; then
+              echo "Emulator booted after ~$((i*5))s"
+              break
+            fi
+            sleep 5
+          done
+
+      - name: Run examples E2E
+        run: make e2e-examples

@@ -139,17 +139,17 @@ func runClang(
 	if err != nil {
 		return nil, fmt.Errorf("creating temp file: %w", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	var sb strings.Builder
 	for _, inc := range includes {
 		fmt.Fprintf(&sb, "#include <%s>\n", inc)
 	}
 	if _, err := tmpFile.WriteString(sb.String()); err != nil {
-		tmpFile.Close()
+		_ = tmpFile.Close()
 		return nil, fmt.Errorf("writing temp file: %w", err)
 	}
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	args := []string{
 		"-target", target,

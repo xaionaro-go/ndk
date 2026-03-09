@@ -690,7 +690,7 @@ func GlGetString(name GLenum) *GLubyte {
 	cname, cnameAllocMap := (C.GLenum)(name), cgoAllocsUnknown
 	__ret := C.glGetString(cname)
 	runtime.KeepAlive(cnameAllocMap)
-	__v := *(**GLubyte)(unsafe.Pointer(&__ret))
+	__v := (*GLubyte)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -937,9 +937,17 @@ func GlShaderBinary(count GLsizei, shaders *GLuint, binaryformat GLenum, binary 
 func GlShaderSource(shader GLuint, count GLsizei, _string **GLchar, length *GLint) {
 	cshader, cshaderAllocMap := (C.GLuint)(shader), cgoAllocsUnknown
 	ccount, ccountAllocMap := (C.GLsizei)(count), cgoAllocsUnknown
+	c_string, c_stringAllocMap := (**C.GLchar)(unsafe.Pointer(_string)), cgoAllocsUnknown
+	var pinnerc_string runtime.Pinner
+	pinnerc_string.Pin(_string)
+	if _string != nil {
+		pinnerc_string.Pin(unsafe.Pointer(*_string))
+	}
+	defer pinnerc_string.Unpin()
 	clength, clengthAllocMap := (*C.GLint)(unsafe.Pointer(length)), cgoAllocsUnknown
-	C.glShaderSource(cshader, ccount, (**C.GLchar)(unsafe.Pointer(_string)), clength)
+	C.glShaderSource(cshader, ccount, c_string, clength)
 	runtime.KeepAlive(clengthAllocMap)
+	runtime.KeepAlive(c_stringAllocMap)
 	runtime.KeepAlive(ccountAllocMap)
 	runtime.KeepAlive(cshaderAllocMap)
 }

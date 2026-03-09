@@ -7,15 +7,18 @@ e2e/e2e_test
 _build/
 capi/manifests/.gen_*.yaml
 
-# Built binaries (go build outputs)
+# Built binaries (go build outputs in repo root)
 /basic-loop
 /capigen
+/capture-session
 /check-permissions
+/event-loop
 /headerspec
 /idiomgen
 /manager
 /null
 /obb-manager
+/offscreen-render
 /overview
 /specgen
 /sync-fences

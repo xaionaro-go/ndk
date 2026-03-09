@@ -19,7 +19,7 @@ var _ unsafe.Pointer
 
 func AThermal_acquireManager() *AThermalManager {
 	__ret := C.AThermal_acquireManager()
-	__v := *(**AThermalManager)(unsafe.Pointer(&__ret))
+	__v := (*AThermalManager)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -43,9 +43,17 @@ func AThermal_getThermalHeadroom(manager *AThermalManager, forecastSeconds int32
 
 func AThermal_getThermalHeadroomThresholds(manager *AThermalManager, outThresholds **AThermalHeadroomThreshold, size *uint64) int32 {
 	cmanager, cmanagerAllocMap := (*C.AThermalManager)(unsafe.Pointer(manager)), cgoAllocsUnknown
+	coutThresholds, coutThresholdsAllocMap := (**C.AThermalHeadroomThreshold)(unsafe.Pointer(outThresholds)), cgoAllocsUnknown
+	var pinnercoutThresholds runtime.Pinner
+	pinnercoutThresholds.Pin(outThresholds)
+	if outThresholds != nil {
+		pinnercoutThresholds.Pin(unsafe.Pointer(*outThresholds))
+	}
+	defer pinnercoutThresholds.Unpin()
 	csize, csizeAllocMap := (*C.uint64_t)(unsafe.Pointer(size)), cgoAllocsUnknown
-	__ret := C.AThermal_getThermalHeadroomThresholds(cmanager, (**C.AThermalHeadroomThreshold)(unsafe.Pointer(outThresholds)), csize)
+	__ret := C.AThermal_getThermalHeadroomThresholds(cmanager, coutThresholds, csize)
 	runtime.KeepAlive(csizeAllocMap)
+	runtime.KeepAlive(coutThresholdsAllocMap)
 	runtime.KeepAlive(cmanagerAllocMap)
 	__v := (int32)(__ret)
 	return __v

@@ -50,7 +50,15 @@ func AndroidBitmap_getDataSpace(env *JNIEnv, jbitmap Jobject) int32 {
 func AndroidBitmap_getHardwareBuffer(env *JNIEnv, bitmap Jobject, outBuffer **AHardwareBuffer) int32 {
 	cenv, cenvAllocMap := (*C.JNIEnv)(unsafe.Pointer(env)), cgoAllocsUnknown
 	cbitmap, cbitmapAllocMap := (C.jobject)(bitmap), cgoAllocsUnknown
-	__ret := C.AndroidBitmap_getHardwareBuffer(cenv, cbitmap, (**C.AHardwareBuffer)(unsafe.Pointer(outBuffer)))
+	coutBuffer, coutBufferAllocMap := (**C.AHardwareBuffer)(unsafe.Pointer(outBuffer)), cgoAllocsUnknown
+	var pinnercoutBuffer runtime.Pinner
+	pinnercoutBuffer.Pin(outBuffer)
+	if outBuffer != nil {
+		pinnercoutBuffer.Pin(unsafe.Pointer(*outBuffer))
+	}
+	defer pinnercoutBuffer.Unpin()
+	__ret := C.AndroidBitmap_getHardwareBuffer(cenv, cbitmap, coutBuffer)
+	runtime.KeepAlive(coutBufferAllocMap)
 	runtime.KeepAlive(cbitmapAllocMap)
 	runtime.KeepAlive(cenvAllocMap)
 	__v := (int32)(__ret)

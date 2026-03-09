@@ -20,7 +20,15 @@ var _ unsafe.Pointer
 func AMidiDevice_fromJava(env *JNIEnv, midiDeviceObj Jobject, outDevicePtrPtr **AMidiDevice) Media_status_t {
 	cenv, cenvAllocMap := (*C.JNIEnv)(unsafe.Pointer(env)), cgoAllocsUnknown
 	cmidiDeviceObj, cmidiDeviceObjAllocMap := (C.jobject)(midiDeviceObj), cgoAllocsUnknown
-	__ret := C.AMidiDevice_fromJava(cenv, cmidiDeviceObj, (**C.AMidiDevice)(unsafe.Pointer(outDevicePtrPtr)))
+	coutDevicePtrPtr, coutDevicePtrPtrAllocMap := (**C.AMidiDevice)(unsafe.Pointer(outDevicePtrPtr)), cgoAllocsUnknown
+	var pinnercoutDevicePtrPtr runtime.Pinner
+	pinnercoutDevicePtrPtr.Pin(outDevicePtrPtr)
+	if outDevicePtrPtr != nil {
+		pinnercoutDevicePtrPtr.Pin(unsafe.Pointer(*outDevicePtrPtr))
+	}
+	defer pinnercoutDevicePtrPtr.Unpin()
+	__ret := C.AMidiDevice_fromJava(cenv, cmidiDeviceObj, coutDevicePtrPtr)
+	runtime.KeepAlive(coutDevicePtrPtrAllocMap)
 	runtime.KeepAlive(cmidiDeviceObjAllocMap)
 	runtime.KeepAlive(cenvAllocMap)
 	__v := (Media_status_t)(__ret)
@@ -76,7 +84,15 @@ func AMidiInputPort_close(inputPort *AMidiInputPort) {
 func AMidiInputPort_open(device *AMidiDevice, portNumber int32, outInputPortPtr **AMidiInputPort) Media_status_t {
 	cdevice, cdeviceAllocMap := (*C.AMidiDevice)(unsafe.Pointer(device)), cgoAllocsUnknown
 	cportNumber, cportNumberAllocMap := (C.int)(portNumber), cgoAllocsUnknown
-	__ret := C.AMidiInputPort_open(cdevice, cportNumber, (**C.AMidiInputPort)(unsafe.Pointer(outInputPortPtr)))
+	coutInputPortPtr, coutInputPortPtrAllocMap := (**C.AMidiInputPort)(unsafe.Pointer(outInputPortPtr)), cgoAllocsUnknown
+	var pinnercoutInputPortPtr runtime.Pinner
+	pinnercoutInputPortPtr.Pin(outInputPortPtr)
+	if outInputPortPtr != nil {
+		pinnercoutInputPortPtr.Pin(unsafe.Pointer(*outInputPortPtr))
+	}
+	defer pinnercoutInputPortPtr.Unpin()
+	__ret := C.AMidiInputPort_open(cdevice, cportNumber, coutInputPortPtr)
+	runtime.KeepAlive(coutInputPortPtrAllocMap)
 	runtime.KeepAlive(cportNumberAllocMap)
 	runtime.KeepAlive(cdeviceAllocMap)
 	__v := (Media_status_t)(__ret)
@@ -126,7 +142,15 @@ func AMidiOutputPort_close(outputPort *AMidiOutputPort) {
 func AMidiOutputPort_open(device *AMidiDevice, portNumber int32, outOutputPortPtr **AMidiOutputPort) Media_status_t {
 	cdevice, cdeviceAllocMap := (*C.AMidiDevice)(unsafe.Pointer(device)), cgoAllocsUnknown
 	cportNumber, cportNumberAllocMap := (C.int)(portNumber), cgoAllocsUnknown
-	__ret := C.AMidiOutputPort_open(cdevice, cportNumber, (**C.AMidiOutputPort)(unsafe.Pointer(outOutputPortPtr)))
+	coutOutputPortPtr, coutOutputPortPtrAllocMap := (**C.AMidiOutputPort)(unsafe.Pointer(outOutputPortPtr)), cgoAllocsUnknown
+	var pinnercoutOutputPortPtr runtime.Pinner
+	pinnercoutOutputPortPtr.Pin(outOutputPortPtr)
+	if outOutputPortPtr != nil {
+		pinnercoutOutputPortPtr.Pin(unsafe.Pointer(*outOutputPortPtr))
+	}
+	defer pinnercoutOutputPortPtr.Unpin()
+	__ret := C.AMidiOutputPort_open(cdevice, cportNumber, coutOutputPortPtr)
+	runtime.KeepAlive(coutOutputPortPtrAllocMap)
 	runtime.KeepAlive(cportNumberAllocMap)
 	runtime.KeepAlive(cdeviceAllocMap)
 	__v := (Media_status_t)(__ret)

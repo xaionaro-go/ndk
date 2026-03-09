@@ -25,7 +25,15 @@ func AHardwareBuffer_acquire(buffer *AHardwareBuffer) {
 
 func AHardwareBuffer_allocate(desc *AHardwareBuffer_Desc, outBuffer **AHardwareBuffer) int32 {
 	cdesc, cdescAllocMap := (*C.AHardwareBuffer_Desc)(unsafe.Pointer(desc)), cgoAllocsUnknown
-	__ret := C.AHardwareBuffer_allocate(cdesc, (**C.AHardwareBuffer)(unsafe.Pointer(outBuffer)))
+	coutBuffer, coutBufferAllocMap := (**C.AHardwareBuffer)(unsafe.Pointer(outBuffer)), cgoAllocsUnknown
+	var pinnercoutBuffer runtime.Pinner
+	pinnercoutBuffer.Pin(outBuffer)
+	if outBuffer != nil {
+		pinnercoutBuffer.Pin(unsafe.Pointer(*outBuffer))
+	}
+	defer pinnercoutBuffer.Unpin()
+	__ret := C.AHardwareBuffer_allocate(cdesc, coutBuffer)
+	runtime.KeepAlive(coutBufferAllocMap)
 	runtime.KeepAlive(cdescAllocMap)
 	__v := (int32)(__ret)
 	return __v
@@ -111,7 +119,15 @@ func AHardwareBuffer_lockPlanes(buffer *AHardwareBuffer, usage uint64, fence int
 
 func AHardwareBuffer_recvHandleFromUnixSocket(socketFd int32, outBuffer **AHardwareBuffer) int32 {
 	csocketFd, csocketFdAllocMap := (C.int)(socketFd), cgoAllocsUnknown
-	__ret := C.AHardwareBuffer_recvHandleFromUnixSocket(csocketFd, (**C.AHardwareBuffer)(unsafe.Pointer(outBuffer)))
+	coutBuffer, coutBufferAllocMap := (**C.AHardwareBuffer)(unsafe.Pointer(outBuffer)), cgoAllocsUnknown
+	var pinnercoutBuffer runtime.Pinner
+	pinnercoutBuffer.Pin(outBuffer)
+	if outBuffer != nil {
+		pinnercoutBuffer.Pin(unsafe.Pointer(*outBuffer))
+	}
+	defer pinnercoutBuffer.Unpin()
+	__ret := C.AHardwareBuffer_recvHandleFromUnixSocket(csocketFd, coutBuffer)
+	runtime.KeepAlive(coutBufferAllocMap)
 	runtime.KeepAlive(csocketFdAllocMap)
 	__v := (int32)(__ret)
 	return __v

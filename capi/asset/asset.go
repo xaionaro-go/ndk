@@ -45,7 +45,7 @@ func AAssetManager_open(mgr *AAssetManager, filename string, mode int32) *AAsset
 	runtime.KeepAlive(cmodeAllocMap)
 	runtime.KeepAlive(cfilenameAllocMap)
 	runtime.KeepAlive(cmgrAllocMap)
-	__v := *(**AAsset)(unsafe.Pointer(&__ret))
+	__v := (*AAsset)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -55,7 +55,7 @@ func AAssetManager_openDir(mgr *AAssetManager, dirName string) *AAssetDir {
 	__ret := C.AAssetManager_openDir(cmgr, cdirName)
 	runtime.KeepAlive(cdirNameAllocMap)
 	runtime.KeepAlive(cmgrAllocMap)
-	__v := *(**AAssetDir)(unsafe.Pointer(&__ret))
+	__v := (*AAssetDir)(unsafe.Pointer(__ret))
 	return __v
 }
 

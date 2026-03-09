@@ -29,7 +29,7 @@ func AIBinder_Class_define(interfaceDescriptor string, onCreate AIBinder_Class_o
 	runtime.KeepAlive(conDestroyAllocMap)
 	runtime.KeepAlive(conCreateAllocMap)
 	runtime.KeepAlive(cinterfaceDescriptorAllocMap)
-	__v := *(**AIBinder_Class)(unsafe.Pointer(&__ret))
+	__v := (*AIBinder_Class)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -65,7 +65,7 @@ func AIBinder_DeathRecipient_new(onBinderDied AIBinder_DeathRecipient_onBinderDi
 	conBinderDied, conBinderDiedAllocMap := onBinderDied.PassValue()
 	__ret := C.AIBinder_DeathRecipient_new(conBinderDied)
 	runtime.KeepAlive(conBinderDiedAllocMap)
-	__v := *(**AIBinder_DeathRecipient)(unsafe.Pointer(&__ret))
+	__v := (*AIBinder_DeathRecipient)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -81,7 +81,7 @@ func AIBinder_Weak_clone(weak *AIBinder_Weak) *AIBinder_Weak {
 	cweak, cweakAllocMap := (*C.AIBinder_Weak)(unsafe.Pointer(weak)), cgoAllocsUnknown
 	__ret := C.AIBinder_Weak_clone(cweak)
 	runtime.KeepAlive(cweakAllocMap)
-	__v := *(**AIBinder_Weak)(unsafe.Pointer(&__ret))
+	__v := (*AIBinder_Weak)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -105,7 +105,7 @@ func AIBinder_Weak_new(binder *AIBinder) *AIBinder_Weak {
 	cbinder, cbinderAllocMap := (*C.AIBinder)(unsafe.Pointer(binder)), cgoAllocsUnknown
 	__ret := C.AIBinder_Weak_new(cbinder)
 	runtime.KeepAlive(cbinderAllocMap)
-	__v := *(**AIBinder_Weak)(unsafe.Pointer(&__ret))
+	__v := (*AIBinder_Weak)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -113,7 +113,7 @@ func AIBinder_Weak_promote(weakBinder *AIBinder_Weak) *AIBinder {
 	cweakBinder, cweakBinderAllocMap := (*C.AIBinder_Weak)(unsafe.Pointer(weakBinder)), cgoAllocsUnknown
 	__ret := C.AIBinder_Weak_promote(cweakBinder)
 	runtime.KeepAlive(cweakBinderAllocMap)
-	__v := *(**AIBinder)(unsafe.Pointer(&__ret))
+	__v := (*AIBinder)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -169,13 +169,21 @@ func AIBinder_getClass(binder *AIBinder) *AIBinder_Class {
 	cbinder, cbinderAllocMap := (*C.AIBinder)(unsafe.Pointer(binder)), cgoAllocsUnknown
 	__ret := C.AIBinder_getClass(cbinder)
 	runtime.KeepAlive(cbinderAllocMap)
-	__v := *(**AIBinder_Class)(unsafe.Pointer(&__ret))
+	__v := (*AIBinder_Class)(unsafe.Pointer(__ret))
 	return __v
 }
 
 func AIBinder_getExtension(binder *AIBinder, outExt **AIBinder) Binder_status_t {
 	cbinder, cbinderAllocMap := (*C.AIBinder)(unsafe.Pointer(binder)), cgoAllocsUnknown
-	__ret := C.AIBinder_getExtension(cbinder, (**C.AIBinder)(unsafe.Pointer(outExt)))
+	coutExt, coutExtAllocMap := (**C.AIBinder)(unsafe.Pointer(outExt)), cgoAllocsUnknown
+	var pinnercoutExt runtime.Pinner
+	pinnercoutExt.Pin(outExt)
+	if outExt != nil {
+		pinnercoutExt.Pin(unsafe.Pointer(*outExt))
+	}
+	defer pinnercoutExt.Unpin()
+	__ret := C.AIBinder_getExtension(cbinder, coutExt)
+	runtime.KeepAlive(coutExtAllocMap)
 	runtime.KeepAlive(cbinderAllocMap)
 	__v := (Binder_status_t)(__ret)
 	return __v
@@ -245,7 +253,7 @@ func AIBinder_new(clazz *AIBinder_Class, args unsafe.Pointer) *AIBinder {
 	__ret := C.AIBinder_new(cclazz, cargs)
 	runtime.KeepAlive(cargsAllocMap)
 	runtime.KeepAlive(cclazzAllocMap)
-	__v := *(**AIBinder)(unsafe.Pointer(&__ret))
+	__v := (*AIBinder)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -259,7 +267,15 @@ func AIBinder_ping(binder *AIBinder) Binder_status_t {
 
 func AIBinder_prepareTransaction(binder *AIBinder, in **AParcel) Binder_status_t {
 	cbinder, cbinderAllocMap := (*C.AIBinder)(unsafe.Pointer(binder)), cgoAllocsUnknown
-	__ret := C.AIBinder_prepareTransaction(cbinder, (**C.AParcel)(unsafe.Pointer(in)))
+	cin, cinAllocMap := (**C.AParcel)(unsafe.Pointer(in)), cgoAllocsUnknown
+	var pinnercin runtime.Pinner
+	pinnercin.Pin(in)
+	if in != nil {
+		pinnercin.Pin(unsafe.Pointer(*in))
+	}
+	defer pinnercin.Unpin()
+	__ret := C.AIBinder_prepareTransaction(cbinder, cin)
+	runtime.KeepAlive(cinAllocMap)
 	runtime.KeepAlive(cbinderAllocMap)
 	__v := (Binder_status_t)(__ret)
 	return __v
@@ -278,9 +294,25 @@ func AIBinder_setExtension(binder *AIBinder, ext *AIBinder) Binder_status_t {
 func AIBinder_transact(binder *AIBinder, code Transaction_code_t, in **AParcel, out **AParcel, flags Binder_flags_t) Binder_status_t {
 	cbinder, cbinderAllocMap := (*C.AIBinder)(unsafe.Pointer(binder)), cgoAllocsUnknown
 	ccode, ccodeAllocMap := (C.transaction_code_t)(code), cgoAllocsUnknown
+	cin, cinAllocMap := (**C.AParcel)(unsafe.Pointer(in)), cgoAllocsUnknown
+	var pinnercin runtime.Pinner
+	pinnercin.Pin(in)
+	if in != nil {
+		pinnercin.Pin(unsafe.Pointer(*in))
+	}
+	defer pinnercin.Unpin()
+	cout, coutAllocMap := (**C.AParcel)(unsafe.Pointer(out)), cgoAllocsUnknown
+	var pinnercout runtime.Pinner
+	pinnercout.Pin(out)
+	if out != nil {
+		pinnercout.Pin(unsafe.Pointer(*out))
+	}
+	defer pinnercout.Unpin()
 	cflags, cflagsAllocMap := (C.binder_flags_t)(flags), cgoAllocsUnknown
-	__ret := C.AIBinder_transact(cbinder, ccode, (**C.AParcel)(unsafe.Pointer(in)), (**C.AParcel)(unsafe.Pointer(out)), cflags)
+	__ret := C.AIBinder_transact(cbinder, ccode, cin, cout, cflags)
 	runtime.KeepAlive(cflagsAllocMap)
+	runtime.KeepAlive(coutAllocMap)
+	runtime.KeepAlive(cinAllocMap)
 	runtime.KeepAlive(ccodeAllocMap)
 	runtime.KeepAlive(cbinderAllocMap)
 	__v := (Binder_status_t)(__ret)
@@ -315,7 +347,7 @@ func AParcel_appendFrom(from *AParcel, to *AParcel, start int32, size int32) Bin
 
 func AParcel_create() *AParcel {
 	__ret := C.AParcel_create()
-	__v := *(**AParcel)(unsafe.Pointer(&__ret))
+	__v := (*AParcel)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -537,7 +569,15 @@ func AParcel_readParcelableArray(parcel *AParcel, arrayData unsafe.Pointer, allo
 
 func AParcel_readStatusHeader(parcel *AParcel, status **AStatus) Binder_status_t {
 	cparcel, cparcelAllocMap := (*C.AParcel)(unsafe.Pointer(parcel)), cgoAllocsUnknown
-	__ret := C.AParcel_readStatusHeader(cparcel, (**C.AStatus)(unsafe.Pointer(status)))
+	cstatus, cstatusAllocMap := (**C.AStatus)(unsafe.Pointer(status)), cgoAllocsUnknown
+	var pinnercstatus runtime.Pinner
+	pinnercstatus.Pin(status)
+	if status != nil {
+		pinnercstatus.Pin(unsafe.Pointer(*status))
+	}
+	defer pinnercstatus.Unpin()
+	__ret := C.AParcel_readStatusHeader(cparcel, cstatus)
+	runtime.KeepAlive(cstatusAllocMap)
 	runtime.KeepAlive(cparcelAllocMap)
 	__v := (Binder_status_t)(__ret)
 	return __v
@@ -571,7 +611,15 @@ func AParcel_readStringArray(parcel *AParcel, arrayData unsafe.Pointer, allocato
 
 func AParcel_readStrongBinder(parcel *AParcel, binder **AIBinder) Binder_status_t {
 	cparcel, cparcelAllocMap := (*C.AParcel)(unsafe.Pointer(parcel)), cgoAllocsUnknown
-	__ret := C.AParcel_readStrongBinder(cparcel, (**C.AIBinder)(unsafe.Pointer(binder)))
+	cbinder, cbinderAllocMap := (**C.AIBinder)(unsafe.Pointer(binder)), cgoAllocsUnknown
+	var pinnercbinder runtime.Pinner
+	pinnercbinder.Pin(binder)
+	if binder != nil {
+		pinnercbinder.Pin(unsafe.Pointer(*binder))
+	}
+	defer pinnercbinder.Unpin()
+	__ret := C.AParcel_readStrongBinder(cparcel, cbinder)
+	runtime.KeepAlive(cbinderAllocMap)
 	runtime.KeepAlive(cparcelAllocMap)
 	__v := (Binder_status_t)(__ret)
 	return __v
@@ -937,7 +985,7 @@ func AStatus_fromExceptionCode(exception Binder_exception_t) *AStatus {
 	cexception, cexceptionAllocMap := (C.binder_exception_t)(exception), cgoAllocsUnknown
 	__ret := C.AStatus_fromExceptionCode(cexception)
 	runtime.KeepAlive(cexceptionAllocMap)
-	__v := *(**AStatus)(unsafe.Pointer(&__ret))
+	__v := (*AStatus)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -947,7 +995,7 @@ func AStatus_fromExceptionCodeWithMessage(exception Binder_exception_t, message 
 	__ret := C.AStatus_fromExceptionCodeWithMessage(cexception, cmessage)
 	runtime.KeepAlive(cmessageAllocMap)
 	runtime.KeepAlive(cexceptionAllocMap)
-	__v := *(**AStatus)(unsafe.Pointer(&__ret))
+	__v := (*AStatus)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -955,7 +1003,7 @@ func AStatus_fromServiceSpecificError(serviceSpecific int32) *AStatus {
 	cserviceSpecific, cserviceSpecificAllocMap := (C.int)(serviceSpecific), cgoAllocsUnknown
 	__ret := C.AStatus_fromServiceSpecificError(cserviceSpecific)
 	runtime.KeepAlive(cserviceSpecificAllocMap)
-	__v := *(**AStatus)(unsafe.Pointer(&__ret))
+	__v := (*AStatus)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -965,7 +1013,7 @@ func AStatus_fromServiceSpecificErrorWithMessage(serviceSpecific int32, message 
 	__ret := C.AStatus_fromServiceSpecificErrorWithMessage(cserviceSpecific, cmessage)
 	runtime.KeepAlive(cmessageAllocMap)
 	runtime.KeepAlive(cserviceSpecificAllocMap)
-	__v := *(**AStatus)(unsafe.Pointer(&__ret))
+	__v := (*AStatus)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -973,7 +1021,7 @@ func AStatus_fromStatus(status Binder_status_t) *AStatus {
 	cstatus, cstatusAllocMap := (C.binder_status_t)(status), cgoAllocsUnknown
 	__ret := C.AStatus_fromStatus(cstatus)
 	runtime.KeepAlive(cstatusAllocMap)
-	__v := *(**AStatus)(unsafe.Pointer(&__ret))
+	__v := (*AStatus)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -1027,6 +1075,6 @@ func AStatus_isOk(status *AStatus) bool {
 
 func AStatus_newOk() *AStatus {
 	__ret := C.AStatus_newOk()
-	__v := *(**AStatus)(unsafe.Pointer(&__ret))
+	__v := (*AStatus)(unsafe.Pointer(__ret))
 	return __v
 }

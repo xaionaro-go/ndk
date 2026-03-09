@@ -1279,8 +1279,6 @@ func returnConversion(
 	goRetType string,
 	typedefByName map[string]*TypedefInfo,
 ) string {
-	cRetType = stripNullabilityAnnotations(cRetType)
-
 	// Pointer return: reinterpret the C pointer via unsafe.Pointer.
 	// The pattern *(**ALooper)(unsafe.Pointer(&__ret)) takes the address of
 	// the *C.ALooper value, casts to **ALooper, and dereferences to get *ALooper.

@@ -188,7 +188,8 @@ func TestGenerateFunctionsGo(t *testing.T) {
 	// ALooper_forThread returns *ALooper.
 	assert.Contains(t, content, "func ALooper_forThread() *ALooper")
 	assert.Contains(t, content, "C.ALooper_forThread()")
-	assert.Contains(t, content, "unsafe.Pointer(&__ret)")
+	assert.Contains(t, content, "(*ALooper)(unsafe.Pointer(__ret))")
+	assert.NotContains(t, content, "unsafe.Pointer(&__ret)", "pointer returns must not take address of __ret")
 
 	// ALooper_addFd has parameters.
 	assert.Contains(t, content, "func ALooper_addFd(")
@@ -296,11 +297,77 @@ func TestParamConversionUnsafePointer(t *testing.T) {
 	assert.Equal(t, "cdata", conv.cVarName)
 }
 
+func TestParamConversionMultiLevelPointer(t *testing.T) {
+	spec := looperSpec()
+	callbackSet := map[string]bool{}
+
+	p := specmodel.Param{Name: "outPtr", Type: "**ALooper"}
+	conv := paramConversion(p, spec, callbackSet, nil)
+
+	// Must use a named variable, not an inline expression.
+	assert.Equal(t, "coutPtr", conv.cVarName)
+	// Must contain runtime.Pinner to pin the Go pointer.
+	assert.Contains(t, conv.code, "runtime.Pinner")
+	assert.Contains(t, conv.code, "Pin(outPtr)")
+	// Must also pin the inner pointer to satisfy CGo's check.
+	assert.Contains(t, conv.code, "Pin(unsafe.Pointer(*outPtr))")
+	assert.Contains(t, conv.code, "defer")
+	assert.Contains(t, conv.code, "Unpin()")
+	// Must cast to the correct C type.
+	assert.Contains(t, conv.code, "(**C.ALooper)(unsafe.Pointer(outPtr))")
+	// Must have a KeepAlive name.
+	assert.NotEmpty(t, conv.keepAliveName)
+}
+
+func TestParamConversionMultiLevelPointerScalar(t *testing.T) {
+	spec := looperSpec()
+	callbackSet := map[string]bool{}
+
+	p := specmodel.Param{Name: "data", Type: "**uint8"}
+	conv := paramConversion(p, spec, callbackSet, nil)
+
+	assert.Equal(t, "cdata", conv.cVarName)
+	assert.Contains(t, conv.code, "runtime.Pinner")
+	assert.Contains(t, conv.code, "Pin(data)")
+	assert.Contains(t, conv.code, "(**C.uint8_t)(unsafe.Pointer(data))")
+}
+
 func TestReturnConversionPointer(t *testing.T) {
 	spec := looperSpec()
 	result := returnConversion("*ALooper", spec)
-	assert.Contains(t, result, "unsafe.Pointer(&__ret)")
+	assert.Contains(t, result, "(*ALooper)(unsafe.Pointer(__ret))")
+	assert.NotContains(t, result, "unsafe.Pointer(&__ret)", "must not take address of __ret (double dereference bug)")
 	assert.Contains(t, result, "return __v")
+}
+
+func TestReturnConversionOpaquePointer(t *testing.T) {
+	spec := &specmodel.Spec{
+		Types: map[string]specmodel.TypeDef{
+			"AFont": {
+				Kind:   "opaque_ptr",
+				CType:  "AFont",
+				GoType: "*C.AFont",
+			},
+			"AFontMatcher": {
+				Kind:   "opaque_ptr",
+				CType:  "AFontMatcher",
+				GoType: "*C.AFontMatcher",
+			},
+		},
+		Functions: map[string]specmodel.FuncDef{
+			"AFontMatcher_match": {
+				CName: "AFontMatcher_match",
+				Params: []specmodel.Param{
+					{Name: "matcher", Type: "*AFontMatcher"},
+				},
+				Returns: "*AFont",
+			},
+		},
+	}
+
+	result := returnConversion("*AFont", spec)
+	assert.Equal(t, "\t__v := (*AFont)(unsafe.Pointer(__ret))\n\treturn __v\n", result)
+	assert.NotContains(t, result, "&__ret", "must use direct pointer cast, not address-of reinterpret")
 }
 
 func TestReturnConversionScalar(t *testing.T) {

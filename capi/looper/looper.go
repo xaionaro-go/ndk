@@ -43,7 +43,7 @@ func ALooper_addFd(looper *ALooper, fd int32, ident int32, events int32, callbac
 
 func ALooper_forThread() *ALooper {
 	__ret := C.ALooper_forThread()
-	__v := *(**ALooper)(unsafe.Pointer(&__ret))
+	__v := (*ALooper)(unsafe.Pointer(__ret))
 	return __v
 }
 
@@ -65,7 +65,7 @@ func ALooper_prepare(opts int32) *ALooper {
 	copts, coptsAllocMap := (C.int)(opts), cgoAllocsUnknown
 	__ret := C.ALooper_prepare(copts)
 	runtime.KeepAlive(coptsAllocMap)
-	__v := *(**ALooper)(unsafe.Pointer(&__ret))
+	__v := (*ALooper)(unsafe.Pointer(__ret))
 	return __v
 }
 

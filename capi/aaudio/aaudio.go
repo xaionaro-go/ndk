@@ -27,7 +27,15 @@ func AAudioStreamBuilder_delete(builder *AAudioStreamBuilder) Aaudio_result_t {
 
 func AAudioStreamBuilder_openStream(builder *AAudioStreamBuilder, stream **AAudioStream) Aaudio_result_t {
 	cbuilder, cbuilderAllocMap := (*C.AAudioStreamBuilder)(unsafe.Pointer(builder)), cgoAllocsUnknown
-	__ret := C.AAudioStreamBuilder_openStream(cbuilder, (**C.AAudioStream)(unsafe.Pointer(stream)))
+	cstream, cstreamAllocMap := (**C.AAudioStream)(unsafe.Pointer(stream)), cgoAllocsUnknown
+	var pinnercstream runtime.Pinner
+	pinnercstream.Pin(stream)
+	if stream != nil {
+		pinnercstream.Pin(unsafe.Pointer(*stream))
+	}
+	defer pinnercstream.Unpin()
+	__ret := C.AAudioStreamBuilder_openStream(cbuilder, cstream)
+	runtime.KeepAlive(cstreamAllocMap)
 	runtime.KeepAlive(cbuilderAllocMap)
 	__v := (Aaudio_result_t)(__ret)
 	return __v
@@ -576,7 +584,15 @@ func AAudio_convertStreamStateToText(state Aaudio_stream_state_t) string {
 }
 
 func AAudio_createStreamBuilder(builder **AAudioStreamBuilder) Aaudio_result_t {
-	__ret := C.AAudio_createStreamBuilder((**C.AAudioStreamBuilder)(unsafe.Pointer(builder)))
+	cbuilder, cbuilderAllocMap := (**C.AAudioStreamBuilder)(unsafe.Pointer(builder)), cgoAllocsUnknown
+	var pinnercbuilder runtime.Pinner
+	pinnercbuilder.Pin(builder)
+	if builder != nil {
+		pinnercbuilder.Pin(unsafe.Pointer(*builder))
+	}
+	defer pinnercbuilder.Unpin()
+	__ret := C.AAudio_createStreamBuilder(cbuilder)
+	runtime.KeepAlive(cbuilderAllocMap)
 	__v := (Aaudio_result_t)(__ret)
 	return __v
 }

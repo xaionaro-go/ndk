@@ -73,7 +73,7 @@ func AChoreographerFrameCallbackData_getPreferredFrameTimelineIndex(data *AChore
 
 func AChoreographer_getInstance() *AChoreographer {
 	__ret := C.AChoreographer_getInstance()
-	__v := *(**AChoreographer)(unsafe.Pointer(&__ret))
+	__v := (*AChoreographer)(unsafe.Pointer(__ret))
 	return __v
 }
 
