@@ -46,10 +46,12 @@ jobs:
 
       - name: Install Android NDK
         run: |
-          mkdir -p "$ANDROID_HOME/ndk"
           wget -q "https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip" -O /tmp/ndk.zip
-          unzip -q /tmp/ndk.zip -d "$ANDROID_HOME/ndk/"
-          mv "$ANDROID_HOME/ndk/android-ndk-${ANDROID_NDK_VERSION}" "$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}"
+          unzip -q /tmp/ndk.zip -d /tmp/ndk-extract/
+          ls /tmp/ndk-extract/
+          mkdir -p "$ANDROID_HOME/ndk"
+          mv /tmp/ndk-extract/android-ndk-* "$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}" >> "$GITHUB_ENV"
 
       - name: Cross-compile examples for Android arm64
         run: make check-examples
@@ -82,10 +84,11 @@ jobs:
 
       - name: Install Android NDK
         run: |
-          mkdir -p "$ANDROID_HOME/ndk"
           wget -q "https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip" -O /tmp/ndk.zip
-          unzip -q /tmp/ndk.zip -d "$ANDROID_HOME/ndk/"
-          mv "$ANDROID_HOME/ndk/android-ndk-${ANDROID_NDK_VERSION}" "$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}"
+          unzip -q /tmp/ndk.zip -d /tmp/ndk-extract/
+          mkdir -p "$ANDROID_HOME/ndk"
+          mv /tmp/ndk-extract/android-ndk-* "$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}" >> "$GITHUB_ENV"
 
       - name: Create AVD
         run: |
