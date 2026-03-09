@@ -1,6 +1,7 @@
 # ndk
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/xaionaro-go/ndk.svg)](https://pkg.go.dev/github.com/xaionaro-go/ndk)
+[![Go Report Card](https://goreportcard.com/badge/github.com/xaionaro-go/ndk)](https://goreportcard.com/report/github.com/xaionaro-go/ndk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/xaionaro-go/ndk)](go.mod)
 
