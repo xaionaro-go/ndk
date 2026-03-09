@@ -3,6 +3,7 @@ package idiomgen
 import (
 	"bufio"
 	"fmt"
+	"go/format"
 	"os"
 	"path/filepath"
 	"sort"
@@ -210,6 +211,11 @@ func Generate(
 		}
 	}
 
+	// Format all generated Go files.
+	if err := formatGoFilesInDir(outDir); err != nil {
+		return fmt.Errorf("format: %w", err)
+	}
+
 	return nil
 }
 
@@ -362,6 +368,13 @@ func generateBridgeFiles(
 		return fmt.Errorf("cleanup bridge: %w", cleanErr)
 	}
 
+	// Format generated bridge files.
+	for name := range bridgeWritten {
+		if err := formatGoFile(filepath.Join(capiDir, name)); err != nil {
+			return fmt.Errorf("format bridge: %w", err)
+		}
+	}
+
 	return nil
 }
 
@@ -433,6 +446,36 @@ func extractIncludesFromFile(path string) ([]string, error) {
 	}
 
 	return includes, scanner.Err()
+}
+
+// formatGoFile formats a single Go source file in place using go/format.
+func formatGoFile(path string) error {
+	src, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf("reading %s: %w", filepath.Base(path), err)
+	}
+	formatted, err := format.Source(src)
+	if err != nil {
+		return fmt.Errorf("formatting %s: %w", filepath.Base(path), err)
+	}
+	return os.WriteFile(path, formatted, 0o644)
+}
+
+// formatGoFilesInDir formats all .go files in the given directory using go/format.
+func formatGoFilesInDir(dir string) error {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".go") {
+			continue
+		}
+		if err := formatGoFile(filepath.Join(dir, e.Name())); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // cleanStaleBridgeFiles removes bridge_*.go files in capiDir that are not in the written set.
