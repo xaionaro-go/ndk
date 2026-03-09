@@ -6,6 +6,5 @@ type Result int32
 
 const (
 	Granted Result = 0
-	Denied Result = -1
+	Denied  Result = -1
 )
-

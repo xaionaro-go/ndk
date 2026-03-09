@@ -5,16 +5,15 @@ package nnapi
 type OperationType int32
 
 const (
-	Add OperationType = 0
-	Mul OperationType = 18
-	Relu OperationType = 19
-	Softmax OperationType = 25
-	FullyConnected OperationType = 9
-	Conv2d OperationType = 3
+	Add             OperationType = 0
+	Mul             OperationType = 18
+	Relu            OperationType = 19
+	Softmax         OperationType = 25
+	FullyConnected  OperationType = 9
+	Conv2d          OperationType = 3
 	DepthwiseConv2d OperationType = 4
-	AveragePool2d OperationType = 1
-	MaxPool2d OperationType = 17
-	Reshape OperationType = 22
-	Concatenation OperationType = 2
+	AveragePool2d   OperationType = 1
+	MaxPool2d       OperationType = 17
+	Reshape         OperationType = 22
+	Concatenation   OperationType = 2
 )
-

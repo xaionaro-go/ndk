@@ -13,8 +13,6 @@ type Class struct {
 	ptr *capi.AIBinder_Class
 }
 
-
-
 // NewClassFromPointer wraps a raw AIBinder_Class pointer.
 func NewClassFromPointer(ptr unsafe.Pointer) *Class {
 	return &Class{ptr: (*capi.AIBinder_Class)(ptr)}
@@ -24,5 +22,3 @@ func NewClassFromPointer(ptr unsafe.Pointer) *Class {
 func (h *Class) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

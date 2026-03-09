@@ -13,7 +13,6 @@ type Muxer struct {
 	ptr *capi.AMediaMuxer
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Muxer) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Muxer) Close() error {
 	h.ptr = nil
 	return err
 }
-
 
 // NewMuxerFromPointer wraps a raw AMediaMuxer pointer.
 func NewMuxerFromPointer(ptr unsafe.Pointer) *Muxer {
@@ -44,5 +42,3 @@ func (h *Muxer) Start() error {
 func (h *Muxer) Stop() error {
 	return result(int32(capi.AMediaMuxer_stop(h.ptr)))
 }
-
-

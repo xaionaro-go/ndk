@@ -10,12 +10,12 @@ const (
 	Unknown Priority = 0
 	Default Priority = 1
 	Verbose Priority = 2
-	Debug Priority = 3
-	Info Priority = 4
-	Warn Priority = 5
-	Error Priority = 6
-	Fatal Priority = 7
-	Silent Priority = 8
+	Debug   Priority = 3
+	Info    Priority = 4
+	Warn    Priority = 5
+	Error   Priority = 6
+	Fatal   Priority = 7
+	Silent  Priority = 8
 )
 
 func (v Priority) String() string {
@@ -42,4 +42,3 @@ func (v Priority) String() string {
 		return fmt.Sprintf("Priority(%d)", int(v))
 	}
 }
-

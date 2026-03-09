@@ -8,17 +8,17 @@ import "fmt"
 type Error int32
 
 const (
-	ErrIncomplete Error = -1
-	ErrError Error = -2
+	ErrIncomplete        Error = -1
+	ErrError             Error = -2
 	ErrInvalidConversion Error = -3
-	ErrInvalidScale Error = -4
-	ErrBadParameter Error = -5
-	ErrInvalidInput Error = -6
-	ErrSeekError Error = -7
-	ErrInternalError Error = -8
+	ErrInvalidScale      Error = -4
+	ErrBadParameter      Error = -5
+	ErrInvalidInput      Error = -6
+	ErrSeekError         Error = -7
+	ErrInternalError     Error = -8
 	ErrUnsupportedFormat Error = -9
-	ErrFinished Error = -10
-	ErrInvalidState Error = -11
+	ErrFinished          Error = -10
+	ErrInvalidState      Error = -11
 )
 
 func (e Error) Error() string {

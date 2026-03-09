@@ -13,7 +13,6 @@ type Looper struct {
 	ptr *capi.ALooper
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Looper) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Looper) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewLooperFromPointer wraps a raw ALooper pointer.
 func NewLooperFromPointer(ptr unsafe.Pointer) *Looper {
@@ -50,9 +48,7 @@ func (h *Looper) Wake() {
 	capi.ALooper_wake(h.ptr)
 }
 
-
 // Prepare calls the underlying C function.
 func Prepare(opts int32) *Looper {
 	return &Looper{ptr: capi.ALooper_prepare(opts)}
 }
-

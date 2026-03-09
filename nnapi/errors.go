@@ -8,20 +8,20 @@ import "fmt"
 type Error int32
 
 const (
-	ErrOutOfMemory Error = 1
-	ErrIncomplete Error = 2
-	ErrUnexpectedNull Error = 3
-	ErrBadData Error = 4
-	ErrOpFailed Error = 5
-	ErrBadState Error = 6
-	ErrUnmappable Error = 7
-	ErrOutputInsufficientSize Error = 8
-	ErrUnavailableDevice Error = 9
-	ErrMissedDeadlineTransient Error = 10
-	ErrMissedDeadlinePersistent Error = 11
-	ErrResourceExhaustedTransient Error = 12
+	ErrOutOfMemory                 Error = 1
+	ErrIncomplete                  Error = 2
+	ErrUnexpectedNull              Error = 3
+	ErrBadData                     Error = 4
+	ErrOpFailed                    Error = 5
+	ErrBadState                    Error = 6
+	ErrUnmappable                  Error = 7
+	ErrOutputInsufficientSize      Error = 8
+	ErrUnavailableDevice           Error = 9
+	ErrMissedDeadlineTransient     Error = 10
+	ErrMissedDeadlinePersistent    Error = 11
+	ErrResourceExhaustedTransient  Error = 12
 	ErrResourceExhaustedPersistent Error = 13
-	ErrDeadObject Error = 14
+	ErrDeadObject                  Error = 14
 )
 
 func (e Error) Error() string {

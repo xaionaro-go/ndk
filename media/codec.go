@@ -13,7 +13,6 @@ type Codec struct {
 	ptr *capi.AMediaCodec
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Codec) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Codec) Close() error {
 	h.ptr = nil
 	return err
 }
-
 
 // NewCodecFromPointer wraps a raw AMediaCodec pointer.
 func NewCodecFromPointer(ptr unsafe.Pointer) *Codec {
@@ -65,7 +63,6 @@ func (h *Codec) Stop() error {
 	return result(int32(capi.AMediaCodec_stop(h.ptr)))
 }
 
-
 // NewDecoder calls the underlying C function.
 func NewDecoder(mime_type string) *Codec {
 	return &Codec{ptr: capi.AMediaCodec_createDecoderByType(mime_type)}
@@ -75,4 +72,3 @@ func NewDecoder(mime_type string) *Codec {
 func NewEncoder(mime_type string) *Codec {
 	return &Codec{ptr: capi.AMediaCodec_createEncoderByType(mime_type)}
 }
-

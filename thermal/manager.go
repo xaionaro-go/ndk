@@ -13,13 +13,10 @@ type Manager struct {
 	ptr *capi.AThermalManager
 }
 
-
 // NewManager creates a new Manager.
 func NewManager() *Manager {
 	return &Manager{ptr: capi.AThermal_acquireManager()}
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *Manager) Close() error {
@@ -30,7 +27,6 @@ func (h *Manager) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewManagerFromPointer wraps a raw AThermalManager pointer.
 func NewManagerFromPointer(ptr unsafe.Pointer) *Manager {
@@ -46,5 +42,3 @@ func (h *Manager) Pointer() unsafe.Pointer {
 func (h *Manager) CurrentStatus() ThermalStatus {
 	return (ThermalStatus)(capi.AThermal_getCurrentThermalStatus(h.ptr))
 }
-
-

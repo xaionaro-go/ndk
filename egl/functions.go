@@ -3,7 +3,6 @@
 package egl
 
 import (
-	
 	capi "github.com/xaionaro-go/ndk/capi/egl"
 )
 
@@ -126,4 +125,3 @@ func WaitGL() Boolean {
 func WaitNative(engine Int) Boolean {
 	return (Boolean)(capi.EglWaitNative(capi.EGLint(engine)))
 }
-

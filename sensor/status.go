@@ -7,11 +7,11 @@ import "fmt"
 type Status int32
 
 const (
-	NoContact Status = -1
-	Unreliable Status = 0
-	AccuracyLow Status = 1
+	NoContact      Status = -1
+	Unreliable     Status = 0
+	AccuracyLow    Status = 1
 	AccuracyMedium Status = 2
-	AccuracyHigh Status = 3
+	AccuracyHigh   Status = 3
 )
 
 func (v Status) String() string {
@@ -30,4 +30,3 @@ func (v Status) String() string {
 		return fmt.Sprintf("Status(%d)", int(v))
 	}
 }
-

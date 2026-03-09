@@ -9,7 +9,7 @@ type Format int32
 const (
 	Rgba8888 Format = 1
 	Rgbx8888 Format = 2
-	Rgb565 Format = 4
+	Rgb565   Format = 4
 )
 
 func (v Format) String() string {
@@ -24,4 +24,3 @@ func (v Format) String() string {
 		return fmt.Sprintf("Format(%d)", int(v))
 	}
 }
-

@@ -229,11 +229,11 @@ func main() {
 	// 2 floats per vertex, tightly packed (stride=0).
 	gles2.VertexAttribPointer(
 		gles2.GLuint(posLoc),
-		2,           // components per vertex
-		gles2.Float, // type
+		2,                          // components per vertex
+		gles2.Float,                // type
 		gles2.Boolean(gles2.False), // not normalized
-		0,   // stride (tightly packed)
-		nil, // offset into the bound VBO
+		0,                          // stride (tightly packed)
+		nil,                        // offset into the bound VBO
 	)
 
 	gles2.DrawArrays(gles2.Triangles, 0, 3)

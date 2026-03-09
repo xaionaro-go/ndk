@@ -13,13 +13,10 @@ type Transaction struct {
 	ptr *capi.ASurfaceTransaction
 }
 
-
 // NewTransaction creates a new Transaction.
 func NewTransaction() *Transaction {
 	return &Transaction{ptr: capi.ASurfaceTransaction_create()}
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *Transaction) Close() error {
@@ -30,7 +27,6 @@ func (h *Transaction) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewTransactionFromPointer wraps a raw ASurfaceTransaction pointer.
 func NewTransactionFromPointer(ptr unsafe.Pointer) *Transaction {
@@ -82,5 +78,3 @@ func (h *Transaction) SetZOrder(surface_control *SurfaceControl, z_order int32) 
 	capi.ASurfaceTransaction_setZOrder(h.ptr, surface_control.ptr, z_order)
 	return h
 }
-
-

@@ -5,11 +5,10 @@ package camera
 type TemplateType int32
 
 const (
-	Preview TemplateType = 1
-	StillCapture TemplateType = 2
-	Record TemplateType = 3
-	VideoSnapshot TemplateType = 4
+	Preview        TemplateType = 1
+	StillCapture   TemplateType = 2
+	Record         TemplateType = 3
+	VideoSnapshot  TemplateType = 4
 	ZeroShutterLag TemplateType = 5
-	Manual TemplateType = 6
+	Manual         TemplateType = 6
 )
-

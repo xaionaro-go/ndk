@@ -3,7 +3,6 @@
 package permission
 
 import (
-	
 	capi "github.com/xaionaro-go/ndk/capi/permission"
 )
 
@@ -11,4 +10,3 @@ import (
 func CheckPermission(permission string, pid Pid_t, uid Uid_t, outResult *int32) int32 {
 	return (int32)(capi.APermissionManager_checkPermission(permission, capi.Pid_t(pid), capi.Uid_t(uid), outResult))
 }
-

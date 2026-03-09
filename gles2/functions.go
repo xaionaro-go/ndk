@@ -4,7 +4,7 @@ package gles2
 
 import (
 	"unsafe"
-	
+
 	capi "github.com/xaionaro-go/ndk/capi/gles2"
 )
 
@@ -322,4 +322,3 @@ func VertexAttribPointer(index GLuint, size GLint, _type Enum, normalized Boolea
 func Viewport(x GLint, y GLint, width GLsizei, height GLsizei) {
 	capi.GlViewport(capi.GLint(x), capi.GLint(y), capi.GLsizei(width), capi.GLsizei(height))
 }
-

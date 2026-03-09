@@ -13,7 +13,6 @@ type Decoder struct {
 	ptr *capi.AImageDecoder
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Decoder) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Decoder) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewDecoderFromPointer wraps a raw AImageDecoder pointer.
 func NewDecoderFromPointer(ptr unsafe.Pointer) *Decoder {
@@ -49,5 +47,3 @@ func (h *Decoder) MinimumStride() uint64 {
 func (h *Decoder) SetTargetSize(width int32, height int32) error {
 	return result(int32(capi.AImageDecoder_setTargetSize(h.ptr, width, height)))
 }
-
-

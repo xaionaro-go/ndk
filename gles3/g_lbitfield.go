@@ -7,4 +7,3 @@ type GLbitfield uint32
 const (
 	SyncFlushCommandsBit GLbitfield = 1
 )
-

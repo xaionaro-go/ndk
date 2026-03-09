@@ -13,8 +13,6 @@ type Event struct {
 	ptr *capi.ANeuralNetworksEvent
 }
 
-
-
 // NewEventFromPointer wraps a raw ANeuralNetworksEvent pointer.
 func NewEventFromPointer(ptr unsafe.Pointer) *Event {
 	return &Event{ptr: (*capi.ANeuralNetworksEvent)(ptr)}
@@ -29,5 +27,3 @@ func (h *Event) Pointer() unsafe.Pointer {
 func (h *Event) Wait() error {
 	return result(int32(capi.ANeuralNetworksEvent_wait(h.ptr)))
 }
-
-

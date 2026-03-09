@@ -13,7 +13,6 @@ type Metadata struct {
 	ptr *capi.ACameraMetadata
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Metadata) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Metadata) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewMetadataFromPointer wraps a raw ACameraMetadata pointer.
 func NewMetadataFromPointer(ptr unsafe.Pointer) *Metadata {
@@ -44,5 +42,3 @@ func (h *Metadata) I32At(tag uint32, idx int32) int32 {
 func (h *Metadata) I32Count(tag uint32) int32 {
 	return (int32)(capi.BridgeMetadataI32Count(h.ptr, tag))
 }
-
-

@@ -8,24 +8,24 @@ import "fmt"
 type Error int32
 
 const (
-	ErrUnknownError Error = -2147483648
-	ErrNoMemory Error = -12
-	ErrInvalidOperation Error = -38
-	ErrBadValue Error = -22
-	ErrBadType Error = -2147483647
-	ErrNameNotFound Error = -2
-	ErrPermissionDenied Error = -1
-	ErrNoInit Error = -19
-	ErrAlreadyExists Error = -17
-	ErrDeadObject Error = -32
-	ErrFailedTransaction Error = -2147483646
-	ErrBadIndex Error = -75
-	ErrNotEnoughData Error = -61
-	ErrWouldBlock Error = -11
-	ErrTimedOut Error = -110
+	ErrUnknownError       Error = -2147483648
+	ErrNoMemory           Error = -12
+	ErrInvalidOperation   Error = -38
+	ErrBadValue           Error = -22
+	ErrBadType            Error = -2147483647
+	ErrNameNotFound       Error = -2
+	ErrPermissionDenied   Error = -1
+	ErrNoInit             Error = -19
+	ErrAlreadyExists      Error = -17
+	ErrDeadObject         Error = -32
+	ErrFailedTransaction  Error = -2147483646
+	ErrBadIndex           Error = -75
+	ErrNotEnoughData      Error = -61
+	ErrWouldBlock         Error = -11
+	ErrTimedOut           Error = -110
 	ErrUnknownTransaction Error = -74
-	ErrFdsNotAllowed Error = -2147483641
-	ErrUnexpectedNull Error = -2147483640
+	ErrFdsNotAllowed      Error = -2147483641
+	ErrUnexpectedNull     Error = -2147483640
 )
 
 func (e Error) Error() string {

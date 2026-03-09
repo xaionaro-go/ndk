@@ -62,5 +62,5 @@ type Field struct {
 	BitOffset    int      `json:"bit-offset"`    // struct field offset
 	BitSize      int      `json:"bit-size"`      // struct field size
 	BitAlignment int      `json:"bit-alignment"` // struct field alignment
-	Type         *TypeRef `json:"type"`           // struct field type
+	Type         *TypeRef `json:"type"`          // struct field type
 }

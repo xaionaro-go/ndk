@@ -13,7 +13,6 @@ type SurfaceControl struct {
 	ptr *capi.ASurfaceControl
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *SurfaceControl) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *SurfaceControl) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewSurfaceControlFromPointer wraps a raw ASurfaceControl pointer.
 func NewSurfaceControlFromPointer(ptr unsafe.Pointer) *SurfaceControl {
@@ -40,11 +38,7 @@ func (h *SurfaceControl) Acquire() {
 	capi.ASurfaceControl_acquire(h.ptr)
 }
 
-
 // CreateChild creates a new SurfaceControl from this SurfaceControl.
 func (h *SurfaceControl) CreateChild(debug_name string) *SurfaceControl {
 	return &SurfaceControl{ptr: capi.ASurfaceControl_create(h.ptr, debug_name)}
 }
-
-
-

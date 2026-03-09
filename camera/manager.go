@@ -13,13 +13,10 @@ type Manager struct {
 	ptr *capi.ACameraManager
 }
 
-
 // NewManager creates a new Manager.
 func NewManager() *Manager {
 	return &Manager{ptr: capi.ACameraManager_create()}
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *Manager) Close() error {
@@ -31,7 +28,6 @@ func (h *Manager) Close() error {
 	return nil
 }
 
-
 // NewManagerFromPointer wraps a raw ACameraManager pointer.
 func NewManagerFromPointer(ptr unsafe.Pointer) *Manager {
 	return &Manager{ptr: (*capi.ACameraManager)(ptr)}
@@ -42,7 +38,6 @@ func (h *Manager) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // GetCameraCharacteristics creates a new Metadata from this Manager.
 func (h *Manager) GetCameraCharacteristics(cameraId string) (*Metadata, error) {
 	var ptr *capi.ACameraMetadata
@@ -51,7 +46,6 @@ func (h *Manager) GetCameraCharacteristics(cameraId string) (*Metadata, error) {
 	}
 	return &Metadata{ptr: ptr}, nil
 }
-
 
 // CameraIdList returns items from the underlying list.
 func (h *Manager) CameraIdList() ([]string, error) {
@@ -67,6 +61,7 @@ func (h *Manager) CameraIdList() ([]string, error) {
 	}
 	return items, nil
 }
+
 // OpenCamera creates a new Device from this Manager.
 func (h *Manager) OpenCamera(cameraId string, cbs DeviceStateCallbacks) (*Device, error) {
 	cbID := capi.BridgeRegisterDeviceStateCallbacks(cbs)
@@ -79,4 +74,3 @@ func (h *Manager) OpenCamera(cameraId string, cbs DeviceStateCallbacks) (*Device
 	}
 	return &Device{ptr: ptr}, nil
 }
-

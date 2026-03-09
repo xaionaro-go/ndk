@@ -13,8 +13,6 @@ type Window struct {
 	ptr *capi.ANativeWindow
 }
 
-
-
 // NewWindowFromPointer wraps a raw ANativeWindow pointer.
 func NewWindowFromPointer(ptr unsafe.Pointer) *Window {
 	return &Window{ptr: (*capi.ANativeWindow)(ptr)}
@@ -49,5 +47,3 @@ func (h *Window) SetBuffersGeometry(width int32, height int32, format int32) err
 func (h *Window) UnlockAndPost() error {
 	return result(int32(capi.ANativeWindow_unlockAndPost(h.ptr)))
 }
-
-

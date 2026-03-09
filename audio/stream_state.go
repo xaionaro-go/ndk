@@ -8,19 +8,19 @@ type StreamState int32
 
 const (
 	Uninitialized StreamState = 0
-	Unknown StreamState = 1
-	Open StreamState = 2
-	Starting StreamState = 3
-	Started StreamState = 4
-	Pausing StreamState = 5
-	Paused StreamState = 6
-	Flushing StreamState = 7
-	Flushed StreamState = 8
-	Stopping StreamState = 9
-	Stopped StreamState = 10
-	Closing StreamState = 11
-	Closed StreamState = 12
-	Disconnected StreamState = 13
+	Unknown       StreamState = 1
+	Open          StreamState = 2
+	Starting      StreamState = 3
+	Started       StreamState = 4
+	Pausing       StreamState = 5
+	Paused        StreamState = 6
+	Flushing      StreamState = 7
+	Flushed       StreamState = 8
+	Stopping      StreamState = 9
+	Stopped       StreamState = 10
+	Closing       StreamState = 11
+	Closed        StreamState = 12
+	Disconnected  StreamState = 13
 )
 
 func (v StreamState) String() string {
@@ -57,4 +57,3 @@ func (v StreamState) String() string {
 		return fmt.Sprintf("StreamState(%d)", int(v))
 	}
 }
-

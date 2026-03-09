@@ -13,8 +13,6 @@ type Activity struct {
 	ptr *capi.ANativeActivity
 }
 
-
-
 // NewActivityFromPointer wraps a raw ANativeActivity pointer.
 func NewActivityFromPointer(ptr unsafe.Pointer) *Activity {
 	return &Activity{ptr: (*capi.ANativeActivity)(ptr)}
@@ -49,5 +47,3 @@ func (h *Activity) SetWindowFormat(format int32) {
 func (h *Activity) ShowSoftInput(flags uint32) {
 	capi.ANativeActivity_showSoftInput(h.ptr, flags)
 }
-
-

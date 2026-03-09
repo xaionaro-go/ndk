@@ -13,7 +13,6 @@ type OutputTarget struct {
 	ptr *capi.ACameraOutputTarget
 }
 
-
 // NewOutputTarget creates a new OutputTarget.
 func NewOutputTarget(window *ANativeWindow) (*OutputTarget, error) {
 	var ptr *capi.ACameraOutputTarget
@@ -22,8 +21,6 @@ func NewOutputTarget(window *ANativeWindow) (*OutputTarget, error) {
 	}
 	return &OutputTarget{ptr: ptr}, nil
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *OutputTarget) Close() error {
@@ -35,7 +32,6 @@ func (h *OutputTarget) Close() error {
 	return nil
 }
 
-
 // NewOutputTargetFromPointer wraps a raw ACameraOutputTarget pointer.
 func NewOutputTargetFromPointer(ptr unsafe.Pointer) *OutputTarget {
 	return &OutputTarget{ptr: (*capi.ACameraOutputTarget)(ptr)}
@@ -45,5 +41,3 @@ func NewOutputTargetFromPointer(ptr unsafe.Pointer) *OutputTarget {
 func (h *OutputTarget) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

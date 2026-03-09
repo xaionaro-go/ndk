@@ -13,8 +13,6 @@ type EventQueue struct {
 	ptr *capi.ASensorEventQueue
 }
 
-
-
 // NewEventQueueFromPointer wraps a raw ASensorEventQueue pointer.
 func NewEventQueueFromPointer(ptr unsafe.Pointer) *EventQueue {
 	return &EventQueue{ptr: (*capi.ASensorEventQueue)(ptr)}
@@ -24,5 +22,3 @@ func NewEventQueueFromPointer(ptr unsafe.Pointer) *EventQueue {
 func (h *EventQueue) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

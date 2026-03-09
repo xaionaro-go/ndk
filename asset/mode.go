@@ -5,9 +5,8 @@ package asset
 type Mode int32
 
 const (
-	Unknown Mode = 0
-	Random Mode = 1
+	Unknown   Mode = 0
+	Random    Mode = 1
 	Streaming Mode = 2
-	Buffer Mode = 3
+	Buffer    Mode = 3
 )
-

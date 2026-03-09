@@ -6,13 +6,12 @@ type GLenum uint32
 
 const (
 	SyncGpuCommandsComplete GLenum = 37143
-	AlreadySignaled GLenum = 37146
-	TimeoutExpired GLenum = 37147
-	ConditionSatisfied GLenum = 37148
-	WaitFailed GLenum = 37149
-	TransformFeedback GLenum = 36386
+	AlreadySignaled         GLenum = 37146
+	TimeoutExpired          GLenum = 37147
+	ConditionSatisfied      GLenum = 37148
+	WaitFailed              GLenum = 37149
+	TransformFeedback       GLenum = 36386
 	TransformFeedbackBuffer GLenum = 35982
-	InterleavedAttribs GLenum = 35980
-	SeparateAttribs GLenum = 35981
+	InterleavedAttribs      GLenum = 35980
+	SeparateAttribs         GLenum = 35981
 )
-

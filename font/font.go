@@ -13,7 +13,6 @@ type Font struct {
 	ptr *capi.AFont
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Font) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Font) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewFontFromPointer wraps a raw AFont pointer.
 func NewFontFromPointer(ptr unsafe.Pointer) *Font {
@@ -44,5 +42,3 @@ func (h *Font) Weight() uint16 {
 func (h *Font) IsItalic() bool {
 	return (bool)(capi.AFont_isItalic(h.ptr))
 }
-
-

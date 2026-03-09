@@ -13,8 +13,6 @@ type Compilation struct {
 	ptr *capi.ANeuralNetworksCompilation
 }
 
-
-
 // NewCompilationFromPointer wraps a raw ANeuralNetworksCompilation pointer.
 func NewCompilationFromPointer(ptr unsafe.Pointer) *Compilation {
 	return &Compilation{ptr: (*capi.ANeuralNetworksCompilation)(ptr)}
@@ -25,7 +23,6 @@ func (h *Compilation) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // NewBurst creates a new Burst from this Compilation.
 func (h *Compilation) NewBurst() (*Burst, error) {
 	var ptr *capi.ANeuralNetworksBurst
@@ -34,7 +31,6 @@ func (h *Compilation) NewBurst() (*Burst, error) {
 	}
 	return &Burst{ptr: ptr}, nil
 }
-
 
 // Finish calls the underlying NDK function.
 func (h *Compilation) Finish() error {
@@ -61,7 +57,6 @@ func (h *Compilation) SetTimeout(duration uint64) error {
 	return result(int32(capi.ANeuralNetworksCompilation_setTimeout(h.ptr, duration)))
 }
 
-
 // NewExecution creates a new Execution from this Compilation.
 func (h *Compilation) NewExecution() (*Execution, error) {
 	var ptr *capi.ANeuralNetworksExecution
@@ -70,6 +65,3 @@ func (h *Compilation) NewExecution() (*Execution, error) {
 	}
 	return &Execution{ptr: ptr}, nil
 }
-
-
-

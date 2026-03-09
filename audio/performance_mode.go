@@ -5,8 +5,7 @@ package audio
 type PerformanceMode int32
 
 const (
-	None PerformanceMode = 10
+	None        PerformanceMode = 10
 	PowerSaving PerformanceMode = 11
-	LowLatency PerformanceMode = 12
+	LowLatency  PerformanceMode = 12
 )
-

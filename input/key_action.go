@@ -7,8 +7,8 @@ import "fmt"
 type KeyAction int32
 
 const (
-	Down KeyAction = 0
-	Up KeyAction = 1
+	Down     KeyAction = 0
+	Up       KeyAction = 1
 	Multiple KeyAction = 2
 )
 
@@ -24,4 +24,3 @@ func (v KeyAction) String() string {
 		return fmt.Sprintf("KeyAction(%d)", int(v))
 	}
 }
-

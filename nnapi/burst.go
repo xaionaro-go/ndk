@@ -13,8 +13,6 @@ type Burst struct {
 	ptr *capi.ANeuralNetworksBurst
 }
 
-
-
 // NewBurstFromPointer wraps a raw ANeuralNetworksBurst pointer.
 func NewBurstFromPointer(ptr unsafe.Pointer) *Burst {
 	return &Burst{ptr: (*capi.ANeuralNetworksBurst)(ptr)}
@@ -24,5 +22,3 @@ func NewBurstFromPointer(ptr unsafe.Pointer) *Burst {
 func (h *Burst) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

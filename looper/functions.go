@@ -4,7 +4,7 @@ package looper
 
 import (
 	"unsafe"
-	
+
 	capi "github.com/xaionaro-go/ndk/capi/looper"
 )
 
@@ -12,4 +12,3 @@ import (
 func PollOnce(timeoutMillis int32, outFd *int32, outEvents *int32, outData *unsafe.Pointer) int32 {
 	return (int32)(capi.ALooper_pollOnce(timeoutMillis, outFd, outEvents, outData))
 }
-

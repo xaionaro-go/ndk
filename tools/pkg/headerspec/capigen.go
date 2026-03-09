@@ -828,18 +828,18 @@ func generateFunction(
 }
 
 type goParam struct {
-	name         string
-	goType       string
-	origCType    string
-	isCallback   bool
-	isSlice      bool
-	isString     bool
-	isPtr        bool
-	isDoublePtr  bool
-	isUnsafePtr  bool
-	sliceElemGo  string
-	ptrBaseGo    string
-	doublePtrGo  string
+	name        string
+	goType      string
+	origCType   string
+	isCallback  bool
+	isSlice     bool
+	isString    bool
+	isPtr       bool
+	isDoublePtr bool
+	isUnsafePtr bool
+	sliceElemGo string
+	ptrBaseGo   string
+	doublePtrGo string
 }
 
 // buildGoParams converts C parameters to Go parameter descriptors.
@@ -1305,6 +1305,3 @@ func unexport(name string) string {
 	first := strings.ToLower(name[:1])
 	return first + name[1:]
 }
-
-
-

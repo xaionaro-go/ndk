@@ -5,16 +5,15 @@ package binder
 type ExceptionCode int32
 
 const (
-	None ExceptionCode = 0
-	Security ExceptionCode = -1
-	BadParcelable ExceptionCode = -2
-	IllegalArgument ExceptionCode = -3
-	NullPointer ExceptionCode = -4
-	IllegalState ExceptionCode = -5
-	NetworkMainThread ExceptionCode = -6
+	None                 ExceptionCode = 0
+	Security             ExceptionCode = -1
+	BadParcelable        ExceptionCode = -2
+	IllegalArgument      ExceptionCode = -3
+	NullPointer          ExceptionCode = -4
+	IllegalState         ExceptionCode = -5
+	NetworkMainThread    ExceptionCode = -6
 	UnsupportedOperation ExceptionCode = -7
-	ServiceSpecific ExceptionCode = -8
-	Parcelable ExceptionCode = -9
-	TransactionFailed ExceptionCode = -129
+	ServiceSpecific      ExceptionCode = -8
+	Parcelable           ExceptionCode = -9
+	TransactionFailed    ExceptionCode = -129
 )
-

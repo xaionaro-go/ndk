@@ -13,7 +13,6 @@ type Status struct {
 	ptr *capi.AStatus
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Status) Close() error {
 	if h.ptr == nil {
@@ -24,7 +23,6 @@ func (h *Status) Close() error {
 	return nil
 }
 
-
 // NewStatusFromPointer wraps a raw AStatus pointer.
 func NewStatusFromPointer(ptr unsafe.Pointer) *Status {
 	return &Status{ptr: (*capi.AStatus)(ptr)}
@@ -34,5 +32,3 @@ func NewStatusFromPointer(ptr unsafe.Pointer) *Status {
 func (h *Status) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

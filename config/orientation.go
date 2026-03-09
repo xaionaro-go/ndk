@@ -5,9 +5,8 @@ package config
 type Orientation int32
 
 const (
-	OrientationAny Orientation = 0
-	OrientationPort Orientation = 1
-	OrientationLand Orientation = 2
+	OrientationAny    Orientation = 0
+	OrientationPort   Orientation = 1
+	OrientationLand   Orientation = 2
 	OrientationSquare Orientation = 3
 )
-

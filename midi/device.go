@@ -13,7 +13,6 @@ type Device struct {
 	ptr *capi.AMidiDevice
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Device) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Device) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewDeviceFromPointer wraps a raw AMidiDevice pointer.
 func NewDeviceFromPointer(ptr unsafe.Pointer) *Device {
@@ -45,7 +43,6 @@ func (h *Device) NumOutputPorts() int64 {
 	return (int64)(capi.AMidiDevice_getNumOutputPorts(h.ptr))
 }
 
-
 // OpenInputPort creates a new InputPort from this Device.
 func (h *Device) OpenInputPort(portNumber int32) (*InputPort, error) {
 	var ptr *capi.AMidiInputPort
@@ -55,8 +52,6 @@ func (h *Device) OpenInputPort(portNumber int32) (*InputPort, error) {
 	return &InputPort{ptr: ptr}, nil
 }
 
-
-
 // OpenOutputPort creates a new OutputPort from this Device.
 func (h *Device) OpenOutputPort(portNumber int32) (*OutputPort, error) {
 	var ptr *capi.AMidiOutputPort
@@ -65,6 +60,3 @@ func (h *Device) OpenOutputPort(portNumber int32) (*OutputPort, error) {
 	}
 	return &OutputPort{ptr: ptr}, nil
 }
-
-
-

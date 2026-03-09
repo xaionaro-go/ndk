@@ -13,7 +13,6 @@ type Asset struct {
 	ptr *capi.AAsset
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Asset) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Asset) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewAssetFromPointer wraps a raw AAsset pointer.
 func NewAssetFromPointer(ptr unsafe.Pointer) *Asset {
@@ -74,5 +72,3 @@ func (h *Asset) Read(buf unsafe.Pointer, count uint64) error {
 func (h *Asset) Seek(offset Off_t, whence int32) Off_t {
 	return (Off_t)(capi.AAsset_seek(h.ptr, capi.Off_t(offset), whence))
 }
-
-

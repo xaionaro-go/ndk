@@ -4,7 +4,7 @@ package gles3
 
 import (
 	"unsafe"
-	
+
 	capi "github.com/xaionaro-go/ndk/capi/gles3"
 )
 
@@ -227,4 +227,3 @@ func UnmapBuffer(target GLenum) GLboolean {
 func WaitSync(sync GLsync, flags GLbitfield, timeout GLuint64) {
 	capi.GlWaitSync(capi.GLsync(sync), capi.GLbitfield(flags), capi.GLuint64(timeout))
 }
-

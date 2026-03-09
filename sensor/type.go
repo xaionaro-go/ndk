@@ -7,41 +7,41 @@ import "fmt"
 type Type int32
 
 const (
-	Invalid Type = -1
-	Accelerometer Type = 1
-	MagneticField Type = 2
-	Gyroscope Type = 4
-	Light Type = 5
-	Pressure Type = 6
-	Proximity Type = 8
-	Gravity Type = 9
-	LinearAcceleration Type = 10
-	RotationVector Type = 11
-	RelativeHumidity Type = 12
-	AmbientTemperature Type = 13
-	MagneticFieldUncalibrated Type = 14
-	GameRotationVector Type = 15
-	GyroscopeUncalibrated Type = 16
-	SignificantMotion Type = 17
-	StepDetector Type = 18
-	StepCounter Type = 19
-	GeomagneticRotationVector Type = 20
-	HeartRate Type = 21
-	Pose6dof Type = 28
-	StationaryDetect Type = 29
-	MotionDetect Type = 30
-	HeartBeat Type = 31
-	DynamicSensorMeta Type = 32
-	AdditionalInfo Type = 33
-	LowLatencyOffbodyDetect Type = 34
-	AccelerometerUncalibrated Type = 35
-	HingeAngle Type = 36
-	HeadTracker Type = 37
-	AccelerometerLimitedAxes Type = 38
-	GyroscopeLimitedAxes Type = 39
+	Invalid                              Type = -1
+	Accelerometer                        Type = 1
+	MagneticField                        Type = 2
+	Gyroscope                            Type = 4
+	Light                                Type = 5
+	Pressure                             Type = 6
+	Proximity                            Type = 8
+	Gravity                              Type = 9
+	LinearAcceleration                   Type = 10
+	RotationVector                       Type = 11
+	RelativeHumidity                     Type = 12
+	AmbientTemperature                   Type = 13
+	MagneticFieldUncalibrated            Type = 14
+	GameRotationVector                   Type = 15
+	GyroscopeUncalibrated                Type = 16
+	SignificantMotion                    Type = 17
+	StepDetector                         Type = 18
+	StepCounter                          Type = 19
+	GeomagneticRotationVector            Type = 20
+	HeartRate                            Type = 21
+	Pose6dof                             Type = 28
+	StationaryDetect                     Type = 29
+	MotionDetect                         Type = 30
+	HeartBeat                            Type = 31
+	DynamicSensorMeta                    Type = 32
+	AdditionalInfo                       Type = 33
+	LowLatencyOffbodyDetect              Type = 34
+	AccelerometerUncalibrated            Type = 35
+	HingeAngle                           Type = 36
+	HeadTracker                          Type = 37
+	AccelerometerLimitedAxes             Type = 38
+	GyroscopeLimitedAxes                 Type = 39
 	AccelerometerLimitedAxesUncalibrated Type = 40
-	GyroscopeLimitedAxesUncalibrated Type = 41
-	Heading Type = 42
+	GyroscopeLimitedAxesUncalibrated     Type = 41
+	Heading                              Type = 42
 )
 
 func (v Type) String() string {
@@ -120,4 +120,3 @@ func (v Type) String() string {
 		return fmt.Sprintf("Type(%d)", int(v))
 	}
 }
-

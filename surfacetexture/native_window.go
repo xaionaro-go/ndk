@@ -13,8 +13,6 @@ type NativeWindow struct {
 	ptr *capi.ANativeWindow
 }
 
-
-
 // NewNativeWindowFromPointer wraps a raw ANativeWindow pointer.
 func NewNativeWindowFromPointer(ptr unsafe.Pointer) *NativeWindow {
 	return &NativeWindow{ptr: (*capi.ANativeWindow)(ptr)}
@@ -24,5 +22,3 @@ func NewNativeWindowFromPointer(ptr unsafe.Pointer) *NativeWindow {
 func (h *NativeWindow) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

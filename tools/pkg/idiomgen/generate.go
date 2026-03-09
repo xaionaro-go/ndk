@@ -310,8 +310,8 @@ func generateBridgeFiles(
 	if len(merged.CallbackStructs) > 0 || len(merged.StructAccessors) > 0 {
 		bridgeTemplates := map[string]string{
 			"bridge_registry.go": "bridge_registry.go.tmpl",
-			"bridge_c.go":       "bridge_c.go.tmpl",
-			"bridge_export.go":  "bridge_export.go.tmpl",
+			"bridge_c.go":        "bridge_c.go.tmpl",
+			"bridge_export.go":   "bridge_export.go.tmpl",
 		}
 		for outFile, tmplFile := range bridgeTemplates {
 			tmplPath := filepath.Join(tmplDir, tmplFile)

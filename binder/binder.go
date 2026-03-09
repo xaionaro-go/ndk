@@ -13,7 +13,6 @@ type Binder struct {
 	ptr *capi.AIBinder
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Binder) Close() error {
 	if h.ptr == nil {
@@ -24,7 +23,6 @@ func (h *Binder) Close() error {
 	return nil
 }
 
-
 // NewBinderFromPointer wraps a raw AIBinder pointer.
 func NewBinderFromPointer(ptr unsafe.Pointer) *Binder {
 	return &Binder{ptr: (*capi.AIBinder)(ptr)}
@@ -34,5 +32,3 @@ func NewBinderFromPointer(ptr unsafe.Pointer) *Binder {
 func (h *Binder) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

@@ -13,8 +13,6 @@ type HeaderInfo struct {
 	ptr *capi.AImageDecoderHeaderInfo
 }
 
-
-
 // NewHeaderInfoFromPointer wraps a raw AImageDecoderHeaderInfo pointer.
 func NewHeaderInfoFromPointer(ptr unsafe.Pointer) *HeaderInfo {
 	return &HeaderInfo{ptr: (*capi.AImageDecoderHeaderInfo)(ptr)}
@@ -24,5 +22,3 @@ func NewHeaderInfoFromPointer(ptr unsafe.Pointer) *HeaderInfo {
 func (h *HeaderInfo) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

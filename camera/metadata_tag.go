@@ -5,7 +5,6 @@ package camera
 type MetadataTag int32
 
 const (
-	SensorOrientation MetadataTag = 917518
+	SensorOrientation                   MetadataTag = 917518
 	ScalerAvailableStreamConfigurations MetadataTag = 851978
 )
-

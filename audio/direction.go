@@ -8,7 +8,7 @@ type Direction int32
 
 const (
 	Output Direction = 0
-	Input Direction = 1
+	Input  Direction = 1
 )
 
 func (v Direction) String() string {
@@ -21,4 +21,3 @@ func (v Direction) String() string {
 		return fmt.Sprintf("Direction(%d)", int(v))
 	}
 }
-

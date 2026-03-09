@@ -13,7 +13,6 @@ type Stream struct {
 	ptr *capi.AAudioStream
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Stream) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Stream) Close() error {
 	h.ptr = nil
 	return err
 }
-
 
 // NewStreamFromPointer wraps a raw AAudioStream pointer.
 func NewStreamFromPointer(ptr unsafe.Pointer) *Stream {
@@ -88,5 +86,3 @@ func (h *Stream) Write(buffer unsafe.Pointer, numFrames int32, timeoutNanosecond
 	}
 	return int32(r), nil
 }
-
-

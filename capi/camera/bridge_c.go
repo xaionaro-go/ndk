@@ -68,16 +68,15 @@ import (
 // SessionStateCallbacks holds Go callbacks for ACameraCaptureSession_stateCallbacks.
 type SessionStateCallbacks struct {
 	OnClosed func()
-	OnReady func()
+	OnReady  func()
 	OnActive func()
 }
 
 // DeviceStateCallbacks holds Go callbacks for ACameraDevice_StateCallbacks.
 type DeviceStateCallbacks struct {
 	OnDisconnected func()
-	OnError func(int)
+	OnError        func(int)
 }
-
 
 // BridgeRegisterSessionStateCallbacks registers a SessionStateCallbacks and returns its callback ID.
 func BridgeRegisterSessionStateCallbacks(cbs SessionStateCallbacks) uintptr {
@@ -109,7 +108,6 @@ func BridgeInitDeviceStateCallbacks(cbs *ACameraDevice_StateCallbacks, cbID uint
 	C.bridge_ACameraDevice_StateCallbacks_init((*C.ACameraDevice_StateCallbacks)(unsafe.Pointer(cbs)), C.uintptr_t(cbID))
 }
 
-
 // BridgeACameraIdListCount returns the count of items in a ACameraIdList.
 func BridgeACameraIdListCount(list *ACameraIdList) int {
 	return int(C.bridge_ACameraIdList_count((*C.ACameraIdList)(unsafe.Pointer(list))))
@@ -129,4 +127,3 @@ func BridgeMetadataI32Count(metadata *ACameraMetadata, tag uint32) int32 {
 func BridgeMetadataI32At(metadata *ACameraMetadata, tag uint32, idx int32) int32 {
 	return int32(C.bridge_metadataI32At((*C.ACameraMetadata)(unsafe.Pointer(metadata)), C.uint32_t(tag), C.int32_t(idx)))
 }
-

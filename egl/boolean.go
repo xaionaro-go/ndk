@@ -6,6 +6,5 @@ type Boolean uint32
 
 const (
 	False Boolean = 0
-	True Boolean = 1
+	True  Boolean = 1
 )
-

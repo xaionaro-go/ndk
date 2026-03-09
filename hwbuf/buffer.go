@@ -13,7 +13,6 @@ type Buffer struct {
 	ptr *capi.AHardwareBuffer
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Buffer) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Buffer) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewBufferFromPointer wraps a raw AHardwareBuffer pointer.
 func NewBufferFromPointer(ptr unsafe.Pointer) *Buffer {
@@ -44,5 +42,3 @@ func (h *Buffer) Acquire() {
 func (h *Buffer) Unlock(fence *int32) error {
 	return result(int32(capi.AHardwareBuffer_unlock(h.ptr, fence)))
 }
-
-

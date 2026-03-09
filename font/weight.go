@@ -5,16 +5,15 @@ package font
 type Weight int32
 
 const (
-	Min Weight = 0
-	Thin Weight = 100
+	Min        Weight = 0
+	Thin       Weight = 100
 	ExtraLight Weight = 200
-	Light Weight = 300
-	Normal Weight = 400
-	Medium Weight = 500
-	SemiBold Weight = 600
-	Bold Weight = 700
-	ExtraBold Weight = 800
-	Black Weight = 900
-	Max Weight = 1000
+	Light      Weight = 300
+	Normal     Weight = 400
+	Medium     Weight = 500
+	SemiBold   Weight = 600
+	Bold       Weight = 700
+	ExtraBold  Weight = 800
+	Black      Weight = 900
+	Max        Weight = 1000
 )
-

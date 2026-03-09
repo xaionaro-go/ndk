@@ -13,7 +13,6 @@ type SurfaceTexture struct {
 	ptr *capi.ASurfaceTexture
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *SurfaceTexture) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *SurfaceTexture) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewSurfaceTextureFromPointer wraps a raw ASurfaceTexture pointer.
 func NewSurfaceTextureFromPointer(ptr unsafe.Pointer) *SurfaceTexture {
@@ -35,12 +33,10 @@ func (h *SurfaceTexture) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // AcquireWindow creates a new NativeWindow from this SurfaceTexture.
 func (h *SurfaceTexture) AcquireWindow() *NativeWindow {
 	return &NativeWindow{ptr: capi.ASurfaceTexture_acquireANativeWindow(h.ptr)}
 }
-
 
 // AttachToGLContext calls the underlying NDK function.
 func (h *SurfaceTexture) AttachToGLContext(texName uint32) error {
@@ -66,5 +62,3 @@ func (h *SurfaceTexture) TransformMatrix(mtx *[16]float32) {
 func (h *SurfaceTexture) UpdateTexImage() error {
 	return result(int32(capi.ASurfaceTexture_updateTexImage(h.ptr)))
 }
-
-

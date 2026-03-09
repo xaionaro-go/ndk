@@ -7,14 +7,14 @@ import "fmt"
 type ThermalStatus int32
 
 const (
-	StatusError ThermalStatus = -1
-	StatusNone ThermalStatus = 0
-	StatusLight ThermalStatus = 1
-	StatusModerate ThermalStatus = 2
-	StatusSevere ThermalStatus = 3
-	StatusCritical ThermalStatus = 4
+	StatusError     ThermalStatus = -1
+	StatusNone      ThermalStatus = 0
+	StatusLight     ThermalStatus = 1
+	StatusModerate  ThermalStatus = 2
+	StatusSevere    ThermalStatus = 3
+	StatusCritical  ThermalStatus = 4
 	StatusEmergency ThermalStatus = 5
-	StatusShutdown ThermalStatus = 6
+	StatusShutdown  ThermalStatus = 6
 )
 
 func (v ThermalStatus) String() string {
@@ -39,4 +39,3 @@ func (v ThermalStatus) String() string {
 		return fmt.Sprintf("ThermalStatus(%d)", int(v))
 	}
 }
-

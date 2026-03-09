@@ -13,7 +13,6 @@ type InputPort struct {
 	ptr *capi.AMidiInputPort
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *InputPort) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *InputPort) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewInputPortFromPointer wraps a raw AMidiInputPort pointer.
 func NewInputPortFromPointer(ptr unsafe.Pointer) *InputPort {
@@ -39,5 +37,3 @@ func (h *InputPort) Pointer() unsafe.Pointer {
 func (h *InputPort) Send(buffer *uint8, numBytes uint64) error {
 	return result(int32(capi.AMidiInputPort_send(h.ptr, buffer, numBytes)))
 }
-
-

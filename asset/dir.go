@@ -13,7 +13,6 @@ type Dir struct {
 	ptr *capi.AAssetDir
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Dir) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Dir) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewDirFromPointer wraps a raw AAssetDir pointer.
 func NewDirFromPointer(ptr unsafe.Pointer) *Dir {
@@ -44,5 +42,3 @@ func (h *Dir) NextFileName() string {
 func (h *Dir) Rewind() {
 	capi.AAssetDir_rewind(h.ptr)
 }
-
-

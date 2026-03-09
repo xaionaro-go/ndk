@@ -5,12 +5,11 @@ package audio
 type Format int32
 
 const (
-	Invalid Format = -1
-	Unspecified Format = 0
-	PcmI16 Format = 1
-	PcmFloat Format = 2
+	Invalid      Format = -1
+	Unspecified  Format = 0
+	PcmI16       Format = 1
+	PcmFloat     Format = 2
 	PcmI24Packed Format = 3
-	PcmI32 Format = 4
-	Iec61937 Format = 5
+	PcmI32       Format = 4
+	Iec61937     Format = 5
 )
-

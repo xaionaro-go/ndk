@@ -5,10 +5,9 @@ package looper
 type Event int32
 
 const (
-	EventInput Event = 1
-	EventOutput Event = 2
-	EventError Event = 4
-	EventHangup Event = 8
+	EventInput   Event = 1
+	EventOutput  Event = 2
+	EventError   Event = 4
+	EventHangup  Event = 8
 	EventInvalid Event = 16
 )
-

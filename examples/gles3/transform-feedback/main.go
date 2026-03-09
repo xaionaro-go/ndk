@@ -26,7 +26,7 @@ import (
 // GL constants for rasterizer discard and map read.
 const (
 	glRasterizerDiscard gles2.Enum       = 0x8C89
-	glMapReadBit       gles3.GLbitfield = 0x0001
+	glMapReadBit        gles3.GLbitfield = 0x0001
 )
 
 // Input positions: three 2D points.

@@ -13,7 +13,6 @@ type CaptureRequest struct {
 	ptr *capi.ACaptureRequest
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *CaptureRequest) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *CaptureRequest) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewCaptureRequestFromPointer wraps a raw ACaptureRequest pointer.
 func NewCaptureRequestFromPointer(ptr unsafe.Pointer) *CaptureRequest {
@@ -45,5 +43,3 @@ func (h *CaptureRequest) AddTarget(output *OutputTarget) *CaptureRequest {
 func (h *CaptureRequest) RemoveTarget(output *OutputTarget) error {
 	return result(int32(capi.ACaptureRequest_removeTarget(h.ptr, output.ptr)))
 }
-
-

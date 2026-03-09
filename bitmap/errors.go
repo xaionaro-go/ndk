@@ -8,8 +8,8 @@ import "fmt"
 type Error int32
 
 const (
-	ErrBadParameter Error = -1
-	ErrJniException Error = -2
+	ErrBadParameter     Error = -1
+	ErrJniException     Error = -2
 	ErrAllocationFailed Error = -3
 )
 

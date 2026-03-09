@@ -13,8 +13,6 @@ type Crypto struct {
 	ptr *capi.AMediaCrypto
 }
 
-
-
 // NewCryptoFromPointer wraps a raw AMediaCrypto pointer.
 func NewCryptoFromPointer(ptr unsafe.Pointer) *Crypto {
 	return &Crypto{ptr: (*capi.AMediaCrypto)(ptr)}
@@ -24,5 +22,3 @@ func NewCryptoFromPointer(ptr unsafe.Pointer) *Crypto {
 func (h *Crypto) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

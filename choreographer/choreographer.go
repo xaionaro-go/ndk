@@ -13,8 +13,6 @@ type Choreographer struct {
 	ptr *capi.AChoreographer
 }
 
-
-
 // NewChoreographerFromPointer wraps a raw AChoreographer pointer.
 func NewChoreographerFromPointer(ptr unsafe.Pointer) *Choreographer {
 	return &Choreographer{ptr: (*capi.AChoreographer)(ptr)}
@@ -25,9 +23,7 @@ func (h *Choreographer) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // GetInstance calls the underlying C function.
 func GetInstance() *Choreographer {
 	return &Choreographer{ptr: capi.AChoreographer_getInstance()}
 }
-

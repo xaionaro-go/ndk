@@ -3,7 +3,6 @@
 package log
 
 import (
-	
 	capi "github.com/xaionaro-go/ndk/capi/logging"
 )
 
@@ -11,4 +10,3 @@ import (
 func Write(prio int32, tag string, text string) int32 {
 	return (int32)(capi.Android_log_write(prio, tag, text))
 }
-

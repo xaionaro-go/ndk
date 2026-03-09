@@ -4,7 +4,7 @@ package bitmap
 
 import (
 	"unsafe"
-	
+
 	capi "github.com/xaionaro-go/ndk/capi/bitmap"
 )
 
@@ -22,4 +22,3 @@ func LockPixels(env *JNIEnv, jbitmap Jobject, addrPtr *unsafe.Pointer) int32 {
 func UnlockPixels(env *JNIEnv, jbitmap Jobject) int32 {
 	return (int32)(capi.AndroidBitmap_unlockPixels((*capi.JNIEnv)(env), capi.Jobject(jbitmap)))
 }
-

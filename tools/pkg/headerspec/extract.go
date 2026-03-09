@@ -28,14 +28,14 @@ type ParamInfo struct {
 
 // TypedefInfo describes a typedef declaration.
 type TypedefInfo struct {
-	Name               string
-	UnderlyingType     string
-	DesugaredType      string // desugared qualType from clang (resolves typedef chains)
-	IsOpaqueStruct     bool
-	IsEnumTypedef      bool // true if this typedefs an enum
-	IsFuncPtr          bool
-	FuncParams         []ParamInfo
-	FuncReturn         string
+	Name           string
+	UnderlyingType string
+	DesugaredType  string // desugared qualType from clang (resolves typedef chains)
+	IsOpaqueStruct bool
+	IsEnumTypedef  bool // true if this typedefs an enum
+	IsFuncPtr      bool
+	FuncParams     []ParamInfo
+	FuncReturn     string
 }
 
 // EnumInfo describes an enum declaration with its constants.

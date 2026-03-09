@@ -6,8 +6,8 @@ import "sync"
 
 var (
 	bridgeCBMu   sync.Mutex
-	bridgeCBMap   = map[uintptr]interface{}{}
-	bridgeCBNext  uintptr
+	bridgeCBMap  = map[uintptr]interface{}{}
+	bridgeCBNext uintptr
 )
 
 func bridgeRegisterCB(cb interface{}) uintptr {

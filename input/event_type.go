@@ -7,11 +7,11 @@ import "fmt"
 type EventType int32
 
 const (
-	Key EventType = 1
-	Motion EventType = 2
-	Focus EventType = 3
-	Capture EventType = 4
-	Drag EventType = 5
+	Key       EventType = 1
+	Motion    EventType = 2
+	Focus     EventType = 3
+	Capture   EventType = 4
+	Drag      EventType = 5
 	TouchMode EventType = 6
 )
 
@@ -33,4 +33,3 @@ func (v EventType) String() string {
 		return fmt.Sprintf("EventType(%d)", int(v))
 	}
 }
-

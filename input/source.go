@@ -7,23 +7,23 @@ import "fmt"
 type Source int32
 
 const (
-	Unknown Source = 0
-	Keyboard Source = 257
-	Dpad Source = 513
-	Gamepad Source = 1025
-	Touchscreen Source = 4098
-	Mouse Source = 8194
-	Stylus Source = 16386
+	Unknown         Source = 0
+	Keyboard        Source = 257
+	Dpad            Source = 513
+	Gamepad         Source = 1025
+	Touchscreen     Source = 4098
+	Mouse           Source = 8194
+	Stylus          Source = 16386
 	BluetoothStylus Source = 49154
-	Trackball Source = 65540
-	MouseRelative Source = 131076
-	Touchpad Source = 1048584
+	Trackball       Source = 65540
+	MouseRelative   Source = 131076
+	Touchpad        Source = 1048584
 	TouchNavigation Source = 2097152
-	Joystick Source = 16777232
-	Hdmi Source = 33554433
-	Sensor Source = 67108864
-	RotaryEncoder Source = 4194304
-	Any Source = -256
+	Joystick        Source = 16777232
+	Hdmi            Source = 33554433
+	Sensor          Source = 67108864
+	RotaryEncoder   Source = 4194304
+	Any             Source = -256
 )
 
 func (v Source) String() string {
@@ -66,4 +66,3 @@ func (v Source) String() string {
 		return fmt.Sprintf("Source(%d)", int(v))
 	}
 }
-

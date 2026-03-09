@@ -189,4 +189,3 @@ func goBridge_Lifecycle_OnLowMemory(activity *C.ANativeActivity) {
 		cb(unsafe.Pointer(activity))
 	}
 }
-

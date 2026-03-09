@@ -51,4 +51,3 @@ func goBridge_DeviceStateCallbacks_OnError(context unsafe.Pointer, device *C.ACa
 		cb.OnError(int(_error))
 	}
 }
-

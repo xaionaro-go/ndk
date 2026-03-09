@@ -7,25 +7,25 @@ import "fmt"
 type Format int32
 
 const (
-	R8g8b8a8Unorm Format = 1
-	R8g8b8x8Unorm Format = 2
-	R8g8b8Unorm Format = 3
-	R5g6b5Unorm Format = 4
+	R8g8b8a8Unorm     Format = 1
+	R8g8b8x8Unorm     Format = 2
+	R8g8b8Unorm       Format = 3
+	R5g6b5Unorm       Format = 4
 	R16g16b16a16Float Format = 22
-	R10g10b10a2Unorm Format = 43
-	Blob Format = 33
-	D16Unorm Format = 48
-	D24Unorm Format = 49
-	D24UnormS8Uint Format = 50
-	D32Float Format = 51
-	D32FloatS8Uint Format = 52
-	S8Uint Format = 53
-	Y8cb8cr8420 Format = 35
-	YcbcrP010 Format = 54
-	YcbcrP210 Format = 60
-	R8Unorm Format = 56
-	R16Uint Format = 57
-	R16g16Uint Format = 58
+	R10g10b10a2Unorm  Format = 43
+	Blob              Format = 33
+	D16Unorm          Format = 48
+	D24Unorm          Format = 49
+	D24UnormS8Uint    Format = 50
+	D32Float          Format = 51
+	D32FloatS8Uint    Format = 52
+	S8Uint            Format = 53
+	Y8cb8cr8420       Format = 35
+	YcbcrP010         Format = 54
+	YcbcrP210         Format = 60
+	R8Unorm           Format = 56
+	R16Uint           Format = 57
+	R16g16Uint        Format = 58
 	R10g10b10a10Unorm Format = 59
 )
 
@@ -75,4 +75,3 @@ func (v Format) String() string {
 		return fmt.Sprintf("Format(%d)", int(v))
 	}
 }
-

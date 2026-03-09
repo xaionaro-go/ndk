@@ -6,6 +6,5 @@ type HideSoftInputFlags int32
 
 const (
 	ImplicitOnly HideSoftInputFlags = 1
-	NotAlways HideSoftInputFlags = 2
+	NotAlways    HideSoftInputFlags = 2
 )
-

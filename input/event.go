@@ -13,8 +13,6 @@ type Event struct {
 	ptr *capi.AInputEvent
 }
 
-
-
 // NewEventFromPointer wraps a raw AInputEvent pointer.
 func NewEventFromPointer(ptr unsafe.Pointer) *Event {
 	return &Event{ptr: (*capi.AInputEvent)(ptr)}
@@ -74,5 +72,3 @@ func (h *Event) X(pointer_index uint64) float32 {
 func (h *Event) Y(pointer_index uint64) float32 {
 	return (float32)(capi.AMotionEvent_getY(h.ptr, pointer_index))
 }
-
-

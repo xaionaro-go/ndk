@@ -3,7 +3,6 @@
 package trace
 
 import (
-	
 	capi "github.com/xaionaro-go/ndk/capi/trace"
 )
 
@@ -36,4 +35,3 @@ func IsEnabled() bool {
 func SetCounter(counterName string, counterValue int64) {
 	capi.ATrace_setCounter(counterName, counterValue)
 }
-

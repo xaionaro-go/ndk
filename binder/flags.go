@@ -7,4 +7,3 @@ type Flags uint32
 const (
 	Oneway Flags = 1
 )
-

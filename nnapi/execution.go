@@ -13,8 +13,6 @@ type Execution struct {
 	ptr *capi.ANeuralNetworksExecution
 }
 
-
-
 // NewExecutionFromPointer wraps a raw ANeuralNetworksExecution pointer.
 func NewExecutionFromPointer(ptr unsafe.Pointer) *Execution {
 	return &Execution{ptr: (*capi.ANeuralNetworksExecution)(ptr)}
@@ -45,7 +43,6 @@ func (h *Execution) SetTimeout(duration uint64) error {
 	return result(int32(capi.ANeuralNetworksExecution_setTimeout(h.ptr, duration)))
 }
 
-
 // StartCompute creates a new Event from this Execution.
 func (h *Execution) StartCompute() (*Event, error) {
 	var ptr *capi.ANeuralNetworksEvent
@@ -54,6 +51,3 @@ func (h *Execution) StartCompute() (*Event, error) {
 	}
 	return &Event{ptr: ptr}, nil
 }
-
-
-

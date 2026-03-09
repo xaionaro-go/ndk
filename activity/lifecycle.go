@@ -10,23 +10,23 @@ import (
 
 // LifecycleCallbacks holds Go callbacks for ANativeActivity lifecycle events.
 type LifecycleCallbacks struct {
-	OnCreate func(*Activity)
-	OnStart func(*Activity)
-	OnResume func(*Activity)
-	OnSaveInstanceState func(*Activity, unsafe.Pointer)
-	OnPause func(*Activity)
-	OnStop func(*Activity)
-	OnDestroy func(*Activity)
-	OnWindowFocusChanged func(*Activity, int32)
-	OnNativeWindowCreated func(*Activity, unsafe.Pointer)
-	OnNativeWindowResized func(*Activity, unsafe.Pointer)
+	OnCreate                   func(*Activity)
+	OnStart                    func(*Activity)
+	OnResume                   func(*Activity)
+	OnSaveInstanceState        func(*Activity, unsafe.Pointer)
+	OnPause                    func(*Activity)
+	OnStop                     func(*Activity)
+	OnDestroy                  func(*Activity)
+	OnWindowFocusChanged       func(*Activity, int32)
+	OnNativeWindowCreated      func(*Activity, unsafe.Pointer)
+	OnNativeWindowResized      func(*Activity, unsafe.Pointer)
 	OnNativeWindowRedrawNeeded func(*Activity, unsafe.Pointer)
-	OnNativeWindowDestroyed func(*Activity, unsafe.Pointer)
-	OnInputQueueCreated func(*Activity, unsafe.Pointer)
-	OnInputQueueDestroyed func(*Activity, unsafe.Pointer)
-	OnContentRectChanged func(*Activity, unsafe.Pointer)
-	OnConfigurationChanged func(*Activity)
-	OnLowMemory func(*Activity)
+	OnNativeWindowDestroyed    func(*Activity, unsafe.Pointer)
+	OnInputQueueCreated        func(*Activity, unsafe.Pointer)
+	OnInputQueueDestroyed      func(*Activity, unsafe.Pointer)
+	OnContentRectChanged       func(*Activity, unsafe.Pointer)
+	OnConfigurationChanged     func(*Activity)
+	OnLowMemory                func(*Activity)
 }
 
 // SetLifecycleCallbacks registers callbacks for the lifecycle events.
@@ -134,4 +134,3 @@ func SetLifecycleCallbacks(cb LifecycleCallbacks) {
 	}
 	capi.BridgeSetLifecycleCallbacks(bridgeCB)
 }
-

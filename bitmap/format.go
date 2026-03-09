@@ -5,12 +5,11 @@ package bitmap
 type Format int32
 
 const (
-	None Format = 0
-	Rgba8888 Format = 1
-	Rgb565 Format = 4
-	Rgba4444 Format = 7
-	A8 Format = 8
-	RgbaF16 Format = 9
+	None        Format = 0
+	Rgba8888    Format = 1
+	Rgb565      Format = 4
+	Rgba4444    Format = 7
+	A8          Format = 8
+	RgbaF16     Format = 9
 	Rgba1010102 Format = 10
 )
-

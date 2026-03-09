@@ -78,14 +78,14 @@ var (
 	sessOutContainer *camera.SessionOutputContainer
 	captureSess      *camera.CaptureSession
 
-	eglDisp     egl.EGLDisplay
-	eglSurf     egl.EGLSurface
-	eglCtx      egl.EGLContext
-	eglInited   bool
-	eglHasSurf  bool
-	eglHasCtx   bool
-	glProg      gles2.GLuint
-	oesTex      gles2.GLuint
+	eglDisp    egl.EGLDisplay
+	eglSurf    egl.EGLSurface
+	eglCtx     egl.EGLContext
+	eglInited  bool
+	eglHasSurf bool
+	eglHasCtx  bool
+	glProg     gles2.GLuint
+	oesTex     gles2.GLuint
 
 	surfTex   *surfacetexture.SurfaceTexture
 	camWindow *surfacetexture.NativeWindow

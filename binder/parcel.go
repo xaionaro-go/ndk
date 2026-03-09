@@ -13,7 +13,6 @@ type Parcel struct {
 	ptr *capi.AParcel
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Parcel) Close() error {
 	if h.ptr == nil {
@@ -24,7 +23,6 @@ func (h *Parcel) Close() error {
 	return nil
 }
 
-
 // NewParcelFromPointer wraps a raw AParcel pointer.
 func NewParcelFromPointer(ptr unsafe.Pointer) *Parcel {
 	return &Parcel{ptr: (*capi.AParcel)(ptr)}
@@ -34,5 +32,3 @@ func NewParcelFromPointer(ptr unsafe.Pointer) *Parcel {
 func (h *Parcel) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

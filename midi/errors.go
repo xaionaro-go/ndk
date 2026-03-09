@@ -8,7 +8,7 @@ import "fmt"
 type Error int32
 
 const (
-	ErrUnknown Error = -1
+	ErrUnknown    Error = -1
 	ErrWouldBlock Error = -2
 )
 

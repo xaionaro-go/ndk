@@ -6,6 +6,5 @@ type ShowSoftInputFlags int32
 
 const (
 	Implicit ShowSoftInputFlags = 1
-	Forced ShowSoftInputFlags = 2
+	Forced   ShowSoftInputFlags = 2
 )
-

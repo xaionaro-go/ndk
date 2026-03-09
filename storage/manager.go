@@ -13,13 +13,10 @@ type Manager struct {
 	ptr *capi.AStorageManager
 }
 
-
 // NewManager creates a new Manager.
 func NewManager() *Manager {
 	return &Manager{ptr: capi.AStorageManager_new()}
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *Manager) Close() error {
@@ -30,7 +27,6 @@ func (h *Manager) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewManagerFromPointer wraps a raw AStorageManager pointer.
 func NewManagerFromPointer(ptr unsafe.Pointer) *Manager {
@@ -61,5 +57,3 @@ func (h *Manager) MountObb(filename string, key string, cb AStorageManager_obbCa
 func (h *Manager) UnmountObb(filename string, force int32, cb AStorageManager_obbCallbackFunc, data unsafe.Pointer) {
 	capi.AStorageManager_unmountObb(h.ptr, filename, force, capi.AStorageManager_obbCallbackFunc(cb), data)
 }
-
-

@@ -5,10 +5,9 @@ package config
 type ScreenSize int32
 
 const (
-	ScreensizeAny ScreenSize = 0
-	ScreensizeSmall ScreenSize = 1
+	ScreensizeAny    ScreenSize = 0
+	ScreensizeSmall  ScreenSize = 1
 	ScreensizeNormal ScreenSize = 2
-	ScreensizeLarge ScreenSize = 3
+	ScreensizeLarge  ScreenSize = 3
 	ScreensizeXlarge ScreenSize = 4
 )
-

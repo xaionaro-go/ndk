@@ -13,8 +13,6 @@ type Sensor struct {
 	ptr *capi.ASensor
 }
 
-
-
 // NewSensorFromPointer wraps a raw ASensor pointer.
 func NewSensorFromPointer(ptr unsafe.Pointer) *Sensor {
 	return &Sensor{ptr: (*capi.ASensor)(ptr)}
@@ -49,5 +47,3 @@ func (h *Sensor) Type() int32 {
 func (h *Sensor) Vendor() string {
 	return (string)(capi.ASensor_getVendor(h.ptr))
 }
-
-

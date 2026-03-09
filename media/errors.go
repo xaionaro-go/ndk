@@ -8,31 +8,31 @@ import "fmt"
 type Error int32
 
 const (
-	ErrUnknown Error = -10000
-	ErrMalformed Error = -10001
-	ErrUnsupported Error = -10002
-	ErrInvalidObject Error = -10003
-	ErrInvalidParameter Error = -10004
-	ErrInvalidOperation Error = -10005
-	ErrEndOfStream Error = -10006
-	ErrIo Error = -10007
-	ErrWouldBlock Error = -10008
-	ErrAmediaDrmErrorBase Error = -20000
-	ErrAmediaDrmNotProvisioned Error = -20001
-	ErrAmediaDrmResourceBusy Error = -20002
-	ErrAmediaDrmDeviceRevoked Error = -20003
-	ErrAmediaDrmShortBuffer Error = -20004
-	ErrAmediaDrmSessionNotOpened Error = -20005
-	ErrAmediaDrmTamperDetected Error = -20006
-	ErrAmediaDrmVerifyFailed Error = -20007
-	ErrAmediaDrmNeedKey Error = -20008
-	ErrAmediaDrmLicenseExpired Error = -20009
-	ErrAmediaImgreaderErrorBase Error = -30000
+	ErrUnknown                          Error = -10000
+	ErrMalformed                        Error = -10001
+	ErrUnsupported                      Error = -10002
+	ErrInvalidObject                    Error = -10003
+	ErrInvalidParameter                 Error = -10004
+	ErrInvalidOperation                 Error = -10005
+	ErrEndOfStream                      Error = -10006
+	ErrIo                               Error = -10007
+	ErrWouldBlock                       Error = -10008
+	ErrAmediaDrmErrorBase               Error = -20000
+	ErrAmediaDrmNotProvisioned          Error = -20001
+	ErrAmediaDrmResourceBusy            Error = -20002
+	ErrAmediaDrmDeviceRevoked           Error = -20003
+	ErrAmediaDrmShortBuffer             Error = -20004
+	ErrAmediaDrmSessionNotOpened        Error = -20005
+	ErrAmediaDrmTamperDetected          Error = -20006
+	ErrAmediaDrmVerifyFailed            Error = -20007
+	ErrAmediaDrmNeedKey                 Error = -20008
+	ErrAmediaDrmLicenseExpired          Error = -20009
+	ErrAmediaImgreaderErrorBase         Error = -30000
 	ErrAmediaImgreaderNoBufferAvailable Error = -30001
 	ErrAmediaImgreaderMaxImagesAcquired Error = -30002
-	ErrAmediaImgreaderCannotLockImage Error = -30003
+	ErrAmediaImgreaderCannotLockImage   Error = -30003
 	ErrAmediaImgreaderCannotUnlockImage Error = -30004
-	ErrAmediaImgreaderImageNotLocked Error = -30005
+	ErrAmediaImgreaderImageNotLocked    Error = -30005
 )
 
 func (e Error) Error() string {

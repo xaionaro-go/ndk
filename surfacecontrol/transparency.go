@@ -7,6 +7,5 @@ type Transparency int32
 const (
 	Transparent Transparency = 0
 	Translucent Transparency = 1
-	Opaque Transparency = 2
+	Opaque      Transparency = 2
 )
-

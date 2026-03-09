@@ -8,20 +8,20 @@ import "fmt"
 type Error int32
 
 const (
-	ErrUnknown Error = -10000
-	ErrInvalidParameter Error = -10001
-	ErrCameraDisconnected Error = -10002
-	ErrNotEnoughMemory Error = -10003
-	ErrMetadataNotFound Error = -10004
-	ErrCameraDevice Error = -10005
-	ErrCameraService Error = -10006
-	ErrSessionClosed Error = -10007
-	ErrInvalidOperation Error = -10008
-	ErrStreamConfigureFail Error = -10009
-	ErrCameraInUse Error = -10010
-	ErrMaxCamerasInUse Error = -10011
-	ErrCameraDisabled Error = -10012
-	ErrPermissionDenied Error = -10013
+	ErrUnknown              Error = -10000
+	ErrInvalidParameter     Error = -10001
+	ErrCameraDisconnected   Error = -10002
+	ErrNotEnoughMemory      Error = -10003
+	ErrMetadataNotFound     Error = -10004
+	ErrCameraDevice         Error = -10005
+	ErrCameraService        Error = -10006
+	ErrSessionClosed        Error = -10007
+	ErrInvalidOperation     Error = -10008
+	ErrStreamConfigureFail  Error = -10009
+	ErrCameraInUse          Error = -10010
+	ErrMaxCamerasInUse      Error = -10011
+	ErrCameraDisabled       Error = -10012
+	ErrPermissionDenied     Error = -10013
 	ErrUnsupportedOperation Error = -10014
 )
 

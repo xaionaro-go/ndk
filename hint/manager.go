@@ -13,8 +13,6 @@ type Manager struct {
 	ptr *capi.APerformanceHintManager
 }
 
-
-
 // NewManagerFromPointer wraps a raw APerformanceHintManager pointer.
 func NewManagerFromPointer(ptr unsafe.Pointer) *Manager {
 	return &Manager{ptr: (*capi.APerformanceHintManager)(ptr)}
@@ -25,16 +23,12 @@ func (h *Manager) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // CreateSession creates a new Session from this Manager.
 func (h *Manager) CreateSession(threadIds *int32, size uint64, initialTargetWorkDurationNanos int64) *Session {
 	return &Session{ptr: capi.APerformanceHint_createSession(h.ptr, threadIds, size, initialTargetWorkDurationNanos)}
 }
 
-
 // PreferredUpdateRateNanos returns the value directly.
 func (h *Manager) PreferredUpdateRateNanos() int64 {
 	return (int64)(capi.APerformanceHint_getPreferredUpdateRateNanos(h.ptr))
 }
-
-

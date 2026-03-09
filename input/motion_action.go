@@ -7,21 +7,21 @@ import "fmt"
 type MotionAction int32
 
 const (
-	ActionMask MotionAction = 255
+	ActionMask             MotionAction = 255
 	ActionPointerIndexMask MotionAction = 65280
-	ActionDown MotionAction = 0
-	ActionUp MotionAction = 1
-	ActionMove MotionAction = 2
-	ActionCancel MotionAction = 3
-	ActionOutside MotionAction = 4
-	ActionPointerDown MotionAction = 5
-	ActionPointerUp MotionAction = 6
-	ActionHoverMove MotionAction = 7
-	ActionScroll MotionAction = 8
-	ActionHoverEnter MotionAction = 9
-	ActionHoverExit MotionAction = 10
-	ActionButtonPress MotionAction = 11
-	ActionButtonRelease MotionAction = 12
+	ActionDown             MotionAction = 0
+	ActionUp               MotionAction = 1
+	ActionMove             MotionAction = 2
+	ActionCancel           MotionAction = 3
+	ActionOutside          MotionAction = 4
+	ActionPointerDown      MotionAction = 5
+	ActionPointerUp        MotionAction = 6
+	ActionHoverMove        MotionAction = 7
+	ActionScroll           MotionAction = 8
+	ActionHoverEnter       MotionAction = 9
+	ActionHoverExit        MotionAction = 10
+	ActionButtonPress      MotionAction = 11
+	ActionButtonRelease    MotionAction = 12
 )
 
 func (v MotionAction) String() string {
@@ -60,4 +60,3 @@ func (v MotionAction) String() string {
 		return fmt.Sprintf("MotionAction(%d)", int(v))
 	}
 }
-

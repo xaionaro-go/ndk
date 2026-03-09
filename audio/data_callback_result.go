@@ -6,6 +6,5 @@ type DataCallbackResult int32
 
 const (
 	Continue DataCallbackResult = 0
-	Stop DataCallbackResult = 1
+	Stop     DataCallbackResult = 1
 )
-

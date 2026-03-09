@@ -13,8 +13,6 @@ type Manager struct {
 	ptr *capi.ASensorManager
 }
 
-
-
 // NewManagerFromPointer wraps a raw ASensorManager pointer.
 func NewManagerFromPointer(ptr unsafe.Pointer) *Manager {
 	return &Manager{ptr: (*capi.ASensorManager)(ptr)}
@@ -25,16 +23,12 @@ func (h *Manager) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // DefaultSensor creates a new Sensor from this Manager.
 func (h *Manager) DefaultSensor(_type int32) *Sensor {
 	return &Sensor{ptr: capi.ASensorManager_getDefaultSensor(h.ptr, _type)}
 }
 
-
-
 // GetInstance calls the underlying C function.
 func GetInstance() *Manager {
 	return &Manager{ptr: capi.ASensorManager_getInstance()}
 }
-

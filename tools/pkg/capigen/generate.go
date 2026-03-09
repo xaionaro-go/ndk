@@ -86,7 +86,6 @@ type FlagGroup struct {
 	Flags []string `yaml:"flags"`
 }
 
-
 // GeneratePackage generates a complete capi/ Go package from the spec
 // and manifest. It writes doc.go, types.go, const.go, cgo_helpers.go,
 // cgo_helpers.h, and {module}.go into outDir.

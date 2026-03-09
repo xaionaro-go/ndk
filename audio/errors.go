@@ -8,23 +8,23 @@ import "fmt"
 type Error int32
 
 const (
-	ErrBase Error = -900
-	ErrDisconnected Error = -899
+	ErrBase            Error = -900
+	ErrDisconnected    Error = -899
 	ErrIllegalArgument Error = -898
-	ErrInternal Error = -896
-	ErrInvalidState Error = -895
-	ErrInvalidHandle Error = -892
-	ErrUnimplemented Error = -890
-	ErrUnavailable Error = -889
-	ErrNoFreeHandles Error = -888
-	ErrNoMemory Error = -887
-	ErrNull Error = -886
-	ErrTimeout Error = -885
-	ErrWouldBlock Error = -884
-	ErrInvalidFormat Error = -883
-	ErrOutOfRange Error = -882
-	ErrNoService Error = -881
-	ErrInvalidRate Error = -880
+	ErrInternal        Error = -896
+	ErrInvalidState    Error = -895
+	ErrInvalidHandle   Error = -892
+	ErrUnimplemented   Error = -890
+	ErrUnavailable     Error = -889
+	ErrNoFreeHandles   Error = -888
+	ErrNoMemory        Error = -887
+	ErrNull            Error = -886
+	ErrTimeout         Error = -885
+	ErrWouldBlock      Error = -884
+	ErrInvalidFormat   Error = -883
+	ErrOutOfRange      Error = -882
+	ErrNoService       Error = -881
+	ErrInvalidRate     Error = -880
 )
 
 func (e Error) Error() string {

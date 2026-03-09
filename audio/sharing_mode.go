@@ -6,6 +6,5 @@ type SharingMode int32
 
 const (
 	Exclusive SharingMode = 0
-	Shared SharingMode = 1
+	Shared    SharingMode = 1
 )
-

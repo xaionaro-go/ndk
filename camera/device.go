@@ -13,7 +13,6 @@ type Device struct {
 	ptr *capi.ACameraDevice
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Device) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Device) Close() error {
 	h.ptr = nil
 	return err
 }
-
 
 // NewDeviceFromPointer wraps a raw ACameraDevice pointer.
 func NewDeviceFromPointer(ptr unsafe.Pointer) *Device {
@@ -35,7 +33,6 @@ func (h *Device) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // CreateCaptureRequest creates a new CaptureRequest from this Device.
 func (h *Device) CreateCaptureRequest(templateId TemplateType) (*CaptureRequest, error) {
 	var ptr *capi.ACaptureRequest
@@ -44,7 +41,6 @@ func (h *Device) CreateCaptureRequest(templateId TemplateType) (*CaptureRequest,
 	}
 	return &CaptureRequest{ptr: ptr}, nil
 }
-
 
 // CreateCaptureSession creates a new CaptureSession from this Device.
 func (h *Device) CreateCaptureSession(outputs *SessionOutputContainer, cbs SessionStateCallbacks) (*CaptureSession, error) {
@@ -58,4 +54,3 @@ func (h *Device) CreateCaptureSession(outputs *SessionOutputContainer, cbs Sessi
 	}
 	return &CaptureSession{ptr: ptr}, nil
 }
-

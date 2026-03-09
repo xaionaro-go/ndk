@@ -13,8 +13,6 @@ type Queue struct {
 	ptr *capi.AInputQueue
 }
 
-
-
 // NewQueueFromPointer wraps a raw AInputQueue pointer.
 func NewQueueFromPointer(ptr unsafe.Pointer) *Queue {
 	return &Queue{ptr: (*capi.AInputQueue)(ptr)}
@@ -39,5 +37,3 @@ func (h *Queue) FinishEvent(event *Event, handled int32) {
 func (h *Queue) HasEvents() error {
 	return result(int32(capi.AInputQueue_hasEvents(h.ptr)))
 }
-
-

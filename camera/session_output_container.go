@@ -13,7 +13,6 @@ type SessionOutputContainer struct {
 	ptr *capi.ACaptureSessionOutputContainer
 }
 
-
 // NewSessionOutputContainer creates a new SessionOutputContainer.
 func NewSessionOutputContainer() (*SessionOutputContainer, error) {
 	var ptr *capi.ACaptureSessionOutputContainer
@@ -22,8 +21,6 @@ func NewSessionOutputContainer() (*SessionOutputContainer, error) {
 	}
 	return &SessionOutputContainer{ptr: ptr}, nil
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *SessionOutputContainer) Close() error {
@@ -34,7 +31,6 @@ func (h *SessionOutputContainer) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewSessionOutputContainerFromPointer wraps a raw ACaptureSessionOutputContainer pointer.
 func NewSessionOutputContainerFromPointer(ptr unsafe.Pointer) *SessionOutputContainer {
@@ -55,5 +51,3 @@ func (h *SessionOutputContainer) Add(output *SessionOutput) error {
 func (h *SessionOutputContainer) Remove(output *SessionOutput) error {
 	return result(int32(capi.ACaptureSessionOutputContainer_remove(h.ptr, output.ptr)))
 }
-
-

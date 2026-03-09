@@ -13,7 +13,6 @@ type Session struct {
 	ptr *capi.APerformanceHintSession
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *Session) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *Session) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewSessionFromPointer wraps a raw APerformanceHintSession pointer.
 func NewSessionFromPointer(ptr unsafe.Pointer) *Session {
@@ -44,5 +42,3 @@ func (h *Session) ReportActualWorkDuration(actualDurationNanos int64) error {
 func (h *Session) UpdateTargetWorkDuration(targetDurationNanos int64) error {
 	return result(int32(capi.APerformanceHint_updateTargetWorkDuration(h.ptr, targetDurationNanos)))
 }
-
-

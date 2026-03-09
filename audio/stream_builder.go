@@ -13,7 +13,6 @@ type StreamBuilder struct {
 	ptr *capi.AAudioStreamBuilder
 }
 
-
 // NewStreamBuilder creates a new StreamBuilder.
 func NewStreamBuilder() (*StreamBuilder, error) {
 	var ptr *capi.AAudioStreamBuilder
@@ -22,8 +21,6 @@ func NewStreamBuilder() (*StreamBuilder, error) {
 	}
 	return &StreamBuilder{ptr: ptr}, nil
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *StreamBuilder) Close() error {
@@ -35,7 +32,6 @@ func (h *StreamBuilder) Close() error {
 	return err
 }
 
-
 // NewStreamBuilderFromPointer wraps a raw AAudioStreamBuilder pointer.
 func NewStreamBuilderFromPointer(ptr unsafe.Pointer) *StreamBuilder {
 	return &StreamBuilder{ptr: (*capi.AAudioStreamBuilder)(ptr)}
@@ -46,7 +42,6 @@ func (h *StreamBuilder) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // Open creates a new Stream from this StreamBuilder.
 func (h *StreamBuilder) Open() (*Stream, error) {
 	var ptr *capi.AAudioStream
@@ -55,7 +50,6 @@ func (h *StreamBuilder) Open() (*Stream, error) {
 	}
 	return &Stream{ptr: ptr}, nil
 }
-
 
 // SetBufferCapacityInFrames sets a property and returns the receiver for chaining.
 func (h *StreamBuilder) SetBufferCapacityInFrames(numFrames int32) *StreamBuilder {
@@ -104,5 +98,3 @@ func (h *StreamBuilder) SetSharingMode(sharingMode SharingMode) *StreamBuilder {
 	capi.AAudioStreamBuilder_setSharingMode(h.ptr, capi.Aaudio_sharing_mode_t(sharingMode))
 	return h
 }
-
-

@@ -13,13 +13,10 @@ type Extractor struct {
 	ptr *capi.AMediaExtractor
 }
 
-
 // NewExtractor creates a new Extractor.
 func NewExtractor() *Extractor {
 	return &Extractor{ptr: capi.AMediaExtractor_new()}
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *Extractor) Close() error {
@@ -30,7 +27,6 @@ func (h *Extractor) Close() error {
 	h.ptr = nil
 	return err
 }
-
 
 // NewExtractorFromPointer wraps a raw AMediaExtractor pointer.
 func NewExtractorFromPointer(ptr unsafe.Pointer) *Extractor {
@@ -61,5 +57,3 @@ func (h *Extractor) SelectTrack(idx uint64) error {
 func (h *Extractor) SetDataSourceFd(fd int32, offset Off64_t, length Off64_t) error {
 	return result(int32(capi.AMediaExtractor_setDataSourceFd(h.ptr, fd, capi.Off64_t(offset), capi.Off64_t(length))))
 }
-
-

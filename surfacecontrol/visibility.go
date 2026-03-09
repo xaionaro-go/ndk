@@ -8,4 +8,3 @@ const (
 	Hide Visibility = 0
 	Show Visibility = 1
 )
-

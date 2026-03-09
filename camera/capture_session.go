@@ -13,7 +13,6 @@ type CaptureSession struct {
 	ptr *capi.ACameraCaptureSession
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *CaptureSession) Close() error {
 	if h.ptr == nil {
@@ -23,7 +22,6 @@ func (h *CaptureSession) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewCaptureSessionFromPointer wraps a raw ACameraCaptureSession pointer.
 func NewCaptureSessionFromPointer(ptr unsafe.Pointer) *CaptureSession {
@@ -39,9 +37,8 @@ func (h *CaptureSession) Pointer() unsafe.Pointer {
 func (h *CaptureSession) SetRepeatingRequest(req *CaptureRequest) error {
 	return result(int32(capi.ACameraCaptureSession_setRepeatingRequest(h.ptr, nil, 1, &req.ptr, nil)))
 }
+
 // StopRepeating calls the underlying NDK function.
 func (h *CaptureSession) StopRepeating() error {
 	return result(int32(capi.ACameraCaptureSession_stopRepeating(h.ptr)))
 }
-
-

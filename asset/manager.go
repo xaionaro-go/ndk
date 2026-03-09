@@ -13,8 +13,6 @@ type Manager struct {
 	ptr *capi.AAssetManager
 }
 
-
-
 // NewManagerFromPointer wraps a raw AAssetManager pointer.
 func NewManagerFromPointer(ptr unsafe.Pointer) *Manager {
 	return &Manager{ptr: (*capi.AAssetManager)(ptr)}
@@ -25,18 +23,12 @@ func (h *Manager) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // Open creates a new Asset from this Manager.
 func (h *Manager) Open(filename string, mode int32) *Asset {
 	return &Asset{ptr: capi.AAssetManager_open(h.ptr, filename, mode)}
 }
 
-
-
 // OpenDir creates a new Dir from this Manager.
 func (h *Manager) OpenDir(dirName string) *Dir {
 	return &Dir{ptr: capi.AAssetManager_openDir(h.ptr, dirName)}
 }
-
-
-

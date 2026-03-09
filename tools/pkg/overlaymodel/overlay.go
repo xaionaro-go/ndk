@@ -3,17 +3,17 @@ package overlaymodel
 
 // Overlay is the top-level structure for one module's overlay file.
 type Overlay struct {
-	Module          string                              `yaml:"module"`
-	Package         PackageOverlay                      `yaml:"package"`
-	Types           map[string]TypeOverlay              `yaml:"types,omitempty"`
-	Functions       map[string]FuncOverlay              `yaml:"functions,omitempty"`
-	APILevels       map[string]int                      `yaml:"api_levels,omitempty"`
-	CallbackStructs map[string]CallbackStructOverlay    `yaml:"callback_structs,omitempty"`
-	StructAccessors map[string]StructAccessorOverlay    `yaml:"struct_accessors,omitempty"`
-	Lifecycle       *LifecycleOverlay                   `yaml:"lifecycle,omitempty"`
-	ExtraEnums      map[string][]ExtraEnumValue         `yaml:"extra_enums,omitempty"`
-	ExtraBridgeC    string                               `yaml:"extra_bridge_c,omitempty"`
-	ExtraBridgeGo   string                               `yaml:"extra_bridge_go,omitempty"`
+	Module          string                           `yaml:"module"`
+	Package         PackageOverlay                   `yaml:"package"`
+	Types           map[string]TypeOverlay           `yaml:"types,omitempty"`
+	Functions       map[string]FuncOverlay           `yaml:"functions,omitempty"`
+	APILevels       map[string]int                   `yaml:"api_levels,omitempty"`
+	CallbackStructs map[string]CallbackStructOverlay `yaml:"callback_structs,omitempty"`
+	StructAccessors map[string]StructAccessorOverlay `yaml:"struct_accessors,omitempty"`
+	Lifecycle       *LifecycleOverlay                `yaml:"lifecycle,omitempty"`
+	ExtraEnums      map[string][]ExtraEnumValue      `yaml:"extra_enums,omitempty"`
+	ExtraBridgeC    string                           `yaml:"extra_bridge_c,omitempty"`
+	ExtraBridgeGo   string                           `yaml:"extra_bridge_go,omitempty"`
 }
 
 // ExtraEnumValue defines an additional enum constant not present in the
@@ -48,25 +48,25 @@ type TypeOverlay struct {
 
 // FuncOverlay provides idiomatic annotations for a function.
 type FuncOverlay struct {
-	Receiver       string `yaml:"receiver,omitempty"`
-	GoName         string `yaml:"go_name,omitempty"`
-	Skip           bool   `yaml:"skip,omitempty"`
-	Chain          bool   `yaml:"chain,omitempty"`
-	Pure           bool   `yaml:"pure,omitempty"`
-	ReturnsNew     string `yaml:"returns_new,omitempty"`
-	CallbackParam  string `yaml:"callback_param,omitempty"`
-	UserdataParam  string `yaml:"userdata_param,omitempty"`
-	GoCallbackType string `yaml:"go_callback_type,omitempty"`
-	GoCallbackSig  string `yaml:"go_callback_sig,omitempty"`
-	BufParam       string `yaml:"buf_param,omitempty"`
-	BufFramesParam string `yaml:"buf_frames_param,omitempty"`
-	TimeoutParam   string `yaml:"timeout_param,omitempty"`
-	ReturnsFrames  bool              `yaml:"returns_frames,omitempty"`
-	FixedParams    map[string]string `yaml:"fixed_params,omitempty"`
-	ReturnsListStruct string         `yaml:"returns_list_struct,omitempty"` // spec name of list struct for iteration
-	CustomCall     *CustomCallOverlay `yaml:"custom_call,omitempty"`
-	BridgeParams   []BridgeParam      `yaml:"bridge_params,omitempty"` // params for bridge functions not in spec
-	BridgeReturns  string             `yaml:"bridge_returns,omitempty"` // return type for bridge functions not in spec
+	Receiver          string             `yaml:"receiver,omitempty"`
+	GoName            string             `yaml:"go_name,omitempty"`
+	Skip              bool               `yaml:"skip,omitempty"`
+	Chain             bool               `yaml:"chain,omitempty"`
+	Pure              bool               `yaml:"pure,omitempty"`
+	ReturnsNew        string             `yaml:"returns_new,omitempty"`
+	CallbackParam     string             `yaml:"callback_param,omitempty"`
+	UserdataParam     string             `yaml:"userdata_param,omitempty"`
+	GoCallbackType    string             `yaml:"go_callback_type,omitempty"`
+	GoCallbackSig     string             `yaml:"go_callback_sig,omitempty"`
+	BufParam          string             `yaml:"buf_param,omitempty"`
+	BufFramesParam    string             `yaml:"buf_frames_param,omitempty"`
+	TimeoutParam      string             `yaml:"timeout_param,omitempty"`
+	ReturnsFrames     bool               `yaml:"returns_frames,omitempty"`
+	FixedParams       map[string]string  `yaml:"fixed_params,omitempty"`
+	ReturnsListStruct string             `yaml:"returns_list_struct,omitempty"` // spec name of list struct for iteration
+	CustomCall        *CustomCallOverlay `yaml:"custom_call,omitempty"`
+	BridgeParams      []BridgeParam      `yaml:"bridge_params,omitempty"`  // params for bridge functions not in spec
+	BridgeReturns     string             `yaml:"bridge_returns,omitempty"` // return type for bridge functions not in spec
 }
 
 // BridgeParam is a parameter for a bridge function defined only in the overlay.
@@ -101,7 +101,7 @@ type StructAccessorOverlay struct {
 // CustomCallOverlay specifies a method with custom capi call arguments.
 type CustomCallOverlay struct {
 	Params []CustomCallParam `yaml:"params"`
-	Args   string            `yaml:"args"`   // literal capi args after receiver (e.g., "nil, 1, &req.ptr, nil")
+	Args   string            `yaml:"args"` // literal capi args after receiver (e.g., "nil, 1, &req.ptr, nil")
 }
 
 // CustomCallParam is a param in a custom call method's Go signature.

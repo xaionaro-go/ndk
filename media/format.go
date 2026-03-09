@@ -13,13 +13,10 @@ type Format struct {
 	ptr *capi.AMediaFormat
 }
 
-
 // NewFormat creates a new Format.
 func NewFormat() *Format {
 	return &Format{ptr: capi.AMediaFormat_new()}
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *Format) Close() error {
@@ -30,7 +27,6 @@ func (h *Format) Close() error {
 	h.ptr = nil
 	return err
 }
-
 
 // NewFormatFromPointer wraps a raw AMediaFormat pointer.
 func NewFormatFromPointer(ptr unsafe.Pointer) *Format {
@@ -58,5 +54,3 @@ func (h *Format) SetString(name string, value string) *Format {
 	capi.AMediaFormat_setString(h.ptr, name, value)
 	return h
 }
-
-

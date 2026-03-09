@@ -13,7 +13,6 @@ type OutputPort struct {
 	ptr *capi.AMidiOutputPort
 }
 
-
 // Close releases the underlying NDK handle.
 func (h *OutputPort) Close() error {
 	if h.ptr == nil {
@@ -24,7 +23,6 @@ func (h *OutputPort) Close() error {
 	return nil
 }
 
-
 // NewOutputPortFromPointer wraps a raw AMidiOutputPort pointer.
 func NewOutputPortFromPointer(ptr unsafe.Pointer) *OutputPort {
 	return &OutputPort{ptr: (*capi.AMidiOutputPort)(ptr)}
@@ -34,5 +32,3 @@ func NewOutputPortFromPointer(ptr unsafe.Pointer) *OutputPort {
 func (h *OutputPort) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

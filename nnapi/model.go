@@ -13,8 +13,6 @@ type Model struct {
 	ptr *capi.ANeuralNetworksModel
 }
 
-
-
 // NewModelFromPointer wraps a raw ANeuralNetworksModel pointer.
 func NewModelFromPointer(ptr unsafe.Pointer) *Model {
 	return &Model{ptr: (*capi.ANeuralNetworksModel)(ptr)}
@@ -25,7 +23,6 @@ func (h *Model) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // NewCompilation creates a new Compilation from this Model.
 func (h *Model) NewCompilation() (*Compilation, error) {
 	var ptr *capi.ANeuralNetworksCompilation
@@ -34,7 +31,6 @@ func (h *Model) NewCompilation() (*Compilation, error) {
 	}
 	return &Compilation{ptr: ptr}, nil
 }
-
 
 // AddOperation calls the underlying NDK function.
 func (h *Model) AddOperation(_type ANeuralNetworksOperationType, inputCount uint32, inputs *uint32, outputCount uint32, outputs *uint32) error {
@@ -60,5 +56,3 @@ func (h *Model) RelaxFloat32toFloat16(allow bool) error {
 func (h *Model) SetOperandValue(index int32, buffer unsafe.Pointer, length uint64) error {
 	return result(int32(capi.ANeuralNetworksModel_setOperandValue(h.ptr, index, buffer, length)))
 }
-
-

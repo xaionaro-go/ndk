@@ -13,8 +13,6 @@ type Drm struct {
 	ptr *capi.AMediaDrm
 }
 
-
-
 // NewDrmFromPointer wraps a raw AMediaDrm pointer.
 func NewDrmFromPointer(ptr unsafe.Pointer) *Drm {
 	return &Drm{ptr: (*capi.AMediaDrm)(ptr)}
@@ -24,5 +22,3 @@ func NewDrmFromPointer(ptr unsafe.Pointer) *Drm {
 func (h *Drm) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
-
-

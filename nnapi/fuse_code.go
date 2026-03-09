@@ -5,9 +5,8 @@ package nnapi
 type FuseCode int32
 
 const (
-	FusedNone FuseCode = 0
-	FusedRelu FuseCode = 1
+	FusedNone  FuseCode = 0
+	FusedRelu  FuseCode = 1
 	FusedRelu1 FuseCode = 2
 	FusedRelu6 FuseCode = 3
 )
-

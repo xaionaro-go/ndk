@@ -13,13 +13,10 @@ type Config struct {
 	ptr *capi.AConfiguration
 }
 
-
 // NewConfig creates a new Config.
 func NewConfig() *Config {
 	return &Config{ptr: capi.AConfiguration_new()}
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *Config) Close() error {
@@ -30,7 +27,6 @@ func (h *Config) Close() error {
 	h.ptr = nil
 	return nil
 }
-
 
 // NewConfigFromPointer wraps a raw AConfiguration pointer.
 func NewConfigFromPointer(ptr unsafe.Pointer) *Config {
@@ -81,5 +77,3 @@ func (h *Config) ScreenWidthDp() int32 {
 func (h *Config) SdkVersion() int32 {
 	return (int32)(capi.AConfiguration_getSdkVersion(h.ptr))
 }
-
-

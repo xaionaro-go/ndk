@@ -76,8 +76,6 @@ import (
 	"github.com/xaionaro-go/ndk/window"
 
 	// Import-only packages (verify linking, no testable functions).
-	_ "github.com/xaionaro-go/ndk/vulkan"
-	_ "github.com/xaionaro-go/ndk/nnapi"
 	_ "github.com/xaionaro-go/ndk/activity"
 	_ "github.com/xaionaro-go/ndk/asset"
 	_ "github.com/xaionaro-go/ndk/binder"
@@ -85,9 +83,11 @@ import (
 	_ "github.com/xaionaro-go/ndk/image"
 	_ "github.com/xaionaro-go/ndk/midi"
 	_ "github.com/xaionaro-go/ndk/net"
+	_ "github.com/xaionaro-go/ndk/nnapi"
 	_ "github.com/xaionaro-go/ndk/sharedmem"
 	_ "github.com/xaionaro-go/ndk/surfacetexture"
 	_ "github.com/xaionaro-go/ndk/sync"
+	_ "github.com/xaionaro-go/ndk/vulkan"
 )
 
 // EGL query constants not in generated enums.

@@ -18,7 +18,7 @@ func TestEnumIDCollision(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	
+
 	for k, vals := range spec.Enums {
 		fmt.Printf("Enum %s:\n", k)
 		for _, v := range vals {

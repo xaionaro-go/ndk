@@ -5,8 +5,7 @@ package nnapi
 type Preference int32
 
 const (
-	LowPower Preference = 0
+	LowPower         Preference = 0
 	FastSingleAnswer Preference = 1
-	SustainedSpeed Preference = 2
+	SustainedSpeed   Preference = 2
 )
-

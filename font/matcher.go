@@ -13,13 +13,10 @@ type Matcher struct {
 	ptr *capi.AFontMatcher
 }
 
-
 // NewMatcher creates a new Matcher.
 func NewMatcher() *Matcher {
 	return &Matcher{ptr: capi.AFontMatcher_create()}
 }
-
-
 
 // Close releases the underlying NDK handle.
 func (h *Matcher) Close() error {
@@ -31,7 +28,6 @@ func (h *Matcher) Close() error {
 	return nil
 }
 
-
 // NewMatcherFromPointer wraps a raw AFontMatcher pointer.
 func NewMatcherFromPointer(ptr unsafe.Pointer) *Matcher {
 	return &Matcher{ptr: (*capi.AFontMatcher)(ptr)}
@@ -42,17 +38,13 @@ func (h *Matcher) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-
 // Match creates a new Font from this Matcher.
 func (h *Matcher) Match(familyName string, text *uint16, textLength uint32, runLengthOut *uint32) *Font {
 	return &Font{ptr: capi.AFontMatcher_match(h.ptr, familyName, text, textLength, runLengthOut)}
 }
-
 
 // SetStyle sets a property and returns the receiver for chaining.
 func (h *Matcher) SetStyle(weight uint16, italic bool) *Matcher {
 	capi.AFontMatcher_setStyle(h.ptr, weight, italic)
 	return h
 }
-
-
