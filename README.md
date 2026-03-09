@@ -187,50 +187,50 @@ More examples: [`examples/`](examples/)
 
 ## Supported Modules
 
-| NDK Module | Go Package | Import Path |
-| --- | --- | --- |
-| **Graphics & Rendering** | | |
-| [![egl](https://img.shields.io/badge/egl-EGL-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/egl) | `egl` | `github.com/xaionaro-go/ndk/egl` |
-| [![gles2](https://img.shields.io/badge/gles2-OpenGL_ES_2.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles2) | `gles2` | `github.com/xaionaro-go/ndk/gles2` |
-| [![gles3](https://img.shields.io/badge/gles3-OpenGL_ES_3.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles3) | `gles3` | `github.com/xaionaro-go/ndk/gles3` |
-| [![vulkan](https://img.shields.io/badge/vulkan-Vulkan-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/vulkan) | `vulkan` | `github.com/xaionaro-go/ndk/vulkan` |
+| NDK Module                                                                                                                                           | Go Package       | Import Path                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------- |
+| **Graphics & Rendering**                                                                                                                             |                  |                                             |
+| [![egl](https://img.shields.io/badge/egl-EGL-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/egl)                                             | `egl`            | `github.com/xaionaro-go/ndk/egl`            |
+| [![gles2](https://img.shields.io/badge/gles2-OpenGL_ES_2.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles2)                             | `gles2`          | `github.com/xaionaro-go/ndk/gles2`          |
+| [![gles3](https://img.shields.io/badge/gles3-OpenGL_ES_3.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles3)                             | `gles3`          | `github.com/xaionaro-go/ndk/gles3`          |
+| [![vulkan](https://img.shields.io/badge/vulkan-Vulkan-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/vulkan)                                 | `vulkan`         | `github.com/xaionaro-go/ndk/vulkan`         |
 | [![surfacecontrol](https://img.shields.io/badge/surfacecontrol-SurfaceControl-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/surfacecontrol) | `surfacecontrol` | `github.com/xaionaro-go/ndk/surfacecontrol` |
 | [![surfacetexture](https://img.shields.io/badge/surfacetexture-SurfaceTexture-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/surfacetexture) | `surfacetexture` | `github.com/xaionaro-go/ndk/surfacetexture` |
-| [![hwbuf](https://img.shields.io/badge/hwbuf-HardwareBuffer-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hwbuf) | `hwbuf` | `github.com/xaionaro-go/ndk/hwbuf` |
-| [![window](https://img.shields.io/badge/window-NativeWindow-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/window) | `window` | `github.com/xaionaro-go/ndk/window` |
-| [![bitmap](https://img.shields.io/badge/bitmap-Bitmap-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/bitmap) | `bitmap` | `github.com/xaionaro-go/ndk/bitmap` |
-| **Camera & Imaging** | | |
-| [![camera](https://img.shields.io/badge/camera-Camera2-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/camera) | `camera` | `github.com/xaionaro-go/ndk/camera` |
-| [![image](https://img.shields.io/badge/image-ImageDecoder-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/image) | `image` | `github.com/xaionaro-go/ndk/image` |
-| **Audio & Media** | | |
-| [![audio](https://img.shields.io/badge/audio-AAudio-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/audio) | `audio` | `github.com/xaionaro-go/ndk/audio` |
-| [![media](https://img.shields.io/badge/media-MediaCodec-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/media) | `media` | `github.com/xaionaro-go/ndk/media` |
-| [![midi](https://img.shields.io/badge/midi-MIDI-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/midi) | `midi` | `github.com/xaionaro-go/ndk/midi` |
-| **Sensors & Input** | | |
-| [![sensor](https://img.shields.io/badge/sensor-Sensors-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sensor) | `sensor` | `github.com/xaionaro-go/ndk/sensor` |
-| [![input](https://img.shields.io/badge/input-Input-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/input) | `input` | `github.com/xaionaro-go/ndk/input` |
-| [![choreographer](https://img.shields.io/badge/choreographer-Choreographer-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/choreographer) | `choreographer` | `github.com/xaionaro-go/ndk/choreographer` |
-| **Activity & Lifecycle** | | |
-| [![activity](https://img.shields.io/badge/activity-NativeActivity-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/activity) | `activity` | `github.com/xaionaro-go/ndk/activity` |
-| [![config](https://img.shields.io/badge/config-Configuration-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/config) | `config` | `github.com/xaionaro-go/ndk/config` |
-| [![thermal](https://img.shields.io/badge/thermal-ThermalManager-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/thermal) | `thermal` | `github.com/xaionaro-go/ndk/thermal` |
-| [![hint](https://img.shields.io/badge/hint-PerformanceHint-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hint) | `hint` | `github.com/xaionaro-go/ndk/hint` |
-| [![permission](https://img.shields.io/badge/permission-Permission-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/permission) | `permission` | `github.com/xaionaro-go/ndk/permission` |
-| **Storage & Assets** | | |
-| [![asset](https://img.shields.io/badge/asset-AssetManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/asset) | `asset` | `github.com/xaionaro-go/ndk/asset` |
-| [![storage](https://img.shields.io/badge/storage-StorageManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/storage) | `storage` | `github.com/xaionaro-go/ndk/storage` |
-| **System & IPC** | | |
-| [![binder](https://img.shields.io/badge/binder-Binder-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/binder) | `binder` | `github.com/xaionaro-go/ndk/binder` |
-| [![looper](https://img.shields.io/badge/looper-ALooper-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/looper) | `looper` | `github.com/xaionaro-go/ndk/looper` |
-| [![log](https://img.shields.io/badge/log-Logging-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/log) | `log` | `github.com/xaionaro-go/ndk/log` |
-| [![sharedmem](https://img.shields.io/badge/sharedmem-SharedMemory-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sharedmem) | `sharedmem` | `github.com/xaionaro-go/ndk/sharedmem` |
-| [![sync](https://img.shields.io/badge/sync-SyncFence-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sync) | `sync` | `github.com/xaionaro-go/ndk/sync` |
-| [![net](https://img.shields.io/badge/net-Multinetwork-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/net) | `net` | `github.com/xaionaro-go/ndk/net` |
-| **Machine Learning** | | |
-| [![nnapi](https://img.shields.io/badge/nnapi-NNAPI-C62828)](https://pkg.go.dev/github.com/xaionaro-go/ndk/nnapi) | `nnapi` | `github.com/xaionaro-go/ndk/nnapi` |
-| **Debugging & Fonts** | | |
-| [![trace](https://img.shields.io/badge/trace-Trace-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/trace) | `trace` | `github.com/xaionaro-go/ndk/trace` |
-| [![font](https://img.shields.io/badge/font-FontManager-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/font) | `font` | `github.com/xaionaro-go/ndk/font` |
+| [![hwbuf](https://img.shields.io/badge/hwbuf-HardwareBuffer-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hwbuf)                            | `hwbuf`          | `github.com/xaionaro-go/ndk/hwbuf`          |
+| [![window](https://img.shields.io/badge/window-NativeWindow-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/window)                           | `window`         | `github.com/xaionaro-go/ndk/window`         |
+| [![bitmap](https://img.shields.io/badge/bitmap-Bitmap-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/bitmap)                                 | `bitmap`         | `github.com/xaionaro-go/ndk/bitmap`         |
+| **Camera & Imaging**                                                                                                                                 |                  |                                             |
+| [![camera](https://img.shields.io/badge/camera-Camera2-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/camera)                                | `camera`         | `github.com/xaionaro-go/ndk/camera`         |
+| [![image](https://img.shields.io/badge/image-ImageDecoder-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/image)                              | `image`          | `github.com/xaionaro-go/ndk/image`          |
+| **Audio & Media**                                                                                                                                    |                  |                                             |
+| [![audio](https://img.shields.io/badge/audio-AAudio-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/audio)                                    | `audio`          | `github.com/xaionaro-go/ndk/audio`          |
+| [![media](https://img.shields.io/badge/media-MediaCodec-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/media)                                | `media`          | `github.com/xaionaro-go/ndk/media`          |
+| [![midi](https://img.shields.io/badge/midi-MIDI-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/midi)                                         | `midi`           | `github.com/xaionaro-go/ndk/midi`           |
+| **Sensors & Input**                                                                                                                                  |                  |                                             |
+| [![sensor](https://img.shields.io/badge/sensor-Sensors-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sensor)                                | `sensor`         | `github.com/xaionaro-go/ndk/sensor`         |
+| [![input](https://img.shields.io/badge/input-Input-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/input)                                     | `input`          | `github.com/xaionaro-go/ndk/input`          |
+| [![choreographer](https://img.shields.io/badge/choreographer-Choreographer-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/choreographer)     | `choreographer`  | `github.com/xaionaro-go/ndk/choreographer`  |
+| **Activity & Lifecycle**                                                                                                                             |                  |                                             |
+| [![activity](https://img.shields.io/badge/activity-NativeActivity-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/activity)                   | `activity`       | `github.com/xaionaro-go/ndk/activity`       |
+| [![config](https://img.shields.io/badge/config-Configuration-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/config)                          | `config`         | `github.com/xaionaro-go/ndk/config`         |
+| [![thermal](https://img.shields.io/badge/thermal-ThermalManager-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/thermal)                      | `thermal`        | `github.com/xaionaro-go/ndk/thermal`        |
+| [![hint](https://img.shields.io/badge/hint-PerformanceHint-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hint)                              | `hint`           | `github.com/xaionaro-go/ndk/hint`           |
+| [![permission](https://img.shields.io/badge/permission-Permission-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/permission)                 | `permission`     | `github.com/xaionaro-go/ndk/permission`     |
+| **Storage & Assets**                                                                                                                                 |                  |                                             |
+| [![asset](https://img.shields.io/badge/asset-AssetManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/asset)                              | `asset`          | `github.com/xaionaro-go/ndk/asset`          |
+| [![storage](https://img.shields.io/badge/storage-StorageManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/storage)                      | `storage`        | `github.com/xaionaro-go/ndk/storage`        |
+| **System & IPC**                                                                                                                                     |                  |                                             |
+| [![binder](https://img.shields.io/badge/binder-Binder-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/binder)                                 | `binder`         | `github.com/xaionaro-go/ndk/binder`         |
+| [![looper](https://img.shields.io/badge/looper-ALooper-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/looper)                                | `looper`         | `github.com/xaionaro-go/ndk/looper`         |
+| [![log](https://img.shields.io/badge/log-Logging-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/log)                                         | `log`            | `github.com/xaionaro-go/ndk/log`            |
+| [![sharedmem](https://img.shields.io/badge/sharedmem-SharedMemory-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sharedmem)                  | `sharedmem`      | `github.com/xaionaro-go/ndk/sharedmem`      |
+| [![sync](https://img.shields.io/badge/sync-SyncFence-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sync)                                    | `sync`           | `github.com/xaionaro-go/ndk/sync`           |
+| [![net](https://img.shields.io/badge/net-Multinetwork-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/net)                                    | `net`            | `github.com/xaionaro-go/ndk/net`            |
+| **Machine Learning**                                                                                                                                 |                  |                                             |
+| [![nnapi](https://img.shields.io/badge/nnapi-NNAPI-C62828)](https://pkg.go.dev/github.com/xaionaro-go/ndk/nnapi)                                     | `nnapi`          | `github.com/xaionaro-go/ndk/nnapi`          |
+| **Debugging & Fonts**                                                                                                                                |                  |                                             |
+| [![trace](https://img.shields.io/badge/trace-Trace-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/trace)                                     | `trace`          | `github.com/xaionaro-go/ndk/trace`          |
+| [![font](https://img.shields.io/badge/font-FontManager-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/font)                                  | `font`           | `github.com/xaionaro-go/ndk/font`           |
 
 ## Architecture
 
@@ -555,6 +555,41 @@ flowchart TD
 3. Run `make capi` to generate the raw CGo binding package.
 4. Create `spec/overlays/{module}.yaml` -- annotate types with Go names, assign functions as methods, configure constructors/destructors, error types, etc.
 5. Run `make idiomatic` to generate the final Go package.
+
+## Comparison with Similar Projects
+
+Several other projects provide Go (or Rust) bindings for the Android NDK. The table below highlights how they differ in scope, API style, and maintenance status.
+
+|                       | **ndk** (this project)                                                           | [gomobile](https://github.com/golang/mobile)                | [android-go](https://github.com/xlab/android-go)                              | [gooid](https://github.com/gooid/gooid)                    | [rust-mobile/ndk](https://github.com/rust-mobile/ndk)                                                              |
+| --------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Language**          | Go                                                                               | Go                                                          | Go                                                                            | Go                                                         | Rust                                                                                                               |
+| **NDK modules**       | 33 (graphics, camera, audio, media, sensors, ML, binder, …)                      | ~6 (app, gl, asset, sensor, audio, font — mostly in `exp/`) | ~7 (android core, EGL, GLES 1/2/3/3.1, NativeActivity)                        | Core NDK + camera, sensor, audio via hand-written wrappers | ~18 (asset, audio, bitmap, config, font, hardware buffer, looper, media, native window, surface texture, trace, …) |
+| **API style**         | Idiomatic Go: methods on types, builders, `Close()`, `error` interface, chaining | Cross-platform abstraction; hides NDK behind portable APIs  | Thin wrappers over C; raw NDK types with some hand-written helpers            | Hand-written Go wrappers; Chinese documentation            | Safe Rust abstractions over raw FFI (`ndk-sys`)                                                                    |
+| **Code generation**   | 3-stage pipeline (c2ffi → spec YAML → CGo → idiomatic Go)                        | Hand-written                                                | [c-for-go](https://github.com/xlab/c-for-go) auto-generation from NDK headers | Manual                                                     | `bindgen` for `ndk-sys`; hand-written safe layer                                                                   |
+| **Target NDK**        | Current (configurable via sysroot)                                               | Tied to gomobile toolchain                                  | android-23                                                                    | Unspecified (older)                                        | Current (configurable)                                                                                             |
+| **Camera2 NDK**       | Yes                                                                              | No                                                          | No                                                                            | Yes (partial, hand-written)                                | No                                                                                                                 |
+| **AAudio**            | Yes                                                                              | No (exp/audio uses OpenSL ES)                               | No                                                                            | Yes (partial)                                              | Yes                                                                                                                |
+| **MediaCodec**        | Yes                                                                              | No                                                          | No                                                                            | No                                                         | Yes (partial)                                                                                                      |
+| **Vulkan**            | Yes                                                                              | No                                                          | No                                                                            | No                                                         | No                                                                                                                 |
+| **NNAPI**             | Yes                                                                              | No                                                          | No                                                                            | No                                                         | No                                                                                                                 |
+| **Binder IPC**        | Yes                                                                              | No                                                          | No                                                                            | No                                                         | No                                                                                                                 |
+| **Callback bridging** | Auto-generated C↔Go bridges with registry                                        | N/A (event loop abstraction)                                | Manual via CGo                                                                | Manual                                                     | Rust closures / trait objects                                                                                      |
+| **Lifecycle mgmt**    | Idempotent nil-safe `Close() error` on all types                                 | Managed by framework                                        | Manual                                                                        | Manual                                                     | `Drop` trait                                                                                                       |
+| **Cross-platform**    | Android only                                                                     | Android + iOS                                               | Android only                                                                  | Android only                                               | Android only                                                                                                       |
+| **Maintenance**       | Active (2025)                                                                    | Active (official Go project)                                | Inactive (last commit 2022)                                                   | Inactive (last commit 2019)                                | Active (2025)                                                                                                      |
+| **Stars**             | —                                                                                | ~6 100                                                      | ~1 100                                                                        | ~60                                                        | ~1 300                                                                                                             |
+
+### Key Differences
+
+- **gomobile** is the official Go mobile toolkit. It prioritizes cross-platform portability (Android + iOS) over NDK coverage and exposes a small set of portable APIs (OpenGL ES, sensors, audio). It does not provide direct access to NDK-specific modules like Camera2, AAudio, MediaCodec, Vulkan, or Binder. If you need to call Android-specific NDK APIs, gomobile alone is not sufficient.
+
+- **android-go** (xlab) was a pioneering project that used [c-for-go](https://github.com/xlab/c-for-go) to auto-generate bindings from NDK headers. It covers EGL and OpenGL ES well but does not wrap higher-level NDK modules (camera, audio, media, sensors). The generated API exposes raw C types without idiomatic Go transformations. The project has not been updated since 2022.
+
+- **gooid** provides hand-written Go wrappers for a few NDK modules including camera and sensors, with example apps. Documentation is primarily in Chinese. The project has been inactive since 2019.
+
+- **rust-mobile/ndk** is the closest analog in the Rust ecosystem. It follows a similar two-layer approach (raw FFI in `ndk-sys`, safe abstractions in `ndk`) and covers ~18 NDK modules. It does not yet wrap Camera2, Vulkan, or NNAPI. If you are writing Rust rather than Go, this is the standard choice.
+
+- **This project** (`xaionaro-go/ndk`) combines auto-generation with hand-written semantic overlays to produce idiomatic Go APIs across 33 NDK modules — the broadest coverage of any Go NDK binding library. The pipeline ensures that new NDK headers can be incorporated by updating manifests and overlays rather than rewriting bindings by hand.
 
 <!--
 ## For AI coding agents
