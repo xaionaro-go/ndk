@@ -46,10 +46,10 @@ jobs:
 
       - name: Install Android NDK
         run: |
-          mkdir -p "$HOME/Android/Sdk/ndk"
+          mkdir -p "$ANDROID_HOME/ndk"
           wget -q "https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip" -O /tmp/ndk.zip
-          unzip -q /tmp/ndk.zip -d "$HOME/Android/Sdk/ndk/"
-          mv "$HOME/Android/Sdk/ndk/android-ndk-${ANDROID_NDK_VERSION}" "$HOME/Android/Sdk/ndk/${ANDROID_NDK_DIR_NAME}"
+          unzip -q /tmp/ndk.zip -d "$ANDROID_HOME/ndk/"
+          mv "$ANDROID_HOME/ndk/android-ndk-${ANDROID_NDK_VERSION}" "$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}"
 
       - name: Cross-compile examples for Android arm64
         run: make check-examples
