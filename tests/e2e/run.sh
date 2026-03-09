@@ -7,7 +7,7 @@
 #   - KVM available (/dev/kvm)
 #   - ANDROID_HOME set (e.g., ~/android-sdk)
 #
-# Usage: ./e2e/run.sh
+# Usage: ./tests/e2e/run.sh
 
 set -euo pipefail
 
@@ -15,7 +15,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 : "${ANDROID_HOME:?ANDROID_HOME must be set}"
-NDK_VERSION="${NDK_VERSION:-27.2.12479018}"
+NDK_VERSION="${NDK_VERSION:-28.0.13004108}"
 API_LEVEL="${API_LEVEL:-35}"
 AVD_NAME="${AVD_NAME:-ndk_e2e}"
 SYSTEM_IMAGE="system-images;android-${API_LEVEL};google_apis;x86_64"

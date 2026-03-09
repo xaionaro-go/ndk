@@ -9,7 +9,7 @@
 #   - Android NDK installed (auto-detected or set ANDROID_NDK_HOME)
 #   - A running Android emulator or device (adb accessible)
 #
-# Usage: ./e2e/run-examples.sh
+# Usage: ./tests/e2e/run-examples.sh
 
 set -euo pipefail
 
