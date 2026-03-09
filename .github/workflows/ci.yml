@@ -75,7 +75,9 @@ jobs:
 
       - name: Install Android SDK components and NDK
         run: |
-          yes | sdkmanager --install \
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          AVDMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager"
+          yes | "$SDKMANAGER" --install \
             "platform-tools" \
             "emulator" \
             "system-images;android-35;google_apis;x86_64" \
@@ -88,7 +90,7 @@ jobs:
 
       - name: Create AVD
         run: |
-          echo "no" | avdmanager create avd \
+          echo "no" | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd \
             -n e2e_examples -k "system-images;android-35;google_apis;x86_64" --force
 
       - name: Start emulator
