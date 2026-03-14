@@ -26,3 +26,4 @@ capi/manifests/.gen_*.yaml
 /vsync
 /display
 
+cligen
