@@ -284,24 +284,6 @@ var mediaImageWidthCmd = &cobra.Command{
 	},
 }
 
-var mediaImageReaderAcquireLatestImageCmd = &cobra.Command{
-	Use:   "acquire-latest-image",
-	Short: "ImageReader.AcquireLatestImage()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
-var mediaImageReaderAcquireNextImageCmd = &cobra.Command{
-	Use:   "acquire-next-image",
-	Short: "ImageReader.AcquireNextImage()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
 var mediaImageReaderFormatCmd = &cobra.Command{
 	Use:   "format",
 	Short: "ImageReader.Format()",
@@ -332,15 +314,6 @@ var mediaImageReaderMaxImagesCmd = &cobra.Command{
 var mediaImageReaderWidthCmd = &cobra.Command{
 	Use:   "width",
 	Short: "ImageReader.Width()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
-var mediaImageReaderWindowCmd = &cobra.Command{
-	Use:   "window",
-	Short: "ImageReader.Window()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -403,13 +376,10 @@ func init() {
 	mediaImageCmd.AddCommand(mediaImagePlaneRowStrideCmd)
 	mediaImageCmd.AddCommand(mediaImageTimestampCmd)
 	mediaImageCmd.AddCommand(mediaImageWidthCmd)
-	mediaImageReaderCmd.AddCommand(mediaImageReaderAcquireLatestImageCmd)
-	mediaImageReaderCmd.AddCommand(mediaImageReaderAcquireNextImageCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderFormatCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderHeightCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderMaxImagesCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderWidthCmd)
-	mediaImageReaderCmd.AddCommand(mediaImageReaderWindowCmd)
 	mediaMuxerCmd.AddCommand(mediaMuxerStartCmd)
 	mediaMuxerCmd.AddCommand(mediaMuxerStopCmd)
 	rootCmd.AddCommand(mediaCmd)

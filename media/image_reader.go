@@ -33,16 +33,6 @@ func (h *ImageReader) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
-// AcquireLatestImage calls the underlying NDK function.
-func (h *ImageReader) AcquireLatestImage() error {
-	return result(int32(capi.AImageReader_acquireLatestImage(h.ptr)))
-}
-
-// AcquireNextImage calls the underlying NDK function.
-func (h *ImageReader) AcquireNextImage() error {
-	return result(int32(capi.AImageReader_acquireNextImage(h.ptr)))
-}
-
 // Format calls the underlying NDK function.
 func (h *ImageReader) Format(format *int32) error {
 	return result(int32(capi.AImageReader_getFormat(h.ptr, format)))
@@ -61,9 +51,4 @@ func (h *ImageReader) MaxImages(maxImages *int32) error {
 // Width calls the underlying NDK function.
 func (h *ImageReader) Width(width *int32) error {
 	return result(int32(capi.AImageReader_getWidth(h.ptr, width)))
-}
-
-// Window calls the underlying NDK function.
-func (h *ImageReader) Window() error {
-	return result(int32(capi.AImageReader_getWindow(h.ptr)))
 }

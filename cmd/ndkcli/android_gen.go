@@ -18,6 +18,24 @@ var androidAppCmd = &cobra.Command{
 	Short: "App operations",
 }
 
+var androidAppShowToastCmd = &cobra.Command{
+	Use:   "show-toast",
+	Short: "App.ShowToast()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var androidAppFillWindowColorCmd = &cobra.Command{
+	Use:   "fill-window-color",
+	Short: "App.FillWindowColor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var androidAppActivityCmd = &cobra.Command{
 	Use:   "activity",
 	Short: "App.Activity()",
@@ -63,32 +81,14 @@ var androidAppRequestPermissionCmd = &cobra.Command{
 	},
 }
 
-var androidAppShowToastCmd = &cobra.Command{
-	Use:   "show-toast",
-	Short: "App.ShowToast()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
-var androidAppFillWindowColorCmd = &cobra.Command{
-	Use:   "fill-window-color",
-	Short: "App.FillWindowColor()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
 func init() {
 	androidCmd.AddCommand(androidAppCmd)
+	androidAppCmd.AddCommand(androidAppShowToastCmd)
+	androidAppCmd.AddCommand(androidAppFillWindowColorCmd)
 	androidAppCmd.AddCommand(androidAppActivityCmd)
 	androidAppCmd.AddCommand(androidAppWindowCmd)
 	androidAppCmd.AddCommand(androidAppWindowSizeCmd)
 	androidAppCmd.AddCommand(androidAppHasPermissionCmd)
 	androidAppCmd.AddCommand(androidAppRequestPermissionCmd)
-	androidAppCmd.AddCommand(androidAppShowToastCmd)
-	androidAppCmd.AddCommand(androidAppFillWindowColorCmd)
 	rootCmd.AddCommand(androidCmd)
 }
