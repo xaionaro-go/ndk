@@ -249,6 +249,776 @@ All types implement idempotent, nil-safe `Close() error`. Error types wrap NDK s
 
 More examples: [`examples/`](examples/)
 
+## Examples
+
+<details>
+<summary>How to record from the microphone</summary>
+
+> **Library:** [ndk](https://github.com/xaionaro-go/ndk) (AAudio)
+
+```go
+package main
+
+import (
+	"log"
+	"math"
+	"time"
+	"unsafe"
+
+	"github.com/xaionaro-go/ndk/audio"
+)
+
+func main() {
+	builder, err := audio.NewStreamBuilder()
+	if err != nil {
+		log.Fatalf("create stream builder: %v", err)
+	}
+	defer builder.Close()
+
+	builder.
+		SetDirection(audio.Input).
+		SetSampleRate(48000).
+		SetChannelCount(1).
+		SetFormat(audio.PcmI16).
+		SetPerformanceMode(audio.LowLatency).
+		SetSharingMode(audio.Shared)
+
+	stream, err := builder.Open()
+	if err != nil {
+		log.Fatalf("open stream: %v", err)
+	}
+	defer func() {
+		if err := stream.Close(); err != nil {
+			log.Printf("close stream: %v", err)
+		}
+	}()
+
+	rate := stream.SampleRate()
+	log.Printf("capture stream opened (rate=%d Hz, ch=%d)", rate, stream.ChannelCount())
+
+	if err := stream.Start(); err != nil {
+		log.Fatalf("start stream: %v", err)
+	}
+
+	// Read approximately 1 second of audio.
+	totalFrames := rate
+	buf := make([]int16, 1024)
+	bufBytes := unsafe.Slice((*byte)(unsafe.Pointer(&buf[0])), len(buf)*int(unsafe.Sizeof(buf[0])))
+	var captured []int16
+
+	for int32(len(captured)) < totalFrames {
+		framesToRead := int32(len(buf))
+		if remaining := totalFrames - int32(len(captured)); remaining < framesToRead {
+			framesToRead = remaining
+		}
+		n, err := stream.Read(bufBytes, framesToRead, time.Second)
+		if err != nil {
+			log.Fatalf("read: %v", err)
+		}
+		captured = append(captured, buf[:n]...)
+	}
+
+	if err := stream.Stop(); err != nil {
+		log.Fatalf("stop stream: %v", err)
+	}
+
+	// Compute peak amplitude.
+	var peak int16
+	for _, s := range captured {
+		if s < 0 {
+			s = -s
+		}
+		if s > peak {
+			peak = s
+		}
+	}
+
+	log.Printf("captured %d frames", len(captured))
+	log.Printf("peak amplitude: %d (%.1f dBFS)", peak, 20*math.Log10(float64(peak)/32767.0))
+	log.Println("recording example finished")
+}
+```
+
+</details>
+
+<details>
+<summary>How to take a picture from the camera</summary>
+
+> **Library:** [ndk](https://github.com/xaionaro-go/ndk) (Camera2 + ImageReader)
+
+```go
+package main
+
+import (
+	"log"
+	"os"
+	"time"
+	"unsafe"
+
+	"github.com/xaionaro-go/ndk/camera"
+	capimedia "github.com/xaionaro-go/ndk/capi/media"
+	"github.com/xaionaro-go/ndk/media"
+)
+
+func main() {
+	// 1. Create an ImageReader (640x480 JPEG, up to 2 images).
+	//    The idiomatic media.NewImageReader uses an output parameter.
+	var reader *media.ImageReader
+	if status := media.NewImageReader(640, 480, capimedia.AIMAGE_FORMAT_JPEG, 2, &reader); status != 0 {
+		log.Fatalf("create image reader: status %d", status)
+	}
+	defer reader.Close()
+
+	// 2. Get the ANativeWindow from the ImageReader.
+	//    The idiomatic Window() method has a broken signature (no output),
+	//    so we call the capi function directly.
+	readerPtr := (*capimedia.AImageReader)(reader.Pointer())
+	var capiWindow *capimedia.ANativeWindow
+	if status := capimedia.AImageReader_getWindow(readerPtr, &capiWindow); status != 0 {
+		log.Fatalf("get window: status %d", status)
+	}
+	// Convert capi/media.ANativeWindow to capi/camera.ANativeWindow via unsafe.
+	camWindow := (*camera.ANativeWindow)(unsafe.Pointer(capiWindow))
+
+	// 3. Create camera Manager and list cameras.
+	mgr := camera.NewManager()
+	defer mgr.Close()
+
+	ids, err := mgr.CameraIDList()
+	if err != nil {
+		log.Fatalf("list cameras: %v", err)
+	}
+	if len(ids) == 0 {
+		log.Fatal("no cameras available")
+	}
+	log.Printf("cameras: %v (using %s)", ids, ids[0])
+
+	// 4. Open the first camera.
+	dev, err := mgr.OpenCamera(ids[0], camera.DeviceStateCallbacks{
+		OnDisconnected: func() { log.Println("camera disconnected") },
+		OnError:        func(code int) { log.Printf("camera error: %d", code) },
+	})
+	if err != nil {
+		log.Fatalf("open camera: %v", err)
+	}
+	defer dev.Close()
+
+	// 5. Create OutputTarget and SessionOutput from the window.
+	target, err := camera.NewOutputTarget(camWindow)
+	if err != nil {
+		log.Fatalf("create output target: %v", err)
+	}
+	defer target.Close()
+
+	sessOutput, err := camera.NewSessionOutput(camWindow)
+	if err != nil {
+		log.Fatalf("create session output: %v", err)
+	}
+	defer sessOutput.Close()
+
+	container, err := camera.NewSessionOutputContainer()
+	if err != nil {
+		log.Fatalf("create session output container: %v", err)
+	}
+	defer container.Close()
+
+	if err := container.Add(sessOutput); err != nil {
+		log.Fatalf("add session output: %v", err)
+	}
+
+	// 6. Create a CaptureRequest (StillCapture template) and add the target.
+	req, err := dev.CreateCaptureRequest(camera.StillCapture)
+	if err != nil {
+		log.Fatalf("create capture request: %v", err)
+	}
+	defer req.Close()
+	req.AddTarget(target)
+
+	// 7. Create a CaptureSession and set a repeating request.
+	ready := make(chan struct{}, 1)
+	session, err := dev.CreateCaptureSession(container, camera.SessionStateCallbacks{
+		OnReady:  func() { select { case ready <- struct{}{}: default: } },
+		OnActive: func() { log.Println("session active") },
+		OnClosed: func() { log.Println("session closed") },
+	})
+	if err != nil {
+		log.Fatalf("create capture session: %v", err)
+	}
+	defer session.Close()
+
+	if err := session.SetRepeatingRequest(req); err != nil {
+		log.Fatalf("set repeating request: %v", err)
+	}
+
+	// Wait for at least one frame to arrive.
+	select {
+	case <-ready:
+	case <-time.After(5 * time.Second):
+		log.Println("warning: timed out waiting for session ready")
+	}
+	time.Sleep(500 * time.Millisecond)
+
+	// 8. Acquire an image from the ImageReader and save it.
+	var capiImage *capimedia.AImage
+	if status := capimedia.AImageReader_acquireLatestImage(readerPtr, &capiImage); status != 0 {
+		log.Fatalf("acquire image: status %d", status)
+	}
+	img := media.NewImageFromPointer(unsafe.Pointer(capiImage))
+	defer img.Close()
+
+	var numPlanes int32
+	if err := img.NumberOfPlanes(&numPlanes); err != nil {
+		log.Fatalf("get number of planes: %v", err)
+	}
+
+	// For JPEG there is exactly one plane; get its data.
+	var dataPtr *uint8
+	var dataLen int32
+	if status := capimedia.AImage_getPlaneData(
+		(*capimedia.AImage)(img.Pointer()), 0, &dataPtr, &dataLen,
+	); status != 0 {
+		log.Fatalf("get plane data: status %d", status)
+	}
+
+	data := unsafe.Slice(dataPtr, dataLen)
+	if err := os.WriteFile("/sdcard/capture.jpg", data, 0644); err != nil {
+		log.Fatalf("write file: %v", err)
+	}
+
+	if err := session.StopRepeating(); err != nil {
+		log.Printf("stop repeating: %v", err)
+	}
+
+	log.Printf("saved %d bytes to /sdcard/capture.jpg", dataLen)
+}
+```
+
+</details>
+
+<details>
+<summary>How to list available sensors</summary>
+
+> **Library:** [ndk](https://github.com/xaionaro-go/ndk) (Sensor)
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/xaionaro-go/ndk/sensor"
+)
+
+// printSensor queries and prints sensor properties. It returns false
+// if the sensor's underlying C pointer is NULL (the device lacks this
+// sensor type), recovering from the resulting panic.
+func printSensor(mgr *sensor.Manager, label string, sensorType sensor.Type) (ok bool) {
+	defer func() {
+		if r := recover(); r != nil {
+			ok = false
+		}
+	}()
+
+	s := mgr.DefaultSensor(int32(sensorType))
+
+	// Trigger a method call; if the internal pointer is NULL the NDK
+	// dereferences a null pointer and Go's signal handler turns it
+	// into a panic that we recover above.
+	name := s.Name()
+	vendor := s.Vendor()
+	if name == "" || vendor == "" {
+		return false
+	}
+
+	fmt.Printf("  %s:\n", label)
+	fmt.Printf("    Name:       %s\n", name)
+	fmt.Printf("    Vendor:     %s\n", vendor)
+	fmt.Printf("    Type:       %s (%d)\n", sensorType, int32(sensorType))
+	fmt.Printf("    Resolution: %g\n", s.Resolution())
+	fmt.Printf("    Min delay:  %d us\n", s.MinDelay())
+	fmt.Println()
+	return true
+}
+
+func main() {
+	mgr := sensor.GetInstance()
+
+	type sensorInfo struct {
+		label      string
+		sensorType sensor.Type
+	}
+
+	sensors := []sensorInfo{
+		{"Accelerometer", sensor.Accelerometer},
+		{"Gyroscope", sensor.Gyroscope},
+		{"Light", sensor.Light},
+		{"Proximity", sensor.Proximity},
+		{"Magnetic Field", sensor.MagneticField},
+	}
+
+	fmt.Println("Default sensors on this device:")
+	fmt.Println()
+
+	found := 0
+	for _, info := range sensors {
+		if printSensor(mgr, info.label, info.sensorType) {
+			found++
+		} else {
+			fmt.Printf("  %-16s  not available\n", info.label+":")
+		}
+	}
+
+	if found == 0 {
+		fmt.Println("  No default sensors found on this device.")
+	}
+}
+```
+
+</details>
+
+<details>
+<summary>How to check device thermal status</summary>
+
+> **Library:** [ndk](https://github.com/xaionaro-go/ndk) (Thermal)
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/xaionaro-go/ndk/thermal"
+)
+
+func main() {
+	mgr := thermal.NewManager()
+	defer mgr.Close()
+
+	status := mgr.CurrentStatus()
+	fmt.Printf("Thermal status: %s (%d)\n", status, int32(status))
+
+	switch status {
+	case thermal.StatusNone:
+		fmt.Println("Device is cool.")
+	case thermal.StatusLight, thermal.StatusModerate:
+		fmt.Println("Device is warm; consider reducing workload.")
+	case thermal.StatusSevere, thermal.StatusCritical:
+		fmt.Println("Device is hot; throttling likely.")
+	case thermal.StatusEmergency, thermal.StatusShutdown:
+		fmt.Println("Device is critically hot; shutdown imminent.")
+	default:
+		fmt.Println("Unable to determine thermal status.")
+	}
+}
+```
+
+</details>
+
+<details>
+<summary>How to query GPU capabilities</summary>
+
+> **Library:** [ndk](https://github.com/xaionaro-go/ndk) (EGL + OpenGL ES 2.0)
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"unsafe"
+
+	"github.com/xaionaro-go/ndk/egl"
+	"github.com/xaionaro-go/ndk/gles2"
+)
+
+// goString converts a *gles2.GLubyte (C string) to a Go string.
+func goString(p *gles2.GLubyte) string {
+	if p == nil {
+		return "<nil>"
+	}
+	// Walk the null-terminated byte sequence.
+	var buf []byte
+	for ptr := (*byte)(unsafe.Pointer(p)); *ptr != 0; ptr = (*byte)(unsafe.Pointer(uintptr(unsafe.Pointer(ptr)) + 1)) {
+		buf = append(buf, *ptr)
+	}
+	return string(buf)
+}
+
+func main() {
+	// EGL constants not in the generated package.
+	const (
+		eglVendor     egl.Int = 0x3053
+		eglVersion    egl.Int = 0x3054
+		eglExtensions egl.Int = 0x3055
+		eglClientAPIs egl.Int = 0x308D
+	)
+
+	// GL constants not in the generated package.
+	const (
+		glVendor     gles2.Enum = 0x1F00
+		glRenderer   gles2.Enum = 0x1F01
+		glVersion    gles2.Enum = 0x1F02
+		glExtensions gles2.Enum = 0x1F03
+	)
+
+	// 1. Get the default EGL display and initialize it.
+	dpy := egl.GetDisplay(egl.EGLNativeDisplayType(0))
+	if dpy == nil {
+		log.Fatal("eglGetDisplay failed")
+	}
+
+	var major, minor egl.Int
+	if egl.Initialize(dpy, &major, &minor) == egl.False {
+		log.Fatalf("eglInitialize failed: 0x%x", egl.GetError())
+	}
+	defer egl.Terminate(dpy)
+
+	fmt.Printf("EGL %d.%d\n", major, minor)
+	fmt.Printf("  Vendor:     %s\n", egl.QueryString(dpy, eglVendor))
+	fmt.Printf("  Version:    %s\n", egl.QueryString(dpy, eglVersion))
+	fmt.Printf("  Client APIs: %s\n", egl.QueryString(dpy, eglClientAPIs))
+	fmt.Printf("  Extensions: %s\n", egl.QueryString(dpy, eglExtensions))
+
+	// 2. Choose a config with ES2 support and pbuffer surface type.
+	attribs := []egl.Int{
+		egl.RenderableType, egl.OpenglEs2Bit,
+		egl.SurfaceType, egl.PbufferBit,
+		egl.RedSize, 8,
+		egl.GreenSize, 8,
+		egl.BlueSize, 8,
+		egl.None,
+	}
+	var cfg egl.EGLConfig
+	var numCfg egl.Int
+	if egl.ChooseConfig(dpy, &attribs[0], &cfg, 1, &numCfg) == egl.False || numCfg == 0 {
+		log.Fatal("eglChooseConfig failed")
+	}
+
+	// 3. Create a 1x1 pbuffer surface and an ES2 context.
+	pbufAttribs := []egl.Int{egl.Width, 1, egl.Height, 1, egl.None}
+	surface := egl.CreatePbufferSurface(dpy, cfg, &pbufAttribs[0])
+
+	ctxAttribs := []egl.Int{egl.ContextClientVersion, 2, egl.None}
+	ctx := egl.CreateContext(dpy, cfg, nil, &ctxAttribs[0])
+	if ctx == nil {
+		log.Fatal("eglCreateContext failed")
+	}
+	defer egl.DestroyContext(dpy, ctx)
+	defer egl.DestroySurface(dpy, surface)
+
+	egl.MakeCurrent(dpy, surface, surface, ctx)
+
+	// 4. Query OpenGL ES strings.
+	fmt.Println()
+	fmt.Printf("GL Vendor:     %s\n", goString(gles2.GetString(glVendor)))
+	fmt.Printf("GL Renderer:   %s\n", goString(gles2.GetString(glRenderer)))
+	fmt.Printf("GL Version:    %s\n", goString(gles2.GetString(glVersion)))
+	fmt.Printf("GL Extensions: %s\n", goString(gles2.GetString(glExtensions)))
+
+	egl.MakeCurrent(dpy, nil, nil, nil)
+}
+```
+
+</details>
+
+<details>
+<summary>How to probe available media codecs</summary>
+
+> **Library:** [ndk](https://github.com/xaionaro-go/ndk) (MediaCodec)
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/xaionaro-go/ndk/media"
+)
+
+func main() {
+	codecs := []struct {
+		mime string
+		desc string
+	}{
+		{"video/avc", "H.264 / AVC"},
+		{"video/hevc", "H.265 / HEVC"},
+		{"video/x-vnd.on2.vp8", "VP8"},
+		{"video/x-vnd.on2.vp9", "VP9"},
+		{"video/av01", "AV1"},
+		{"audio/mp4a-latm", "AAC"},
+		{"audio/opus", "Opus"},
+		{"audio/flac", "FLAC"},
+	}
+
+	fmt.Printf("%-28s %-10s %-10s\n", "MIME Type", "Encoder", "Decoder")
+	fmt.Printf("%-28s %-10s %-10s\n", "---", "---", "---")
+
+	for _, c := range codecs {
+		encOK := "no"
+		enc := media.NewEncoder(c.mime)
+		if enc != nil && enc.Pointer() != nil {
+			encOK = "yes"
+			enc.Close()
+		}
+
+		decOK := "no"
+		dec := media.NewDecoder(c.mime)
+		if dec != nil && dec.Pointer() != nil {
+			decOK = "yes"
+			dec.Close()
+		}
+
+		fmt.Printf("%-28s %-10s %-10s  (%s)\n", c.mime, encOK, decOK, c.desc)
+	}
+}
+```
+
+</details>
+
+<details>
+<summary>How to read device configuration</summary>
+
+> **Library:** [ndk](https://github.com/xaionaro-go/ndk) (Configuration)
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/xaionaro-go/ndk/config"
+)
+
+func main() {
+	cfg := config.NewConfig()
+	defer cfg.Close()
+
+	fmt.Println("Device configuration:")
+	fmt.Printf("  Density:         %d dpi\n", cfg.Density())
+	fmt.Printf("  Orientation:     %d\n", cfg.Orientation())
+	fmt.Printf("  Screen size:     %d\n", cfg.ScreenSize())
+	fmt.Printf("  Screen width:    %d dp\n", cfg.ScreenWidthDp())
+	fmt.Printf("  Screen height:   %d dp\n", cfg.ScreenHeightDp())
+	fmt.Printf("  SDK version:     %d\n", cfg.SdkVersion())
+
+	switch config.Orientation(cfg.Orientation()) {
+	case config.OrientationPort:
+		fmt.Println("  (portrait)")
+	case config.OrientationLand:
+		fmt.Println("  (landscape)")
+	case config.OrientationSquare:
+		fmt.Println("  (square)")
+	default:
+		fmt.Println("  (any/unknown)")
+	}
+}
+```
+
+</details>
+
+<details>
+<summary>How to decode an image file</summary>
+
+> **Library:** [ndk](https://github.com/xaionaro-go/ndk) (ImageDecoder, API 30+)
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"syscall"
+	"unsafe"
+
+	capidec "github.com/xaionaro-go/ndk/capi/imagedecoder"
+	"github.com/xaionaro-go/ndk/image"
+)
+
+func main() {
+	// 1. Open the image file via POSIX fd.
+	fd, err := syscall.Open("/sdcard/photo.jpg", syscall.O_RDONLY, 0)
+	if err != nil {
+		log.Fatalf("open file: %v", err)
+	}
+	defer syscall.Close(fd)
+
+	// 2. Create a Decoder from the fd.
+	//    The factory function is not yet in the high-level image package,
+	//    so we call the capi function and wrap the result.
+	var decPtr *capidec.AImageDecoder
+	if rc := capidec.AImageDecoder_createFromFd(int32(fd), &decPtr); rc != 0 {
+		log.Fatalf("create decoder: error %d", rc)
+	}
+	decoder := image.NewDecoderFromPointer(unsafe.Pointer(decPtr))
+	defer decoder.Close()
+
+	// 3. Query image dimensions from the header.
+	headerPtr := capidec.AImageDecoder_getHeaderInfo(decPtr)
+	width := capidec.AImageDecoderHeaderInfo_getWidth(headerPtr)
+	height := capidec.AImageDecoderHeaderInfo_getHeight(headerPtr)
+	fmt.Printf("Image: %d x %d\n", width, height)
+
+	// 4. Query the stride and allocate the pixel buffer.
+	stride := decoder.MinimumStride()
+	bufSize := stride * uint64(height)
+	pixels := make([]byte, bufSize)
+	fmt.Printf("Stride: %d bytes, buffer: %d bytes\n", stride, bufSize)
+
+	// 5. Decode the image into the buffer.
+	if err := decoder.Decode(unsafe.Pointer(&pixels[0]), stride, bufSize); err != nil {
+		log.Fatalf("decode: %v", err)
+	}
+
+	fmt.Printf("Decoded %d bytes of RGBA pixel data.\n", bufSize)
+}
+```
+
+</details>
+
+<details>
+<summary>How to get GPS coordinates</summary>
+
+> **Library:** [jni](https://github.com/xaionaro-go/jni) — GPS is a Java-only API, not available via NDK.
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/xaionaro-go/jni/location"
+)
+
+func main() {
+	mgr, err := location.NewManager()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	loc, err := mgr.LastKnownLocation("gps")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Lat: %f, Lon: %f\n", loc.Latitude, loc.Longitude)
+}
+```
+
+</details>
+
+<details>
+<summary>How to connect to a WiFi AP</summary>
+
+> **Library:** [jni](https://github.com/xaionaro-go/jni) — WiFi management is a Java-only API, not available via NDK.
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/xaionaro-go/jni/net/wifi"
+)
+
+func main() {
+	mgr, err := wifi.NewManager()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("WiFi enabled:", mgr.IsEnabled())
+
+	// Scan and connect (requires ACCESS_FINE_LOCATION permission).
+	if err := mgr.Connect("MySSID", "MyPassword"); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Connected to MySSID")
+}
+```
+
+</details>
+
+<details>
+<summary>How to send a notification</summary>
+
+> **Library:** [jni](https://github.com/xaionaro-go/jni) — Notifications require the Java SDK, not available via NDK.
+
+```go
+package main
+
+import (
+	"log"
+
+	"github.com/xaionaro-go/jni/app/notification"
+)
+
+func main() {
+	mgr, err := notification.NewManager()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = mgr.Notify("channel_default", notification.Builder{
+		Title: "Hello from Go",
+		Text:  "This notification was sent from a Go program.",
+		Icon:  "ic_launcher",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+</details>
+
+<details>
+<summary>How to query battery status</summary>
+
+> **Library:** [aidl](https://github.com/xaionaro-go/aidl) — Battery info is available via the AIDL interface.
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/xaionaro-go/aidl/android/os"
+)
+
+func main() {
+	svc, err := os.NewBatteryService()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	level, err := svc.GetIntProperty("level")
+	if err != nil {
+		log.Fatal(err)
+	}
+	status, err := svc.GetIntProperty("status")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Battery: %d%%\n", level)
+	switch status {
+	case 2:
+		fmt.Println("Status: Charging")
+	case 3:
+		fmt.Println("Status: Discharging")
+	case 5:
+		fmt.Println("Status: Full")
+	default:
+		fmt.Printf("Status: %d\n", status)
+	}
+}
+```
+
+</details>
+
 ## Supported Modules
 
 | NDK Module                                                                                                                                           | Go Package       | Import Path                                 |
