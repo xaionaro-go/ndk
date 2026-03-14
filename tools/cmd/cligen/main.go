@@ -324,6 +324,33 @@ func resolveType(goType string, aliases map[string]string) string {
 	return goType
 }
 
+// flagReturnType returns the Go type that the cobra flag getter returns.
+func flagReturnType(resolved string) string {
+	switch resolved {
+	case "string":
+		return "string"
+	case "int32":
+		return "int32"
+	case "int64":
+		return "int64"
+	case "int":
+		return "int"
+	case "uint16":
+		return "int32" // promoted — cobra has no uint16 flag
+	case "uint32":
+		return "uint32"
+	case "uint64":
+		return "uint64"
+	case "float32":
+		return "float32"
+	case "float64":
+		return "float64"
+	case "bool":
+		return "bool"
+	}
+	return resolved
+}
+
 func isPrimitive(t string) bool {
 	switch t {
 	case "string", "int32", "int64", "int", "uint16", "uint32", "uint64",
@@ -672,19 +699,22 @@ func genParamCode(
 				cmdVar, regMethod, flagName, defVal, p.name))
 		}
 
+		// The flag getter may return a different type than the param
+		// (e.g., uint16 → GetInt32 returns int32). Determine if we
+		// need a cast from the flag type to the param type.
+		flagType := flagReturnType(resolved)
 		fmt.Fprintf(&body, "\t\t%s, _ := cmd.Flags().%s(%q)\n", varName, getter, flagName)
 
-		// If the original type differs from resolved, cast.
-		if p.goType != resolved && !strings.HasPrefix(p.goType, "*") {
-			if isPrimitive(p.goType) {
-				// Builtin type (uint16, int, etc.) — direct cast.
-				callArgs = append(callArgs, p.goType+"("+varName+")")
-			} else {
-				// Package-defined type — qualified cast.
-				callArgs = append(callArgs, pkgRef+"."+p.goType+"("+varName+")")
-			}
-		} else {
+		switch {
+		case p.goType == flagType:
+			// Types match exactly — no cast.
 			callArgs = append(callArgs, varName)
+		case isPrimitive(p.goType):
+			// Builtin type (uint16, int, etc.) — direct cast.
+			callArgs = append(callArgs, p.goType+"("+varName+")")
+		default:
+			// Package-defined type — qualified cast.
+			callArgs = append(callArgs, pkgRef+"."+p.goType+"("+varName+")")
 		}
 	}
 

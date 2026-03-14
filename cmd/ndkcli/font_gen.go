@@ -75,7 +75,7 @@ var fontMatcherSetStyleCmd = &cobra.Command{
 		defer obj.Close()
 		weight, _ := cmd.Flags().GetInt32("weight")
 		italic, _ := cmd.Flags().GetBool("italic")
-		result := obj.SetStyle(weight, italic)
+		result := obj.SetStyle(uint16(weight), italic)
 		fmt.Println(result)
 		return nil
 	},
