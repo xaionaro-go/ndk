@@ -4,7 +4,11 @@ package media
 
 /*
 #cgo LDFLAGS: -lmediandk
+#include "media/NdkImage.h"
+#include "media/NdkImageReader.h"
 #include "media/NdkMediaCodec.h"
+#include "media/NdkMediaCodecInfo.h"
+#include "media/NdkMediaDataSource.h"
 #include "media/NdkMediaExtractor.h"
 #include "media/NdkMediaFormat.h"
 #include "media/NdkMediaMuxer.h"
@@ -16,15 +20,47 @@ package media
 import "C"
 import "unsafe"
 
+type ABitrateMode int32
+
+type ACodecAudioCapabilities C.ACodecAudioCapabilities
+
+type ACodecEncoderCapabilities C.ACodecEncoderCapabilities
+
+type ACodecPerformancePoint C.ACodecPerformancePoint
+
+type ACodecVideoCapabilities C.ACodecVideoCapabilities
+
+type ADoubleRange C.ADoubleRange
+
+type AImage C.AImage
+
+type AImageCropRect C.AImageCropRect
+
+type AImageReader C.AImageReader
+
+type AImageReader_BufferRemovedListener C.AImageReader_BufferRemovedListener
+
+type AImageReader_ImageListener C.AImageReader_ImageListener
+
+type AIntRange C.AIntRange
+
 type AMediaCodec C.AMediaCodec
 
 type AMediaCodecBufferInfo C.AMediaCodecBufferInfo
 
 type AMediaCodecCryptoInfo C.AMediaCodecCryptoInfo
 
+type AMediaCodecInfo C.AMediaCodecInfo
+
+type AMediaCodecKind int32
+
 type AMediaCodecOnAsyncNotifyCallback C.AMediaCodecOnAsyncNotifyCallback
 
+type AMediaCodecType int32
+
 type AMediaCrypto C.AMediaCrypto
+
+type AMediaDataSource C.AMediaDataSource
 
 type AMediaDrm C.AMediaDrm
 
@@ -78,13 +114,17 @@ type Cryptoinfo_pattern_t C.cryptoinfo_pattern_t
 
 type AMediaDrmKeyValuePair C.struct_AMediaDrmKeyValuePair
 
-type AMediaDataSource C.AMediaDataSource
+type AHardwareBuffer C.AHardwareBuffer
 
 type Media_status_t C.media_status_t
 
 type Off64_t C.off64_t
 
 type Off_t C.off_t
+
+type AImageReader_BufferRemovedCallback func(context unsafe.Pointer, reader *AImageReader, buffer *AHardwareBuffer)
+
+type AImageReader_ImageCallback func(context unsafe.Pointer, reader *AImageReader)
 
 type AMediaCodecOnAsyncError func(codec *AMediaCodec, userdata unsafe.Pointer, _error Media_status_t, actionCode int32, detail string)
 
@@ -95,6 +135,14 @@ type AMediaCodecOnAsyncInputAvailable func(codec *AMediaCodec, userdata unsafe.P
 type AMediaCodecOnAsyncOutputAvailable func(codec *AMediaCodec, userdata unsafe.Pointer, index int32, bufferInfo *AMediaCodecBufferInfo)
 
 type AMediaCodecOnFrameRendered func(codec *AMediaCodec, userdata unsafe.Pointer, mediaTimeUs int64, systemNano int64)
+
+type AMediaDataSourceClose func(userdata unsafe.Pointer)
+
+type AMediaDataSourceGetAvailableSize func(userdata unsafe.Pointer, offset Off64_t) int64
+
+type AMediaDataSourceGetSize func(userdata unsafe.Pointer) int64
+
+type AMediaDataSourceReadAt func(userdata unsafe.Pointer, offset Off64_t, buffer unsafe.Pointer, size uint64) int64
 
 type AMediaDrmEventListener func(p0 *AMediaDrm, sessionId *AMediaDrmSessionId, eventType AMediaDrmEventType, extra int32, data *uint8, dataSize uint64)
 

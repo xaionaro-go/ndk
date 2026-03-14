@@ -36,7 +36,67 @@ types:
   AMediaCrypto:
     go_name: Crypto
 
+  AImageReader:
+    go_name: ImageReader
+    destructor: AImageReader_delete
+
+  AImage:
+    go_name: Image
+    destructor: AImage_delete
+
 functions:
+  # --- ImageReader lifecycle ---
+  AImageReader_new:
+    go_name: NewImageReader
+    returns_new: ImageReader
+
+  # --- ImageReader queries ---
+  AImageReader_getWindow:
+    receiver: ImageReader
+    go_name: Window
+  AImageReader_getWidth:
+    receiver: ImageReader
+    go_name: Width
+  AImageReader_getHeight:
+    receiver: ImageReader
+    go_name: Height
+  AImageReader_getFormat:
+    receiver: ImageReader
+    go_name: Format
+  AImageReader_getMaxImages:
+    receiver: ImageReader
+    go_name: MaxImages
+
+  # --- ImageReader frame acquisition ---
+  AImageReader_acquireNextImage:
+    receiver: ImageReader
+    go_name: AcquireNextImage
+  AImageReader_acquireLatestImage:
+    receiver: ImageReader
+    go_name: AcquireLatestImage
+
+  # --- Image queries ---
+  AImage_getWidth:
+    receiver: Image
+    go_name: Width
+  AImage_getHeight:
+    receiver: Image
+    go_name: Height
+  AImage_getFormat:
+    receiver: Image
+    go_name: Format
+  AImage_getTimestamp:
+    receiver: Image
+    go_name: Timestamp
+  AImage_getNumberOfPlanes:
+    receiver: Image
+    go_name: NumberOfPlanes
+  AImage_getPlanePixelStride:
+    receiver: Image
+    go_name: PlanePixelStride
+  AImage_getPlaneRowStride:
+    receiver: Image
+    go_name: PlaneRowStride
   # --- Codec lifecycle ---
   AMediaCodec_createDecoderByType:
     go_name: NewDecoder

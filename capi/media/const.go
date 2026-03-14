@@ -3,6 +3,33 @@
 package media
 
 const (
+	ABITRATE_MODE_CQ     ABitrateMode = 0
+	ABITRATE_MODE_VBR    ABitrateMode = 1
+	ABITRATE_MODE_CBR    ABitrateMode = 2
+	ABITRATE_MODE_CBR_FD ABitrateMode = 3
+)
+
+const (
+	AIMAGE_FORMAT_RGBA_8888         = 1
+	AIMAGE_FORMAT_RGBX_8888         = 2
+	AIMAGE_FORMAT_RGB_888           = 3
+	AIMAGE_FORMAT_RGB_565           = 4
+	AIMAGE_FORMAT_RGBA_FP16         = 22
+	AIMAGE_FORMAT_YUV_420_888       = 35
+	AIMAGE_FORMAT_JPEG              = 256
+	AIMAGE_FORMAT_RAW16             = 32
+	AIMAGE_FORMAT_RAW_PRIVATE       = 36
+	AIMAGE_FORMAT_RAW10             = 37
+	AIMAGE_FORMAT_RAW12             = 38
+	AIMAGE_FORMAT_DEPTH16           = 1144402265
+	AIMAGE_FORMAT_DEPTH_POINT_CLOUD = 257
+	AIMAGE_FORMAT_PRIVATE           = 34
+	AIMAGE_FORMAT_Y8                = 538982489
+	AIMAGE_FORMAT_HEIC              = 1212500294
+	AIMAGE_FORMAT_DEPTH_JPEG        = 1768253795
+)
+
+const (
 	AMEDIACODEC_CONFIGURE_FLAG_ENCODE       = 1
 	AMEDIACODEC_INFO_OUTPUT_BUFFERS_CHANGED = -3
 	AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED  = -2
@@ -21,6 +48,19 @@ const (
 const (
 	AMEDIAEXTRACTOR_SAMPLE_FLAG_SYNC      = 1
 	AMEDIAEXTRACTOR_SAMPLE_FLAG_ENCRYPTED = 2
+)
+
+const (
+	AMediaCodecKind_INVALID AMediaCodecKind = 0
+	AMediaCodecKind_DECODER AMediaCodecKind = 1
+	AMediaCodecKind_ENCODER AMediaCodecKind = 2
+)
+
+const (
+	AMediaCodecType_INVALID_CODEC_INFO          AMediaCodecType = 0
+	AMediaCodecType_SOFTWARE_ONLY               AMediaCodecType = 1
+	AMediaCodecType_HARDWARE_ACCELERATED        AMediaCodecType = 2
+	AMediaCodecType_SOFTWARE_WITH_DEVICE_ACCESS AMediaCodecType = 3
 )
 
 const (

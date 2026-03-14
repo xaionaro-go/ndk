@@ -3,7 +3,11 @@ GENERATOR:
   PackageDescription: "Raw CGo bindings for Android Media NDK"
   PackageLicense: "Apache-2.0"
   Includes:
+    - "media/NdkImage.h"
+    - "media/NdkImageReader.h"
     - "media/NdkMediaCodec.h"
+    - "media/NdkMediaCodecInfo.h"
+    - "media/NdkMediaDataSource.h"
     - "media/NdkMediaExtractor.h"
     - "media/NdkMediaFormat.h"
     - "media/NdkMediaMuxer.h"

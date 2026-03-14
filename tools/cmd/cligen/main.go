@@ -386,7 +386,17 @@ func constructorFor(fn *funcInfo) string {
 	if !strings.HasPrefix(fn.name, "New") {
 		return ""
 	}
-	return strings.TrimPrefix(fn.name, "New")
+	typeName := strings.TrimPrefix(fn.name, "New")
+
+	// Verify the function actually returns *TypeName or (*TypeName, error).
+	if len(fn.returns) == 0 {
+		return ""
+	}
+	firstRet := fn.returns[0].goType
+	if firstRet != "*"+typeName {
+		return ""
+	}
+	return typeName
 }
 
 func generateFile(pkg *pkgInfo) string {

@@ -3,6 +3,54 @@
 module: media
 source_package: github.com/xaionaro-go/ndk/capi/media
 types:
+    ABitrateMode:
+        kind: typedef_int32
+        c_type: ABitrateMode
+        go_type: int32
+    ACodecAudioCapabilities:
+        kind: opaque_ptr
+        c_type: ACodecAudioCapabilities
+        go_type: '*C.ACodecAudioCapabilities'
+    ACodecEncoderCapabilities:
+        kind: opaque_ptr
+        c_type: ACodecEncoderCapabilities
+        go_type: '*C.ACodecEncoderCapabilities'
+    ACodecPerformancePoint:
+        kind: opaque_ptr
+        c_type: ACodecPerformancePoint
+        go_type: '*C.ACodecPerformancePoint'
+    ACodecVideoCapabilities:
+        kind: opaque_ptr
+        c_type: ACodecVideoCapabilities
+        go_type: '*C.ACodecVideoCapabilities'
+    ADoubleRange:
+        kind: opaque_ptr
+        c_type: ADoubleRange
+        go_type: '*C.ADoubleRange'
+    AImage:
+        kind: opaque_ptr
+        c_type: AImage
+        go_type: '*C.AImage'
+    AImageCropRect:
+        kind: opaque_ptr
+        c_type: AImageCropRect
+        go_type: '*C.AImageCropRect'
+    AImageReader:
+        kind: opaque_ptr
+        c_type: AImageReader
+        go_type: '*C.AImageReader'
+    AImageReader_BufferRemovedListener:
+        kind: opaque_ptr
+        c_type: AImageReader_BufferRemovedListener
+        go_type: '*C.AImageReader_BufferRemovedListener'
+    AImageReader_ImageListener:
+        kind: opaque_ptr
+        c_type: AImageReader_ImageListener
+        go_type: '*C.AImageReader_ImageListener'
+    AIntRange:
+        kind: opaque_ptr
+        c_type: AIntRange
+        go_type: '*C.AIntRange'
     AMediaCodec:
         kind: opaque_ptr
         c_type: AMediaCodec
@@ -15,14 +63,30 @@ types:
         kind: opaque_ptr
         c_type: AMediaCodecCryptoInfo
         go_type: '*C.AMediaCodecCryptoInfo'
+    AMediaCodecInfo:
+        kind: opaque_ptr
+        c_type: AMediaCodecInfo
+        go_type: '*C.AMediaCodecInfo'
+    AMediaCodecKind:
+        kind: typedef_int32
+        c_type: AMediaCodecKind
+        go_type: int32
     AMediaCodecOnAsyncNotifyCallback:
         kind: opaque_ptr
         c_type: AMediaCodecOnAsyncNotifyCallback
         go_type: '*C.AMediaCodecOnAsyncNotifyCallback'
+    AMediaCodecType:
+        kind: typedef_int32
+        c_type: AMediaCodecType
+        go_type: int32
     AMediaCrypto:
         kind: opaque_ptr
         c_type: AMediaCrypto
         go_type: '*C.AMediaCrypto'
+    AMediaDataSource:
+        kind: opaque_ptr
+        c_type: AMediaDataSource
+        go_type: '*C.AMediaDataSource'
     AMediaDrm:
         kind: opaque_ptr
         c_type: AMediaDrm
@@ -124,6 +188,50 @@ types:
         c_type: cryptoinfo_pattern_t
         go_type: '*C.cryptoinfo_pattern_t'
 enums:
+    ABitrateMode:
+        - name: ABITRATE_MODE_CQ
+          value: 0
+        - name: ABITRATE_MODE_VBR
+          value: 1
+        - name: ABITRATE_MODE_CBR
+          value: 2
+        - name: ABITRATE_MODE_CBR_FD
+          value: 3
+    AIMAGE_FORMATS:
+        - name: AIMAGE_FORMAT_RGBA_8888
+          value: 1
+        - name: AIMAGE_FORMAT_RGBX_8888
+          value: 2
+        - name: AIMAGE_FORMAT_RGB_888
+          value: 3
+        - name: AIMAGE_FORMAT_RGB_565
+          value: 4
+        - name: AIMAGE_FORMAT_RGBA_FP16
+          value: 22
+        - name: AIMAGE_FORMAT_YUV_420_888
+          value: 35
+        - name: AIMAGE_FORMAT_JPEG
+          value: 256
+        - name: AIMAGE_FORMAT_RAW16
+          value: 32
+        - name: AIMAGE_FORMAT_RAW_PRIVATE
+          value: 36
+        - name: AIMAGE_FORMAT_RAW10
+          value: 37
+        - name: AIMAGE_FORMAT_RAW12
+          value: 38
+        - name: AIMAGE_FORMAT_DEPTH16
+          value: 1144402265
+        - name: AIMAGE_FORMAT_DEPTH_POINT_CLOUD
+          value: 257
+        - name: AIMAGE_FORMAT_PRIVATE
+          value: 34
+        - name: AIMAGE_FORMAT_Y8
+          value: 538982489
+        - name: AIMAGE_FORMAT_HEIC
+          value: 1212500294
+        - name: AIMAGE_FORMAT_DEPTH_JPEG
+          value: 1768253795
     AMEDIACODEC:
         - name: AMEDIACODEC_CONFIGURE_FLAG_ENCODE
           value: 1
@@ -151,6 +259,22 @@ enums:
           value: 1
         - name: AMEDIAEXTRACTOR_SAMPLE_FLAG_ENCRYPTED
           value: 2
+    AMediaCodecKind:
+        - name: AMediaCodecKind_INVALID
+          value: 0
+        - name: AMediaCodecKind_DECODER
+          value: 1
+        - name: AMediaCodecKind_ENCODER
+          value: 2
+    AMediaCodecType:
+        - name: AMediaCodecType_INVALID_CODEC_INFO
+          value: 0
+        - name: AMediaCodecType_SOFTWARE_ONLY
+          value: 1
+        - name: AMediaCodecType_HARDWARE_ACCELERATED
+          value: 2
+        - name: AMediaCodecType_SOFTWARE_WITH_DEVICE_ACCESS
+          value: 3
     AMediaDrmEventType:
         - name: EVENT_PROVISION_REQUIRED
           value: 1
@@ -224,6 +348,516 @@ enums:
         - name: AMEDIACODECRYPTOINFO_MODE_AES_CBC
           value: 3
 functions:
+    ACodecAudioCapabilities_getBitrateRange:
+        c_name: ACodecAudioCapabilities_getBitrateRange
+        params:
+            - name: audioCaps
+              type: '*ACodecAudioCapabilities'
+            - name: outRange
+              type: '*AIntRange'
+        returns: media_status_t
+    ACodecAudioCapabilities_getInputChannelCountRanges:
+        c_name: ACodecAudioCapabilities_getInputChannelCountRanges
+        params:
+            - name: audioCaps
+              type: '*ACodecAudioCapabilities'
+            - name: outArrayPtr
+              type: '**AIntRange'
+              direction: out
+            - name: outCount
+              type: '*uint64'
+        returns: media_status_t
+    ACodecAudioCapabilities_getMaxInputChannelCount:
+        c_name: ACodecAudioCapabilities_getMaxInputChannelCount
+        params:
+            - name: audioCaps
+              type: '*ACodecAudioCapabilities'
+        returns: int32
+    ACodecAudioCapabilities_getMinInputChannelCount:
+        c_name: ACodecAudioCapabilities_getMinInputChannelCount
+        params:
+            - name: audioCaps
+              type: '*ACodecAudioCapabilities'
+        returns: int32
+    ACodecAudioCapabilities_getSupportedSampleRateRanges:
+        c_name: ACodecAudioCapabilities_getSupportedSampleRateRanges
+        params:
+            - name: audioCaps
+              type: '*ACodecAudioCapabilities'
+            - name: outArrayPtr
+              type: '**AIntRange'
+              direction: out
+            - name: outCount
+              type: '*uint64'
+        returns: media_status_t
+    ACodecAudioCapabilities_getSupportedSampleRates:
+        c_name: ACodecAudioCapabilities_getSupportedSampleRates
+        params:
+            - name: audioCaps
+              type: '*ACodecAudioCapabilities'
+            - name: outArrayPtr
+              type: '**int32'
+              direction: out
+            - name: outCount
+              type: '*uint64'
+        returns: media_status_t
+    ACodecAudioCapabilities_isSampleRateSupported:
+        c_name: ACodecAudioCapabilities_isSampleRateSupported
+        params:
+            - name: audioCaps
+              type: '*ACodecAudioCapabilities'
+            - name: sampleRate
+              type: int32
+        returns: int32
+    ACodecEncoderCapabilities_getComplexityRange:
+        c_name: ACodecEncoderCapabilities_getComplexityRange
+        params:
+            - name: encoderCaps
+              type: '*ACodecEncoderCapabilities'
+            - name: outRange
+              type: '*AIntRange'
+        returns: media_status_t
+    ACodecEncoderCapabilities_getQualityRange:
+        c_name: ACodecEncoderCapabilities_getQualityRange
+        params:
+            - name: encoderCaps
+              type: '*ACodecEncoderCapabilities'
+            - name: outRange
+              type: '*AIntRange'
+        returns: media_status_t
+    ACodecEncoderCapabilities_isBitrateModeSupported:
+        c_name: ACodecEncoderCapabilities_isBitrateModeSupported
+        params:
+            - name: encoderCaps
+              type: '*ACodecEncoderCapabilities'
+            - name: mode
+              type: ABitrateMode
+        returns: int32
+    ACodecPerformancePoint_covers:
+        c_name: ACodecPerformancePoint_covers
+        params:
+            - name: one
+              type: '*ACodecPerformancePoint'
+            - name: another
+              type: '*ACodecPerformancePoint'
+        returns: int32
+    ACodecPerformancePoint_coversFormat:
+        c_name: ACodecPerformancePoint_coversFormat
+        params:
+            - name: performancePoint
+              type: '*ACodecPerformancePoint'
+            - name: format
+              type: '*AMediaFormat'
+        returns: int32
+    ACodecPerformancePoint_create:
+        c_name: ACodecPerformancePoint_create
+        params:
+            - name: width
+              type: int32
+            - name: height
+              type: int32
+            - name: frameRate
+              type: int32
+        returns: '*ACodecPerformancePoint'
+    ACodecPerformancePoint_destroy:
+        c_name: ACodecPerformancePoint_destroy
+        params:
+            - name: performancePoint
+              type: '*ACodecPerformancePoint'
+        returns: ""
+    ACodecPerformancePoint_equals:
+        c_name: ACodecPerformancePoint_equals
+        params:
+            - name: one
+              type: '*ACodecPerformancePoint'
+            - name: another
+              type: '*ACodecPerformancePoint'
+        returns: int32
+    ACodecVideoCapabilities_areSizeAndRateSupported:
+        c_name: ACodecVideoCapabilities_areSizeAndRateSupported
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: width
+              type: int32
+            - name: height
+              type: int32
+            - name: frameRate
+              type: float64
+        returns: int32
+    ACodecVideoCapabilities_getAchievableFrameRatesFor:
+        c_name: ACodecVideoCapabilities_getAchievableFrameRatesFor
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: width
+              type: int32
+            - name: height
+              type: int32
+            - name: outRange
+              type: '*ADoubleRange'
+        returns: media_status_t
+    ACodecVideoCapabilities_getBitrateRange:
+        c_name: ACodecVideoCapabilities_getBitrateRange
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: outRange
+              type: '*AIntRange'
+        returns: media_status_t
+    ACodecVideoCapabilities_getHeightAlignment:
+        c_name: ACodecVideoCapabilities_getHeightAlignment
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+        returns: int32
+    ACodecVideoCapabilities_getNextSupportedPerformancePoint:
+        c_name: ACodecVideoCapabilities_getNextSupportedPerformancePoint
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: outPerformancePoint
+              type: '**ACodecPerformancePoint'
+              direction: out
+        returns: media_status_t
+    ACodecVideoCapabilities_getSupportedFrameRates:
+        c_name: ACodecVideoCapabilities_getSupportedFrameRates
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: outRange
+              type: '*AIntRange'
+        returns: media_status_t
+    ACodecVideoCapabilities_getSupportedFrameRatesFor:
+        c_name: ACodecVideoCapabilities_getSupportedFrameRatesFor
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: width
+              type: int32
+            - name: height
+              type: int32
+            - name: outRange
+              type: '*ADoubleRange'
+        returns: media_status_t
+    ACodecVideoCapabilities_getSupportedHeights:
+        c_name: ACodecVideoCapabilities_getSupportedHeights
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: outRange
+              type: '*AIntRange'
+        returns: media_status_t
+    ACodecVideoCapabilities_getSupportedHeightsFor:
+        c_name: ACodecVideoCapabilities_getSupportedHeightsFor
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: width
+              type: int32
+            - name: outRange
+              type: '*AIntRange'
+        returns: media_status_t
+    ACodecVideoCapabilities_getSupportedWidths:
+        c_name: ACodecVideoCapabilities_getSupportedWidths
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: outRange
+              type: '*AIntRange'
+        returns: media_status_t
+    ACodecVideoCapabilities_getSupportedWidthsFor:
+        c_name: ACodecVideoCapabilities_getSupportedWidthsFor
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: height
+              type: int32
+            - name: outRange
+              type: '*AIntRange'
+        returns: media_status_t
+    ACodecVideoCapabilities_getWidthAlignment:
+        c_name: ACodecVideoCapabilities_getWidthAlignment
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+        returns: int32
+    ACodecVideoCapabilities_isSizeSupported:
+        c_name: ACodecVideoCapabilities_isSizeSupported
+        params:
+            - name: videoCaps
+              type: '*ACodecVideoCapabilities'
+            - name: width
+              type: int32
+            - name: height
+              type: int32
+        returns: int32
+    AImage_delete:
+        c_name: AImage_delete
+        params:
+            - name: image
+              type: '*AImage'
+        returns: ""
+    AImage_deleteAsync:
+        c_name: AImage_deleteAsync
+        params:
+            - name: image
+              type: '*AImage'
+            - name: releaseFenceFd
+              type: int32
+        returns: ""
+    AImage_getCropRect:
+        c_name: AImage_getCropRect
+        params:
+            - name: image
+              type: '*AImage'
+            - name: rect
+              type: '*AImageCropRect'
+        returns: media_status_t
+    AImage_getDataSpace:
+        c_name: AImage_getDataSpace
+        params:
+            - name: image
+              type: '*AImage'
+            - name: dataSpace
+              type: '*int32'
+        returns: media_status_t
+    AImage_getFormat:
+        c_name: AImage_getFormat
+        params:
+            - name: image
+              type: '*AImage'
+            - name: format
+              type: '*int32'
+        returns: media_status_t
+    AImage_getHardwareBuffer:
+        c_name: AImage_getHardwareBuffer
+        params:
+            - name: image
+              type: '*AImage'
+            - name: buffer
+              type: '**AHardwareBuffer'
+              direction: out
+        returns: media_status_t
+    AImage_getHeight:
+        c_name: AImage_getHeight
+        params:
+            - name: image
+              type: '*AImage'
+            - name: height
+              type: '*int32'
+        returns: media_status_t
+    AImage_getNumberOfPlanes:
+        c_name: AImage_getNumberOfPlanes
+        params:
+            - name: image
+              type: '*AImage'
+            - name: numPlanes
+              type: '*int32'
+        returns: media_status_t
+    AImage_getPlaneData:
+        c_name: AImage_getPlaneData
+        params:
+            - name: image
+              type: '*AImage'
+            - name: planeIdx
+              type: int32
+            - name: data
+              type: '**uint8'
+              direction: out
+            - name: dataLength
+              type: '*int32'
+        returns: media_status_t
+    AImage_getPlanePixelStride:
+        c_name: AImage_getPlanePixelStride
+        params:
+            - name: image
+              type: '*AImage'
+            - name: planeIdx
+              type: int32
+            - name: pixelStride
+              type: '*int32'
+        returns: media_status_t
+    AImage_getPlaneRowStride:
+        c_name: AImage_getPlaneRowStride
+        params:
+            - name: image
+              type: '*AImage'
+            - name: planeIdx
+              type: int32
+            - name: rowStride
+              type: '*int32'
+        returns: media_status_t
+    AImage_getTimestamp:
+        c_name: AImage_getTimestamp
+        params:
+            - name: image
+              type: '*AImage'
+            - name: timestampNs
+              type: '*int64'
+        returns: media_status_t
+    AImage_getWidth:
+        c_name: AImage_getWidth
+        params:
+            - name: image
+              type: '*AImage'
+            - name: width
+              type: '*int32'
+        returns: media_status_t
+    AImageReader_acquireLatestImage:
+        c_name: AImageReader_acquireLatestImage
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: image
+              type: '**AImage'
+              direction: out
+        returns: media_status_t
+    AImageReader_acquireLatestImageAsync:
+        c_name: AImageReader_acquireLatestImageAsync
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: image
+              type: '**AImage'
+              direction: out
+            - name: acquireFenceFd
+              type: '*int32'
+        returns: media_status_t
+    AImageReader_acquireNextImage:
+        c_name: AImageReader_acquireNextImage
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: image
+              type: '**AImage'
+              direction: out
+        returns: media_status_t
+    AImageReader_acquireNextImageAsync:
+        c_name: AImageReader_acquireNextImageAsync
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: image
+              type: '**AImage'
+              direction: out
+            - name: acquireFenceFd
+              type: '*int32'
+        returns: media_status_t
+    AImageReader_delete:
+        c_name: AImageReader_delete
+        params:
+            - name: reader
+              type: '*AImageReader'
+        returns: ""
+    AImageReader_getFormat:
+        c_name: AImageReader_getFormat
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: format
+              type: '*int32'
+        returns: media_status_t
+    AImageReader_getHeight:
+        c_name: AImageReader_getHeight
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: height
+              type: '*int32'
+        returns: media_status_t
+    AImageReader_getMaxImages:
+        c_name: AImageReader_getMaxImages
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: maxImages
+              type: '*int32'
+        returns: media_status_t
+    AImageReader_getWidth:
+        c_name: AImageReader_getWidth
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: width
+              type: '*int32'
+        returns: media_status_t
+    AImageReader_getWindow:
+        c_name: AImageReader_getWindow
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: window
+              type: '**ANativeWindow'
+              direction: out
+        returns: media_status_t
+    AImageReader_new:
+        c_name: AImageReader_new
+        params:
+            - name: width
+              type: int32
+            - name: height
+              type: int32
+            - name: format
+              type: int32
+            - name: maxImages
+              type: int32
+            - name: reader
+              type: '**AImageReader'
+              direction: out
+        returns: media_status_t
+    AImageReader_newWithDataSpace:
+        c_name: AImageReader_newWithDataSpace
+        params:
+            - name: width
+              type: int32
+            - name: height
+              type: int32
+            - name: usage
+              type: uint64
+            - name: maxImages
+              type: int32
+            - name: hardwareBufferFormat
+              type: uint32
+            - name: dataSpace
+              type: int32
+            - name: reader
+              type: '**AImageReader'
+              direction: out
+        returns: media_status_t
+    AImageReader_newWithUsage:
+        c_name: AImageReader_newWithUsage
+        params:
+            - name: width
+              type: int32
+            - name: height
+              type: int32
+            - name: format
+              type: int32
+            - name: usage
+              type: uint64
+            - name: maxImages
+              type: int32
+            - name: reader
+              type: '**AImageReader'
+              direction: out
+        returns: media_status_t
+    AImageReader_setBufferRemovedListener:
+        c_name: AImageReader_setBufferRemovedListener
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: listener
+              type: '*AImageReader_BufferRemovedListener'
+        returns: media_status_t
+    AImageReader_setImageListener:
+        c_name: AImageReader_setImageListener
+        params:
+            - name: reader
+              type: '*AImageReader'
+            - name: listener
+              type: '*AImageReader_ImageListener'
+        returns: media_status_t
     AMediaCodec_configure:
         c_name: AMediaCodec_configure
         params:
@@ -565,6 +1199,93 @@ functions:
             - name: pattern
               type: '*cryptoinfo_pattern_t'
         returns: ""
+    AMediaCodecInfo_getAudioCapabilities:
+        c_name: AMediaCodecInfo_getAudioCapabilities
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+            - name: outAudioCaps
+              type: '**ACodecAudioCapabilities'
+              direction: out
+        returns: media_status_t
+    AMediaCodecInfo_getCanonicalName:
+        c_name: AMediaCodecInfo_getCanonicalName
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+        returns: string
+    AMediaCodecInfo_getEncoderCapabilities:
+        c_name: AMediaCodecInfo_getEncoderCapabilities
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+            - name: outEncoderCaps
+              type: '**ACodecEncoderCapabilities'
+              direction: out
+        returns: media_status_t
+    AMediaCodecInfo_getKind:
+        c_name: AMediaCodecInfo_getKind
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+        returns: AMediaCodecKind
+    AMediaCodecInfo_getMaxSupportedInstances:
+        c_name: AMediaCodecInfo_getMaxSupportedInstances
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+        returns: int32
+    AMediaCodecInfo_getMediaCodecInfoType:
+        c_name: AMediaCodecInfo_getMediaCodecInfoType
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+        returns: AMediaCodecType
+    AMediaCodecInfo_getMediaType:
+        c_name: AMediaCodecInfo_getMediaType
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+        returns: string
+    AMediaCodecInfo_getVideoCapabilities:
+        c_name: AMediaCodecInfo_getVideoCapabilities
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+            - name: outVideoCaps
+              type: '**ACodecVideoCapabilities'
+              direction: out
+        returns: media_status_t
+    AMediaCodecInfo_isFeatureRequired:
+        c_name: AMediaCodecInfo_isFeatureRequired
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+            - name: featureName
+              type: string
+        returns: int32
+    AMediaCodecInfo_isFeatureSupported:
+        c_name: AMediaCodecInfo_isFeatureSupported
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+            - name: featureName
+              type: string
+        returns: int32
+    AMediaCodecInfo_isFormatSupported:
+        c_name: AMediaCodecInfo_isFormatSupported
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+            - name: format
+              type: '*AMediaFormat'
+        returns: int32
+    AMediaCodecInfo_isVendor:
+        c_name: AMediaCodecInfo_isVendor
+        params:
+            - name: info
+              type: '*AMediaCodecInfo'
+        returns: int32
     AMediaCrypto_delete:
         c_name: AMediaCrypto_delete
         params:
@@ -593,6 +1314,72 @@ functions:
             - name: mime
               type: string
         returns: bool
+    AMediaDataSource_close:
+        c_name: AMediaDataSource_close
+        params:
+            - name: ""
+              type: '*AMediaDataSource'
+        returns: ""
+    AMediaDataSource_delete:
+        c_name: AMediaDataSource_delete
+        params:
+            - name: ""
+              type: '*AMediaDataSource'
+        returns: ""
+    AMediaDataSource_new:
+        c_name: AMediaDataSource_new
+        returns: '*AMediaDataSource'
+    AMediaDataSource_newUri:
+        c_name: AMediaDataSource_newUri
+        params:
+            - name: uri
+              type: string
+            - name: numheaders
+              type: int32
+            - name: key_values
+              type: '*string'
+              direction: out
+        returns: '*AMediaDataSource'
+    AMediaDataSource_setClose:
+        c_name: AMediaDataSource_setClose
+        params:
+            - name: ""
+              type: '*AMediaDataSource'
+            - name: ""
+              type: AMediaDataSourceClose
+        returns: ""
+    AMediaDataSource_setGetAvailableSize:
+        c_name: AMediaDataSource_setGetAvailableSize
+        params:
+            - name: ""
+              type: '*AMediaDataSource'
+            - name: ""
+              type: AMediaDataSourceGetAvailableSize
+        returns: ""
+    AMediaDataSource_setGetSize:
+        c_name: AMediaDataSource_setGetSize
+        params:
+            - name: ""
+              type: '*AMediaDataSource'
+            - name: ""
+              type: AMediaDataSourceGetSize
+        returns: ""
+    AMediaDataSource_setReadAt:
+        c_name: AMediaDataSource_setReadAt
+        params:
+            - name: ""
+              type: '*AMediaDataSource'
+            - name: ""
+              type: AMediaDataSourceReadAt
+        returns: ""
+    AMediaDataSource_setUserdata:
+        c_name: AMediaDataSource_setUserdata
+        params:
+            - name: ""
+              type: '*AMediaDataSource'
+            - name: userdata
+              type: unsafe.Pointer
+        returns: ""
     AMediaDrm_closeSession:
         c_name: AMediaDrm_closeSession
         params:
@@ -1360,6 +2147,22 @@ functions:
               type: '*AMediaCodecBufferInfo'
         returns: media_status_t
 callbacks:
+    AImageReader_BufferRemovedCallback:
+        params:
+            - name: context
+              type: unsafe.Pointer
+            - name: reader
+              type: '*AImageReader'
+            - name: buffer
+              type: '*AHardwareBuffer'
+        returns: ""
+    AImageReader_ImageCallback:
+        params:
+            - name: context
+              type: unsafe.Pointer
+            - name: reader
+              type: '*AImageReader'
+        returns: ""
     AMediaCodecOnAsyncError:
         params:
             - name: codec
@@ -1414,6 +2217,34 @@ callbacks:
             - name: systemNano
               type: int64
         returns: ""
+    AMediaDataSourceClose:
+        params:
+            - name: userdata
+              type: unsafe.Pointer
+        returns: ""
+    AMediaDataSourceGetAvailableSize:
+        params:
+            - name: userdata
+              type: unsafe.Pointer
+            - name: offset
+              type: off64_t
+        returns: int64
+    AMediaDataSourceGetSize:
+        params:
+            - name: userdata
+              type: unsafe.Pointer
+        returns: int64
+    AMediaDataSourceReadAt:
+        params:
+            - name: userdata
+              type: unsafe.Pointer
+            - name: offset
+              type: off64_t
+            - name: buffer
+              type: unsafe.Pointer
+            - name: size
+              type: uint64
+        returns: int64
     AMediaDrmEventListener:
         params:
             - name: p0
@@ -1457,6 +2288,52 @@ callbacks:
               type: bool
         returns: ""
 structs:
+    ADoubleRange:
+        fields:
+            - name: mLower
+              type: float64
+            - name: mUpper
+              type: float64
+    AImageCropRect:
+        fields:
+            - name: left
+              type: int32
+            - name: top
+              type: int32
+            - name: right
+              type: int32
+            - name: bottom
+              type: int32
+    AImageReader_BufferRemovedListener:
+        fields:
+            - name: context
+              type: unsafe.Pointer
+            - name: onBufferRemoved
+              type: func_ptr
+              params:
+                - name: context
+                  type: unsafe.Pointer
+                - name: reader
+                  type: '*AImageReader'
+                - name: buffer
+                  type: '*AHardwareBuffer'
+    AImageReader_ImageListener:
+        fields:
+            - name: context
+              type: unsafe.Pointer
+            - name: onImageAvailable
+              type: func_ptr
+              params:
+                - name: context
+                  type: unsafe.Pointer
+                - name: reader
+                  type: '*AImageReader'
+    AIntRange:
+        fields:
+            - name: mLower
+              type: int32
+            - name: mUpper
+              type: int32
     AMediaCodecBufferInfo:
         fields:
             - name: offset

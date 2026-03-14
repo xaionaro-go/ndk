@@ -34,6 +34,11 @@ var mediaFormatCmd = &cobra.Command{
 	Short: "Format operations",
 }
 
+var mediaImageReaderCmd = &cobra.Command{
+	Use:   "image-reader",
+	Short: "ImageReader operations",
+}
+
 var mediaMuxerCmd = &cobra.Command{
 	Use:   "muxer",
 	Short: "Muxer operations",
@@ -196,6 +201,33 @@ var mediaFormatSetStringCmd = &cobra.Command{
 	},
 }
 
+var mediaImageReaderAcquireLatestImageCmd = &cobra.Command{
+	Use:   "acquire-latest-image",
+	Short: "ImageReader.AcquireLatestImage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageReaderAcquireNextImageCmd = &cobra.Command{
+	Use:   "acquire-next-image",
+	Short: "ImageReader.AcquireNextImage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageReaderWindowCmd = &cobra.Command{
+	Use:   "window",
+	Short: "ImageReader.Window()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var mediaMuxerStartCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Muxer.Start()",
@@ -226,6 +258,7 @@ func init() {
 	mediaCmd.AddCommand(mediaErrorCmd)
 	mediaCmd.AddCommand(mediaExtractorCmd)
 	mediaCmd.AddCommand(mediaFormatCmd)
+	mediaCmd.AddCommand(mediaImageReaderCmd)
 	mediaCmd.AddCommand(mediaMuxerCmd)
 	mediaCmd.AddCommand(mediaNewDecoderCmd)
 	mediaCmd.AddCommand(mediaNewEncoderCmd)
@@ -241,6 +274,9 @@ func init() {
 	mediaFormatCmd.AddCommand(mediaFormatNewCmd)
 	mediaFormatCmd.AddCommand(mediaFormatSetInt32Cmd)
 	mediaFormatCmd.AddCommand(mediaFormatSetStringCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderAcquireLatestImageCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderAcquireNextImageCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderWindowCmd)
 	mediaMuxerCmd.AddCommand(mediaMuxerStartCmd)
 	mediaMuxerCmd.AddCommand(mediaMuxerStopCmd)
 	rootCmd.AddCommand(mediaCmd)

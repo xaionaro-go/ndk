@@ -4,7 +4,11 @@ package media
 
 /*
 #cgo LDFLAGS: -lmediandk
+#include "media/NdkImage.h"
+#include "media/NdkImageReader.h"
 #include "media/NdkMediaCodec.h"
+#include "media/NdkMediaCodecInfo.h"
+#include "media/NdkMediaDataSource.h"
 #include "media/NdkMediaExtractor.h"
 #include "media/NdkMediaFormat.h"
 #include "media/NdkMediaMuxer.h"
@@ -21,6 +25,690 @@ import (
 
 var _ runtime.Error
 var _ unsafe.Pointer
+
+func ACodecAudioCapabilities_getBitrateRange(audioCaps *ACodecAudioCapabilities, outRange *AIntRange) Media_status_t {
+	caudioCaps, caudioCapsAllocMap := (*C.ACodecAudioCapabilities)(unsafe.Pointer(audioCaps)), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.AIntRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecAudioCapabilities_getBitrateRange(caudioCaps, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(caudioCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecAudioCapabilities_getInputChannelCountRanges(audioCaps *ACodecAudioCapabilities, outArrayPtr **AIntRange, outCount *uint64) Media_status_t {
+	caudioCaps, caudioCapsAllocMap := (*C.ACodecAudioCapabilities)(unsafe.Pointer(audioCaps)), cgoAllocsUnknown
+	coutArrayPtr, coutArrayPtrAllocMap := (**C.AIntRange)(unsafe.Pointer(outArrayPtr)), cgoAllocsUnknown
+	var pinnercoutArrayPtr runtime.Pinner
+	pinnercoutArrayPtr.Pin(outArrayPtr)
+	if outArrayPtr != nil {
+		pinnercoutArrayPtr.Pin(unsafe.Pointer(*outArrayPtr))
+	}
+	defer pinnercoutArrayPtr.Unpin()
+	coutCount, coutCountAllocMap := (*C.uint64_t)(unsafe.Pointer(outCount)), cgoAllocsUnknown
+	__ret := C.ACodecAudioCapabilities_getInputChannelCountRanges(caudioCaps, coutArrayPtr, coutCount)
+	runtime.KeepAlive(coutCountAllocMap)
+	runtime.KeepAlive(coutArrayPtrAllocMap)
+	runtime.KeepAlive(caudioCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecAudioCapabilities_getMaxInputChannelCount(audioCaps *ACodecAudioCapabilities) int32 {
+	caudioCaps, caudioCapsAllocMap := (*C.ACodecAudioCapabilities)(unsafe.Pointer(audioCaps)), cgoAllocsUnknown
+	__ret := C.ACodecAudioCapabilities_getMaxInputChannelCount(caudioCaps)
+	runtime.KeepAlive(caudioCapsAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecAudioCapabilities_getMinInputChannelCount(audioCaps *ACodecAudioCapabilities) int32 {
+	caudioCaps, caudioCapsAllocMap := (*C.ACodecAudioCapabilities)(unsafe.Pointer(audioCaps)), cgoAllocsUnknown
+	__ret := C.ACodecAudioCapabilities_getMinInputChannelCount(caudioCaps)
+	runtime.KeepAlive(caudioCapsAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecAudioCapabilities_getSupportedSampleRateRanges(audioCaps *ACodecAudioCapabilities, outArrayPtr **AIntRange, outCount *uint64) Media_status_t {
+	caudioCaps, caudioCapsAllocMap := (*C.ACodecAudioCapabilities)(unsafe.Pointer(audioCaps)), cgoAllocsUnknown
+	coutArrayPtr, coutArrayPtrAllocMap := (**C.AIntRange)(unsafe.Pointer(outArrayPtr)), cgoAllocsUnknown
+	var pinnercoutArrayPtr runtime.Pinner
+	pinnercoutArrayPtr.Pin(outArrayPtr)
+	if outArrayPtr != nil {
+		pinnercoutArrayPtr.Pin(unsafe.Pointer(*outArrayPtr))
+	}
+	defer pinnercoutArrayPtr.Unpin()
+	coutCount, coutCountAllocMap := (*C.uint64_t)(unsafe.Pointer(outCount)), cgoAllocsUnknown
+	__ret := C.ACodecAudioCapabilities_getSupportedSampleRateRanges(caudioCaps, coutArrayPtr, coutCount)
+	runtime.KeepAlive(coutCountAllocMap)
+	runtime.KeepAlive(coutArrayPtrAllocMap)
+	runtime.KeepAlive(caudioCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecAudioCapabilities_getSupportedSampleRates(audioCaps *ACodecAudioCapabilities, outArrayPtr **int32, outCount *uint64) Media_status_t {
+	caudioCaps, caudioCapsAllocMap := (*C.ACodecAudioCapabilities)(unsafe.Pointer(audioCaps)), cgoAllocsUnknown
+	coutArrayPtr, coutArrayPtrAllocMap := (**C.int32_t)(unsafe.Pointer(outArrayPtr)), cgoAllocsUnknown
+	var pinnercoutArrayPtr runtime.Pinner
+	pinnercoutArrayPtr.Pin(outArrayPtr)
+	if outArrayPtr != nil {
+		pinnercoutArrayPtr.Pin(unsafe.Pointer(*outArrayPtr))
+	}
+	defer pinnercoutArrayPtr.Unpin()
+	coutCount, coutCountAllocMap := (*C.uint64_t)(unsafe.Pointer(outCount)), cgoAllocsUnknown
+	__ret := C.ACodecAudioCapabilities_getSupportedSampleRates(caudioCaps, coutArrayPtr, coutCount)
+	runtime.KeepAlive(coutCountAllocMap)
+	runtime.KeepAlive(coutArrayPtrAllocMap)
+	runtime.KeepAlive(caudioCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecAudioCapabilities_isSampleRateSupported(audioCaps *ACodecAudioCapabilities, sampleRate int32) int32 {
+	caudioCaps, caudioCapsAllocMap := (*C.ACodecAudioCapabilities)(unsafe.Pointer(audioCaps)), cgoAllocsUnknown
+	csampleRate, csampleRateAllocMap := (C.int)(sampleRate), cgoAllocsUnknown
+	__ret := C.ACodecAudioCapabilities_isSampleRateSupported(caudioCaps, csampleRate)
+	runtime.KeepAlive(csampleRateAllocMap)
+	runtime.KeepAlive(caudioCapsAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecEncoderCapabilities_getComplexityRange(encoderCaps *ACodecEncoderCapabilities, outRange *AIntRange) Media_status_t {
+	cencoderCaps, cencoderCapsAllocMap := (*C.ACodecEncoderCapabilities)(unsafe.Pointer(encoderCaps)), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.AIntRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecEncoderCapabilities_getComplexityRange(cencoderCaps, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cencoderCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecEncoderCapabilities_getQualityRange(encoderCaps *ACodecEncoderCapabilities, outRange *AIntRange) Media_status_t {
+	cencoderCaps, cencoderCapsAllocMap := (*C.ACodecEncoderCapabilities)(unsafe.Pointer(encoderCaps)), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.AIntRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecEncoderCapabilities_getQualityRange(cencoderCaps, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cencoderCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecEncoderCapabilities_isBitrateModeSupported(encoderCaps *ACodecEncoderCapabilities, mode ABitrateMode) int32 {
+	cencoderCaps, cencoderCapsAllocMap := (*C.ACodecEncoderCapabilities)(unsafe.Pointer(encoderCaps)), cgoAllocsUnknown
+	cmode, cmodeAllocMap := (C.ABitrateMode)(mode), cgoAllocsUnknown
+	__ret := C.ACodecEncoderCapabilities_isBitrateModeSupported(cencoderCaps, cmode)
+	runtime.KeepAlive(cmodeAllocMap)
+	runtime.KeepAlive(cencoderCapsAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecPerformancePoint_covers(one *ACodecPerformancePoint, another *ACodecPerformancePoint) int32 {
+	cone, coneAllocMap := (*C.ACodecPerformancePoint)(unsafe.Pointer(one)), cgoAllocsUnknown
+	canother, canotherAllocMap := (*C.ACodecPerformancePoint)(unsafe.Pointer(another)), cgoAllocsUnknown
+	__ret := C.ACodecPerformancePoint_covers(cone, canother)
+	runtime.KeepAlive(canotherAllocMap)
+	runtime.KeepAlive(coneAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecPerformancePoint_coversFormat(performancePoint *ACodecPerformancePoint, format *AMediaFormat) int32 {
+	cperformancePoint, cperformancePointAllocMap := (*C.ACodecPerformancePoint)(unsafe.Pointer(performancePoint)), cgoAllocsUnknown
+	cformat, cformatAllocMap := (*C.AMediaFormat)(unsafe.Pointer(format)), cgoAllocsUnknown
+	__ret := C.ACodecPerformancePoint_coversFormat(cperformancePoint, cformat)
+	runtime.KeepAlive(cformatAllocMap)
+	runtime.KeepAlive(cperformancePointAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecPerformancePoint_create(width int32, height int32, frameRate int32) *ACodecPerformancePoint {
+	cwidth, cwidthAllocMap := (C.int)(width), cgoAllocsUnknown
+	cheight, cheightAllocMap := (C.int)(height), cgoAllocsUnknown
+	cframeRate, cframeRateAllocMap := (C.int)(frameRate), cgoAllocsUnknown
+	__ret := C.ACodecPerformancePoint_create(cwidth, cheight, cframeRate)
+	runtime.KeepAlive(cframeRateAllocMap)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cwidthAllocMap)
+	__v := (*ACodecPerformancePoint)(unsafe.Pointer(__ret))
+	return __v
+}
+
+func ACodecPerformancePoint_destroy(performancePoint *ACodecPerformancePoint) {
+	cperformancePoint, cperformancePointAllocMap := (*C.ACodecPerformancePoint)(unsafe.Pointer(performancePoint)), cgoAllocsUnknown
+	C.ACodecPerformancePoint_destroy(cperformancePoint)
+	runtime.KeepAlive(cperformancePointAllocMap)
+}
+
+func ACodecPerformancePoint_equals(one *ACodecPerformancePoint, another *ACodecPerformancePoint) int32 {
+	cone, coneAllocMap := (*C.ACodecPerformancePoint)(unsafe.Pointer(one)), cgoAllocsUnknown
+	canother, canotherAllocMap := (*C.ACodecPerformancePoint)(unsafe.Pointer(another)), cgoAllocsUnknown
+	__ret := C.ACodecPerformancePoint_equals(cone, canother)
+	runtime.KeepAlive(canotherAllocMap)
+	runtime.KeepAlive(coneAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_areSizeAndRateSupported(videoCaps *ACodecVideoCapabilities, width int32, height int32, frameRate float64) int32 {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	cwidth, cwidthAllocMap := (C.int)(width), cgoAllocsUnknown
+	cheight, cheightAllocMap := (C.int)(height), cgoAllocsUnknown
+	cframeRate, cframeRateAllocMap := (C.double)(frameRate), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_areSizeAndRateSupported(cvideoCaps, cwidth, cheight, cframeRate)
+	runtime.KeepAlive(cframeRateAllocMap)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cwidthAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getAchievableFrameRatesFor(videoCaps *ACodecVideoCapabilities, width int32, height int32, outRange *ADoubleRange) Media_status_t {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	cwidth, cwidthAllocMap := (C.int)(width), cgoAllocsUnknown
+	cheight, cheightAllocMap := (C.int)(height), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.ADoubleRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getAchievableFrameRatesFor(cvideoCaps, cwidth, cheight, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cwidthAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getBitrateRange(videoCaps *ACodecVideoCapabilities, outRange *AIntRange) Media_status_t {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.AIntRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getBitrateRange(cvideoCaps, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getHeightAlignment(videoCaps *ACodecVideoCapabilities) int32 {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getHeightAlignment(cvideoCaps)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getNextSupportedPerformancePoint(videoCaps *ACodecVideoCapabilities, outPerformancePoint **ACodecPerformancePoint) Media_status_t {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	coutPerformancePoint, coutPerformancePointAllocMap := (**C.ACodecPerformancePoint)(unsafe.Pointer(outPerformancePoint)), cgoAllocsUnknown
+	var pinnercoutPerformancePoint runtime.Pinner
+	pinnercoutPerformancePoint.Pin(outPerformancePoint)
+	if outPerformancePoint != nil {
+		pinnercoutPerformancePoint.Pin(unsafe.Pointer(*outPerformancePoint))
+	}
+	defer pinnercoutPerformancePoint.Unpin()
+	__ret := C.ACodecVideoCapabilities_getNextSupportedPerformancePoint(cvideoCaps, coutPerformancePoint)
+	runtime.KeepAlive(coutPerformancePointAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getSupportedFrameRates(videoCaps *ACodecVideoCapabilities, outRange *AIntRange) Media_status_t {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.AIntRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getSupportedFrameRates(cvideoCaps, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getSupportedFrameRatesFor(videoCaps *ACodecVideoCapabilities, width int32, height int32, outRange *ADoubleRange) Media_status_t {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	cwidth, cwidthAllocMap := (C.int)(width), cgoAllocsUnknown
+	cheight, cheightAllocMap := (C.int)(height), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.ADoubleRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getSupportedFrameRatesFor(cvideoCaps, cwidth, cheight, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cwidthAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getSupportedHeights(videoCaps *ACodecVideoCapabilities, outRange *AIntRange) Media_status_t {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.AIntRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getSupportedHeights(cvideoCaps, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getSupportedHeightsFor(videoCaps *ACodecVideoCapabilities, width int32, outRange *AIntRange) Media_status_t {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	cwidth, cwidthAllocMap := (C.int)(width), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.AIntRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getSupportedHeightsFor(cvideoCaps, cwidth, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cwidthAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getSupportedWidths(videoCaps *ACodecVideoCapabilities, outRange *AIntRange) Media_status_t {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.AIntRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getSupportedWidths(cvideoCaps, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getSupportedWidthsFor(videoCaps *ACodecVideoCapabilities, height int32, outRange *AIntRange) Media_status_t {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	cheight, cheightAllocMap := (C.int)(height), cgoAllocsUnknown
+	coutRange, coutRangeAllocMap := (*C.AIntRange)(unsafe.Pointer(outRange)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getSupportedWidthsFor(cvideoCaps, cheight, coutRange)
+	runtime.KeepAlive(coutRangeAllocMap)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_getWidthAlignment(videoCaps *ACodecVideoCapabilities) int32 {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_getWidthAlignment(cvideoCaps)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func ACodecVideoCapabilities_isSizeSupported(videoCaps *ACodecVideoCapabilities, width int32, height int32) int32 {
+	cvideoCaps, cvideoCapsAllocMap := (*C.ACodecVideoCapabilities)(unsafe.Pointer(videoCaps)), cgoAllocsUnknown
+	cwidth, cwidthAllocMap := (C.int)(width), cgoAllocsUnknown
+	cheight, cheightAllocMap := (C.int)(height), cgoAllocsUnknown
+	__ret := C.ACodecVideoCapabilities_isSizeSupported(cvideoCaps, cwidth, cheight)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cwidthAllocMap)
+	runtime.KeepAlive(cvideoCapsAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func AImageReader_acquireLatestImage(reader *AImageReader, image **AImage) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	cimage, cimageAllocMap := (**C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	var pinnercimage runtime.Pinner
+	pinnercimage.Pin(image)
+	if image != nil {
+		pinnercimage.Pin(unsafe.Pointer(*image))
+	}
+	defer pinnercimage.Unpin()
+	__ret := C.AImageReader_acquireLatestImage(creader, cimage)
+	runtime.KeepAlive(cimageAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_acquireLatestImageAsync(reader *AImageReader, image **AImage, acquireFenceFd *int32) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	cimage, cimageAllocMap := (**C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	var pinnercimage runtime.Pinner
+	pinnercimage.Pin(image)
+	if image != nil {
+		pinnercimage.Pin(unsafe.Pointer(*image))
+	}
+	defer pinnercimage.Unpin()
+	cacquireFenceFd, cacquireFenceFdAllocMap := (*C.int)(unsafe.Pointer(acquireFenceFd)), cgoAllocsUnknown
+	__ret := C.AImageReader_acquireLatestImageAsync(creader, cimage, cacquireFenceFd)
+	runtime.KeepAlive(cacquireFenceFdAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_acquireNextImage(reader *AImageReader, image **AImage) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	cimage, cimageAllocMap := (**C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	var pinnercimage runtime.Pinner
+	pinnercimage.Pin(image)
+	if image != nil {
+		pinnercimage.Pin(unsafe.Pointer(*image))
+	}
+	defer pinnercimage.Unpin()
+	__ret := C.AImageReader_acquireNextImage(creader, cimage)
+	runtime.KeepAlive(cimageAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_acquireNextImageAsync(reader *AImageReader, image **AImage, acquireFenceFd *int32) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	cimage, cimageAllocMap := (**C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	var pinnercimage runtime.Pinner
+	pinnercimage.Pin(image)
+	if image != nil {
+		pinnercimage.Pin(unsafe.Pointer(*image))
+	}
+	defer pinnercimage.Unpin()
+	cacquireFenceFd, cacquireFenceFdAllocMap := (*C.int)(unsafe.Pointer(acquireFenceFd)), cgoAllocsUnknown
+	__ret := C.AImageReader_acquireNextImageAsync(creader, cimage, cacquireFenceFd)
+	runtime.KeepAlive(cacquireFenceFdAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_delete(reader *AImageReader) {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	C.AImageReader_delete(creader)
+	runtime.KeepAlive(creaderAllocMap)
+}
+
+func AImageReader_getFormat(reader *AImageReader, format *int32) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	cformat, cformatAllocMap := (*C.int)(unsafe.Pointer(format)), cgoAllocsUnknown
+	__ret := C.AImageReader_getFormat(creader, cformat)
+	runtime.KeepAlive(cformatAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_getHeight(reader *AImageReader, height *int32) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	cheight, cheightAllocMap := (*C.int)(unsafe.Pointer(height)), cgoAllocsUnknown
+	__ret := C.AImageReader_getHeight(creader, cheight)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_getMaxImages(reader *AImageReader, maxImages *int32) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	cmaxImages, cmaxImagesAllocMap := (*C.int)(unsafe.Pointer(maxImages)), cgoAllocsUnknown
+	__ret := C.AImageReader_getMaxImages(creader, cmaxImages)
+	runtime.KeepAlive(cmaxImagesAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_getWidth(reader *AImageReader, width *int32) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	cwidth, cwidthAllocMap := (*C.int)(unsafe.Pointer(width)), cgoAllocsUnknown
+	__ret := C.AImageReader_getWidth(creader, cwidth)
+	runtime.KeepAlive(cwidthAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_getWindow(reader *AImageReader, window **ANativeWindow) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	cwindow, cwindowAllocMap := (**C.ANativeWindow)(unsafe.Pointer(window)), cgoAllocsUnknown
+	var pinnercwindow runtime.Pinner
+	pinnercwindow.Pin(window)
+	if window != nil {
+		pinnercwindow.Pin(unsafe.Pointer(*window))
+	}
+	defer pinnercwindow.Unpin()
+	__ret := C.AImageReader_getWindow(creader, cwindow)
+	runtime.KeepAlive(cwindowAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_new(width int32, height int32, format int32, maxImages int32, reader **AImageReader) Media_status_t {
+	cwidth, cwidthAllocMap := (C.int)(width), cgoAllocsUnknown
+	cheight, cheightAllocMap := (C.int)(height), cgoAllocsUnknown
+	cformat, cformatAllocMap := (C.int)(format), cgoAllocsUnknown
+	cmaxImages, cmaxImagesAllocMap := (C.int)(maxImages), cgoAllocsUnknown
+	creader, creaderAllocMap := (**C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	var pinnercreader runtime.Pinner
+	pinnercreader.Pin(reader)
+	if reader != nil {
+		pinnercreader.Pin(unsafe.Pointer(*reader))
+	}
+	defer pinnercreader.Unpin()
+	__ret := C.AImageReader_new(cwidth, cheight, cformat, cmaxImages, creader)
+	runtime.KeepAlive(creaderAllocMap)
+	runtime.KeepAlive(cmaxImagesAllocMap)
+	runtime.KeepAlive(cformatAllocMap)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cwidthAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_newWithDataSpace(width int32, height int32, usage uint64, maxImages int32, hardwareBufferFormat uint32, dataSpace int32, reader **AImageReader) Media_status_t {
+	cwidth, cwidthAllocMap := (C.int)(width), cgoAllocsUnknown
+	cheight, cheightAllocMap := (C.int)(height), cgoAllocsUnknown
+	cusage, cusageAllocMap := (C.uint64_t)(usage), cgoAllocsUnknown
+	cmaxImages, cmaxImagesAllocMap := (C.int)(maxImages), cgoAllocsUnknown
+	chardwareBufferFormat, chardwareBufferFormatAllocMap := (C.uint)(hardwareBufferFormat), cgoAllocsUnknown
+	cdataSpace, cdataSpaceAllocMap := (C.int)(dataSpace), cgoAllocsUnknown
+	creader, creaderAllocMap := (**C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	var pinnercreader runtime.Pinner
+	pinnercreader.Pin(reader)
+	if reader != nil {
+		pinnercreader.Pin(unsafe.Pointer(*reader))
+	}
+	defer pinnercreader.Unpin()
+	__ret := C.AImageReader_newWithDataSpace(cwidth, cheight, cusage, cmaxImages, chardwareBufferFormat, cdataSpace, creader)
+	runtime.KeepAlive(creaderAllocMap)
+	runtime.KeepAlive(cdataSpaceAllocMap)
+	runtime.KeepAlive(chardwareBufferFormatAllocMap)
+	runtime.KeepAlive(cmaxImagesAllocMap)
+	runtime.KeepAlive(cusageAllocMap)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cwidthAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_newWithUsage(width int32, height int32, format int32, usage uint64, maxImages int32, reader **AImageReader) Media_status_t {
+	cwidth, cwidthAllocMap := (C.int)(width), cgoAllocsUnknown
+	cheight, cheightAllocMap := (C.int)(height), cgoAllocsUnknown
+	cformat, cformatAllocMap := (C.int)(format), cgoAllocsUnknown
+	cusage, cusageAllocMap := (C.uint64_t)(usage), cgoAllocsUnknown
+	cmaxImages, cmaxImagesAllocMap := (C.int)(maxImages), cgoAllocsUnknown
+	creader, creaderAllocMap := (**C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	var pinnercreader runtime.Pinner
+	pinnercreader.Pin(reader)
+	if reader != nil {
+		pinnercreader.Pin(unsafe.Pointer(*reader))
+	}
+	defer pinnercreader.Unpin()
+	__ret := C.AImageReader_newWithUsage(cwidth, cheight, cformat, cusage, cmaxImages, creader)
+	runtime.KeepAlive(creaderAllocMap)
+	runtime.KeepAlive(cmaxImagesAllocMap)
+	runtime.KeepAlive(cusageAllocMap)
+	runtime.KeepAlive(cformatAllocMap)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cwidthAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_setBufferRemovedListener(reader *AImageReader, listener *AImageReader_BufferRemovedListener) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	clistener, clistenerAllocMap := (*C.AImageReader_BufferRemovedListener)(unsafe.Pointer(listener)), cgoAllocsUnknown
+	__ret := C.AImageReader_setBufferRemovedListener(creader, clistener)
+	runtime.KeepAlive(clistenerAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImageReader_setImageListener(reader *AImageReader, listener *AImageReader_ImageListener) Media_status_t {
+	creader, creaderAllocMap := (*C.AImageReader)(unsafe.Pointer(reader)), cgoAllocsUnknown
+	clistener, clistenerAllocMap := (*C.AImageReader_ImageListener)(unsafe.Pointer(listener)), cgoAllocsUnknown
+	__ret := C.AImageReader_setImageListener(creader, clistener)
+	runtime.KeepAlive(clistenerAllocMap)
+	runtime.KeepAlive(creaderAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_delete(image *AImage) {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	C.AImage_delete(cimage)
+	runtime.KeepAlive(cimageAllocMap)
+}
+
+func AImage_deleteAsync(image *AImage, releaseFenceFd int32) {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	creleaseFenceFd, creleaseFenceFdAllocMap := (C.int)(releaseFenceFd), cgoAllocsUnknown
+	C.AImage_deleteAsync(cimage, creleaseFenceFd)
+	runtime.KeepAlive(creleaseFenceFdAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+}
+
+func AImage_getCropRect(image *AImage, rect *AImageCropRect) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	crect, crectAllocMap := (*C.AImageCropRect)(unsafe.Pointer(rect)), cgoAllocsUnknown
+	__ret := C.AImage_getCropRect(cimage, crect)
+	runtime.KeepAlive(crectAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getDataSpace(image *AImage, dataSpace *int32) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	cdataSpace, cdataSpaceAllocMap := (*C.int)(unsafe.Pointer(dataSpace)), cgoAllocsUnknown
+	__ret := C.AImage_getDataSpace(cimage, cdataSpace)
+	runtime.KeepAlive(cdataSpaceAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getFormat(image *AImage, format *int32) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	cformat, cformatAllocMap := (*C.int)(unsafe.Pointer(format)), cgoAllocsUnknown
+	__ret := C.AImage_getFormat(cimage, cformat)
+	runtime.KeepAlive(cformatAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getHardwareBuffer(image *AImage, buffer **AHardwareBuffer) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	cbuffer, cbufferAllocMap := (**C.AHardwareBuffer)(unsafe.Pointer(buffer)), cgoAllocsUnknown
+	var pinnercbuffer runtime.Pinner
+	pinnercbuffer.Pin(buffer)
+	if buffer != nil {
+		pinnercbuffer.Pin(unsafe.Pointer(*buffer))
+	}
+	defer pinnercbuffer.Unpin()
+	__ret := C.AImage_getHardwareBuffer(cimage, cbuffer)
+	runtime.KeepAlive(cbufferAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getHeight(image *AImage, height *int32) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	cheight, cheightAllocMap := (*C.int)(unsafe.Pointer(height)), cgoAllocsUnknown
+	__ret := C.AImage_getHeight(cimage, cheight)
+	runtime.KeepAlive(cheightAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getNumberOfPlanes(image *AImage, numPlanes *int32) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	cnumPlanes, cnumPlanesAllocMap := (*C.int)(unsafe.Pointer(numPlanes)), cgoAllocsUnknown
+	__ret := C.AImage_getNumberOfPlanes(cimage, cnumPlanes)
+	runtime.KeepAlive(cnumPlanesAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getPlaneData(image *AImage, planeIdx int32, data **uint8, dataLength *int32) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	cplaneIdx, cplaneIdxAllocMap := (C.int)(planeIdx), cgoAllocsUnknown
+	cdata, cdataAllocMap := (**C.uint8_t)(unsafe.Pointer(data)), cgoAllocsUnknown
+	var pinnercdata runtime.Pinner
+	pinnercdata.Pin(data)
+	if data != nil {
+		pinnercdata.Pin(unsafe.Pointer(*data))
+	}
+	defer pinnercdata.Unpin()
+	cdataLength, cdataLengthAllocMap := (*C.int)(unsafe.Pointer(dataLength)), cgoAllocsUnknown
+	__ret := C.AImage_getPlaneData(cimage, cplaneIdx, cdata, cdataLength)
+	runtime.KeepAlive(cdataLengthAllocMap)
+	runtime.KeepAlive(cdataAllocMap)
+	runtime.KeepAlive(cplaneIdxAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getPlanePixelStride(image *AImage, planeIdx int32, pixelStride *int32) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	cplaneIdx, cplaneIdxAllocMap := (C.int)(planeIdx), cgoAllocsUnknown
+	cpixelStride, cpixelStrideAllocMap := (*C.int)(unsafe.Pointer(pixelStride)), cgoAllocsUnknown
+	__ret := C.AImage_getPlanePixelStride(cimage, cplaneIdx, cpixelStride)
+	runtime.KeepAlive(cpixelStrideAllocMap)
+	runtime.KeepAlive(cplaneIdxAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getPlaneRowStride(image *AImage, planeIdx int32, rowStride *int32) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	cplaneIdx, cplaneIdxAllocMap := (C.int)(planeIdx), cgoAllocsUnknown
+	crowStride, crowStrideAllocMap := (*C.int)(unsafe.Pointer(rowStride)), cgoAllocsUnknown
+	__ret := C.AImage_getPlaneRowStride(cimage, cplaneIdx, crowStride)
+	runtime.KeepAlive(crowStrideAllocMap)
+	runtime.KeepAlive(cplaneIdxAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getTimestamp(image *AImage, timestampNs *int64) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	ctimestampNs, ctimestampNsAllocMap := (*C.int64_t)(unsafe.Pointer(timestampNs)), cgoAllocsUnknown
+	__ret := C.AImage_getTimestamp(cimage, ctimestampNs)
+	runtime.KeepAlive(ctimestampNsAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AImage_getWidth(image *AImage, width *int32) Media_status_t {
+	cimage, cimageAllocMap := (*C.AImage)(unsafe.Pointer(image)), cgoAllocsUnknown
+	cwidth, cwidthAllocMap := (*C.int)(unsafe.Pointer(width)), cgoAllocsUnknown
+	__ret := C.AImage_getWidth(cimage, cwidth)
+	runtime.KeepAlive(cwidthAllocMap)
+	runtime.KeepAlive(cimageAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
 
 func AMediaCodecActionCode_isRecoverable(actionCode int32) bool {
 	cactionCode, cactionCodeAllocMap := (C.int)(actionCode), cgoAllocsUnknown
@@ -126,6 +814,132 @@ func AMediaCodecCryptoInfo_setPattern(info *AMediaCodecCryptoInfo, pattern *Cryp
 	C.AMediaCodecCryptoInfo_setPattern(cinfo, cpattern)
 	runtime.KeepAlive(cpatternAllocMap)
 	runtime.KeepAlive(cinfoAllocMap)
+}
+
+func AMediaCodecInfo_getAudioCapabilities(info *AMediaCodecInfo, outAudioCaps **ACodecAudioCapabilities) Media_status_t {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	coutAudioCaps, coutAudioCapsAllocMap := (**C.ACodecAudioCapabilities)(unsafe.Pointer(outAudioCaps)), cgoAllocsUnknown
+	var pinnercoutAudioCaps runtime.Pinner
+	pinnercoutAudioCaps.Pin(outAudioCaps)
+	if outAudioCaps != nil {
+		pinnercoutAudioCaps.Pin(unsafe.Pointer(*outAudioCaps))
+	}
+	defer pinnercoutAudioCaps.Unpin()
+	__ret := C.AMediaCodecInfo_getAudioCapabilities(cinfo, coutAudioCaps)
+	runtime.KeepAlive(coutAudioCapsAllocMap)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_getCanonicalName(info *AMediaCodecInfo) string {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	__ret := C.AMediaCodecInfo_getCanonicalName(cinfo)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := C.GoString(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_getEncoderCapabilities(info *AMediaCodecInfo, outEncoderCaps **ACodecEncoderCapabilities) Media_status_t {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	coutEncoderCaps, coutEncoderCapsAllocMap := (**C.ACodecEncoderCapabilities)(unsafe.Pointer(outEncoderCaps)), cgoAllocsUnknown
+	var pinnercoutEncoderCaps runtime.Pinner
+	pinnercoutEncoderCaps.Pin(outEncoderCaps)
+	if outEncoderCaps != nil {
+		pinnercoutEncoderCaps.Pin(unsafe.Pointer(*outEncoderCaps))
+	}
+	defer pinnercoutEncoderCaps.Unpin()
+	__ret := C.AMediaCodecInfo_getEncoderCapabilities(cinfo, coutEncoderCaps)
+	runtime.KeepAlive(coutEncoderCapsAllocMap)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_getKind(info *AMediaCodecInfo) AMediaCodecKind {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	__ret := C.AMediaCodecInfo_getKind(cinfo)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (AMediaCodecKind)(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_getMaxSupportedInstances(info *AMediaCodecInfo) int32 {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	__ret := C.AMediaCodecInfo_getMaxSupportedInstances(cinfo)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_getMediaCodecInfoType(info *AMediaCodecInfo) AMediaCodecType {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	__ret := C.AMediaCodecInfo_getMediaCodecInfoType(cinfo)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (AMediaCodecType)(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_getMediaType(info *AMediaCodecInfo) string {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	__ret := C.AMediaCodecInfo_getMediaType(cinfo)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := C.GoString(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_getVideoCapabilities(info *AMediaCodecInfo, outVideoCaps **ACodecVideoCapabilities) Media_status_t {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	coutVideoCaps, coutVideoCapsAllocMap := (**C.ACodecVideoCapabilities)(unsafe.Pointer(outVideoCaps)), cgoAllocsUnknown
+	var pinnercoutVideoCaps runtime.Pinner
+	pinnercoutVideoCaps.Pin(outVideoCaps)
+	if outVideoCaps != nil {
+		pinnercoutVideoCaps.Pin(unsafe.Pointer(*outVideoCaps))
+	}
+	defer pinnercoutVideoCaps.Unpin()
+	__ret := C.AMediaCodecInfo_getVideoCapabilities(cinfo, coutVideoCaps)
+	runtime.KeepAlive(coutVideoCapsAllocMap)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (Media_status_t)(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_isFeatureRequired(info *AMediaCodecInfo, featureName string) int32 {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	cfeatureName, cfeatureNameAllocMap := UnpackPCharString(featureName)
+	__ret := C.AMediaCodecInfo_isFeatureRequired(cinfo, cfeatureName)
+	runtime.KeepAlive(cfeatureNameAllocMap)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_isFeatureSupported(info *AMediaCodecInfo, featureName string) int32 {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	cfeatureName, cfeatureNameAllocMap := UnpackPCharString(featureName)
+	__ret := C.AMediaCodecInfo_isFeatureSupported(cinfo, cfeatureName)
+	runtime.KeepAlive(cfeatureNameAllocMap)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_isFormatSupported(info *AMediaCodecInfo, format *AMediaFormat) int32 {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	cformat, cformatAllocMap := (*C.AMediaFormat)(unsafe.Pointer(format)), cgoAllocsUnknown
+	__ret := C.AMediaCodecInfo_isFormatSupported(cinfo, cformat)
+	runtime.KeepAlive(cformatAllocMap)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (int32)(__ret)
+	return __v
+}
+
+func AMediaCodecInfo_isVendor(info *AMediaCodecInfo) int32 {
+	cinfo, cinfoAllocMap := (*C.AMediaCodecInfo)(unsafe.Pointer(info)), cgoAllocsUnknown
+	__ret := C.AMediaCodecInfo_isVendor(cinfo)
+	runtime.KeepAlive(cinfoAllocMap)
+	__v := (int32)(__ret)
+	return __v
 }
 
 func AMediaCodec_configure(p0 *AMediaCodec, format *AMediaFormat, surface *ANativeWindow, crypto *AMediaCrypto, flags uint32) Media_status_t {
@@ -476,6 +1290,74 @@ func AMediaCrypto_requiresSecureDecoderComponent(mime string) bool {
 	runtime.KeepAlive(cmimeAllocMap)
 	__v := (bool)(__ret)
 	return __v
+}
+
+func AMediaDataSource_close(p0 *AMediaDataSource) {
+	cp0, cp0AllocMap := (*C.AMediaDataSource)(unsafe.Pointer(p0)), cgoAllocsUnknown
+	C.AMediaDataSource_close(cp0)
+	runtime.KeepAlive(cp0AllocMap)
+}
+
+func AMediaDataSource_delete(p0 *AMediaDataSource) {
+	cp0, cp0AllocMap := (*C.AMediaDataSource)(unsafe.Pointer(p0)), cgoAllocsUnknown
+	C.AMediaDataSource_delete(cp0)
+	runtime.KeepAlive(cp0AllocMap)
+}
+
+func AMediaDataSource_new() *AMediaDataSource {
+	__ret := C.AMediaDataSource_new()
+	__v := (*AMediaDataSource)(unsafe.Pointer(__ret))
+	return __v
+}
+
+func AMediaDataSource_newUri(uri string, numheaders int32, key_values *string) *AMediaDataSource {
+	curi, curiAllocMap := UnpackPCharString(uri)
+	cnumheaders, cnumheadersAllocMap := (C.int)(numheaders), cgoAllocsUnknown
+	__ret := C.AMediaDataSource_newUri(curi, cnumheaders, (**C.char)(unsafe.Pointer(key_values)))
+	runtime.KeepAlive(cnumheadersAllocMap)
+	runtime.KeepAlive(curiAllocMap)
+	__v := (*AMediaDataSource)(unsafe.Pointer(__ret))
+	return __v
+}
+
+func AMediaDataSource_setClose(p0 *AMediaDataSource, p1 AMediaDataSourceClose) {
+	cp0, cp0AllocMap := (*C.AMediaDataSource)(unsafe.Pointer(p0)), cgoAllocsUnknown
+	cp1, cp1AllocMap := p1.PassValue()
+	C.AMediaDataSource_setClose(cp0, cp1)
+	runtime.KeepAlive(cp1AllocMap)
+	runtime.KeepAlive(cp0AllocMap)
+}
+
+func AMediaDataSource_setGetAvailableSize(p0 *AMediaDataSource, p1 AMediaDataSourceGetAvailableSize) {
+	cp0, cp0AllocMap := (*C.AMediaDataSource)(unsafe.Pointer(p0)), cgoAllocsUnknown
+	cp1, cp1AllocMap := p1.PassValue()
+	C.AMediaDataSource_setGetAvailableSize(cp0, cp1)
+	runtime.KeepAlive(cp1AllocMap)
+	runtime.KeepAlive(cp0AllocMap)
+}
+
+func AMediaDataSource_setGetSize(p0 *AMediaDataSource, p1 AMediaDataSourceGetSize) {
+	cp0, cp0AllocMap := (*C.AMediaDataSource)(unsafe.Pointer(p0)), cgoAllocsUnknown
+	cp1, cp1AllocMap := p1.PassValue()
+	C.AMediaDataSource_setGetSize(cp0, cp1)
+	runtime.KeepAlive(cp1AllocMap)
+	runtime.KeepAlive(cp0AllocMap)
+}
+
+func AMediaDataSource_setReadAt(p0 *AMediaDataSource, p1 AMediaDataSourceReadAt) {
+	cp0, cp0AllocMap := (*C.AMediaDataSource)(unsafe.Pointer(p0)), cgoAllocsUnknown
+	cp1, cp1AllocMap := p1.PassValue()
+	C.AMediaDataSource_setReadAt(cp0, cp1)
+	runtime.KeepAlive(cp1AllocMap)
+	runtime.KeepAlive(cp0AllocMap)
+}
+
+func AMediaDataSource_setUserdata(p0 *AMediaDataSource, userdata unsafe.Pointer) {
+	cp0, cp0AllocMap := (*C.AMediaDataSource)(unsafe.Pointer(p0)), cgoAllocsUnknown
+	cuserdata, cuserdataAllocMap := userdata, cgoAllocsUnknown
+	C.AMediaDataSource_setUserdata(cp0, cuserdata)
+	runtime.KeepAlive(cuserdataAllocMap)
+	runtime.KeepAlive(cp0AllocMap)
 }
 
 func AMediaDrm_closeSession(p0 *AMediaDrm, sessionId *AMediaDrmSessionId) Media_status_t {

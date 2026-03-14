@@ -4,7 +4,11 @@ package media
 
 /*
 #cgo LDFLAGS: -lmediandk
+#include "media/NdkImage.h"
+#include "media/NdkImageReader.h"
 #include "media/NdkMediaCodec.h"
+#include "media/NdkMediaCodecInfo.h"
+#include "media/NdkMediaDataSource.h"
 #include "media/NdkMediaExtractor.h"
 #include "media/NdkMediaFormat.h"
 #include "media/NdkMediaMuxer.h"
@@ -75,6 +79,81 @@ type SliceHeader struct {
 	Len  int
 	Cap  int
 }
+
+func (x AImageReader_BufferRemovedCallback) PassRef() (ref *C.AImageReader_BufferRemovedCallback, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aImageReader_BufferRemovedCallbackB28D8959Func == nil {
+		aImageReader_BufferRemovedCallbackB28D8959Func = x
+	}
+	return (*C.AImageReader_BufferRemovedCallback)(C.AImageReader_BufferRemovedCallback_b28d8959), nil
+}
+
+func (x AImageReader_BufferRemovedCallback) PassValue() (ref C.AImageReader_BufferRemovedCallback, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aImageReader_BufferRemovedCallbackB28D8959Func == nil {
+		aImageReader_BufferRemovedCallbackB28D8959Func = x
+	}
+	return (C.AImageReader_BufferRemovedCallback)(C.AImageReader_BufferRemovedCallback_b28d8959), nil
+}
+
+func NewAImageReader_BufferRemovedCallbackRef(ref unsafe.Pointer) *AImageReader_BufferRemovedCallback {
+	return (*AImageReader_BufferRemovedCallback)(ref)
+}
+
+//export AImageReader_BufferRemovedCallbackB28D8959
+func AImageReader_BufferRemovedCallbackB28D8959(ccontext unsafe.Pointer, creader *C.AImageReader, cbuffer *C.AHardwareBuffer) {
+	if aImageReader_BufferRemovedCallbackB28D8959Func != nil {
+		contextb28d8959 := (unsafe.Pointer)(unsafe.Pointer(ccontext))
+		readerb28d8959 := (*AImageReader)(unsafe.Pointer(creader))
+		bufferb28d8959 := (*AHardwareBuffer)(unsafe.Pointer(cbuffer))
+		aImageReader_BufferRemovedCallbackB28D8959Func(contextb28d8959, readerb28d8959, bufferb28d8959)
+		return
+	}
+	panic("callback func has not been set (race?)")
+}
+
+var aImageReader_BufferRemovedCallbackB28D8959Func AImageReader_BufferRemovedCallback
+
+func (x AImageReader_ImageCallback) PassRef() (ref *C.AImageReader_ImageCallback, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aImageReader_ImageCallback32CDD235Func == nil {
+		aImageReader_ImageCallback32CDD235Func = x
+	}
+	return (*C.AImageReader_ImageCallback)(C.AImageReader_ImageCallback_32cdd235), nil
+}
+
+func (x AImageReader_ImageCallback) PassValue() (ref C.AImageReader_ImageCallback, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aImageReader_ImageCallback32CDD235Func == nil {
+		aImageReader_ImageCallback32CDD235Func = x
+	}
+	return (C.AImageReader_ImageCallback)(C.AImageReader_ImageCallback_32cdd235), nil
+}
+
+func NewAImageReader_ImageCallbackRef(ref unsafe.Pointer) *AImageReader_ImageCallback {
+	return (*AImageReader_ImageCallback)(ref)
+}
+
+//export AImageReader_ImageCallback32CDD235
+func AImageReader_ImageCallback32CDD235(ccontext unsafe.Pointer, creader *C.AImageReader) {
+	if aImageReader_ImageCallback32CDD235Func != nil {
+		context32cdd235 := (unsafe.Pointer)(unsafe.Pointer(ccontext))
+		reader32cdd235 := (*AImageReader)(unsafe.Pointer(creader))
+		aImageReader_ImageCallback32CDD235Func(context32cdd235, reader32cdd235)
+		return
+	}
+	panic("callback func has not been set (race?)")
+}
+
+var aImageReader_ImageCallback32CDD235Func AImageReader_ImageCallback
 
 func (x AMediaCodecOnAsyncError) PassRef() (ref *C.AMediaCodecOnAsyncError, allocs *CgoAllocMap) {
 	if x == nil {
@@ -269,6 +348,157 @@ func AMediaCodecOnFrameRendered61AF0881(ccodec *C.AMediaCodec, cuserdata unsafe.
 }
 
 var aMediaCodecOnFrameRendered61AF0881Func AMediaCodecOnFrameRendered
+
+func (x AMediaDataSourceClose) PassRef() (ref *C.AMediaDataSourceClose, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aMediaDataSourceClose06C40935Func == nil {
+		aMediaDataSourceClose06C40935Func = x
+	}
+	return (*C.AMediaDataSourceClose)(C.AMediaDataSourceClose_06c40935), nil
+}
+
+func (x AMediaDataSourceClose) PassValue() (ref C.AMediaDataSourceClose, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aMediaDataSourceClose06C40935Func == nil {
+		aMediaDataSourceClose06C40935Func = x
+	}
+	return (C.AMediaDataSourceClose)(C.AMediaDataSourceClose_06c40935), nil
+}
+
+func NewAMediaDataSourceCloseRef(ref unsafe.Pointer) *AMediaDataSourceClose {
+	return (*AMediaDataSourceClose)(ref)
+}
+
+//export AMediaDataSourceClose06C40935
+func AMediaDataSourceClose06C40935(cuserdata unsafe.Pointer) {
+	if aMediaDataSourceClose06C40935Func != nil {
+		userdata06c40935 := (unsafe.Pointer)(unsafe.Pointer(cuserdata))
+		aMediaDataSourceClose06C40935Func(userdata06c40935)
+		return
+	}
+	panic("callback func has not been set (race?)")
+}
+
+var aMediaDataSourceClose06C40935Func AMediaDataSourceClose
+
+func (x AMediaDataSourceGetAvailableSize) PassRef() (ref *C.AMediaDataSourceGetAvailableSize, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aMediaDataSourceGetAvailableSize40CC3318Func == nil {
+		aMediaDataSourceGetAvailableSize40CC3318Func = x
+	}
+	return (*C.AMediaDataSourceGetAvailableSize)(C.AMediaDataSourceGetAvailableSize_40cc3318), nil
+}
+
+func (x AMediaDataSourceGetAvailableSize) PassValue() (ref C.AMediaDataSourceGetAvailableSize, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aMediaDataSourceGetAvailableSize40CC3318Func == nil {
+		aMediaDataSourceGetAvailableSize40CC3318Func = x
+	}
+	return (C.AMediaDataSourceGetAvailableSize)(C.AMediaDataSourceGetAvailableSize_40cc3318), nil
+}
+
+func NewAMediaDataSourceGetAvailableSizeRef(ref unsafe.Pointer) *AMediaDataSourceGetAvailableSize {
+	return (*AMediaDataSourceGetAvailableSize)(ref)
+}
+
+//export AMediaDataSourceGetAvailableSize40CC3318
+func AMediaDataSourceGetAvailableSize40CC3318(cuserdata unsafe.Pointer, coffset C.off64_t) C.int64_t {
+	if aMediaDataSourceGetAvailableSize40CC3318Func != nil {
+		userdata40cc3318 := (unsafe.Pointer)(unsafe.Pointer(cuserdata))
+		offset40cc3318 := (Off64_t)(coffset)
+		ret40cc3318 := aMediaDataSourceGetAvailableSize40CC3318Func(userdata40cc3318, offset40cc3318)
+		ret, _ := (C.int64_t)(ret40cc3318), cgoAllocsUnknown
+		return ret
+	}
+	panic("callback func has not been set (race?)")
+}
+
+var aMediaDataSourceGetAvailableSize40CC3318Func AMediaDataSourceGetAvailableSize
+
+func (x AMediaDataSourceGetSize) PassRef() (ref *C.AMediaDataSourceGetSize, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aMediaDataSourceGetSizeE0220813Func == nil {
+		aMediaDataSourceGetSizeE0220813Func = x
+	}
+	return (*C.AMediaDataSourceGetSize)(C.AMediaDataSourceGetSize_e0220813), nil
+}
+
+func (x AMediaDataSourceGetSize) PassValue() (ref C.AMediaDataSourceGetSize, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aMediaDataSourceGetSizeE0220813Func == nil {
+		aMediaDataSourceGetSizeE0220813Func = x
+	}
+	return (C.AMediaDataSourceGetSize)(C.AMediaDataSourceGetSize_e0220813), nil
+}
+
+func NewAMediaDataSourceGetSizeRef(ref unsafe.Pointer) *AMediaDataSourceGetSize {
+	return (*AMediaDataSourceGetSize)(ref)
+}
+
+//export AMediaDataSourceGetSizeE0220813
+func AMediaDataSourceGetSizeE0220813(cuserdata unsafe.Pointer) C.int64_t {
+	if aMediaDataSourceGetSizeE0220813Func != nil {
+		userdatae0220813 := (unsafe.Pointer)(unsafe.Pointer(cuserdata))
+		rete0220813 := aMediaDataSourceGetSizeE0220813Func(userdatae0220813)
+		ret, _ := (C.int64_t)(rete0220813), cgoAllocsUnknown
+		return ret
+	}
+	panic("callback func has not been set (race?)")
+}
+
+var aMediaDataSourceGetSizeE0220813Func AMediaDataSourceGetSize
+
+func (x AMediaDataSourceReadAt) PassRef() (ref *C.AMediaDataSourceReadAt, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aMediaDataSourceReadAt865C1A4BFunc == nil {
+		aMediaDataSourceReadAt865C1A4BFunc = x
+	}
+	return (*C.AMediaDataSourceReadAt)(C.AMediaDataSourceReadAt_865c1a4b), nil
+}
+
+func (x AMediaDataSourceReadAt) PassValue() (ref C.AMediaDataSourceReadAt, allocs *CgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	}
+	if aMediaDataSourceReadAt865C1A4BFunc == nil {
+		aMediaDataSourceReadAt865C1A4BFunc = x
+	}
+	return (C.AMediaDataSourceReadAt)(C.AMediaDataSourceReadAt_865c1a4b), nil
+}
+
+func NewAMediaDataSourceReadAtRef(ref unsafe.Pointer) *AMediaDataSourceReadAt {
+	return (*AMediaDataSourceReadAt)(ref)
+}
+
+//export AMediaDataSourceReadAt865C1A4B
+func AMediaDataSourceReadAt865C1A4B(cuserdata unsafe.Pointer, coffset C.off64_t, cbuffer unsafe.Pointer, csize C.uint64_t) C.int64_t {
+	if aMediaDataSourceReadAt865C1A4BFunc != nil {
+		userdata865c1a4b := (unsafe.Pointer)(unsafe.Pointer(cuserdata))
+		offset865c1a4b := (Off64_t)(coffset)
+		buffer865c1a4b := (unsafe.Pointer)(unsafe.Pointer(cbuffer))
+		size865c1a4b := (uint64)(csize)
+		ret865c1a4b := aMediaDataSourceReadAt865C1A4BFunc(userdata865c1a4b, offset865c1a4b, buffer865c1a4b, size865c1a4b)
+		ret, _ := (C.int64_t)(ret865c1a4b), cgoAllocsUnknown
+		return ret
+	}
+	panic("callback func has not been set (race?)")
+}
+
+var aMediaDataSourceReadAt865C1A4BFunc AMediaDataSourceReadAt
 
 func (x AMediaDrmEventListener) PassRef() (ref *C.AMediaDrmEventListener, allocs *CgoAllocMap) {
 	if x == nil {

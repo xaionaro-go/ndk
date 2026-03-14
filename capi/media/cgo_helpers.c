@@ -2,6 +2,14 @@
 
 #include "_cgo_export.h"
 
+void AImageReader_BufferRemovedCallback_b28d8959(void* context, AImageReader* reader, AHardwareBuffer* buffer) {
+	AImageReader_BufferRemovedCallbackB28D8959(context, reader, buffer);
+}
+
+void AImageReader_ImageCallback_32cdd235(void* context, AImageReader* reader) {
+	AImageReader_ImageCallback32CDD235(context, reader);
+}
+
 void AMediaCodecOnAsyncError_f1342a37(AMediaCodec* codec, void* userdata, media_status_t _error, int actionCode, char* detail) {
 	AMediaCodecOnAsyncErrorF1342A37(codec, userdata, _error, actionCode, detail);
 }
@@ -20,6 +28,22 @@ void AMediaCodecOnAsyncOutputAvailable_f41b4c39(AMediaCodec* codec, void* userda
 
 void AMediaCodecOnFrameRendered_61af0881(AMediaCodec* codec, void* userdata, int64_t mediaTimeUs, int64_t systemNano) {
 	AMediaCodecOnFrameRendered61AF0881(codec, userdata, mediaTimeUs, systemNano);
+}
+
+void AMediaDataSourceClose_06c40935(void* userdata) {
+	AMediaDataSourceClose06C40935(userdata);
+}
+
+int64_t AMediaDataSourceGetAvailableSize_40cc3318(void* userdata, off64_t offset) {
+	return AMediaDataSourceGetAvailableSize40CC3318(userdata, offset);
+}
+
+int64_t AMediaDataSourceGetSize_e0220813(void* userdata) {
+	return AMediaDataSourceGetSizeE0220813(userdata);
+}
+
+int64_t AMediaDataSourceReadAt_865c1a4b(void* userdata, off64_t offset, void* buffer, uint64_t size) {
+	return AMediaDataSourceReadAt865C1A4B(userdata, offset, buffer, size);
 }
 
 void AMediaDrmEventListener_76bb5445(AMediaDrm* p0, AMediaDrmSessionId* sessionId, AMediaDrmEventType eventType, int extra, uint8_t* data, uint64_t dataSize) {
