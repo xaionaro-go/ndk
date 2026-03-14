@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 	"unsafe"
 
 	"github.com/spf13/cobra"
@@ -63,8 +64,11 @@ Uses the camera2 NDK pipeline: ImageReader -> OutputTarget -> CaptureSession.`,
 
 		// Create ImageReader via capi (the idiomatic NewImageReader has a broken
 		// signature that casts **ImageReader to **capi.AImageReader incorrectly).
+		// maxImages is the max number of images the reader can hold simultaneously.
+		// Keep it small (4) — we acquire and release frames in a loop.
+		var maxImages int32 = 4
 		var readerPtr *mediacapi.AImageReader
-		status := mediacapi.AImageReader_new(width, height, format, count+2, &readerPtr)
+		status := mediacapi.AImageReader_new(width, height, format, maxImages, &readerPtr)
 		if status < 0 {
 			return fmt.Errorf("creating image reader: media error %d", status)
 		}
@@ -156,11 +160,22 @@ Uses the camera2 NDK pipeline: ImageReader -> OutputTarget -> CaptureSession.`,
 		}
 		defer f.Close()
 
+		// Wait for the camera pipeline to start producing frames.
+		time.Sleep(500 * time.Millisecond)
+
 		// Acquire and write frames.
 		var totalBytes int64
 		for i := int32(0); i < count; i++ {
 			var imagePtr *mediacapi.AImage
-			status = mediacapi.AImageReader_acquireNextImage(readerPtr, &imagePtr)
+
+			// Retry acquiring — the camera may not have a frame ready yet.
+			for retries := 0; retries < 100; retries++ {
+				status = mediacapi.AImageReader_acquireNextImage(readerPtr, &imagePtr)
+				if status >= 0 {
+					break
+				}
+				time.Sleep(33 * time.Millisecond) // ~30fps polling
+			}
 			if status < 0 {
 				return fmt.Errorf("acquiring image %d: media error %d", i, status)
 			}
