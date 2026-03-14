@@ -71,11 +71,10 @@ var fontMatcherSetStyleCmd = &cobra.Command{
 	Use:   "set-style",
 	Short: "Matcher.SetStyle()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		weightRaw, _ := cmd.Flags().GetInt32("weight")
-		weight := uint16(weightRaw)
-		italic, _ := cmd.Flags().GetBool("italic")
 		obj := font.NewMatcher()
 		defer obj.Close()
+		weight, _ := cmd.Flags().GetInt32("weight")
+		italic, _ := cmd.Flags().GetBool("italic")
 		result := obj.SetStyle(weight, italic)
 		fmt.Println(result)
 		return nil

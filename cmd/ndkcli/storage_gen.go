@@ -48,9 +48,9 @@ var storageManagerMountedObbPathCmd = &cobra.Command{
 	Use:   "mounted-obb-path",
 	Short: "Manager.MountedObbPath()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		filename, _ := cmd.Flags().GetString("filename")
 		obj := storage.NewManager()
 		defer obj.Close()
+		filename, _ := cmd.Flags().GetString("filename")
 		result := obj.MountedObbPath(filename)
 		fmt.Println(result)
 		return nil
@@ -61,9 +61,9 @@ var storageManagerIsObbMountedCmd = &cobra.Command{
 	Use:   "is-obb-mounted",
 	Short: "Manager.IsObbMounted()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		filename, _ := cmd.Flags().GetString("filename")
 		obj := storage.NewManager()
 		defer obj.Close()
+		filename, _ := cmd.Flags().GetString("filename")
 		result := obj.IsObbMounted(filename)
 		fmt.Println(result)
 		return nil

@@ -174,12 +174,12 @@ var audioStreamBuilderSetBufferCapacityInFramesCmd = &cobra.Command{
 	Use:   "set-buffer-capacity-in-frames",
 	Short: "StreamBuilder.SetBufferCapacityInFrames()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		numFrames, _ := cmd.Flags().GetInt32("num-frames")
 		obj, err := audio.NewStreamBuilder()
 		if err != nil {
 			return err
 		}
 		defer obj.Close()
+		numFrames, _ := cmd.Flags().GetInt32("num-frames")
 		result := obj.SetBufferCapacityInFrames(numFrames)
 		fmt.Println(result)
 		return nil
@@ -190,12 +190,12 @@ var audioStreamBuilderSetChannelCountCmd = &cobra.Command{
 	Use:   "set-channel-count",
 	Short: "StreamBuilder.SetChannelCount()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		channelCount, _ := cmd.Flags().GetInt32("channel-count")
 		obj, err := audio.NewStreamBuilder()
 		if err != nil {
 			return err
 		}
 		defer obj.Close()
+		channelCount, _ := cmd.Flags().GetInt32("channel-count")
 		result := obj.SetChannelCount(channelCount)
 		fmt.Println(result)
 		return nil
@@ -206,13 +206,61 @@ var audioStreamBuilderSetDeviceIDCmd = &cobra.Command{
 	Use:   "set-device-id",
 	Short: "StreamBuilder.SetDeviceID()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		deviceID, _ := cmd.Flags().GetInt32("device-id")
 		obj, err := audio.NewStreamBuilder()
 		if err != nil {
 			return err
 		}
 		defer obj.Close()
+		deviceID, _ := cmd.Flags().GetInt32("device-id")
 		result := obj.SetDeviceID(deviceID)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var audioStreamBuilderSetDirectionCmd = &cobra.Command{
+	Use:   "set-direction",
+	Short: "StreamBuilder.SetDirection()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		direction, _ := cmd.Flags().GetInt32("direction")
+		result := obj.SetDirection(audio.Direction(direction))
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var audioStreamBuilderSetFormatCmd = &cobra.Command{
+	Use:   "set-format",
+	Short: "StreamBuilder.SetFormat()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		format, _ := cmd.Flags().GetInt32("format")
+		result := obj.SetFormat(audio.Format(format))
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var audioStreamBuilderSetPerformanceModeCmd = &cobra.Command{
+	Use:   "set-performance-mode",
+	Short: "StreamBuilder.SetPerformanceMode()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		mode, _ := cmd.Flags().GetInt32("mode")
+		result := obj.SetPerformanceMode(audio.PerformanceMode(mode))
 		fmt.Println(result)
 		return nil
 	},
@@ -222,13 +270,29 @@ var audioStreamBuilderSetSampleRateCmd = &cobra.Command{
 	Use:   "set-sample-rate",
 	Short: "StreamBuilder.SetSampleRate()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		sampleRate, _ := cmd.Flags().GetInt32("sample-rate")
 		obj, err := audio.NewStreamBuilder()
 		if err != nil {
 			return err
 		}
 		defer obj.Close()
+		sampleRate, _ := cmd.Flags().GetInt32("sample-rate")
 		result := obj.SetSampleRate(sampleRate)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var audioStreamBuilderSetSharingModeCmd = &cobra.Command{
+	Use:   "set-sharing-mode",
+	Short: "StreamBuilder.SetSharingMode()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		sharingMode, _ := cmd.Flags().GetInt32("sharing-mode")
+		result := obj.SetSharingMode(audio.SharingMode(sharingMode))
 		fmt.Println(result)
 		return nil
 	},
@@ -247,7 +311,11 @@ func init() {
 	audioStreamBuilderSetBufferCapacityInFramesCmd.Flags().Int32("num-frames", 0, "numFrames")
 	audioStreamBuilderSetChannelCountCmd.Flags().Int32("channel-count", 0, "channelCount")
 	audioStreamBuilderSetDeviceIDCmd.Flags().Int32("device-id", 0, "deviceID")
+	audioStreamBuilderSetDirectionCmd.Flags().Int32("direction", 0, "direction")
+	audioStreamBuilderSetFormatCmd.Flags().Int32("format", 0, "format")
+	audioStreamBuilderSetPerformanceModeCmd.Flags().Int32("mode", 0, "mode")
 	audioStreamBuilderSetSampleRateCmd.Flags().Int32("sample-rate", 0, "sampleRate")
+	audioStreamBuilderSetSharingModeCmd.Flags().Int32("sharing-mode", 0, "sharingMode")
 	audioCmd.AddCommand(audioDirectionCmd)
 	audioCmd.AddCommand(audioErrorCmd)
 	audioCmd.AddCommand(audioStreamCmd)
@@ -269,7 +337,11 @@ func init() {
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetBufferCapacityInFramesCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetChannelCountCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetDeviceIDCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetDirectionCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetFormatCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetPerformanceModeCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetSampleRateCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetSharingModeCmd)
 	audioStreamStateCmd2.AddCommand(audioStreamStateStringCmd)
 	rootCmd.AddCommand(audioCmd)
 }

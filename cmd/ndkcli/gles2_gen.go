@@ -14,12 +14,104 @@ var gles2Cmd = &cobra.Command{
 	Short: "gles2 NDK module",
 }
 
+var gles2ActiveTextureCmd = &cobra.Command{
+	Use:   "active-texture",
+	Short: "gles2.ActiveTexture()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		texture, _ := cmd.Flags().GetUint32("texture")
+		gles2.ActiveTexture(gles2.Enum(texture))
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var gles2BlendFuncCmd = &cobra.Command{
+	Use:   "blend-func",
+	Short: "gles2.BlendFunc()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		sfactor, _ := cmd.Flags().GetUint32("sfactor")
+		dfactor, _ := cmd.Flags().GetUint32("dfactor")
+		gles2.BlendFunc(gles2.Enum(sfactor), gles2.Enum(dfactor))
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var gles2BlendFuncSeparateCmd = &cobra.Command{
+	Use:   "blend-func-separate",
+	Short: "gles2.BlendFuncSeparate()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		sfactorRGB, _ := cmd.Flags().GetUint32("sfactor-rgb")
+		dfactorRGB, _ := cmd.Flags().GetUint32("dfactor-rgb")
+		sfactorAlpha, _ := cmd.Flags().GetUint32("sfactor-alpha")
+		dfactorAlpha, _ := cmd.Flags().GetUint32("dfactor-alpha")
+		gles2.BlendFuncSeparate(gles2.Enum(sfactorRGB), gles2.Enum(dfactorRGB), gles2.Enum(sfactorAlpha), gles2.Enum(dfactorAlpha))
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var gles2CheckFramebufferStatusCmd = &cobra.Command{
+	Use:   "check-framebuffer-status",
+	Short: "gles2.CheckFramebufferStatus()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		target, _ := cmd.Flags().GetUint32("target")
+		result := gles2.CheckFramebufferStatus(gles2.Enum(target))
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var gles2CreateProgramCmd = &cobra.Command{
 	Use:   "create-program",
 	Short: "gles2.CreateProgram()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		result := gles2.CreateProgram()
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var gles2CreateShaderCmd = &cobra.Command{
+	Use:   "create-shader",
+	Short: "gles2.CreateShader()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		_type, _ := cmd.Flags().GetUint32("_type")
+		result := gles2.CreateShader(gles2.Enum(_type))
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var gles2DepthFuncCmd = &cobra.Command{
+	Use:   "depth-func",
+	Short: "gles2.DepthFunc()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		_func, _ := cmd.Flags().GetUint32("_func")
+		gles2.DepthFunc(gles2.Enum(_func))
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var gles2DisableCmd = &cobra.Command{
+	Use:   "disable",
+	Short: "gles2.Disable()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cap, _ := cmd.Flags().GetUint32("cap")
+		gles2.Disable(gles2.Enum(cap))
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var gles2EnableCmd = &cobra.Command{
+	Use:   "enable",
+	Short: "gles2.Enable()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cap, _ := cmd.Flags().GetUint32("cap")
+		gles2.Enable(gles2.Enum(cap))
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -54,10 +146,60 @@ var gles2GetErrorCmd = &cobra.Command{
 	},
 }
 
+var gles2GetStringCmd = &cobra.Command{
+	Use:   "get-string",
+	Short: "gles2.GetString()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		name, _ := cmd.Flags().GetUint32("name")
+		result := gles2.GetString(gles2.Enum(name))
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var gles2StencilOpCmd = &cobra.Command{
+	Use:   "stencil-op",
+	Short: "gles2.StencilOp()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fail, _ := cmd.Flags().GetUint32("fail")
+		zfail, _ := cmd.Flags().GetUint32("zfail")
+		zpass, _ := cmd.Flags().GetUint32("zpass")
+		gles2.StencilOp(gles2.Enum(fail), gles2.Enum(zfail), gles2.Enum(zpass))
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 func init() {
+	gles2ActiveTextureCmd.Flags().Uint32("texture", 0, "texture")
+	gles2BlendFuncCmd.Flags().Uint32("sfactor", 0, "sfactor")
+	gles2BlendFuncCmd.Flags().Uint32("dfactor", 0, "dfactor")
+	gles2BlendFuncSeparateCmd.Flags().Uint32("sfactor-rgb", 0, "sfactorRGB")
+	gles2BlendFuncSeparateCmd.Flags().Uint32("dfactor-rgb", 0, "dfactorRGB")
+	gles2BlendFuncSeparateCmd.Flags().Uint32("sfactor-alpha", 0, "sfactorAlpha")
+	gles2BlendFuncSeparateCmd.Flags().Uint32("dfactor-alpha", 0, "dfactorAlpha")
+	gles2CheckFramebufferStatusCmd.Flags().Uint32("target", 0, "target")
+	gles2CreateShaderCmd.Flags().Uint32("_type", 0, "_type")
+	gles2DepthFuncCmd.Flags().Uint32("_func", 0, "_func")
+	gles2DisableCmd.Flags().Uint32("cap", 0, "cap")
+	gles2EnableCmd.Flags().Uint32("cap", 0, "cap")
+	gles2GetStringCmd.Flags().Uint32("name", 0, "name")
+	gles2StencilOpCmd.Flags().Uint32("fail", 0, "fail")
+	gles2StencilOpCmd.Flags().Uint32("zfail", 0, "zfail")
+	gles2StencilOpCmd.Flags().Uint32("zpass", 0, "zpass")
+	gles2Cmd.AddCommand(gles2ActiveTextureCmd)
+	gles2Cmd.AddCommand(gles2BlendFuncCmd)
+	gles2Cmd.AddCommand(gles2BlendFuncSeparateCmd)
+	gles2Cmd.AddCommand(gles2CheckFramebufferStatusCmd)
 	gles2Cmd.AddCommand(gles2CreateProgramCmd)
+	gles2Cmd.AddCommand(gles2CreateShaderCmd)
+	gles2Cmd.AddCommand(gles2DepthFuncCmd)
+	gles2Cmd.AddCommand(gles2DisableCmd)
+	gles2Cmd.AddCommand(gles2EnableCmd)
 	gles2Cmd.AddCommand(gles2FinishCmd)
 	gles2Cmd.AddCommand(gles2FlushCmd)
 	gles2Cmd.AddCommand(gles2GetErrorCmd)
+	gles2Cmd.AddCommand(gles2GetStringCmd)
+	gles2Cmd.AddCommand(gles2StencilOpCmd)
 	rootCmd.AddCommand(gles2Cmd)
 }

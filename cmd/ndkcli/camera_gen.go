@@ -19,6 +19,11 @@ var cameraCaptureSessionCmd = &cobra.Command{
 	Short: "CaptureSession operations",
 }
 
+var cameraDeviceCmd = &cobra.Command{
+	Use:   "device",
+	Short: "Device operations",
+}
+
 var cameraErrorCmd = &cobra.Command{
 	Use:   "error",
 	Short: "Error operations",
@@ -42,6 +47,15 @@ var cameraSessionOutputContainerCmd = &cobra.Command{
 var cameraCaptureSessionStopRepeatingCmd = &cobra.Command{
 	Use:   "stop-repeating",
 	Short: "CaptureSession.StopRepeating()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var cameraDeviceCreateCaptureRequestCmd = &cobra.Command{
+	Use:   "create-capture-request",
+	Short: "Device.CreateCaptureRequest()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -72,9 +86,9 @@ var cameraManagerGetCameraCharacteristicsCmd = &cobra.Command{
 	Use:   "get-camera-characteristics",
 	Short: "Manager.GetCameraCharacteristics()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		cameraID, _ := cmd.Flags().GetString("camera-id")
 		obj := camera.NewManager()
 		defer obj.Close()
+		cameraID, _ := cmd.Flags().GetString("camera-id")
 		result, err := obj.GetCameraCharacteristics(cameraID)
 		if err != nil {
 			return err
@@ -134,11 +148,13 @@ var cameraSessionOutputContainerNewCmd = &cobra.Command{
 func init() {
 	cameraManagerGetCameraCharacteristicsCmd.Flags().String("camera-id", "", "cameraID")
 	cameraCmd.AddCommand(cameraCaptureSessionCmd)
+	cameraCmd.AddCommand(cameraDeviceCmd)
 	cameraCmd.AddCommand(cameraErrorCmd)
 	cameraCmd.AddCommand(cameraManagerCmd)
 	cameraCmd.AddCommand(cameraMetadataCmd)
 	cameraCmd.AddCommand(cameraSessionOutputContainerCmd)
 	cameraCaptureSessionCmd.AddCommand(cameraCaptureSessionStopRepeatingCmd)
+	cameraDeviceCmd.AddCommand(cameraDeviceCreateCaptureRequestCmd)
 	cameraErrorCmd.AddCommand(cameraErrorErrorCmd)
 	cameraManagerCmd.AddCommand(cameraManagerNewCmd)
 	cameraManagerCmd.AddCommand(cameraManagerGetCameraCharacteristicsCmd)

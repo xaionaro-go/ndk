@@ -33,12 +33,13 @@ var fileSuffixMap = map[string]string{
 }
 
 type pkgInfo struct {
-	name       string
-	dir        string
-	alias      string
-	types      map[string]*typeInfo
-	funcs      []funcInfo
-	importPath string
+	name        string
+	dir         string
+	alias       string
+	types       map[string]*typeInfo
+	funcs       []funcInfo
+	importPath  string
+	typeAliases map[string]string // TypeName -> underlying primitive type
 }
 
 type typeInfo struct {
@@ -138,11 +139,12 @@ func parsePackage(dir, dirName string) (*pkgInfo, error) {
 
 	for pkgName, pkg := range pkgs {
 		info := &pkgInfo{
-			name:       pkgName,
-			dir:        dirName,
-			alias:      aliasMap[dirName],
-			types:      map[string]*typeInfo{},
-			importPath: goModule + "/" + dirName,
+			name:        pkgName,
+			dir:         dirName,
+			alias:       aliasMap[dirName],
+			types:       map[string]*typeInfo{},
+			importPath:  goModule + "/" + dirName,
+			typeAliases: map[string]string{},
 		}
 
 		for _, file := range pkg.Files {
@@ -188,10 +190,15 @@ func extractFromFile(file *ast.File, info *pkgInfo) {
 				if !ok || !ts.Name.IsExported() {
 					continue
 				}
-				if _, ok := ts.Type.(*ast.StructType); ok {
+				switch tt := ts.Type.(type) {
+				case *ast.StructType:
 					if _, exists := info.types[ts.Name.Name]; !exists {
 						info.types[ts.Name.Name] = &typeInfo{name: ts.Name.Name}
 					}
+				case *ast.Ident:
+					info.typeAliases[ts.Name.Name] = tt.Name
+				case *ast.SelectorExpr:
+					info.typeAliases[ts.Name.Name] = typeString(tt)
 				}
 			}
 		case *ast.FuncDecl:
@@ -290,29 +297,67 @@ func fieldNames(field *ast.Field) []string {
 	return names
 }
 
+// resolveType resolves type aliases transitively to a primitive.
+func resolveType(goType string, aliases map[string]string) string {
+	// Handle output pointer params: *int32 → output_int32
+	if strings.HasPrefix(goType, "*") {
+		inner := goType[1:]
+		resolved := resolveType(inner, aliases)
+		switch resolved {
+		case "int32", "int64", "uint32", "uint64", "float32", "float64":
+			return "output_" + resolved
+		}
+		return goType // can't resolve
+	}
+	// Handle []byte
+	if goType == "[]byte" || goType == "[]uint8" {
+		return "[]byte"
+	}
+	// Direct primitive check.
+	if isPrimitive(goType) {
+		return goType
+	}
+	// Resolve via alias map.
+	if underlying, ok := aliases[goType]; ok {
+		return resolveType(underlying, aliases)
+	}
+	return goType
+}
+
+func isPrimitive(t string) bool {
+	switch t {
+	case "string", "int32", "int64", "int", "uint16", "uint32", "uint64",
+		"float32", "float64", "bool", "byte", "uint8":
+		return true
+	}
+	return false
+}
+
 // isCLIType returns the cobra flag getter name, or "" if unsupported.
 func isCLIType(goType string) string {
 	switch goType {
 	case "string":
 		return "GetString"
-	case "int32":
+	case "int32", "int":
 		return "GetInt32"
 	case "int64":
 		return "GetInt64"
-	case "int":
-		return "GetInt"
+	case "uint16":
+		return "GetInt32"
 	case "uint32":
 		return "GetUint32"
 	case "uint64":
 		return "GetUint64"
-	case "uint16":
-		return "GetInt32" // promote
 	case "float32":
 		return "GetFloat32"
 	case "float64":
 		return "GetFloat64"
 	case "bool":
 		return "GetBool"
+	}
+	// Output pointer params are handled specially (no flag needed, auto-printed).
+	if strings.HasPrefix(goType, "output_") {
+		return "output"
 	}
 	return ""
 }
@@ -322,24 +367,25 @@ func flagRegister(goType string) string {
 	switch goType {
 	case "string":
 		return "String"
-	case "int32":
+	case "int32", "int":
 		return "Int32"
 	case "int64":
 		return "Int64"
-	case "int":
-		return "Int"
+	case "uint16":
+		return "Int32"
 	case "uint32":
 		return "Uint32"
 	case "uint64":
 		return "Uint64"
-	case "uint16":
-		return "Int32"
 	case "float32":
 		return "Float32"
 	case "float64":
 		return "Float64"
 	case "bool":
 		return "Bool"
+	}
+	if strings.HasPrefix(goType, "output_") {
+		return "" // output params don't need flags
 	}
 	return ""
 }
@@ -356,9 +402,10 @@ func flagDefault(goType string) string {
 	}
 }
 
-func isCLICompatible(fn funcInfo) bool {
+func isCLICompatible(fn funcInfo, aliases map[string]string) bool {
 	for _, p := range fn.params {
-		if isCLIType(p.goType) == "" {
+		resolved := resolveType(p.goType, aliases)
+		if isCLIType(resolved) == "" {
 			return false
 		}
 	}
@@ -428,11 +475,11 @@ func generateFile(pkg *pkgInfo) string {
 
 	// Package-level functions.
 	for _, fn := range pkg.funcs {
-		if shouldSkip(fn) || !isCLICompatible(fn) {
+		if shouldSkip(fn) || !isCLICompatible(fn, pkg.typeAliases) {
 			continue
 		}
 		varName := uniqueVar(pkgPrefix+camelCase(fn.name)+"Cmd", usedVarNames)
-		body, flagRegs := genFuncBody(pkgRef, fn, varName)
+		body, flagRegs := genFuncBody(pkgRef, fn, varName, pkg.typeAliases)
 		leafs = append(leafs, leafCmd{
 			parentVar: pkgPrefix + "Cmd",
 			varName:   varName,
@@ -451,9 +498,9 @@ func generateFile(pkg *pkgInfo) string {
 		var typeLeafs []leafCmd
 
 		// Constructor.
-		if ti.constructor != nil && isCLICompatible(*ti.constructor) {
+		if ti.constructor != nil && isCLICompatible(*ti.constructor, pkg.typeAliases) {
 			varName := uniqueVar(pkgPrefix+typeName+"NewCmd", usedVarNames)
-			body, flagRegs := genConstructorBody(pkgRef, ti, varName)
+			body, flagRegs := genConstructorBody(pkgRef, ti, varName, pkg.typeAliases)
 			typeLeafs = append(typeLeafs, leafCmd{
 				parentVar: typeVar,
 				varName:   varName,
@@ -466,11 +513,11 @@ func generateFile(pkg *pkgInfo) string {
 
 		// Methods.
 		for _, m := range ti.methods {
-			if shouldSkip(m) || !isCLICompatible(m) {
+			if shouldSkip(m) || !isCLICompatible(m, pkg.typeAliases) {
 				continue
 			}
 			varName := uniqueVar(pkgPrefix+typeName+camelCase(m.name)+"Cmd", usedVarNames)
-			body, flagRegs := genMethodBody(pkgRef, ti, m, varName)
+			body, flagRegs := genMethodBody(pkgRef, ti, m, varName, pkg.typeAliases)
 			typeLeafs = append(typeLeafs, leafCmd{
 				parentVar: typeVar,
 				varName:   varName,
@@ -570,32 +617,86 @@ func generateFile(pkg *pkgInfo) string {
 	return buf.String()
 }
 
+// genParamCode generates flag registration and body code for a set of params.
+// It returns: flag registrations, body lines, and call argument expressions.
+func genParamCode(
+	params []paramInfo,
+	cmdVar string,
+	prefix string, // "ctor" for constructor params, "" for regular
+	aliases map[string]string,
+	pkgRef string,
+) ([]string, string, string) {
+	var flagRegs []string
+	var body bytes.Buffer
+	var callArgs []string
+	var outputDecls []string
+
+	for _, p := range params {
+		resolved := resolveType(p.goType, aliases)
+		varName := prefix + p.name
+		if prefix != "" {
+			varName = prefix + camelCase(p.name)
+		}
+		flagName := kebabCase(p.name)
+		if prefix != "" {
+			flagName = prefix + "-" + flagName
+		}
+
+		// Output pointer param — declare var, pass &var, print after call.
+		if strings.HasPrefix(resolved, "output_") {
+			innerType := strings.TrimPrefix(resolved, "output_")
+			fmt.Fprintf(&body, "\t\tvar %s %s\n", varName, innerType)
+			// Need cast: &varName might need (*OrigType)(unsafe.Pointer(&varName))
+			if p.goType == "*"+innerType {
+				callArgs = append(callArgs, "&"+varName)
+			} else {
+				// The original type is e.g. *Int where Int is int32.
+				// We pass the address of our int32 var, cast to the named type.
+				origInner := strings.TrimPrefix(p.goType, "*")
+				callArgs = append(callArgs, "(*"+pkgRef+"."+origInner+")(unsafe.Pointer(&"+varName+"))")
+			}
+			outputDecls = append(outputDecls, varName)
+			continue
+		}
+
+		getter := isCLIType(resolved)
+		regMethod := flagRegister(resolved)
+		defVal := flagDefault(resolved)
+
+		if regMethod != "" {
+			flagRegs = append(flagRegs, fmt.Sprintf("\t%s.Flags().%s(%q, %s, %q)\n",
+				cmdVar, regMethod, flagName, defVal, p.name))
+		}
+
+		fmt.Fprintf(&body, "\t\t%s, _ := cmd.Flags().%s(%q)\n", varName, getter, flagName)
+
+		// If the original type differs from resolved, cast.
+		if p.goType != resolved && !strings.HasPrefix(p.goType, "*") {
+			callArgs = append(callArgs, pkgRef+"."+p.goType+"("+varName+")")
+		} else {
+			callArgs = append(callArgs, varName)
+		}
+	}
+
+	// Print output params after the call.
+	for _, out := range outputDecls {
+		body.WriteString("\t\t// output param " + out + " printed below\n")
+	}
+
+	return flagRegs, body.String(), strings.Join(callArgs, ", ")
+}
+
 func genFuncBody(
 	pkgRef string,
 	fn funcInfo,
 	cmdVar string,
+	aliases map[string]string,
 ) (string, []string) {
 	var body bytes.Buffer
-	var flagRegs []string
 
-	// Read flags.
-	for _, p := range fn.params {
-		getter := isCLIType(p.goType)
-		flagName := kebabCase(p.name)
-		regMethod := flagRegister(p.goType)
-		defVal := flagDefault(p.goType)
-		flagRegs = append(flagRegs, fmt.Sprintf("\t%s.Flags().%s(%q, %s, %q)\n",
-			cmdVar, regMethod, flagName, defVal, p.name))
+	flagRegs, paramBody, callArgs := genParamCode(fn.params, cmdVar, "", aliases, pkgRef)
+	body.WriteString(paramBody)
 
-		if p.goType == "uint16" {
-			fmt.Fprintf(&body, "\t\t%sRaw, _ := cmd.Flags().%s(%q)\n", p.name, getter, flagName)
-			fmt.Fprintf(&body, "\t\t%s := uint16(%sRaw)\n", p.name, p.name)
-		} else {
-			fmt.Fprintf(&body, "\t\t%s, _ := cmd.Flags().%s(%q)\n", p.name, getter, flagName)
-		}
-	}
-
-	callArgs := paramNames(fn.params)
 	hasError := len(fn.returns) > 0 && fn.returns[len(fn.returns)-1].goType == "error"
 	hasResult := len(fn.returns) > 0 && fn.returns[0].goType != "error"
 
@@ -608,28 +709,14 @@ func genConstructorBody(
 	pkgRef string,
 	ti *typeInfo,
 	cmdVar string,
+	aliases map[string]string,
 ) (string, []string) {
 	var body bytes.Buffer
-	var flagRegs []string
 	fn := ti.constructor
 
-	for _, p := range fn.params {
-		getter := isCLIType(p.goType)
-		flagName := kebabCase(p.name)
-		regMethod := flagRegister(p.goType)
-		defVal := flagDefault(p.goType)
-		flagRegs = append(flagRegs, fmt.Sprintf("\t%s.Flags().%s(%q, %s, %q)\n",
-			cmdVar, regMethod, flagName, defVal, p.name))
+	flagRegs, paramBody, callArgs := genParamCode(fn.params, cmdVar, "", aliases, pkgRef)
+	body.WriteString(paramBody)
 
-		if p.goType == "uint16" {
-			fmt.Fprintf(&body, "\t\t%sRaw, _ := cmd.Flags().%s(%q)\n", p.name, getter, flagName)
-			fmt.Fprintf(&body, "\t\t%s := uint16(%sRaw)\n", p.name, p.name)
-		} else {
-			fmt.Fprintf(&body, "\t\t%s, _ := cmd.Flags().%s(%q)\n", p.name, getter, flagName)
-		}
-	}
-
-	callArgs := paramNames(fn.params)
 	hasError := len(fn.returns) > 1 && fn.returns[len(fn.returns)-1].goType == "error"
 
 	if hasError {
@@ -660,76 +747,54 @@ func genMethodBody(
 	ti *typeInfo,
 	m funcInfo,
 	cmdVar string,
+	aliases map[string]string,
 ) (string, []string) {
 	var body bytes.Buffer
-	var flagRegs []string
+	var allFlagRegs []string
 
-	// Constructor params as flags too.
+	// Constructor params.
 	if ti.constructor != nil {
-		for _, p := range ti.constructor.params {
-			getter := isCLIType(p.goType)
-			flagName := "ctor-" + kebabCase(p.name)
-			regMethod := flagRegister(p.goType)
-			defVal := flagDefault(p.goType)
-			flagRegs = append(flagRegs, fmt.Sprintf("\t%s.Flags().%s(%q, %s, \"constructor: %s\")\n",
-				cmdVar, regMethod, flagName, defVal, p.name))
-
-			if p.goType == "uint16" {
-				fmt.Fprintf(&body, "\t\t%sRaw, _ := cmd.Flags().%s(%q)\n", "ctor"+camelCase(p.name), getter, flagName)
-				fmt.Fprintf(&body, "\t\t%s := uint16(%sRaw)\n", "ctor"+camelCase(p.name), "ctor"+camelCase(p.name))
-			} else {
-				fmt.Fprintf(&body, "\t\t%s, _ := cmd.Flags().%s(%q)\n", "ctor"+camelCase(p.name), getter, flagName)
-			}
-		}
+		ctorFlagRegs, ctorBody, ctorCallArgs := genParamCode(ti.constructor.params, cmdVar, "ctor", aliases, pkgRef)
+		allFlagRegs = append(allFlagRegs, ctorFlagRegs...)
+		body.WriteString(ctorBody)
+		_ = ctorCallArgs // used below
 	}
 
 	// Method params.
-	for _, p := range m.params {
-		getter := isCLIType(p.goType)
-		flagName := kebabCase(p.name)
-		regMethod := flagRegister(p.goType)
-		defVal := flagDefault(p.goType)
-		flagRegs = append(flagRegs, fmt.Sprintf("\t%s.Flags().%s(%q, %s, %q)\n",
-			cmdVar, regMethod, flagName, defVal, p.name))
-
-		if p.goType == "uint16" {
-			fmt.Fprintf(&body, "\t\t%sRaw, _ := cmd.Flags().%s(%q)\n", p.name, getter, flagName)
-			fmt.Fprintf(&body, "\t\t%s := uint16(%sRaw)\n", p.name, p.name)
-		} else {
-			fmt.Fprintf(&body, "\t\t%s, _ := cmd.Flags().%s(%q)\n", p.name, getter, flagName)
-		}
-	}
+	mFlagRegs, mBody, mCallArgs := genParamCode(m.params, cmdVar, "", aliases, pkgRef)
+	allFlagRegs = append(allFlagRegs, mFlagRegs...)
 
 	// Construct receiver.
 	if ti.constructor == nil {
-		// No constructor available — can't read flags either.
 		var stubBody bytes.Buffer
 		stubBody.WriteString("\t\tfmt.Println(\"requires external context (NativeActivity, JNI, etc.)\")\n")
 		stubBody.WriteString("\t\treturn nil\n")
 		return stubBody.String(), nil
 	}
 
-	ctorArgs := ctorParamNames(ti.constructor.params)
+	// Re-generate ctor call args from the ctor params.
+	_, _, ctorCallArgs := genParamCode(ti.constructor.params, cmdVar, "ctor", aliases, pkgRef)
 	ctorHasError := len(ti.constructor.returns) > 1 && ti.constructor.returns[len(ti.constructor.returns)-1].goType == "error"
 
 	if ctorHasError {
-		fmt.Fprintf(&body, "\t\tobj, err := %s.%s(%s)\n", pkgRef, ti.constructor.name, ctorArgs)
+		fmt.Fprintf(&body, "\t\tobj, err := %s.%s(%s)\n", pkgRef, ti.constructor.name, ctorCallArgs)
 		body.WriteString("\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n")
 	} else {
-		fmt.Fprintf(&body, "\t\tobj := %s.%s(%s)\n", pkgRef, ti.constructor.name, ctorArgs)
+		fmt.Fprintf(&body, "\t\tobj := %s.%s(%s)\n", pkgRef, ti.constructor.name, ctorCallArgs)
 	}
 	if ti.hasClose {
 		body.WriteString("\t\tdefer obj.Close()\n")
 	}
 
+	body.WriteString(mBody)
+
 	// Call method.
-	callArgs := paramNames(m.params)
 	hasError := len(m.returns) > 0 && m.returns[len(m.returns)-1].goType == "error"
 	hasResult := len(m.returns) > 0 && m.returns[0].goType != "error"
 
-	writeCall(&body, "obj."+m.name, callArgs, hasResult, hasError, ctorHasError)
+	writeCall(&body, "obj."+m.name, mCallArgs, hasResult, hasError, ctorHasError)
 
-	return body.String(), flagRegs
+	return body.String(), allFlagRegs
 }
 
 func writeCall(
@@ -763,22 +828,6 @@ func writeCall(
 		buf.WriteString("\t\tfmt.Println(\"ok\")\n")
 	}
 	buf.WriteString("\t\treturn nil\n")
-}
-
-func paramNames(params []paramInfo) string {
-	var names []string
-	for _, p := range params {
-		names = append(names, p.name)
-	}
-	return strings.Join(names, ", ")
-}
-
-func ctorParamNames(params []paramInfo) string {
-	var names []string
-	for _, p := range params {
-		names = append(names, "ctor"+camelCase(p.name))
-	}
-	return strings.Join(names, ", ")
 }
 
 func kebabCase(s string) string {

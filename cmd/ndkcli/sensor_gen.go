@@ -62,8 +62,8 @@ var sensorManagerDefaultSensorCmd = &cobra.Command{
 	Use:   "default-sensor",
 	Short: "Manager.DefaultSensor()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_type, _ := cmd.Flags().GetInt32("_type")
 		obj := sensor.GetInstance()
+		_type, _ := cmd.Flags().GetInt32("_type")
 		result := obj.DefaultSensor(_type)
 		fmt.Println(result)
 		return nil

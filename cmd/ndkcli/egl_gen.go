@@ -34,6 +34,17 @@ var eglGetCurrentDisplayCmd = &cobra.Command{
 	},
 }
 
+var eglGetCurrentSurfaceCmd = &cobra.Command{
+	Use:   "get-current-surface",
+	Short: "egl.GetCurrentSurface()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		readdraw, _ := cmd.Flags().GetInt32("readdraw")
+		result := egl.GetCurrentSurface(egl.Int(readdraw))
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var eglGetErrorCmd = &cobra.Command{
 	Use:   "get-error",
 	Short: "egl.GetError()",
@@ -74,12 +85,27 @@ var eglWaitGLCmd = &cobra.Command{
 	},
 }
 
+var eglWaitNativeCmd = &cobra.Command{
+	Use:   "wait-native",
+	Short: "egl.WaitNative()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		engine, _ := cmd.Flags().GetInt32("engine")
+		result := egl.WaitNative(egl.Int(engine))
+		fmt.Println(result)
+		return nil
+	},
+}
+
 func init() {
+	eglGetCurrentSurfaceCmd.Flags().Int32("readdraw", 0, "readdraw")
+	eglWaitNativeCmd.Flags().Int32("engine", 0, "engine")
 	eglCmd.AddCommand(eglGetCurrentContextCmd)
 	eglCmd.AddCommand(eglGetCurrentDisplayCmd)
+	eglCmd.AddCommand(eglGetCurrentSurfaceCmd)
 	eglCmd.AddCommand(eglGetErrorCmd)
 	eglCmd.AddCommand(eglQueryAPICmd)
 	eglCmd.AddCommand(eglReleaseThreadCmd)
 	eglCmd.AddCommand(eglWaitGLCmd)
+	eglCmd.AddCommand(eglWaitNativeCmd)
 	rootCmd.AddCommand(eglCmd)
 }

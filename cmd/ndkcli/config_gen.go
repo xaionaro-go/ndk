@@ -39,9 +39,9 @@ var configConfigCountryCmd = &cobra.Command{
 	Use:   "country",
 	Short: "Config.Country()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		outCountry, _ := cmd.Flags().GetString("out-country")
 		obj := config.NewConfig()
 		defer obj.Close()
+		outCountry, _ := cmd.Flags().GetString("out-country")
 		obj.Country(outCountry)
 		fmt.Println("ok")
 		return nil
@@ -64,9 +64,9 @@ var configConfigLanguageCmd = &cobra.Command{
 	Use:   "language",
 	Short: "Config.Language()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		outLanguage, _ := cmd.Flags().GetString("out-language")
 		obj := config.NewConfig()
 		defer obj.Close()
+		outLanguage, _ := cmd.Flags().GetString("out-language")
 		obj.Language(outLanguage)
 		fmt.Println("ok")
 		return nil

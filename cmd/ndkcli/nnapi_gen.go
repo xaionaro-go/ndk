@@ -120,6 +120,15 @@ var nnapiExecutionComputeCmd = &cobra.Command{
 	},
 }
 
+var nnapiExecutionGetDurationCmd = &cobra.Command{
+	Use:   "get-duration",
+	Short: "Execution.GetDuration()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var nnapiExecutionSetMeasureTimingCmd = &cobra.Command{
 	Use:   "set-measure-timing",
 	Short: "Execution.SetMeasureTiming()",
@@ -197,16 +206,40 @@ var nnapiModelFinishCmd = &cobra.Command{
 	},
 }
 
-var nnapiModelRelaxFloat32toFloat16Cmd = &cobra.Command{
-	Use:   "relax-float32to-float16",
-	Short: "Model.RelaxFloat32toFloat16()",
+var nnapiModelIdentifyInputsAndOutputsCmd = &cobra.Command{
+	Use:   "identify-inputs-and-outputs",
+	Short: "Model.IdentifyInputsAndOutputs()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		allow, _ := cmd.Flags().GetBool("allow")
 		obj, err := nnapi.NewModel()
 		if err != nil {
 			return err
 		}
 		defer obj.Close()
+		inputCount, _ := cmd.Flags().GetUint32("input-count")
+		var inputs uint32
+		outputCount, _ := cmd.Flags().GetUint32("output-count")
+		var outputs uint32
+		// output param inputs printed below
+		// output param outputs printed below
+		err = obj.IdentifyInputsAndOutputs(inputCount, &inputs, outputCount, &outputs)
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var nnapiModelRelaxFloat32toFloat16Cmd = &cobra.Command{
+	Use:   "relax-float32to-float16",
+	Short: "Model.RelaxFloat32toFloat16()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := nnapi.NewModel()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		allow, _ := cmd.Flags().GetBool("allow")
 		err = obj.RelaxFloat32toFloat16(allow)
 		if err != nil {
 			return err
@@ -217,6 +250,8 @@ var nnapiModelRelaxFloat32toFloat16Cmd = &cobra.Command{
 }
 
 func init() {
+	nnapiModelIdentifyInputsAndOutputsCmd.Flags().Uint32("input-count", 0, "inputCount")
+	nnapiModelIdentifyInputsAndOutputsCmd.Flags().Uint32("output-count", 0, "outputCount")
 	nnapiModelRelaxFloat32toFloat16Cmd.Flags().Bool("allow", false, "allow")
 	nnapiCmd.AddCommand(nnapiCompilationCmd)
 	nnapiCmd.AddCommand(nnapiErrorCmd)
@@ -232,12 +267,14 @@ func init() {
 	nnapiErrorCmd.AddCommand(nnapiErrorErrorCmd)
 	nnapiEventCmd.AddCommand(nnapiEventWaitCmd)
 	nnapiExecutionCmd.AddCommand(nnapiExecutionComputeCmd)
+	nnapiExecutionCmd.AddCommand(nnapiExecutionGetDurationCmd)
 	nnapiExecutionCmd.AddCommand(nnapiExecutionSetMeasureTimingCmd)
 	nnapiExecutionCmd.AddCommand(nnapiExecutionSetTimeoutCmd)
 	nnapiExecutionCmd.AddCommand(nnapiExecutionStartComputeCmd)
 	nnapiModelCmd.AddCommand(nnapiModelNewCmd)
 	nnapiModelCmd.AddCommand(nnapiModelNewCompilationCmd)
 	nnapiModelCmd.AddCommand(nnapiModelFinishCmd)
+	nnapiModelCmd.AddCommand(nnapiModelIdentifyInputsAndOutputsCmd)
 	nnapiModelCmd.AddCommand(nnapiModelRelaxFloat32toFloat16Cmd)
 	rootCmd.AddCommand(nnapiCmd)
 }

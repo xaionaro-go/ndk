@@ -34,6 +34,11 @@ var mediaFormatCmd = &cobra.Command{
 	Short: "Format operations",
 }
 
+var mediaImageCmd = &cobra.Command{
+	Use:   "image",
+	Short: "Image operations",
+}
+
 var mediaImageReaderCmd = &cobra.Command{
 	Use:   "image-reader",
 	Short: "ImageReader operations",
@@ -150,9 +155,9 @@ var mediaExtractorSelectTrackCmd = &cobra.Command{
 	Use:   "select-track",
 	Short: "Extractor.SelectTrack()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idx, _ := cmd.Flags().GetUint64("idx")
 		obj := media.NewExtractor()
 		defer obj.Close()
+		idx, _ := cmd.Flags().GetUint64("idx")
 		err := obj.SelectTrack(idx)
 		if err != nil {
 			return err
@@ -173,14 +178,29 @@ var mediaFormatNewCmd = &cobra.Command{
 	},
 }
 
+var mediaFormatGetInt32Cmd = &cobra.Command{
+	Use:   "get-int32",
+	Short: "Format.GetInt32()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		var out int32
+		// output param out printed below
+		result := obj.GetInt32(name, &out)
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var mediaFormatSetInt32Cmd = &cobra.Command{
 	Use:   "set-int32",
 	Short: "Format.SetInt32()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		name, _ := cmd.Flags().GetString("name")
-		value, _ := cmd.Flags().GetInt32("value")
 		obj := media.NewFormat()
 		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		value, _ := cmd.Flags().GetInt32("value")
 		result := obj.SetInt32(name, value)
 		fmt.Println(result)
 		return nil
@@ -191,12 +211,75 @@ var mediaFormatSetStringCmd = &cobra.Command{
 	Use:   "set-string",
 	Short: "Format.SetString()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		name, _ := cmd.Flags().GetString("name")
-		value, _ := cmd.Flags().GetString("value")
 		obj := media.NewFormat()
 		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		value, _ := cmd.Flags().GetString("value")
 		result := obj.SetString(name, value)
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaImageFormatCmd = &cobra.Command{
+	Use:   "format",
+	Short: "Image.Format()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageHeightCmd = &cobra.Command{
+	Use:   "height",
+	Short: "Image.Height()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageNumberOfPlanesCmd = &cobra.Command{
+	Use:   "number-of-planes",
+	Short: "Image.NumberOfPlanes()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImagePlanePixelStrideCmd = &cobra.Command{
+	Use:   "plane-pixel-stride",
+	Short: "Image.PlanePixelStride()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImagePlaneRowStrideCmd = &cobra.Command{
+	Use:   "plane-row-stride",
+	Short: "Image.PlaneRowStride()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageTimestampCmd = &cobra.Command{
+	Use:   "timestamp",
+	Short: "Image.Timestamp()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageWidthCmd = &cobra.Command{
+	Use:   "width",
+	Short: "Image.Width()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
 	},
 }
@@ -213,6 +296,42 @@ var mediaImageReaderAcquireLatestImageCmd = &cobra.Command{
 var mediaImageReaderAcquireNextImageCmd = &cobra.Command{
 	Use:   "acquire-next-image",
 	Short: "ImageReader.AcquireNextImage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageReaderFormatCmd = &cobra.Command{
+	Use:   "format",
+	Short: "ImageReader.Format()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageReaderHeightCmd = &cobra.Command{
+	Use:   "height",
+	Short: "ImageReader.Height()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageReaderMaxImagesCmd = &cobra.Command{
+	Use:   "max-images",
+	Short: "ImageReader.MaxImages()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImageReaderWidthCmd = &cobra.Command{
+	Use:   "width",
+	Short: "ImageReader.Width()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -250,6 +369,7 @@ func init() {
 	mediaNewDecoderCmd.Flags().String("mime_type", "", "mime_type")
 	mediaNewEncoderCmd.Flags().String("mime_type", "", "mime_type")
 	mediaExtractorSelectTrackCmd.Flags().Uint64("idx", 0, "idx")
+	mediaFormatGetInt32Cmd.Flags().String("name", "", "name")
 	mediaFormatSetInt32Cmd.Flags().String("name", "", "name")
 	mediaFormatSetInt32Cmd.Flags().Int32("value", 0, "value")
 	mediaFormatSetStringCmd.Flags().String("name", "", "name")
@@ -258,6 +378,7 @@ func init() {
 	mediaCmd.AddCommand(mediaErrorCmd)
 	mediaCmd.AddCommand(mediaExtractorCmd)
 	mediaCmd.AddCommand(mediaFormatCmd)
+	mediaCmd.AddCommand(mediaImageCmd)
 	mediaCmd.AddCommand(mediaImageReaderCmd)
 	mediaCmd.AddCommand(mediaMuxerCmd)
 	mediaCmd.AddCommand(mediaNewDecoderCmd)
@@ -272,10 +393,22 @@ func init() {
 	mediaExtractorCmd.AddCommand(mediaExtractorTrackCountCmd)
 	mediaExtractorCmd.AddCommand(mediaExtractorSelectTrackCmd)
 	mediaFormatCmd.AddCommand(mediaFormatNewCmd)
+	mediaFormatCmd.AddCommand(mediaFormatGetInt32Cmd)
 	mediaFormatCmd.AddCommand(mediaFormatSetInt32Cmd)
 	mediaFormatCmd.AddCommand(mediaFormatSetStringCmd)
+	mediaImageCmd.AddCommand(mediaImageFormatCmd)
+	mediaImageCmd.AddCommand(mediaImageHeightCmd)
+	mediaImageCmd.AddCommand(mediaImageNumberOfPlanesCmd)
+	mediaImageCmd.AddCommand(mediaImagePlanePixelStrideCmd)
+	mediaImageCmd.AddCommand(mediaImagePlaneRowStrideCmd)
+	mediaImageCmd.AddCommand(mediaImageTimestampCmd)
+	mediaImageCmd.AddCommand(mediaImageWidthCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderAcquireLatestImageCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderAcquireNextImageCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderFormatCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderHeightCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderMaxImagesCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderWidthCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderWindowCmd)
 	mediaMuxerCmd.AddCommand(mediaMuxerStartCmd)
 	mediaMuxerCmd.AddCommand(mediaMuxerStopCmd)

@@ -33,7 +33,7 @@ var binderprocessStartThreadPoolCmd = &cobra.Command{
 	Use:   "start-thread-pool",
 	Short: "binderprocess.StartThreadPool()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		threads, _ := cmd.Flags().GetInt("threads")
+		threads, _ := cmd.Flags().GetInt32("threads")
 		err := binderprocess.StartThreadPool(threads)
 		if err != nil {
 			return err
@@ -71,7 +71,7 @@ var binderprocessErrSymbolStartThreadPoolErrorCmd = &cobra.Command{
 }
 
 func init() {
-	binderprocessStartThreadPoolCmd.Flags().Int("threads", 0, "threads")
+	binderprocessStartThreadPoolCmd.Flags().Int32("threads", 0, "threads")
 	binderprocessCmd.AddCommand(binderprocessErrDLOpenLibbinderNDKCmd)
 	binderprocessCmd.AddCommand(binderprocessErrSymbolSetThreadPoolMaxCmd)
 	binderprocessCmd.AddCommand(binderprocessErrSymbolStartThreadPoolCmd)

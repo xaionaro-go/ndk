@@ -18,33 +18,6 @@ var androidAppCmd = &cobra.Command{
 	Short: "App operations",
 }
 
-var androidAppActivityCmd = &cobra.Command{
-	Use:   "activity",
-	Short: "App.Activity()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
-var androidAppWindowCmd = &cobra.Command{
-	Use:   "window",
-	Short: "App.Window()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
-var androidAppWindowSizeCmd = &cobra.Command{
-	Use:   "window-size",
-	Short: "App.WindowSize()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
 var androidAppHasPermissionCmd = &cobra.Command{
 	Use:   "has-permission",
 	Short: "App.HasPermission()",
@@ -81,14 +54,41 @@ var androidAppFillWindowColorCmd = &cobra.Command{
 	},
 }
 
+var androidAppActivityCmd = &cobra.Command{
+	Use:   "activity",
+	Short: "App.Activity()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var androidAppWindowCmd = &cobra.Command{
+	Use:   "window",
+	Short: "App.Window()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var androidAppWindowSizeCmd = &cobra.Command{
+	Use:   "window-size",
+	Short: "App.WindowSize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 func init() {
 	androidCmd.AddCommand(androidAppCmd)
-	androidAppCmd.AddCommand(androidAppActivityCmd)
-	androidAppCmd.AddCommand(androidAppWindowCmd)
-	androidAppCmd.AddCommand(androidAppWindowSizeCmd)
 	androidAppCmd.AddCommand(androidAppHasPermissionCmd)
 	androidAppCmd.AddCommand(androidAppRequestPermissionCmd)
 	androidAppCmd.AddCommand(androidAppShowToastCmd)
 	androidAppCmd.AddCommand(androidAppFillWindowColorCmd)
+	androidAppCmd.AddCommand(androidAppActivityCmd)
+	androidAppCmd.AddCommand(androidAppWindowCmd)
+	androidAppCmd.AddCommand(androidAppWindowSizeCmd)
 	rootCmd.AddCommand(androidCmd)
 }

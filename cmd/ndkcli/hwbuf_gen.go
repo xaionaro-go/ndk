@@ -37,6 +37,15 @@ var hwbufBufferAcquireCmd = &cobra.Command{
 	},
 }
 
+var hwbufBufferUnlockCmd = &cobra.Command{
+	Use:   "unlock",
+	Short: "Buffer.Unlock()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var hwbufErrorErrorCmd = &cobra.Command{
 	Use:   "error",
 	Short: "Error.Error()",
@@ -60,6 +69,7 @@ func init() {
 	hwbufCmd.AddCommand(hwbufErrorCmd)
 	hwbufCmd.AddCommand(hwbufFormatCmd)
 	hwbufBufferCmd.AddCommand(hwbufBufferAcquireCmd)
+	hwbufBufferCmd.AddCommand(hwbufBufferUnlockCmd)
 	hwbufErrorCmd.AddCommand(hwbufErrorErrorCmd)
 	hwbufFormatCmd.AddCommand(hwbufFormatStringCmd)
 	rootCmd.AddCommand(hwbufCmd)

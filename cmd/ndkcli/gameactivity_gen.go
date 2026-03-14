@@ -122,9 +122,36 @@ var gameactivityActivitySetWindowFlagsCmd = &cobra.Command{
 	},
 }
 
+var gameactivityActivityShowSoftInputCmd = &cobra.Command{
+	Use:   "show-soft-input",
+	Short: "Activity.ShowSoftInput()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var gameactivityActivityHideSoftInputCmd = &cobra.Command{
+	Use:   "hide-soft-input",
+	Short: "Activity.HideSoftInput()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var gameactivityActivitySetImeEditorInfoCmd = &cobra.Command{
 	Use:   "set-ime-editor-info",
 	Short: "Activity.SetImeEditorInfo()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var gameactivityActivityGetWindowInsetsCmd = &cobra.Command{
+	Use:   "get-window-insets",
+	Short: "Activity.GetWindowInsets()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -163,7 +190,10 @@ func init() {
 	gameactivityActivityCmd.AddCommand(gameactivityActivityInstanceCmd)
 	gameactivityActivityCmd.AddCommand(gameactivityActivityFinishCmd)
 	gameactivityActivityCmd.AddCommand(gameactivityActivitySetWindowFlagsCmd)
+	gameactivityActivityCmd.AddCommand(gameactivityActivityShowSoftInputCmd)
+	gameactivityActivityCmd.AddCommand(gameactivityActivityHideSoftInputCmd)
 	gameactivityActivityCmd.AddCommand(gameactivityActivitySetImeEditorInfoCmd)
+	gameactivityActivityCmd.AddCommand(gameactivityActivityGetWindowInsetsCmd)
 	gameactivityPointerAxesCmd.AddCommand(gameactivityPointerAxesXCmd)
 	gameactivityPointerAxesCmd.AddCommand(gameactivityPointerAxesYCmd)
 	rootCmd.AddCommand(gameactivityCmd)
