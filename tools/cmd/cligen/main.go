@@ -338,8 +338,10 @@ func isCLIType(goType string) string {
 	switch goType {
 	case "string":
 		return "GetString"
-	case "int32", "int":
+	case "int32":
 		return "GetInt32"
+	case "int":
+		return "GetInt"
 	case "int64":
 		return "GetInt64"
 	case "uint16":
@@ -367,8 +369,10 @@ func flagRegister(goType string) string {
 	switch goType {
 	case "string":
 		return "String"
-	case "int32", "int":
+	case "int32":
 		return "Int32"
+	case "int":
+		return "Int"
 	case "int64":
 		return "Int64"
 	case "uint16":
@@ -672,7 +676,13 @@ func genParamCode(
 
 		// If the original type differs from resolved, cast.
 		if p.goType != resolved && !strings.HasPrefix(p.goType, "*") {
-			callArgs = append(callArgs, pkgRef+"."+p.goType+"("+varName+")")
+			if isPrimitive(p.goType) {
+				// Builtin type (uint16, int, etc.) — direct cast.
+				callArgs = append(callArgs, p.goType+"("+varName+")")
+			} else {
+				// Package-defined type — qualified cast.
+				callArgs = append(callArgs, pkgRef+"."+p.goType+"("+varName+")")
+			}
 		} else {
 			callArgs = append(callArgs, varName)
 		}

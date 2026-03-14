@@ -18,6 +18,24 @@ var androidAppCmd = &cobra.Command{
 	Short: "App operations",
 }
 
+var androidAppHasPermissionCmd = &cobra.Command{
+	Use:   "has-permission",
+	Short: "App.HasPermission()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var androidAppRequestPermissionCmd = &cobra.Command{
+	Use:   "request-permission",
+	Short: "App.RequestPermission()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var androidAppShowToastCmd = &cobra.Command{
 	Use:   "show-toast",
 	Short: "App.ShowToast()",
@@ -63,32 +81,14 @@ var androidAppWindowSizeCmd = &cobra.Command{
 	},
 }
 
-var androidAppHasPermissionCmd = &cobra.Command{
-	Use:   "has-permission",
-	Short: "App.HasPermission()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
-var androidAppRequestPermissionCmd = &cobra.Command{
-	Use:   "request-permission",
-	Short: "App.RequestPermission()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
 func init() {
 	androidCmd.AddCommand(androidAppCmd)
+	androidAppCmd.AddCommand(androidAppHasPermissionCmd)
+	androidAppCmd.AddCommand(androidAppRequestPermissionCmd)
 	androidAppCmd.AddCommand(androidAppShowToastCmd)
 	androidAppCmd.AddCommand(androidAppFillWindowColorCmd)
 	androidAppCmd.AddCommand(androidAppActivityCmd)
 	androidAppCmd.AddCommand(androidAppWindowCmd)
 	androidAppCmd.AddCommand(androidAppWindowSizeCmd)
-	androidAppCmd.AddCommand(androidAppHasPermissionCmd)
-	androidAppCmd.AddCommand(androidAppRequestPermissionCmd)
 	rootCmd.AddCommand(androidCmd)
 }

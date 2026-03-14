@@ -174,6 +174,15 @@ var inputMotionActionStringCmd = &cobra.Command{
 	},
 }
 
+var inputQueueGetEventCmd = &cobra.Command{
+	Use:   "get-event",
+	Short: "Queue.GetEvent()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var inputQueueDetachLooperCmd = &cobra.Command{
 	Use:   "detach-looper",
 	Short: "Queue.DetachLooper()",
@@ -186,15 +195,6 @@ var inputQueueDetachLooperCmd = &cobra.Command{
 var inputQueueHasEventsCmd = &cobra.Command{
 	Use:   "has-events",
 	Short: "Queue.HasEvents()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
-		return nil
-	},
-}
-
-var inputQueueGetEventCmd = &cobra.Command{
-	Use:   "get-event",
-	Short: "Queue.GetEvent()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -232,9 +232,9 @@ func init() {
 	inputEventTypeCmd2.AddCommand(inputEventTypeStringCmd)
 	inputKeyActionCmd.AddCommand(inputKeyActionStringCmd)
 	inputMotionActionCmd.AddCommand(inputMotionActionStringCmd)
+	inputQueueCmd.AddCommand(inputQueueGetEventCmd)
 	inputQueueCmd.AddCommand(inputQueueDetachLooperCmd)
 	inputQueueCmd.AddCommand(inputQueueHasEventsCmd)
-	inputQueueCmd.AddCommand(inputQueueGetEventCmd)
 	inputSourceCmd.AddCommand(inputSourceStringCmd)
 	rootCmd.AddCommand(inputCmd)
 }
