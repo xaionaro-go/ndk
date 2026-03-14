@@ -1031,3 +1031,222 @@ func TestMerge_ReturnsFrames(t *testing.T) {
 		t.Error("ReturnsFrames = false, want true")
 	}
 }
+
+func TestMerge_OutputParams_Method(t *testing.T) {
+	spec := specmodel.Spec{
+		Module:        "media",
+		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		Types: map[string]specmodel.TypeDef{
+			"AImageReader": {Kind: "opaque_ptr", CType: "AImageReader", GoType: "*C.AImageReader"},
+			"AImage":       {Kind: "opaque_ptr", CType: "AImage", GoType: "*C.AImage"},
+		},
+		Functions: map[string]specmodel.FuncDef{
+			"AImageReader_acquireNextImage": {
+				CName: "AImageReader_acquireNextImage",
+				Params: []specmodel.Param{
+					{Name: "reader", Type: "*AImageReader"},
+					{Name: "image", Type: "**AImage", Direction: "out"},
+				},
+				Returns: "media_status_t",
+			},
+		},
+	}
+	overlay := overlaymodel.Overlay{
+		Module: "media",
+		Package: overlaymodel.PackageOverlay{
+			GoName:   "media",
+			GoImport: "github.com/xaionaro-go/ndk/media",
+		},
+		Types: map[string]overlaymodel.TypeOverlay{
+			"AImageReader": {GoName: "ImageReader"},
+			"AImage":       {GoName: "Image"},
+		},
+		Functions: map[string]overlaymodel.FuncOverlay{
+			"AImageReader_acquireNextImage": {
+				Receiver: "ImageReader",
+				GoName:   "AcquireNextImage",
+				OutputParams: map[string]string{
+					"image": "*Image",
+				},
+			},
+		},
+	}
+	merged := idiomgen.Merge(spec, overlay)
+	if len(merged.Methods) != 1 {
+		t.Fatalf("Methods count = %d, want 1", len(merged.Methods))
+	}
+	m := merged.Methods[0]
+	if m.GoName != "AcquireNextImage" {
+		t.Errorf("GoName = %q, want %q", m.GoName, "AcquireNextImage")
+	}
+	if len(m.OutputParams) != 1 {
+		t.Fatalf("OutputParams count = %d, want 1", len(m.OutputParams))
+	}
+	op := m.OutputParams[0]
+	if op.CParamName != "image" {
+		t.Errorf("CParamName = %q, want %q", op.CParamName, "image")
+	}
+	if op.GoType != "*Image" {
+		t.Errorf("GoType = %q, want %q", op.GoType, "*Image")
+	}
+	if op.CapiType != "*capi.AImage" {
+		t.Errorf("CapiType = %q, want %q", op.CapiType, "*capi.AImage")
+	}
+	if !op.IsHandle {
+		t.Error("IsHandle = false, want true")
+	}
+	// The image param should be marked as "out" so it's filtered from visible params.
+	foundOut := false
+	for _, p := range m.Params {
+		if p.Name == "image" && p.Direction == "out" {
+			foundOut = true
+		}
+	}
+	if !foundOut {
+		t.Error("output param 'image' not marked as direction=out")
+	}
+}
+
+func TestMerge_OutputParams_FreeFunction(t *testing.T) {
+	spec := specmodel.Spec{
+		Module:        "media",
+		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		Types: map[string]specmodel.TypeDef{
+			"AImageReader": {Kind: "opaque_ptr", CType: "AImageReader", GoType: "*C.AImageReader"},
+		},
+		Functions: map[string]specmodel.FuncDef{
+			"AImageReader_new": {
+				CName: "AImageReader_new",
+				Params: []specmodel.Param{
+					{Name: "width", Type: "int32"},
+					{Name: "height", Type: "int32"},
+					{Name: "format", Type: "int32"},
+					{Name: "maxImages", Type: "int32"},
+					{Name: "reader", Type: "**AImageReader", Direction: "out"},
+				},
+				Returns: "media_status_t",
+			},
+		},
+	}
+	overlay := overlaymodel.Overlay{
+		Module: "media",
+		Package: overlaymodel.PackageOverlay{
+			GoName:   "media",
+			GoImport: "github.com/xaionaro-go/ndk/media",
+		},
+		Types: map[string]overlaymodel.TypeOverlay{
+			"AImageReader": {GoName: "ImageReader"},
+		},
+		Functions: map[string]overlaymodel.FuncOverlay{
+			"AImageReader_new": {
+				GoName:     "NewImageReader",
+				ReturnsNew: "ImageReader",
+				OutputParams: map[string]string{
+					"reader": "*ImageReader",
+				},
+			},
+		},
+	}
+	merged := idiomgen.Merge(spec, overlay)
+	if len(merged.FreeFunctions) != 1 {
+		t.Fatalf("FreeFunctions count = %d, want 1", len(merged.FreeFunctions))
+	}
+	f := merged.FreeFunctions[0]
+	if f.GoName != "NewImageReader" {
+		t.Errorf("GoName = %q, want %q", f.GoName, "NewImageReader")
+	}
+	if f.ReturnsNew != "ImageReader" {
+		t.Errorf("ReturnsNew = %q, want %q", f.ReturnsNew, "ImageReader")
+	}
+	if len(f.OutputParams) != 1 {
+		t.Fatalf("OutputParams count = %d, want 1", len(f.OutputParams))
+	}
+	op := f.OutputParams[0]
+	if op.CParamName != "reader" {
+		t.Errorf("CParamName = %q, want %q", op.CParamName, "reader")
+	}
+	if op.GoType != "*ImageReader" {
+		t.Errorf("GoType = %q, want %q", op.GoType, "*ImageReader")
+	}
+	if !op.IsHandle {
+		t.Error("IsHandle = false, want true")
+	}
+}
+
+func TestMerge_OutputParams_ScalarTypes(t *testing.T) {
+	spec := specmodel.Spec{
+		Module:        "media",
+		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		Types: map[string]specmodel.TypeDef{
+			"AImage": {Kind: "opaque_ptr", CType: "AImage", GoType: "*C.AImage"},
+		},
+		Functions: map[string]specmodel.FuncDef{
+			"AImage_getPlaneData": {
+				CName: "AImage_getPlaneData",
+				Params: []specmodel.Param{
+					{Name: "image", Type: "*AImage"},
+					{Name: "planeIdx", Type: "int32"},
+					{Name: "data", Type: "**uint8", Direction: "out"},
+					{Name: "dataLength", Type: "*int32"},
+				},
+				Returns: "media_status_t",
+			},
+		},
+	}
+	overlay := overlaymodel.Overlay{
+		Module: "media",
+		Package: overlaymodel.PackageOverlay{
+			GoName:   "media",
+			GoImport: "github.com/xaionaro-go/ndk/media",
+		},
+		Types: map[string]overlaymodel.TypeOverlay{
+			"AImage": {GoName: "Image"},
+		},
+		Functions: map[string]overlaymodel.FuncOverlay{
+			"AImage_getPlaneData": {
+				Receiver: "Image",
+				GoName:   "PlaneData",
+				OutputParams: map[string]string{
+					"data":       "*uint8",
+					"dataLength": "int32",
+				},
+			},
+		},
+	}
+	merged := idiomgen.Merge(spec, overlay)
+	if len(merged.Methods) != 1 {
+		t.Fatalf("Methods count = %d, want 1", len(merged.Methods))
+	}
+	m := merged.Methods[0]
+	if len(m.OutputParams) != 2 {
+		t.Fatalf("OutputParams count = %d, want 2", len(m.OutputParams))
+	}
+	// data: **uint8 -> local var *uint8, scalar pointer
+	dataOp := m.OutputParams[0]
+	if dataOp.CParamName != "data" {
+		t.Errorf("OutputParams[0].CParamName = %q, want %q", dataOp.CParamName, "data")
+	}
+	if dataOp.GoType != "*uint8" {
+		t.Errorf("OutputParams[0].GoType = %q, want %q", dataOp.GoType, "*uint8")
+	}
+	if dataOp.CapiType != "*uint8" {
+		t.Errorf("OutputParams[0].CapiType = %q, want %q", dataOp.CapiType, "*uint8")
+	}
+	if dataOp.IsHandle {
+		t.Error("OutputParams[0].IsHandle = true, want false")
+	}
+	// dataLength: *int32 -> local var int32, scalar value
+	lenOp := m.OutputParams[1]
+	if lenOp.CParamName != "dataLength" {
+		t.Errorf("OutputParams[1].CParamName = %q, want %q", lenOp.CParamName, "dataLength")
+	}
+	if lenOp.GoType != "int32" {
+		t.Errorf("OutputParams[1].GoType = %q, want %q", lenOp.GoType, "int32")
+	}
+	if lenOp.CapiType != "int32" {
+		t.Errorf("OutputParams[1].CapiType = %q, want %q", lenOp.CapiType, "int32")
+	}
+	if lenOp.IsHandle {
+		t.Error("OutputParams[1].IsHandle = true, want false")
+	}
+}

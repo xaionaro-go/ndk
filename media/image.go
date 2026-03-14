@@ -48,6 +48,17 @@ func (h *Image) NumberOfPlanes(numPlanes *int32) error {
 	return result(int32(capi.AImage_getNumberOfPlanes(h.ptr, numPlanes)))
 }
 
+// PlaneData calls the underlying NDK function.
+func (h *Image) PlaneData(planeIdx int32) (*uint8, int32, error) {
+	var dataPtr *uint8
+	var dataLengthPtr int32
+	ret := capi.AImage_getPlaneData(h.ptr, planeIdx, &dataPtr, &dataLengthPtr)
+	if err := result(int32(ret)); err != nil {
+		return nil, 0, err
+	}
+	return dataPtr, dataLengthPtr, nil
+}
+
 // PlanePixelStride calls the underlying NDK function.
 func (h *Image) PlanePixelStride(planeIdx int32, pixelStride *int32) error {
 	return result(int32(capi.AImage_getPlanePixelStride(h.ptr, planeIdx, pixelStride)))

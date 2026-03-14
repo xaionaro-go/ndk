@@ -409,6 +409,139 @@ func TestRenderPerTypeFile(t *testing.T) {
 	}
 }
 
+func TestRenderPerTypeFile_OutputParams(t *testing.T) {
+	_, thisFile, _, ok := runtime.Caller(0)
+	if !ok {
+		t.Fatal("runtime.Caller failed")
+	}
+	tmplPath := filepath.Join(filepath.Dir(thisFile), "..", "..", "..", "templates", "type_file.go.tmpl")
+
+	data := idiomgen.PerTypeData{
+		PackageName:   "media",
+		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		Type: idiomgen.MergedOpaqueType{
+			GoName:     "ImageReader",
+			CapiType:   "AImageReader",
+			Destructor: "AImageReader_delete",
+		},
+		Methods: []idiomgen.MergedMethod{
+			{
+				GoName:       "AcquireNextImage",
+				CName:        "AImageReader_acquireNextImage",
+				ReceiverType: "ImageReader",
+				Params: []idiomgen.MergedParam{
+					{Name: "image", GoType: "**Image", Direction: "out"},
+				},
+				OutputParams: []idiomgen.MergedOutputParam{
+					{CParamName: "image", GoType: "*Image", CapiType: "*capi.AImage", IsHandle: true},
+				},
+			},
+		},
+		FreeFunctions: []idiomgen.MergedFreeFunction{
+			{
+				GoName:     "NewImageReader",
+				CName:      "AImageReader_new",
+				ReturnsNew: "ImageReader",
+				Params: []idiomgen.MergedParam{
+					{Name: "width", GoType: "int32"},
+					{Name: "height", GoType: "int32"},
+					{Name: "reader", GoType: "**ImageReader", Direction: "out"},
+				},
+				OutputParams: []idiomgen.MergedOutputParam{
+					{CParamName: "reader", GoType: "*ImageReader", CapiType: "*capi.AImageReader", IsHandle: true},
+				},
+			},
+		},
+		OpaqueTypes: map[string]idiomgen.MergedOpaqueType{
+			"ImageReader": {CapiType: "AImageReader"},
+			"Image":       {CapiType: "AImage"},
+		},
+	}
+
+	out, err := idiomgen.RenderPerType(tmplPath, data)
+	if err != nil {
+		t.Fatalf("RenderPerType: %v", err)
+	}
+
+	for _, want := range []string{
+		// Method with output_params
+		"func (h *ImageReader) AcquireNextImage() (*Image, error)",
+		"var imagePtr *capi.AImage",
+		"ret := capi.AImageReader_acquireNextImage(h.ptr, &imagePtr)",
+		"return nil, err",
+		"return &Image{ptr: imagePtr}, nil",
+		// Free function with output_params
+		"func NewImageReader(width int32, height int32) (*ImageReader, error)",
+		"var readerPtr *capi.AImageReader",
+		"ret := capi.AImageReader_new(width, height, &readerPtr)",
+		"return &ImageReader{ptr: readerPtr}, nil",
+	} {
+		if !strings.Contains(out, want) {
+			t.Errorf("output missing %q\n\ngot:\n%s", want, out)
+		}
+	}
+
+	// Verify output params are excluded from Go signature.
+	if strings.Contains(out, "AcquireNextImage(image") {
+		t.Errorf("output param 'image' should NOT appear in method signature\n\ngot:\n%s", out)
+	}
+}
+
+func TestRenderPerTypeFile_OutputParams_Scalar(t *testing.T) {
+	_, thisFile, _, ok := runtime.Caller(0)
+	if !ok {
+		t.Fatal("runtime.Caller failed")
+	}
+	tmplPath := filepath.Join(filepath.Dir(thisFile), "..", "..", "..", "templates", "type_file.go.tmpl")
+
+	data := idiomgen.PerTypeData{
+		PackageName:   "media",
+		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		Type: idiomgen.MergedOpaqueType{
+			GoName:     "Image",
+			CapiType:   "AImage",
+			Destructor: "AImage_delete",
+		},
+		Methods: []idiomgen.MergedMethod{
+			{
+				GoName:       "PlaneData",
+				CName:        "AImage_getPlaneData",
+				ReceiverType: "Image",
+				Params: []idiomgen.MergedParam{
+					{Name: "planeIdx", GoType: "int32"},
+					{Name: "data", GoType: "*uint8", Direction: "out"},
+					{Name: "dataLength", GoType: "int32", Direction: "out"},
+				},
+				OutputParams: []idiomgen.MergedOutputParam{
+					{CParamName: "data", GoType: "*uint8", CapiType: "*uint8", IsHandle: false},
+					{CParamName: "dataLength", GoType: "int32", CapiType: "int32", IsHandle: false},
+				},
+			},
+		},
+		OpaqueTypes: map[string]idiomgen.MergedOpaqueType{
+			"Image": {CapiType: "AImage"},
+		},
+	}
+
+	out, err := idiomgen.RenderPerType(tmplPath, data)
+	if err != nil {
+		t.Fatalf("RenderPerType: %v", err)
+	}
+
+	for _, want := range []string{
+		"func (h *Image) PlaneData(planeIdx int32) (*uint8, int32, error)",
+		"var dataPtr *uint8",
+		"var dataLengthPtr int32",
+		"ret := capi.AImage_getPlaneData(h.ptr, planeIdx, &dataPtr, &dataLengthPtr)",
+		"return nil, 0, err",
+		"return dataPtr, dataLengthPtr, nil",
+	} {
+		if !strings.Contains(out, want) {
+			t.Errorf("output missing %q\n\ngot:\n%s", want, out)
+		}
+	}
+}
+
 func TestRenderFunctions(t *testing.T) {
 	_, thisFile, _, ok := runtime.Caller(0)
 	if !ok {

@@ -33,6 +33,26 @@ func (h *ImageReader) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// AcquireLatestImage calls the underlying NDK function.
+func (h *ImageReader) AcquireLatestImage() (*Image, error) {
+	var imagePtr *capi.AImage
+	ret := capi.AImageReader_acquireLatestImage(h.ptr, &imagePtr)
+	if err := result(int32(ret)); err != nil {
+		return nil, err
+	}
+	return &Image{ptr: imagePtr}, nil
+}
+
+// AcquireNextImage calls the underlying NDK function.
+func (h *ImageReader) AcquireNextImage() (*Image, error) {
+	var imagePtr *capi.AImage
+	ret := capi.AImageReader_acquireNextImage(h.ptr, &imagePtr)
+	if err := result(int32(ret)); err != nil {
+		return nil, err
+	}
+	return &Image{ptr: imagePtr}, nil
+}
+
 // Format calls the underlying NDK function.
 func (h *ImageReader) Format(format *int32) error {
 	return result(int32(capi.AImageReader_getFormat(h.ptr, format)))
@@ -51,4 +71,34 @@ func (h *ImageReader) MaxImages(maxImages *int32) error {
 // Width calls the underlying NDK function.
 func (h *ImageReader) Width(width *int32) error {
 	return result(int32(capi.AImageReader_getWidth(h.ptr, width)))
+}
+
+// Window calls the underlying NDK function.
+func (h *ImageReader) Window() (*Window, error) {
+	var windowPtr *capi.ANativeWindow
+	ret := capi.AImageReader_getWindow(h.ptr, &windowPtr)
+	if err := result(int32(ret)); err != nil {
+		return nil, err
+	}
+	return &Window{ptr: windowPtr}, nil
+}
+
+// NewImageReader calls the underlying C function.
+func NewImageReader(width int32, height int32, format int32, maxImages int32) (*ImageReader, error) {
+	var readerPtr *capi.AImageReader
+	ret := capi.AImageReader_new(width, height, format, maxImages, &readerPtr)
+	if err := result(int32(ret)); err != nil {
+		return nil, err
+	}
+	return &ImageReader{ptr: readerPtr}, nil
+}
+
+// NewImageReaderWithUsage calls the underlying C function.
+func NewImageReaderWithUsage(width int32, height int32, format int32, usage uint64, maxImages int32) (*ImageReader, error) {
+	var readerPtr *capi.AImageReader
+	ret := capi.AImageReader_newWithUsage(width, height, format, usage, maxImages, &readerPtr)
+	if err := result(int32(ret)); err != nil {
+		return nil, err
+	}
+	return &ImageReader{ptr: readerPtr}, nil
 }

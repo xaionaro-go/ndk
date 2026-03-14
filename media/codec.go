@@ -34,8 +34,8 @@ func (h *Codec) Pointer() unsafe.Pointer {
 }
 
 // Configure calls the underlying NDK function.
-func (h *Codec) Configure(format *Format, surface *ANativeWindow, crypto *Crypto, flags uint32) error {
-	return result(int32(capi.AMediaCodec_configure(h.ptr, format.ptr, (*capi.ANativeWindow)(surface), crypto.ptr, flags)))
+func (h *Codec) Configure(format *Format, surface *Window, crypto *Crypto, flags uint32) error {
+	return result(int32(capi.AMediaCodec_configure(h.ptr, format.ptr, surface.ptr, crypto.ptr, flags)))
 }
 
 // Flush calls the underlying NDK function.

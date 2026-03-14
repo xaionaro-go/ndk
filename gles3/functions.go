@@ -168,6 +168,11 @@ func GetQueryObjectuiv(id GLuint, pname GLenum, params *GLuint) {
 	capi.GlGetQueryObjectuiv(capi.GLuint(id), capi.GLenum(pname), (*capi.GLuint)(params))
 }
 
+// GetString calls the underlying C function.
+func GetString(name GLenum) *GLubyte {
+	return (*GLubyte)(capi.GlGetString(capi.GLenum(name)))
+}
+
 // GetStringi calls the underlying C function.
 func GetStringi(name GLenum, index GLuint) *GLubyte {
 	return (*GLubyte)(capi.GlGetStringi(capi.GLenum(name), capi.GLuint(index)))

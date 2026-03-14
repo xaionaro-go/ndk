@@ -766,6 +766,17 @@ func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOve
 		mm.CustomCall = mcc
 	}
 
+	// Resolve output_params: convert C output pointer params to Go return values.
+	if len(fov.OutputParams) > 0 {
+		mm.OutputParams = resolveOutputParams(fov.OutputParams, fd, opaqueSpecNames)
+		// Mark output params with direction "out" so skipAndFilterOut removes them.
+		for i := range mm.Params {
+			if _, isOutput := fov.OutputParams[mm.Params[i].Name]; isOutput {
+				mm.Params[i].Direction = "out"
+			}
+		}
+	}
+
 	if apiLevels != nil {
 		mm.APILevel = apiLevels[funcName]
 	}
@@ -855,11 +866,76 @@ func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.F
 		Returns:        returns,
 		CapiReturns:    fd.Returns,
 		IsHandleReturn: isHandleReturn,
+		ReturnsNew:     fov.ReturnsNew,
 	}
+
+	// Resolve output_params: convert C output pointer params to Go return values.
+	if len(fov.OutputParams) > 0 {
+		ff.OutputParams = resolveOutputParams(fov.OutputParams, fd, opaqueSpecNames)
+		// Mark output params with direction "out" so they are filtered from visible params.
+		for i := range ff.Params {
+			if _, isOutput := fov.OutputParams[ff.Params[i].Name]; isOutput {
+				ff.Params[i].Direction = "out"
+			}
+		}
+	}
+
 	if apiLevels != nil {
 		ff.APILevel = apiLevels[funcName]
 	}
 	return ff
+}
+
+// resolveOutputParams builds MergedOutputParam entries from the overlay's output_params map.
+// It matches param names against the function's spec params to determine capi types.
+func resolveOutputParams(
+	outputParams map[string]string,
+	fd specmodel.FuncDef,
+	opaqueSpecNames map[string]bool,
+) []MergedOutputParam {
+	// Process output params in the order they appear in the function signature.
+	var result []MergedOutputParam
+	for _, p := range fd.Params {
+		goType, isOutput := outputParams[p.Name]
+		if !isOutput {
+			continue
+		}
+
+		// Strip one level of pointer from the C param type to get the local var type.
+		// **AImageReader -> *AImageReader (opaque handle pointer)
+		// **uint8 -> *uint8 (scalar pointer)
+		// *int32 -> int32 (scalar value)
+		localType := strings.TrimPrefix(p.Type, "*")
+
+		// Determine the base type name (without pointer stars).
+		specBase := localType
+		for strings.HasPrefix(specBase, "*") {
+			specBase = specBase[1:]
+		}
+
+		// Determine if the Go type is an opaque handle wrapper.
+		isHandle := opaqueSpecNames[specBase]
+
+		// Build the capi type for the local variable declaration.
+		// Opaque types need capi. prefix (e.g., *capi.AImageReader).
+		// Scalar types use the Go type directly (e.g., *uint8, int32).
+		var capiType string
+		if isHandle || !isScalarGoType(specBase) {
+			// Reconstruct with capi. prefix on the base type.
+			stars := strings.TrimSuffix(localType, specBase)
+			capiType = stars + "capi." + capiExportName(specBase)
+		} else {
+			capiType = localType
+		}
+
+		result = append(result, MergedOutputParam{
+			CParamName: p.Name,
+			GoType:     goType,
+			CapiType:   capiType,
+			IsHandle:   isHandle,
+		})
+	}
+	return result
 }
 
 // isTypeRemapped returns true if the spec type was resolved through typeMap.

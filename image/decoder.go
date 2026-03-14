@@ -38,6 +38,11 @@ func (h *Decoder) Decode(pixels unsafe.Pointer, stride uint64, size uint64) erro
 	return result(int32(capi.AImageDecoder_decodeImage(h.ptr, pixels, stride, size)))
 }
 
+// HeaderInfo returns the value directly.
+func (h *Decoder) HeaderInfo() *HeaderInfo {
+	return (*HeaderInfo)(capi.AImageDecoder_getHeaderInfo(h.ptr))
+}
+
 // MinimumStride returns the value directly.
 func (h *Decoder) MinimumStride() uint64 {
 	return (uint64)(capi.AImageDecoder_getMinimumStride(h.ptr))
@@ -46,4 +51,14 @@ func (h *Decoder) MinimumStride() uint64 {
 // SetTargetSize calls the underlying NDK function.
 func (h *Decoder) SetTargetSize(width int32, height int32) error {
 	return result(int32(capi.AImageDecoder_setTargetSize(h.ptr, width, height)))
+}
+
+// NewDecoderFromFd calls the underlying C function.
+func NewDecoderFromFd(fd int32) (*Decoder, error) {
+	var outDecoderPtr *capi.AImageDecoder
+	ret := capi.AImageDecoder_createFromFd(fd, &outDecoderPtr)
+	if err := result(int32(ret)); err != nil {
+		return nil, err
+	}
+	return &Decoder{ptr: outDecoderPtr}, nil
 }

@@ -85,6 +85,7 @@ type MergedMethod struct {
 	CallbackGoType      string                // Go name of the callback struct (e.g., "DeviceStateCallbacks")
 	ReturnsListAccessor *MergedStructAccessor // if set, method returns a list via struct accessor
 	CustomCall          *MergedCustomCall     // if set, method uses custom capi call args
+	OutputParams        []MergedOutputParam   // C output params converted to Go return values
 }
 
 // MergedParam is a resolved parameter.
@@ -108,6 +109,8 @@ type MergedFreeFunction struct {
 	CapiReturns    string // Original spec return type (before typeMap resolution)
 	IsHandleReturn bool   // True if return is an opaque handle type
 	APILevel       int
+	OutputParams   []MergedOutputParam // C output params converted to Go return values
+	ReturnsNew     string              // Go type name for constructor-style functions
 }
 
 // MergedTypeAlias is a type alias re-exporting a capi type.
@@ -160,6 +163,14 @@ type MergedStructAccessor struct {
 	ItemsField string // Field name for items (e.g., "cameraIds")
 	ItemType   string // Go type of each item (e.g., "string")
 	DeleteFunc string // capi function to free the list
+}
+
+// MergedOutputParam describes a C output parameter converted to a Go return value.
+type MergedOutputParam struct {
+	CParamName string // Original C param name (e.g., "reader")
+	GoType     string // Go idiomatic type (e.g., "*ImageReader")
+	CapiType   string // Capi pointer type to declare (e.g., "*capi.AImageReader")
+	IsHandle   bool   // True if the Go type is an opaque handle wrapper
 }
 
 // MergedCustomCall holds custom call information for methods with non-standard capi patterns.

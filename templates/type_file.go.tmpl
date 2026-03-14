@@ -66,6 +66,16 @@ func (h *{{ .Type.GoName }}) Pointer() unsafe.Pointer {
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := $m.CustomCall.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) error {
 	return result(int32(capi.{{ $m.CName }}(h.ptr, {{ $m.CustomCall.Args }})))
 }
+{{- else if $m.OutputParams }}
+// {{ $m.GoName }} calls the underlying NDK function.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterOutputParams (skipAndFilterOut $m.Params) $m.OutputParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) ({{ range $i, $op := $m.OutputParams }}{{ if $i }}, {{ end }}{{ $op.GoType }}{{ end }}, error) {
+{{ range $op := $m.OutputParams }}	var {{ $op.CParamName }}Ptr {{ $op.CapiType }}
+{{ end }}	ret := capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}{{ range $op := $m.OutputParams }}, &{{ $op.CParamName }}Ptr{{ end }})
+	if err := result(int32(ret)); err != nil {
+		return {{ range $op := $m.OutputParams }}{{ zeroValue $op }}, {{ end }}err
+	}
+	return {{ range $op := $m.OutputParams }}{{ if $op.IsHandle }}&{{ trimStarPrefix $op.GoType }}{ptr: {{ $op.CParamName }}Ptr}{{ else }}{{ $op.CParamName }}Ptr{{ end }}, {{ end }}nil
+}
 {{- else if and $m.CallbackParam $m.ReturnsNew }}
 // {{ $m.GoName }} creates a new {{ $m.ReturnsNew }} from this {{ $m.ReceiverType }}.
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := callbackVisibleParams $m.Params $m.CallbackParam }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}{{ if callbackVisibleParams $m.Params $m.CallbackParam }}, {{ end }}cbs {{ $m.CallbackGoType }}) (*{{ $m.ReturnsNew }}, error) {
@@ -170,6 +180,18 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilter
 {{ end }}
 {{- end }}
 {{ range $f := .FreeFunctions }}
+{{- if $f.OutputParams }}
+// {{ $f.GoName }} calls the underlying C function.
+func {{ $f.GoName }}({{ range $i, $p := filterOutputParams $f.Params $f.OutputParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) ({{ range $i, $op := $f.OutputParams }}{{ if $i }}, {{ end }}{{ $op.GoType }}{{ end }}, error) {
+{{ range $p := stringParams (filterOutputParams $f.Params $f.OutputParams) }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
+{{ end }}{{ range $op := $f.OutputParams }}	var {{ $op.CParamName }}Ptr {{ $op.CapiType }}
+{{ end }}	ret := capi.{{ $f.CName }}({{ range $i, $p := filterOutputParams $f.Params $f.OutputParams }}{{ if $i }}, {{ end }}{{ capiArg $p }}{{ end }}{{ if filterOutputParams $f.Params $f.OutputParams }}{{ range $op := $f.OutputParams }}, &{{ $op.CParamName }}Ptr{{ end }}{{ else }}{{ range $i, $op := $f.OutputParams }}{{ if $i }}, {{ end }}&{{ $op.CParamName }}Ptr{{ end }}{{ end }})
+	if err := result(int32(ret)); err != nil {
+		return {{ range $op := $f.OutputParams }}{{ zeroValue $op }}, {{ end }}err
+	}
+	return {{ range $op := $f.OutputParams }}{{ if $op.IsHandle }}&{{ trimStarPrefix $op.GoType }}{ptr: {{ $op.CParamName }}Ptr}{{ else }}{{ $op.CParamName }}Ptr{{ end }}, {{ end }}nil
+}
+{{- else }}
 // {{ $f.GoName }} calls the underlying C function.
 func {{ $f.GoName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}){{ if $f.Returns }} {{ $f.Returns }}{{ end }} {
 {{ range $p := stringParams $f.Params }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
@@ -181,4 +203,5 @@ func {{ $f.GoName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ $p.
 	capi.{{ $f.CName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ capiArg $p }}{{ end }})
 	{{- end }}
 }
+{{- end }}
 {{ end }}

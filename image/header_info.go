@@ -22,3 +22,18 @@ func NewHeaderInfoFromPointer(ptr unsafe.Pointer) *HeaderInfo {
 func (h *HeaderInfo) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// Height returns the value directly.
+func (h *HeaderInfo) Height() int32 {
+	return (int32)(capi.AImageDecoderHeaderInfo_getHeight(h.ptr))
+}
+
+// MimeType returns the value directly.
+func (h *HeaderInfo) MimeType() string {
+	return (string)(capi.AImageDecoderHeaderInfo_getMimeType(h.ptr))
+}
+
+// Width returns the value directly.
+func (h *HeaderInfo) Width() int32 {
+	return (int32)(capi.AImageDecoderHeaderInfo_getWidth(h.ptr))
+}

@@ -21,17 +21,22 @@ types:
 
 functions:
   AImageDecoder_createFromFd:
-    skip: true  # free function with returns_new via out-param, not supported
+    go_name: NewDecoderFromFd
+    returns_new: Decoder
+    output_params:
+      outDecoder: "*Decoder"
 
   AImageDecoder_createFromBuffer:
-    skip: true  # free function with returns_new via out-param, not supported
+    skip: true  # buffer param is unsafe.Pointer, not CLI-friendly
 
   AImageDecoder_setTargetSize:
     receiver: Decoder
     go_name: SetTargetSize
 
   AImageDecoder_getHeaderInfo:
-    skip: true  # returns capi pointer, can't convert to idiomatic type
+    receiver: Decoder
+    go_name: HeaderInfo
+    pure: true
 
   AImageDecoder_getMinimumStride:
     receiver: Decoder
@@ -43,11 +48,17 @@ functions:
     go_name: Decode
 
   AImageDecoderHeaderInfo_getWidth:
-    skip: true  # no way to obtain HeaderInfo in idiomatic API
+    receiver: HeaderInfo
+    go_name: Width
+    pure: true
   AImageDecoderHeaderInfo_getHeight:
-    skip: true  # no way to obtain HeaderInfo in idiomatic API
+    receiver: HeaderInfo
+    go_name: Height
+    pure: true
   AImageDecoderHeaderInfo_getMimeType:
-    skip: true  # no way to obtain HeaderInfo in idiomatic API
+    receiver: HeaderInfo
+    go_name: MimeType
+    pure: true
 
 api_levels:
   AImageDecoder_createFromFd: 30

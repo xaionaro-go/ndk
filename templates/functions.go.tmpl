@@ -9,6 +9,18 @@ import (
 	capi "{{ .SourcePackage }}"
 )
 {{ range $f := .FreeFunctions }}
+{{- if $f.OutputParams }}
+// {{ $f.GoName }} calls the underlying C function.
+func {{ $f.GoName }}({{ range $i, $p := filterOutputParams $f.Params $f.OutputParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) ({{ range $i, $op := $f.OutputParams }}{{ if $i }}, {{ end }}{{ $op.GoType }}{{ end }}, error) {
+{{ range $p := stringParams (filterOutputParams $f.Params $f.OutputParams) }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
+{{ end }}{{ range $op := $f.OutputParams }}	var {{ $op.CParamName }}Ptr {{ $op.CapiType }}
+{{ end }}	ret := capi.{{ $f.CName }}({{ range $i, $p := filterOutputParams $f.Params $f.OutputParams }}{{ if $i }}, {{ end }}{{ capiArg $p }}{{ end }}{{ if filterOutputParams $f.Params $f.OutputParams }}{{ range $op := $f.OutputParams }}, &{{ $op.CParamName }}Ptr{{ end }}{{ else }}{{ range $i, $op := $f.OutputParams }}{{ if $i }}, {{ end }}&{{ $op.CParamName }}Ptr{{ end }}{{ end }})
+	if err := result(int32(ret)); err != nil {
+		return {{ range $op := $f.OutputParams }}{{ zeroValue $op }}, {{ end }}err
+	}
+	return {{ range $op := $f.OutputParams }}{{ if $op.IsHandle }}&{{ trimStarPrefix $op.GoType }}{ptr: {{ $op.CParamName }}Ptr}{{ else }}{{ $op.CParamName }}Ptr{{ end }}, {{ end }}nil
+}
+{{- else }}
 // {{ $f.GoName }} calls the underlying C function.
 func {{ $f.GoName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}){{ if $f.Returns }} {{ $f.Returns }}{{ end }} {
 {{ range $p := stringParams $f.Params }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
@@ -20,5 +32,6 @@ func {{ $f.GoName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ $p.
 	capi.{{ $f.CName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ capiArg $p }}{{ end }})
 	{{- end }}
 }
+{{- end }}
 {{ end }}
 {{- end }}

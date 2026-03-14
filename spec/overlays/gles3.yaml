@@ -38,6 +38,8 @@ extra_enums:
       value: 1
 
 functions:
+  glGetString:
+    go_name: GetString
   glGenVertexArrays:
     go_name: GenVertexArrays
   glDeleteVertexArrays:

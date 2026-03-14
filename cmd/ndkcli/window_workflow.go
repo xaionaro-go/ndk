@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
-	"unsafe"
 
 	"github.com/spf13/cobra"
-	mediacapi "github.com/xaionaro-go/ndk/capi/media"
+	"github.com/xaionaro-go/ndk/media"
 	"github.com/xaionaro-go/ndk/window"
 )
+
+// imageFormatRGBA8888 is AIMAGE_FORMAT_RGBA_8888 from the NDK header.
+const imageFormatRGBA8888 = 1
 
 var windowQueryCmd = &cobra.Command{
 	Use:   "query",
@@ -17,21 +19,21 @@ var windowQueryCmd = &cobra.Command{
 		height, _ := cmd.Flags().GetInt32("height")
 		format, _ := cmd.Flags().GetInt32("format")
 
-		// Create an ImageReader via capi to get an ANativeWindow handle.
-		var readerPtr *mediacapi.AImageReader
-		status := mediacapi.AImageReader_new(width, height, format, 2, &readerPtr)
-		if status < 0 {
-			return fmt.Errorf("creating image reader: media error %d", status)
+		// Create an ImageReader to get an ANativeWindow handle.
+		reader, err := media.NewImageReader(width, height, format, 2)
+		if err != nil {
+			return fmt.Errorf("creating image reader: %w", err)
 		}
-		defer mediacapi.AImageReader_delete(readerPtr)
+		defer reader.Close()
 
-		var nativeWindow *mediacapi.ANativeWindow
-		status = mediacapi.AImageReader_getWindow(readerPtr, &nativeWindow)
-		if status < 0 {
-			return fmt.Errorf("getting window from image reader: media error %d", status)
+		mediaWin, err := reader.Window()
+		if err != nil {
+			return fmt.Errorf("getting window from image reader: %w", err)
 		}
 
-		win := window.NewWindowFromPointer(unsafe.Pointer(nativeWindow))
+		// Convert media.Window to window.Window via unsafe.Pointer for the
+		// window package's query methods.
+		win := window.NewWindowFromPointer(mediaWin.Pointer())
 
 		fmt.Printf("window properties:\n")
 		fmt.Printf("  width:  %d\n", win.Width())
@@ -45,7 +47,7 @@ var windowQueryCmd = &cobra.Command{
 func init() {
 	windowQueryCmd.Flags().Int32("width", 640, "image reader width")
 	windowQueryCmd.Flags().Int32("height", 480, "image reader height")
-	windowQueryCmd.Flags().Int32("format", mediacapi.AIMAGE_FORMAT_RGBA_8888, "image format (1=RGBA_8888)")
+	windowQueryCmd.Flags().Int32("format", imageFormatRGBA8888, "image format (1=RGBA_8888)")
 
 	windowCmd.AddCommand(windowQueryCmd)
 }

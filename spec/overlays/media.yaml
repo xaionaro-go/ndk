@@ -44,14 +44,29 @@ types:
     go_name: Image
     destructor: AImage_delete
 
+  ANativeWindow:
+    go_name: Window
+
 functions:
   # --- ImageReader lifecycle ---
   AImageReader_new:
-    skip: true  # output param **AImageReader; use capi directly
+    go_name: NewImageReader
+    returns_new: ImageReader
+    output_params:
+      reader: "*ImageReader"
+
+  AImageReader_newWithUsage:
+    go_name: NewImageReaderWithUsage
+    returns_new: ImageReader
+    output_params:
+      reader: "*ImageReader"
 
   # --- ImageReader queries ---
   AImageReader_getWindow:
-    skip: true  # output param **ANativeWindow; use capi directly
+    receiver: ImageReader
+    go_name: Window
+    output_params:
+      window: "*Window"
   AImageReader_getWidth:
     receiver: ImageReader
     go_name: Width
@@ -67,9 +82,15 @@ functions:
 
   # --- ImageReader frame acquisition ---
   AImageReader_acquireNextImage:
-    skip: true  # output param **AImage; use capi directly
+    receiver: ImageReader
+    go_name: AcquireNextImage
+    output_params:
+      image: "*Image"
   AImageReader_acquireLatestImage:
-    skip: true  # output param **AImage; use capi directly
+    receiver: ImageReader
+    go_name: AcquireLatestImage
+    output_params:
+      image: "*Image"
 
   # --- Image queries ---
   AImage_getWidth:
@@ -93,6 +114,12 @@ functions:
   AImage_getPlaneRowStride:
     receiver: Image
     go_name: PlaneRowStride
+  AImage_getPlaneData:
+    receiver: Image
+    go_name: PlaneData
+    output_params:
+      data: "*uint8"
+      dataLength: "int32"
   # --- Codec lifecycle ---
   AMediaCodec_createDecoderByType:
     go_name: NewDecoder

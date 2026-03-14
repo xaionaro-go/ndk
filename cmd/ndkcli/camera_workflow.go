@@ -9,9 +9,9 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/xaionaro-go/ndk/camera"
-	mediacapi "github.com/xaionaro-go/ndk/capi/media"
 	"github.com/xaionaro-go/ndk/looper"
 	"github.com/xaionaro-go/ndk/media"
+	"github.com/xaionaro-go/ndk/window"
 )
 
 // cameraTagLensFacing is ACAMERA_LENS_FACING from the NDK header.
@@ -50,6 +50,9 @@ func hardwareLevelString(value int32) string {
 	}
 }
 
+// imageFormatYUV420888 is AIMAGE_FORMAT_YUV_420_888 from the NDK header.
+const imageFormatYUV420888 = 35
+
 var cameraCaptureCmd = &cobra.Command{
 	Use:   "capture",
 	Short: "Capture raw frames from a camera using ImageReader",
@@ -85,25 +88,27 @@ func runCameraCapture(
 	count int32,
 	output string,
 ) (_err error) {
-	// Create ImageReader via capi with CPU_READ_OFTEN usage for frame access.
+	// Create ImageReader with CPU_READ_OFTEN usage for frame access.
 	const usageCPUReadOften = uint64(0x3) // AHARDWAREBUFFER_USAGE_CPU_READ_OFTEN
 	var maxImages int32 = 4
-	var readerPtr *mediacapi.AImageReader
-	status := mediacapi.AImageReader_newWithUsage(width, height, format, usageCPUReadOften, maxImages, &readerPtr)
-	if status < 0 {
-		return fmt.Errorf("creating image reader: media error %d", status)
+	reader, err := media.NewImageReaderWithUsage(width, height, format, usageCPUReadOften, maxImages)
+	if err != nil {
+		return fmt.Errorf("creating image reader: %w", err)
 	}
-	reader := media.NewImageReaderFromPointer(unsafe.Pointer(readerPtr))
 	defer reader.Close()
 
 	// Get ANativeWindow from the ImageReader.
-	var nativeWindow *mediacapi.ANativeWindow
-	status = mediacapi.AImageReader_getWindow(readerPtr, &nativeWindow)
-	if status < 0 {
-		return fmt.Errorf("getting window from image reader: media error %d", status)
+	win, err := reader.Window()
+	if err != nil {
+		return fmt.Errorf("getting window from image reader: %w", err)
 	}
 
-	camWindow := (*camera.ANativeWindow)(unsafe.Pointer(nativeWindow))
+	// Acquire a reference to the window (required before creating session outputs).
+	// The media.Window and window.Window are separate wrapper types for the same
+	// underlying ANativeWindow. Convert via unsafe.Pointer for the camera API.
+	nw := window.NewWindowFromPointer(win.Pointer())
+	nw.Acquire()
+	camWindow := (*camera.ANativeWindow)(win.Pointer())
 
 	mgr := camera.NewManager()
 	defer mgr.Close()
@@ -140,7 +145,7 @@ func runCameraCapture(
 	}
 	defer device.Close()
 
-	request, err := device.CreateCaptureRequest(camera.Preview)
+	request, err := device.CreateCaptureRequest(camera.Record)
 	if err != nil {
 		return fmt.Errorf("creating capture request: %w", err)
 	}
@@ -204,36 +209,35 @@ func runCameraCapture(
 	// to keep Camera2 callbacks flowing.
 	var totalBytes int64
 	for i := int32(0); i < count; i++ {
-		var imagePtr *mediacapi.AImage
+		var img *media.Image
+		var acquireErr error
 
 		for retries := 0; retries < 200; retries++ {
-			status = mediacapi.AImageReader_acquireNextImage(readerPtr, &imagePtr)
-			if status >= 0 {
+			img, acquireErr = reader.AcquireNextImage()
+			if acquireErr == nil {
 				break
 			}
 			// Poll looper to let Camera2 process internally.
 			looper.PollOnce(16*time.Millisecond, nil, nil, nil)
 		}
-		if status < 0 {
-			return fmt.Errorf("acquiring image %d: media error %d", i, status)
+		if acquireErr != nil {
+			return fmt.Errorf("acquiring image %d: %w", i, acquireErr)
 		}
 
-		var dataPtr *uint8
-		var dataLen int32
-		status = mediacapi.AImage_getPlaneData(imagePtr, 0, &dataPtr, &dataLen)
-		if status < 0 {
-			mediacapi.AImage_delete(imagePtr)
-			return fmt.Errorf("getting plane data for image %d: media error %d", i, status)
+		dataPtr, dataLen, err := img.PlaneData(0)
+		if err != nil {
+			img.Close()
+			return fmt.Errorf("getting plane data for image %d: %w", i, err)
 		}
 
 		data := unsafe.Slice(dataPtr, dataLen)
 		if _, err := f.Write(data); err != nil {
-			mediacapi.AImage_delete(imagePtr)
+			img.Close()
 			return fmt.Errorf("writing image %d to file: %w", i, err)
 		}
 		totalBytes += int64(dataLen)
 
-		mediacapi.AImage_delete(imagePtr)
+		img.Close()
 		fmt.Printf("captured frame %d/%d (%d bytes)\n", i+1, count, dataLen)
 	}
 
@@ -285,7 +289,7 @@ func init() {
 	cameraCaptureCmd.Flags().String("id", "0", "camera device ID")
 	cameraCaptureCmd.Flags().Int32("width", 640, "image width in pixels")
 	cameraCaptureCmd.Flags().Int32("height", 480, "image height in pixels")
-	cameraCaptureCmd.Flags().Int32("format", mediacapi.AIMAGE_FORMAT_YUV_420_888, "image format (35=YUV_420_888, 256=JPEG)")
+	cameraCaptureCmd.Flags().Int32("format", imageFormatYUV420888, "image format (35=YUV_420_888, 256=JPEG)")
 	cameraCaptureCmd.Flags().Int32("count", 1, "number of frames to capture")
 	cameraCaptureCmd.Flags().String("output", "capture.raw", "output file path")
 

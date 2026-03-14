@@ -23,6 +23,11 @@ func (h *Window) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// Acquire calls the underlying NDK function.
+func (h *Window) Acquire() {
+	capi.ANativeWindow_acquire(h.ptr)
+}
+
 // Format returns the value directly.
 func (h *Window) Format() int32 {
 	return (int32)(capi.ANativeWindow_getFormat(h.ptr))

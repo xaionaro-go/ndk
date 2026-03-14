@@ -290,6 +290,35 @@ func FuncMap() template.FuncMap {
 			}
 			return p.Name
 		},
+		// filterOutputParams returns params whose names are not in the output params set.
+		"filterOutputParams": func(params []MergedParam, outputParams []MergedOutputParam) []MergedParam {
+			if len(outputParams) == 0 {
+				return params
+			}
+			opNames := make(map[string]bool, len(outputParams))
+			for _, op := range outputParams {
+				opNames[op.CParamName] = true
+			}
+			var out []MergedParam
+			for _, p := range params {
+				if !opNames[p.Name] {
+					out = append(out, p)
+				}
+			}
+			return out
+		},
+		// trimStarPrefix removes the leading "*" from a type string (e.g., "*ImageReader" -> "ImageReader").
+		"trimStarPrefix": func(s string) string {
+			return strings.TrimPrefix(s, "*")
+		},
+		// zeroValue returns the Go zero value literal for a type.
+		// Pointer and handle types return "nil", numeric types return "0".
+		"zeroValue": func(op MergedOutputParam) string {
+			if strings.HasPrefix(op.GoType, "*") || op.IsHandle {
+				return "nil"
+			}
+			return "0"
+		},
 		// stringParams returns only params that need string→byte conversion.
 		"stringParams": func(params []MergedParam) []MergedParam {
 			var out []MergedParam

@@ -19,6 +19,11 @@ types:
     string_method: true
 
 functions:
+  # Window lifecycle
+  ANativeWindow_acquire:
+    receiver: Window
+    go_name: Acquire
+
   # Window getters
   ANativeWindow_getWidth:
     receiver: Window

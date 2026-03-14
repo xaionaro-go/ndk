@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/xaionaro-go/ndk/egl"
 	"github.com/xaionaro-go/ndk/gles2"
-	gles3capi "github.com/xaionaro-go/ndk/capi/gles3"
+	"github.com/xaionaro-go/ndk/gles3"
 )
 
 // glUbyteToString converts a *GLubyte (C string) to a Go string by walking
@@ -138,7 +138,7 @@ var gles3InfoCmd = &cobra.Command{
 		defer cleanup()
 
 		getString := func(name uint32) string {
-			p := gles3capi.GlGetString(gles3capi.GLenum(name))
+			p := gles3.GetString(gles3.GLenum(name))
 			if p == nil {
 				return ""
 			}
