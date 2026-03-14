@@ -549,9 +549,10 @@ func stripConditionalBlocks(source, macro string) string {
 			continue
 		}
 		if depth > 0 {
-			if strings.HasPrefix(trimmed, "#ifdef") || strings.HasPrefix(trimmed, "#ifndef") {
+			switch {
+			case strings.HasPrefix(trimmed, "#ifdef") || strings.HasPrefix(trimmed, "#ifndef"):
 				depth++
-			} else if trimmed == "#endif" {
+			case trimmed == "#endif":
 				depth--
 			}
 			continue

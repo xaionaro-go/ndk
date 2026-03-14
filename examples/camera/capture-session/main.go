@@ -37,7 +37,7 @@ func main() {
 	log.Println("manager created")
 
 	// --- Stage 2: List cameras ---
-	ids, err := mgr.CameraIdList()
+	ids, err := mgr.CameraIDList()
 	if err != nil {
 		log.Fatalf("listing cameras: %v", err)
 	}

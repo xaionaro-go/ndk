@@ -1,6 +1,7 @@
 package idiomgen
 
 import (
+	"regexp"
 	"sort"
 	"strings"
 	"text/template"
@@ -8,6 +9,54 @@ import (
 
 	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
 )
+
+// capiArg returns the expression to pass a parameter to a capi function.
+// Handles need .ptr unwrapping; remapped types need capi.Type() conversion.
+func capiArg(p MergedParam) string {
+	if p.GoType == "time.Duration" {
+		unit := p.DurationUnit
+		if unit == "" {
+			unit = "ns"
+		}
+		// All Duration methods return int64; cast to match the capi param type.
+		switch unit {
+		case "ms":
+			return p.CapiType + "(" + p.Name + ".Milliseconds())"
+		case "us":
+			return p.CapiType + "(" + p.Name + ".Microseconds())"
+		case "s":
+			return p.CapiType + "(" + p.Name + ".Seconds())"
+		default: // "ns"
+			return p.CapiType + "(" + p.Name + ".Nanoseconds())"
+		}
+	}
+	if p.IsHandle && p.GoType != "unsafe.Pointer" {
+		return p.Name + ".ptr"
+	}
+	if p.IsString {
+		return "&" + p.Name + "Bytes[0]"
+	}
+	if p.CapiType != "" && (p.CapiType != p.GoType || p.Remapped) {
+		if strings.HasPrefix(p.CapiType, "[]") {
+			// Slice of a renamed type: reinterpret via unsafe.Pointer.
+			// []Int and []capi.EGLint have identical layout.
+			return "*(*[]capi." + p.CapiType[2:] + ")(unsafe.Pointer(&" + p.Name + "))"
+		}
+		if strings.HasPrefix(p.CapiType, "*") {
+			// Pointer type: strip all stars, prefix with capi., re-add stars outside.
+			// E.g. *Type → (*capi.Type)(name), **Type → (**capi.Type)(name)
+			stars := 0
+			base := p.CapiType
+			for strings.HasPrefix(base, "*") {
+				stars++
+				base = base[1:]
+			}
+			return "(" + strings.Repeat("*", stars) + "capi." + base + ")(" + p.Name + ")"
+		}
+		return "capi." + p.CapiType + "(" + p.Name + ")"
+	}
+	return p.Name
+}
 
 // FuncMap returns template helper functions for code generation templates.
 func FuncMap() template.FuncMap {
@@ -76,6 +125,35 @@ func FuncMap() template.FuncMap {
 			}
 			return false
 		},
+		// anyDurationParam returns true if any method or free function has a time.Duration parameter.
+		"anyDurationParam": func(methods []MergedMethod, fns []MergedFreeFunction) bool {
+			for _, m := range methods {
+				for _, p := range m.Params {
+					if p.GoType == "time.Duration" {
+						return true
+					}
+				}
+			}
+			for _, f := range fns {
+				for _, p := range f.Params {
+					if p.GoType == "time.Duration" {
+						return true
+					}
+				}
+			}
+			return false
+		},
+		// anyDurationFreeFunc returns true if any free function has a time.Duration parameter.
+		"anyDurationFreeFunc": func(fns []MergedFreeFunction) bool {
+			for _, f := range fns {
+				for _, p := range f.Params {
+					if p.GoType == "time.Duration" {
+						return true
+					}
+				}
+			}
+			return false
+		},
 		// anyUnsafeFreeFunc returns true if any free function has an unsafe.Pointer parameter or return,
 		// or if any parameter needs a slice type reinterpret cast.
 		"anyUnsafeFreeFunc": func(fns []MergedFreeFunction) bool {
@@ -97,33 +175,14 @@ func FuncMap() template.FuncMap {
 		},
 		// capiArg returns the expression to pass a parameter to a capi function.
 		// Handles need .ptr unwrapping; remapped types need capi.Type() conversion.
-		"capiArg": func(p MergedParam) string {
-			if p.IsHandle && p.GoType != "unsafe.Pointer" {
-				return p.Name + ".ptr"
+		"capiArg": capiArg,
+		// capiArgBuf returns the expression for a buffer parameter, converting
+		// typed slices (e.g., []byte) to unsafe.Pointer for capi calls.
+		"capiArgBuf": func(p MergedParam, bufGoType string) string {
+			if strings.HasPrefix(p.GoType, "[]") {
+				return "unsafe.Pointer(&" + p.Name + "[0])"
 			}
-			if p.IsString {
-				return "&" + p.Name + "Bytes[0]"
-			}
-			if p.CapiType != "" && (p.CapiType != p.GoType || p.Remapped) {
-				if strings.HasPrefix(p.CapiType, "[]") {
-					// Slice of a renamed type: reinterpret via unsafe.Pointer.
-					// []Int and []capi.EGLint have identical layout.
-					return "*(*[]capi." + p.CapiType[2:] + ")(unsafe.Pointer(&" + p.Name + "))"
-				}
-				if strings.HasPrefix(p.CapiType, "*") {
-					// Pointer type: strip all stars, prefix with capi., re-add stars outside.
-					// E.g. *Type → (*capi.Type)(name), **Type → (**capi.Type)(name)
-					stars := 0
-					base := p.CapiType
-					for strings.HasPrefix(base, "*") {
-						stars++
-						base = base[1:]
-					}
-					return "(" + strings.Repeat("*", stars) + "capi." + base + ")(" + p.Name + ")"
-				}
-				return "capi." + p.CapiType + "(" + p.Name + ")"
-			}
-			return p.Name
+			return capiArg(p)
 		},
 		// trimStar removes a leading "*" from a string.
 		"trimStar": func(s string) string {
@@ -367,12 +426,24 @@ var goReservedWords = map[string]bool{
 	"select": true, "struct": true, "switch": true, "type": true, "var": true,
 }
 
-// safeGoName returns a Go-safe version of a name by prefixing reserved words with _.
+// safeGoName returns a Go-safe version of a name by prefixing reserved words
+// with _ and normalizing common acronyms (e.g. "deviceId" → "deviceID").
 func safeGoName(name string) string {
 	if goReservedWords[name] {
 		return "_" + name
 	}
-	return name
+	return fixGoAcronyms(name)
+}
+
+// acronymRe matches "Id" when it appears as a complete word segment
+// (at end of string or followed by a non-lowercase letter).
+// This avoids false positives like "Idle", "Identify", "Identity".
+var acronymRe = regexp.MustCompile(`Id([^a-z]|$)`)
+
+// fixGoAcronyms normalizes common acronyms in Go identifiers to follow
+// Go conventions (e.g. "Id" → "ID").
+func fixGoAcronyms(s string) string {
+	return acronymRe.ReplaceAllString(s, "ID$1")
 }
 
 // toSnakeCase converts PascalCase to snake_case.

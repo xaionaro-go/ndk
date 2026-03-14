@@ -3,6 +3,7 @@
 package hint
 
 import (
+	"time"
 	"unsafe"
 
 	capi "github.com/xaionaro-go/ndk/capi/performancehint"
@@ -24,8 +25,8 @@ func (h *Manager) Pointer() unsafe.Pointer {
 }
 
 // CreateSession creates a new Session from this Manager.
-func (h *Manager) CreateSession(threadIds *int32, size uint64, initialTargetWorkDurationNanos int64) *Session {
-	return &Session{ptr: capi.APerformanceHint_createSession(h.ptr, threadIds, size, initialTargetWorkDurationNanos)}
+func (h *Manager) CreateSession(threadIds *int32, size uint64, initialTargetWorkDuration time.Duration) *Session {
+	return &Session{ptr: capi.APerformanceHint_createSession(h.ptr, threadIds, size, int64(initialTargetWorkDuration.Nanoseconds()))}
 }
 
 // PreferredUpdateRateNanos returns the value directly.

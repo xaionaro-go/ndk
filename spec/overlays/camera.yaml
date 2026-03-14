@@ -173,7 +173,7 @@ functions:
 
   ACameraManager_getCameraIdList:
     receiver: Manager
-    go_name: CameraIdList
+    go_name: CameraIDList
     returns_list_struct: ACameraIdList
 
   # Metadata bridge functions (defined in extra_bridge_go, not in spec)

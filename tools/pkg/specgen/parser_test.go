@@ -33,32 +33,24 @@ func TestParseSource(t *testing.T) {
 	}
 
 	// FakeStream is opaque_ptr.
-	if td, ok := spec.Types["FakeStream"]; !ok {
-		t.Error("missing type FakeStream")
-	} else if td.Kind != "opaque_ptr" {
-		t.Errorf("FakeStream.Kind = %q, want opaque_ptr", td.Kind)
-	}
+	td, ok := spec.Types["FakeStream"]
+	require.True(t, ok, "missing type FakeStream")
+	assert.Equal(t, "opaque_ptr", td.Kind, "FakeStream.Kind")
 
 	// FakeBuilder is opaque_ptr.
-	if td, ok := spec.Types["FakeBuilder"]; !ok {
-		t.Error("missing type FakeBuilder")
-	} else if td.Kind != "opaque_ptr" {
-		t.Errorf("FakeBuilder.Kind = %q, want opaque_ptr", td.Kind)
-	}
+	td, ok = spec.Types["FakeBuilder"]
+	require.True(t, ok, "missing type FakeBuilder")
+	assert.Equal(t, "opaque_ptr", td.Kind, "FakeBuilder.Kind")
 
 	// Fake_result_t is typedef_int32.
-	if td, ok := spec.Types["Fake_result_t"]; !ok {
-		t.Error("missing type Fake_result_t")
-	} else if td.Kind != "typedef_int32" {
-		t.Errorf("Fake_result_t.Kind = %q, want typedef_int32", td.Kind)
-	}
+	td, ok = spec.Types["Fake_result_t"]
+	require.True(t, ok, "missing type Fake_result_t")
+	assert.Equal(t, "typedef_int32", td.Kind, "Fake_result_t.Kind")
 
 	// Fake_direction_t is typedef_int32.
-	if td, ok := spec.Types["Fake_direction_t"]; !ok {
-		t.Error("missing type Fake_direction_t")
-	} else if td.Kind != "typedef_int32" {
-		t.Errorf("Fake_direction_t.Kind = %q, want typedef_int32", td.Kind)
-	}
+	td, ok = spec.Types["Fake_direction_t"]
+	require.True(t, ok, "missing type Fake_direction_t")
+	assert.Equal(t, "typedef_int32", td.Kind, "Fake_direction_t.Kind")
 
 	// Enums: 2 groups with 2 values each.
 	if len(spec.Enums) != 2 {

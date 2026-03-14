@@ -135,10 +135,19 @@ functions:
   AAudioStream_write:
     receiver: Stream
     go_name: Write
-    buf_param: audioData
+    buf_param: buffer
     buf_frames_param: numFrames
-    timeout_param: timeoutNanos
+    timeout_param: timeoutNanoseconds
     returns_frames: true
+    buf_go_type: "[]byte"
+  AAudioStream_read:
+    receiver: Stream
+    go_name: Read
+    buf_param: buffer
+    buf_frames_param: numFrames
+    timeout_param: timeoutNanoseconds
+    returns_frames: true
+    buf_go_type: "[]byte"
 
 extra_enums:
   aaudio_result_t:

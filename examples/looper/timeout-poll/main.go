@@ -11,6 +11,7 @@ package main
 import (
 	"log"
 	"runtime"
+	"time"
 	"unsafe"
 
 	"github.com/xaionaro-go/ndk/looper"
@@ -58,17 +59,17 @@ func main() {
 	}()
 
 	const (
-		timeoutMs  = int32(200) // 200 ms poll timeout
-		iterations = 5          // number of poll cycles to run
+		timeout    = 200 * time.Millisecond // poll timeout
+		iterations = 5                      // number of poll cycles to run
 	)
 
-	log.Printf("polling %d times with %d ms timeout", iterations, timeoutMs)
+	log.Printf("polling %d times with %v timeout", iterations, timeout)
 
 	var fd, events int32
 	var data unsafe.Pointer
 
 	for i := 1; i <= iterations; i++ {
-		result := looper.PollOnce(timeoutMs, &fd, &events, &data)
+		result := looper.PollOnce(timeout, &fd, &events, &data)
 		log.Printf("poll %d/%d: result=%s (%d)", i, iterations,
 			pollResultString(result), result)
 

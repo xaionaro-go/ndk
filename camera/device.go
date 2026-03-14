@@ -34,9 +34,9 @@ func (h *Device) Pointer() unsafe.Pointer {
 }
 
 // CreateCaptureRequest creates a new CaptureRequest from this Device.
-func (h *Device) CreateCaptureRequest(templateId TemplateType) (*CaptureRequest, error) {
+func (h *Device) CreateCaptureRequest(templateID TemplateType) (*CaptureRequest, error) {
 	var ptr *capi.ACaptureRequest
-	if err := result(int32(capi.ACameraDevice_createCaptureRequest(h.ptr, capi.ACameraDevice_request_template(templateId), &ptr))); err != nil {
+	if err := result(int32(capi.ACameraDevice_createCaptureRequest(h.ptr, capi.ACameraDevice_request_template(templateID), &ptr))); err != nil {
 		return nil, err
 	}
 	return &CaptureRequest{ptr: ptr}, nil

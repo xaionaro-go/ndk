@@ -41,15 +41,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	if *c2ffiJSON != "" {
+	switch {
+	case *c2ffiJSON != "":
 		// Direct c2ffi JSON file mode.
 		runC2FFI(*c2ffiJSON, *manifest, *ndkIncDir, *module, *srcPkg, *out)
-	} else if *manifest != "" && *ndkIncDir != "" {
+	case *manifest != "" && *ndkIncDir != "":
 		// Auto-invoke c2ffi mode.
 		runC2FFIAuto(*manifest, *ndkIncDir, *ndkPath, *c2ffiBin, *module, *srcPkg, *out)
-	} else if *pkgDir != "" {
+	case *pkgDir != "":
 		runLegacy(*pkgDir, *module, *srcPkg, *out, *ndkHeaders)
-	} else {
+	default:
 		fmt.Fprintln(os.Stderr, "error: specify -manifest + -ndk-include, -c2ffi, or -pkg")
 		os.Exit(1)
 	}

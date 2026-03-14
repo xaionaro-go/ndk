@@ -29,6 +29,8 @@ functions:
 
   ALooper_pollOnce:
     go_name: PollOnce
+    timeout_param: timeoutMillis
+    timeout_unit: ms
 
   ALooper_pollAll:
     go_name: PollAll

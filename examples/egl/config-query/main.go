@@ -80,7 +80,7 @@ func main() {
 		id   egl.Int
 	}
 	attributes := []attrInfo{
-		{"Config ID", egl.ConfigId},
+		{"Config ID", egl.ConfigID},
 		{"Buffer Size (total bits)", egl.BufferSize},
 		{"Red Size", egl.RedSize},
 		{"Green Size", egl.GreenSize},

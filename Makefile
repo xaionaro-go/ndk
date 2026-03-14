@@ -17,7 +17,7 @@ FIXTURE_MODULES := $(notdir $(wildcard tools/pkg/specgen/testdata/*/))
 NDK_SYSROOT := $(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include
 C2FFI_BIN   ?= c2ffi
 
-.PHONY: all capi specs idiomatic clean regen fixtures test lint check-examples e2e e2e-build e2e-examples
+.PHONY: all capi specs idiomatic clean regen fixtures test lint check-examples e2e e2e-build e2e-examples e2e-audio
 
 all: specs capi idiomatic
 
@@ -107,6 +107,10 @@ e2e: e2e-build
 # Run all examples on Android emulator (requires running emulator + NDK)
 e2e-examples:
 	./tests/e2e/run-examples.sh
+
+# Run audio recording E2E test (requires running emulator with audio + NDK)
+e2e-audio:
+	./tests/e2e/run-audio-e2e.sh
 
 clean:
 	@for m in $(MODULES); do rm -rf "capi/$$m/"; done

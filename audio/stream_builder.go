@@ -64,8 +64,8 @@ func (h *StreamBuilder) SetChannelCount(channelCount int32) *StreamBuilder {
 }
 
 // SetDeviceID sets a property and returns the receiver for chaining.
-func (h *StreamBuilder) SetDeviceID(deviceId int32) *StreamBuilder {
-	capi.AAudioStreamBuilder_setDeviceId(h.ptr, deviceId)
+func (h *StreamBuilder) SetDeviceID(deviceID int32) *StreamBuilder {
+	capi.AAudioStreamBuilder_setDeviceId(h.ptr, deviceID)
 	return h
 }
 

@@ -3,12 +3,13 @@
 package looper
 
 import (
+	"time"
 	"unsafe"
 
 	capi "github.com/xaionaro-go/ndk/capi/looper"
 )
 
 // PollOnce calls the underlying C function.
-func PollOnce(timeoutMillis int32, outFd *int32, outEvents *int32, outData *unsafe.Pointer) int32 {
-	return (int32)(capi.ALooper_pollOnce(timeoutMillis, outFd, outEvents, outData))
+func PollOnce(timeout time.Duration, outFd *int32, outEvents *int32, outData *unsafe.Pointer) int32 {
+	return (int32)(capi.ALooper_pollOnce(int32(timeout.Milliseconds()), outFd, outEvents, outData))
 }

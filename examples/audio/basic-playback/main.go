@@ -9,6 +9,7 @@ package main
 
 import (
 	"log"
+	"time"
 	"unsafe"
 
 	"github.com/xaionaro-go/ndk/audio"
@@ -19,7 +20,7 @@ func main() {
 		sampleRate   = 44100
 		channelCount = 2                    // stereo
 		durationSec  = 2                    // seconds of silence to write
-		timeoutNanos = int64(1_000_000_000) // 1 second write timeout
+		writeTimeout = time.Second
 	)
 
 	// Create a builder and configure it for playback in one chain.
@@ -59,6 +60,7 @@ func main() {
 	// float32 samples, so the buffer holds one burst worth of frames.
 	framesPerBurst := stream.FramesPerBurst()
 	buf := make([]float32, int(framesPerBurst)*channelCount)
+	bufBytes := unsafe.Slice((*byte)(unsafe.Pointer(&buf[0])), len(buf)*int(unsafe.Sizeof(buf[0])))
 
 	totalFrames := int32(sampleRate * durationSec)
 	written := int32(0)
@@ -69,7 +71,7 @@ func main() {
 			framesToWrite = remaining
 		}
 
-		n, err := stream.Write(unsafe.Pointer(&buf[0]), framesToWrite, timeoutNanos)
+		n, err := stream.Write(bufBytes, framesToWrite, writeTimeout)
 		if err != nil {
 			log.Fatalf("write: %v", err)
 		}

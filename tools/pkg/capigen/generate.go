@@ -891,14 +891,15 @@ func paramConversion(
 		}
 		starStr := strings.Repeat("*", stars)
 		var cgoTypeExpr string
-		if base == "string" {
+		switch {
+		case base == "string":
 			cgoTypeExpr = fmt.Sprintf("%s*C.char", starStr)
-		} else if isScalarGoType(base) {
+		case isScalarGoType(base):
 			cgoBase := goTypeToCGoExactType(base)
 			cgoTypeExpr = fmt.Sprintf("%s%s", starStr, cgoBase)
-		} else if structPrefixSet[base] {
+		case structPrefixSet[base]:
 			cgoTypeExpr = fmt.Sprintf("%sC.struct_%s", starStr, base)
-		} else {
+		default:
 			cgoTypeExpr = fmt.Sprintf("%sC.%s", starStr, base)
 		}
 

@@ -3,6 +3,7 @@
 package hint
 
 import (
+	"time"
 	"unsafe"
 
 	capi "github.com/xaionaro-go/ndk/capi/performancehint"
@@ -34,11 +35,11 @@ func (h *Session) Pointer() unsafe.Pointer {
 }
 
 // ReportActualWorkDuration calls the underlying NDK function.
-func (h *Session) ReportActualWorkDuration(actualDurationNanos int64) error {
-	return result(int32(capi.APerformanceHint_reportActualWorkDuration(h.ptr, actualDurationNanos)))
+func (h *Session) ReportActualWorkDuration(actualDuration time.Duration) error {
+	return result(int32(capi.APerformanceHint_reportActualWorkDuration(h.ptr, int64(actualDuration.Nanoseconds()))))
 }
 
 // UpdateTargetWorkDuration calls the underlying NDK function.
-func (h *Session) UpdateTargetWorkDuration(targetDurationNanos int64) error {
-	return result(int32(capi.APerformanceHint_updateTargetWorkDuration(h.ptr, targetDurationNanos)))
+func (h *Session) UpdateTargetWorkDuration(targetDuration time.Duration) error {
+	return result(int32(capi.APerformanceHint_updateTargetWorkDuration(h.ptr, int64(targetDuration.Nanoseconds()))))
 }

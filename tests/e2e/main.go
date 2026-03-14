@@ -593,7 +593,8 @@ func testGLES3() {
 	// Samplers (ES3 feature)
 	var sampler gles3.GLuint
 	gles3.GenSamplers(1, &sampler)
-	if sampler > 0 {
+	switch {
+	case sampler > 0:
 		passf("gles3.GenSamplers", fmt.Sprintf("id=%d", sampler))
 		gles3.SamplerParameteri(sampler, glTextureWrapR, glClampToEdge)
 		pass("gles3.SamplerParameteri")
@@ -602,56 +603,59 @@ func testGLES3() {
 		gles3.BindSampler(0, 0)
 		gles3.DeleteSamplers(1, &sampler)
 		pass("gles3.DeleteSamplers")
-	} else if !glContextOK() {
+	case !glContextOK():
 		skip("gles3.GenSamplers+", "gfxstream pipe degraded mid-test")
 		return
-	} else {
+	default:
 		fail("gles3.GenSamplers", "returned 0")
 	}
 
 	// Queries (ES3 feature)
 	var query gles3.GLuint
 	gles3.GenQueries(1, &query)
-	if query > 0 {
+	switch {
+	case query > 0:
 		passf("gles3.GenQueries", fmt.Sprintf("id=%d", query))
 		gles3.DeleteQueries(1, &query)
 		pass("gles3.DeleteQueries")
-	} else if !glContextOK() {
+	case !glContextOK():
 		skip("gles3.GenQueries+", "gfxstream pipe degraded mid-test")
 		return
-	} else {
+	default:
 		fail("gles3.GenQueries", "returned 0")
 	}
 
 	// Fence sync (ES3 feature)
 	sync := gles3.FenceSync(gles3.SyncGpuCommandsComplete, 0)
-	if sync != nil {
+	switch {
+	case sync != nil:
 		pass("gles3.FenceSync")
 		ret := gles3.ClientWaitSync(sync, gles3.SyncFlushCommandsBit, 1000000000)
 		passf("gles3.ClientWaitSync", fmt.Sprintf("returned 0x%X", ret))
 		gles3.DeleteSync(sync)
 		pass("gles3.DeleteSync")
-	} else if !glContextOK() {
+	case !glContextOK():
 		skip("gles3.FenceSync+", "gfxstream pipe degraded mid-test")
 		return
-	} else {
+	default:
 		fail("gles3.FenceSync", "returned nil")
 	}
 
 	// Transform feedback objects (ES3 feature)
 	var tf gles3.GLuint
 	gles3.GenTransformFeedbacks(1, &tf)
-	if tf > 0 {
+	switch {
+	case tf > 0:
 		passf("gles3.GenTransformFeedbacks", fmt.Sprintf("id=%d", tf))
 		gles3.BindTransformFeedback(gles3.TransformFeedback, tf)
 		pass("gles3.BindTransformFeedback")
 		gles3.BindTransformFeedback(gles3.TransformFeedback, 0)
 		gles3.DeleteTransformFeedbacks(1, &tf)
 		pass("gles3.DeleteTransformFeedbacks")
-	} else if !glContextOK() {
+	case !glContextOK():
 		skip("gles3.GenTransformFeedbacks+", "gfxstream pipe degraded mid-test")
 		return
-	} else {
+	default:
 		fail("gles3.GenTransformFeedbacks", "returned 0")
 	}
 

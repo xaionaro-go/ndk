@@ -18,7 +18,7 @@ const (
 	AlphaSize            Int = 12321
 	DepthSize            Int = 12325
 	StencilSize          Int = 12326
-	ConfigId             Int = 12328
+	ConfigID             Int = 12328
 	BufferSize           Int = 12320
 	Width                Int = 12375
 	Height               Int = 12374

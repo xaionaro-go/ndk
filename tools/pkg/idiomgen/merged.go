@@ -76,6 +76,8 @@ type MergedMethod struct {
 	ReturnsNew          string
 	ReturnsNewDirect    bool // true if returns_new function returns pointer directly (not out-param)
 	ReturnsFrames       bool
+	BufGoType           string // Go type override for buffer param (e.g., "[]byte")
+	TimeoutUnit         string // "ns" (default), "ms", "us", "s" — for time.Duration conversion
 	APILevel            int
 	FixedParams         map[string]string     // param name → literal Go value
 	CallbackParam       string                // name of callback struct param (triggers bridge call)
@@ -87,13 +89,14 @@ type MergedMethod struct {
 
 // MergedParam is a resolved parameter.
 type MergedParam struct {
-	Name      string
-	GoType    string
-	CapiType  string // Original spec type (before typeMap resolution)
-	IsHandle  bool   // True if param is an opaque handle needing .ptr unwrap
-	IsString  bool   // True if param is *byte (C string) needing Go string conversion
-	Remapped  bool   // True if the type was remapped through typeMap (needs cast even if names match)
-	Direction string
+	Name         string
+	GoType       string
+	CapiType     string // Original spec type (before typeMap resolution)
+	IsHandle     bool   // True if param is an opaque handle needing .ptr unwrap
+	IsString     bool   // True if param is *byte (C string) needing Go string conversion
+	Remapped     bool   // True if the type was remapped through typeMap (needs cast even if names match)
+	Direction    string
+	DurationUnit string // "ns", "ms", "us", "s" — set when GoType is time.Duration
 }
 
 // MergedFreeFunction is a package-level function without a receiver (e.g., GL/EGL procedural APIs).

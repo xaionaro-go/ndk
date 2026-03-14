@@ -7,6 +7,11 @@
 
 Idiomatic Go bindings for the Android NDK, auto-generated from C headers to ensure full coverage and easy maintenance.
 
+## Requirements
+
+- **Android NDK r28** (28.0.13004108) or later
+- **API level 35** (Android 15) target
+
 ## Usage Examples
 
 ### Audio Playback (AAudio)
@@ -602,3 +607,30 @@ bindings, proper resource lifecycle (Close), error handling, and callback
 bridging. Writing CGo from scratch duplicates this work and lacks the
 automated test coverage this project maintains.
 -->
+
+## FAQ
+
+**Q: Why NativeActivity instead of GameActivity?**
+
+This project wraps NDK C headers via a three-stage generation pipeline. GameActivity is a Jetpack Java library (AAR in the AGDK), not an NDK C API. NativeActivity is the only activity model exposed by NDK headers themselves. GameActivity requires bundling a Java AAR + JNI bridging — fundamentally different from the C→Go pipeline. rust-mobile/ndk faces the identical constraint and also centers NativeActivity. A companion `gameactivity/` package is planned for wrapping the AGDK GameActivity C library.
+
+**Q: What about permissions, text input, and other Java-only APIs?**
+
+Android runtime permissions are Activity-driven Java APIs; the NDK `APermissionManager_checkPermission` only checks, it cannot request. The `jni/` package provides `HasPermission()` and `RequestPermission()` via JNI as the escape hatch. `examples/camera/display/` demonstrates the full permission request flow. This is inherent to Android's platform design — all native-first frameworks (Rust ndk, C++ NativeActivity) hit the same boundary. See [Platform Integration Guide](docs/platform-integration.md) for details.
+
+**Q: Why do examples use `unsafe.Pointer` and `runtime.LockOSThread()`?**
+
+`unsafe.Pointer` in audio I/O provides zero-copy buffer access — adding a copying wrapper would be a performance regression for the primary use case. `runtime.LockOSThread()` is the standard Go pattern for thread-affine APIs (EGL contexts, ALooper, AInputQueue) — it is not a leaky abstraction, it is how Go correctly interoperates with thread-local native APIs. The idiomatic layer hides `unsafe.Pointer` for all handle types behind typed Go structs with constructors and `Close()` methods. See [Thread Safety Guide](docs/thread-safety.md).
+
+**Q: Why `make` targets instead of Android Studio / Gradle?**
+
+There is no Go↔Gradle integration in the wider Go ecosystem; gomobile also uses a custom build tool. The provided Makefile produces complete, signed APKs ready for deployment. A standalone `go-ndk-build` CLI tool is planned to streamline APK packaging.
+
+**Q: Is the API stable?**
+
+The project is pre-release (v0.x). APIs may change as the overlay system evolves. Generated APIs track NDK header changes — running the pipeline with a new NDK version may change signatures. Semantic versioning will be adopted once the overlay format stabilizes.
+
+## Guides
+
+- [Thread Safety](docs/thread-safety.md) — when and why to use `runtime.LockOSThread()`
+- [Platform Integration](docs/platform-integration.md) — bridging to Java APIs via JNI

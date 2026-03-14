@@ -230,12 +230,12 @@ func TestMerge_Methods(t *testing.T) {
 	}
 	// The receiver param should be excluded from Params.
 	// The function has builder (*AAudioStreamBuilder) and deviceId (int32).
-	// builder is the receiver, so only deviceId should remain.
+	// builder is the receiver, so only deviceId should remain (normalized to deviceID).
 	if len(m.Params) != 1 {
 		t.Fatalf("Params count = %d, want 1", len(m.Params))
 	}
-	if m.Params[0].Name != "deviceId" {
-		t.Errorf("Params[0].Name = %q, want %q", m.Params[0].Name, "deviceId")
+	if m.Params[0].Name != "deviceID" {
+		t.Errorf("Params[0].Name = %q, want %q", m.Params[0].Name, "deviceID")
 	}
 }
 

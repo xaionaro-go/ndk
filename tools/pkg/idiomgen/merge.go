@@ -363,9 +363,10 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 		if fov.Skip {
 			continue
 		}
-		if fov.Receiver != "" {
+		switch {
+		case fov.Receiver != "":
 			m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
-		} else if fov.GoName != "" {
+		case fov.GoName != "":
 			m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, opaqueSpecNames))
 		}
 	}
@@ -388,9 +389,10 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 			Params:  params,
 			Returns: fov.BridgeReturns,
 		}
-		if fov.Receiver != "" {
+		switch {
+		case fov.Receiver != "":
 			m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
-		} else if fov.GoName != "" {
+		case fov.GoName != "":
 			m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, opaqueSpecNames))
 		}
 	}
@@ -499,7 +501,7 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 				if field.Type != "func_ptr" {
 					continue
 				}
-				goName := strings.ToUpper(field.Name[:1]) + field.Name[1:]
+				goName := fixGoAcronyms(strings.ToUpper(field.Name[:1]) + field.Name[1:])
 				ml.Fields = append(ml.Fields, MergedCallbackField{
 					CName:   field.Name,
 					GoName:  goName,
@@ -619,8 +621,8 @@ func stripAndTitle(name, prefix string) string {
 	return toTitleCase(s)
 }
 
-// toTitleCase converts an UPPER_SNAKE_CASE string to TitleCase.
-// "OUTPUT" → "Output", "SOME_VALUE" → "SomeValue".
+// toTitleCase converts an UPPER_SNAKE_CASE string to TitleCase,
+// normalizing common acronyms (e.g. "DEVICE_ID" → "DeviceID", not "DeviceId").
 func toTitleCase(s string) string {
 	parts := strings.Split(strings.ToLower(s), "_")
 	var b strings.Builder
@@ -632,7 +634,7 @@ func toTitleCase(s string) string {
 		runes[0] = unicode.ToUpper(runes[0])
 		b.WriteString(string(runes))
 	}
-	return b.String()
+	return fixGoAcronyms(b.String())
 }
 
 func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, receiverCapiTypes map[string]string, opaqueSpecNames map[string]bool, callbackStructOverlays map[string]overlaymodel.CallbackStructOverlay, structAccessors map[string]overlaymodel.StructAccessorOverlay) MergedMethod {
@@ -667,6 +669,32 @@ func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOve
 		})
 	}
 
+	// If BufGoType is set, override the GoType of the buffer param.
+	if fov.BufGoType != "" && fov.BufParam != "" {
+		for i := range params {
+			if params[i].Name == safeGoName(fov.BufParam) {
+				params[i].GoType = fov.BufGoType
+				break
+			}
+		}
+	}
+
+	// If TimeoutParam is set, override the GoType to time.Duration.
+	if fov.TimeoutParam != "" {
+		unit := fov.TimeoutUnit
+		if unit == "" {
+			unit = "ns"
+		}
+		for i := range params {
+			if params[i].Name == safeGoName(fov.TimeoutParam) {
+				params[i].GoType = "time.Duration"
+				params[i].DurationUnit = unit
+				params[i].Name = durationParamName(fov.TimeoutParam)
+				break
+			}
+		}
+	}
+
 	// Auto-derive GoName if not specified in overlay.
 	goName := fov.GoName
 	if goName == "" {
@@ -691,6 +719,8 @@ func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOve
 		ReturnsNew:       fov.ReturnsNew,
 		ReturnsNewDirect: returnsNewDirect,
 		ReturnsFrames:    fov.ReturnsFrames,
+		BufGoType:        fov.BufGoType,
+		TimeoutUnit:      fov.TimeoutUnit,
 		FixedParams:      fov.FixedParams,
 		CallbackParam:    fov.CallbackParam,
 	}
@@ -743,6 +773,22 @@ func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOve
 }
 
 // deriveGoName auto-derives a Go method name from a C function name by
+// durationParamName derives a Go parameter name from a C duration/timeout param name.
+// "timeoutNanoseconds" → "timeout", "actualDurationNanos" → "actualDuration",
+// "initialTargetWorkDurationNanos" → "initialTargetWorkDuration".
+func durationParamName(cName string) string {
+	for _, suffix := range []string{"Nanoseconds", "Nanos", "Millis", "Microseconds", "Micros"} {
+		if strings.HasSuffix(cName, suffix) {
+			trimmed := strings.TrimSuffix(cName, suffix)
+			if trimmed == "" || trimmed == "timeout" {
+				return "timeout"
+			}
+			return trimmed
+		}
+	}
+	return cName
+}
+
 // stripping the receiver's capi type prefix and capitalizing the first letter.
 // "AAudioStreamBuilder_setChannelCount" with receiver "StreamBuilder" → "SetChannelCount".
 func deriveGoName(funcName, receiver string, receiverCapiTypes map[string]string) string {
@@ -751,11 +797,11 @@ func deriveGoName(funcName, receiver string, receiverCapiTypes map[string]string
 		if strings.HasPrefix(funcName, prefix) {
 			suffix := funcName[len(prefix):]
 			if len(suffix) > 0 {
-				return strings.ToUpper(suffix[:1]) + suffix[1:]
+				return fixGoAcronyms(strings.ToUpper(suffix[:1]) + suffix[1:])
 			}
 		}
 	}
-	return funcName
+	return fixGoAcronyms(funcName)
 }
 
 func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, opaqueSpecNames map[string]bool) MergedFreeFunction {
@@ -784,6 +830,22 @@ func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.F
 			Direction: p.Direction,
 		})
 	}
+	// If TimeoutParam is set, override the GoType to time.Duration.
+	if fov.TimeoutParam != "" {
+		unit := fov.TimeoutUnit
+		if unit == "" {
+			unit = "ns"
+		}
+		for i := range params {
+			if params[i].Name == safeGoName(fov.TimeoutParam) {
+				params[i].GoType = "time.Duration"
+				params[i].Name = durationParamName(fov.TimeoutParam)
+				params[i].DurationUnit = unit
+				break
+			}
+		}
+	}
+
 	returns := resolveType(fd.Returns, typeMap)
 	isHandleReturn := strings.HasPrefix(fd.Returns, "*") && opaqueSpecNames[strings.TrimPrefix(fd.Returns, "*")]
 	ff := MergedFreeFunction{

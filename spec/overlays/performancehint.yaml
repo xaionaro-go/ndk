@@ -23,6 +23,7 @@ functions:
     receiver: Manager
     go_name: CreateSession
     returns_new: Session
+    timeout_param: initialTargetWorkDurationNanos
 
   APerformanceHint_getPreferredUpdateRateNanos:
     receiver: Manager
@@ -32,7 +33,9 @@ functions:
   APerformanceHint_updateTargetWorkDuration:
     receiver: Session
     go_name: UpdateTargetWorkDuration
+    timeout_param: targetDurationNanos
 
   APerformanceHint_reportActualWorkDuration:
     receiver: Session
     go_name: ReportActualWorkDuration
+    timeout_param: actualDurationNanos

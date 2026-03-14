@@ -1,12 +1,7 @@
-// Audio recording (capture) stream setup example.
+// Audio recording (capture) example.
 //
-// Demonstrates how to configure an AAudio input stream for recording audio.
-// The stream is set to Input direction with 16-bit PCM format at 16 kHz,
-// which is a common configuration for voice capture on Android.
-//
-// After opening and starting the stream, its negotiated properties are
-// printed. A real application would read captured frames from the stream
-// using a data callback or a read loop.
+// Opens an AAudio input stream at 48 kHz mono 16-bit PCM, reads one second
+// of audio frames, and prints basic statistics (total frames, peak amplitude).
 //
 // This program must run on an Android device with AAudio support and
 // the RECORD_AUDIO permission granted.
@@ -14,6 +9,9 @@ package main
 
 import (
 	"log"
+	"math"
+	"time"
+	"unsafe"
 
 	"github.com/xaionaro-go/ndk/audio"
 )
@@ -25,10 +23,9 @@ func main() {
 	}
 	defer builder.Close()
 
-	// Configure for mono voice capture at 16 kHz.
 	builder.
 		SetDirection(audio.Input).
-		SetSampleRate(16000).
+		SetSampleRate(48000).
 		SetChannelCount(1).
 		SetFormat(audio.PcmI16).
 		SetPerformanceMode(audio.LowLatency).
@@ -44,26 +41,47 @@ func main() {
 		}
 	}()
 
-	log.Printf("capture stream opened")
-	log.Printf("  sample rate:      %d Hz", stream.SampleRate())
-	log.Printf("  channel count:    %d", stream.ChannelCount())
-	log.Printf("  frames per burst: %d", stream.FramesPerBurst())
-	log.Printf("  state:            %s", stream.State())
+	rate := stream.SampleRate()
+	log.Printf("capture stream opened (rate=%d Hz, ch=%d)", rate, stream.ChannelCount())
 
 	if err := stream.Start(); err != nil {
 		log.Fatalf("start stream: %v", err)
 	}
-	log.Printf("  state after start: %s", stream.State())
 
-	// A real application would now read captured audio frames from the
-	// stream, for example by using a data callback registered on the
-	// builder before Open(), or by calling a read method in a loop.
+	// Read approximately 1 second of audio.
+	totalFrames := rate
+	buf := make([]int16, 1024)
+	bufBytes := unsafe.Slice((*byte)(unsafe.Pointer(&buf[0])), len(buf)*int(unsafe.Sizeof(buf[0])))
+	var captured []int16
+
+	for int32(len(captured)) < totalFrames {
+		framesToRead := int32(len(buf))
+		if remaining := totalFrames - int32(len(captured)); remaining < framesToRead {
+			framesToRead = remaining
+		}
+		n, err := stream.Read(bufBytes, framesToRead, time.Second)
+		if err != nil {
+			log.Fatalf("read: %v", err)
+		}
+		captured = append(captured, buf[:n]...)
+	}
 
 	if err := stream.Stop(); err != nil {
 		log.Fatalf("stop stream: %v", err)
 	}
-	log.Printf("  state after stop: %s", stream.State())
-	log.Printf("  xrun count:       %d", stream.XRunCount())
 
+	// Compute peak amplitude.
+	var peak int16
+	for _, s := range captured {
+		if s < 0 {
+			s = -s
+		}
+		if s > peak {
+			peak = s
+		}
+	}
+
+	log.Printf("captured %d frames", len(captured))
+	log.Printf("peak amplitude: %d (%.1f dBFS)", peak, 20*math.Log10(float64(peak)/32767.0))
 	log.Println("recording example finished")
 }

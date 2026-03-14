@@ -61,14 +61,15 @@ func extractTypes(f *ast.File, spec *specmodel.Spec) {
 				if !ok {
 					break
 				}
-				if ident.Name == "C" {
+				switch {
+				case ident.Name == "C":
 					// type Foo C.Bar → opaque handle (C package selector).
 					spec.Types[name] = specmodel.TypeDef{
 						Kind:   "opaque_ptr",
 						CType:  typ.Sel.Name,
 						GoType: "*C." + typ.Sel.Name,
 					}
-				} else if ident.Name == "unsafe" && typ.Sel.Name == "Pointer" {
+				case ident.Name == "unsafe" && typ.Sel.Name == "Pointer":
 					// type Foo unsafe.Pointer → pointer-sized handle (EGL/etc).
 					spec.Types[name] = specmodel.TypeDef{
 						Kind:   "pointer_handle",

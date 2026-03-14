@@ -39,16 +39,16 @@ func (h *Manager) Pointer() unsafe.Pointer {
 }
 
 // GetCameraCharacteristics creates a new Metadata from this Manager.
-func (h *Manager) GetCameraCharacteristics(cameraId string) (*Metadata, error) {
+func (h *Manager) GetCameraCharacteristics(cameraID string) (*Metadata, error) {
 	var ptr *capi.ACameraMetadata
-	if err := result(int32(capi.ACameraManager_getCameraCharacteristics(h.ptr, cameraId, &ptr))); err != nil {
+	if err := result(int32(capi.ACameraManager_getCameraCharacteristics(h.ptr, cameraID, &ptr))); err != nil {
 		return nil, err
 	}
 	return &Metadata{ptr: ptr}, nil
 }
 
-// CameraIdList returns items from the underlying list.
-func (h *Manager) CameraIdList() ([]string, error) {
+// CameraIDList returns items from the underlying list.
+func (h *Manager) CameraIDList() ([]string, error) {
 	var list *capi.ACameraIdList
 	if err := result(int32(capi.ACameraManager_getCameraIdList(h.ptr, &list))); err != nil {
 		return nil, err
@@ -63,12 +63,12 @@ func (h *Manager) CameraIdList() ([]string, error) {
 }
 
 // OpenCamera creates a new Device from this Manager.
-func (h *Manager) OpenCamera(cameraId string, cbs DeviceStateCallbacks) (*Device, error) {
+func (h *Manager) OpenCamera(cameraID string, cbs DeviceStateCallbacks) (*Device, error) {
 	cbID := capi.BridgeRegisterDeviceStateCallbacks(cbs)
 	var cbsC capi.ACameraDevice_StateCallbacks
 	capi.BridgeInitDeviceStateCallbacks(&cbsC, cbID)
 	var ptr *capi.ACameraDevice
-	if err := result(int32(capi.ACameraManager_openCamera(h.ptr, cameraId, &cbsC, &ptr))); err != nil {
+	if err := result(int32(capi.ACameraManager_openCamera(h.ptr, cameraID, &cbsC, &ptr))); err != nil {
 		capi.BridgeUnregisterDeviceStateCallbacks(cbID)
 		return nil, err
 	}

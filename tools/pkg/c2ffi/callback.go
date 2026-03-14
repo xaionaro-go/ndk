@@ -351,7 +351,9 @@ func sanitizeGoName(name string) string {
 	switch name {
 	case "type", "func", "var", "const", "import", "package",
 		"return", "range", "map", "chan", "interface", "struct",
-		"error", "string", "bool", "int", "uint", "byte", "rune":
+		"error", "string", "bool", "int", "uint", "byte", "rune",
+		"select", "case", "default", "switch", "break", "continue",
+		"for", "go", "goto", "if", "else", "defer", "fallthrough":
 		return "_" + name
 	}
 	return name

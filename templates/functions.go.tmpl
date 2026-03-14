@@ -3,7 +3,8 @@
 package {{ .PackageName }}
 {{ if .FreeFunctions }}
 import (
-	{{ if anyUnsafeFreeFunc .FreeFunctions }}"unsafe"
+	{{ if anyDurationFreeFunc .FreeFunctions }}"time"
+	{{ end }}{{ if anyUnsafeFreeFunc .FreeFunctions }}"unsafe"
 	{{ end }}
 	capi "{{ .SourcePackage }}"
 )

@@ -67,11 +67,9 @@ func TestWriteSpec(t *testing.T) {
 	if roundTrip.SourcePackage != "github.com/xaionaro-go/ndk/capi/test" {
 		t.Errorf("round-trip source_package = %q, want %q", roundTrip.SourcePackage, "github.com/xaionaro-go/ndk/capi/test")
 	}
-	if td, ok := roundTrip.Types["TestHandle"]; !ok {
-		t.Error("round-trip missing type TestHandle")
-	} else if td.Kind != "opaque_ptr" {
-		t.Errorf("round-trip TestHandle.Kind = %q, want opaque_ptr", td.Kind)
-	}
+	td, ok := roundTrip.Types["TestHandle"]
+	require.True(t, ok, "round-trip missing type TestHandle")
+	assert.Equal(t, "opaque_ptr", td.Kind, "round-trip TestHandle.Kind")
 }
 
 func TestWriteSpec_WithStructs(t *testing.T) {

@@ -177,10 +177,10 @@ func TestLoadAAudioOverlay(t *testing.T) {
 		t.Error("aaudio_stream_state_t.string_method should be true")
 	}
 
-	// Functions: 20 entries (8 builder setters + openStream + setDataCallback +
-	// 5 stream getters + 4 stream control + write)
-	if len(ov.Functions) != 20 {
-		t.Errorf("functions count = %d, want 20", len(ov.Functions))
+	// Functions: 21 entries (8 builder setters + openStream + setDataCallback +
+	// 5 stream getters + 4 stream control + read + write)
+	if len(ov.Functions) != 21 {
+		t.Errorf("functions count = %d, want 21", len(ov.Functions))
 	}
 
 	// Spot-check function annotations
@@ -201,7 +201,7 @@ func TestLoadAAudioOverlay(t *testing.T) {
 		t.Errorf("getState = %+v", state)
 	}
 	write := ov.Functions["AAudioStream_write"]
-	if write.BufParam != "audioData" || !write.ReturnsFrames {
+	if write.BufParam != "buffer" || !write.ReturnsFrames || write.BufGoType != "[]byte" {
 		t.Errorf("write = %+v", write)
 	}
 

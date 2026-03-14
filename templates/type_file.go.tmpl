@@ -3,6 +3,9 @@
 package {{ .PackageName }}
 
 import (
+{{- if anyDurationParam .Methods .FreeFunctions }}
+	"time"
+{{- end }}
 	"unsafe"
 
 	capi "{{ .SourcePackage }}"
@@ -144,7 +147,11 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilter
 {{ else if $m.ReturnsFrames }}
 // {{ $m.GoName }} calls the underlying NDK function and returns the frame count.
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) (int32, error) {
+{{- if $m.BufGoType }}
+	r := capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArgBuf . $m.BufGoType }}{{ end }})
+{{- else }}
 	r := capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }})
+{{- end }}
 	if r < 0 {
 		return 0, Error(r)
 	}

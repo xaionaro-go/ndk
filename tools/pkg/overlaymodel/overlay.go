@@ -60,7 +60,9 @@ type FuncOverlay struct {
 	GoCallbackSig     string             `yaml:"go_callback_sig,omitempty"`
 	BufParam          string             `yaml:"buf_param,omitempty"`
 	BufFramesParam    string             `yaml:"buf_frames_param,omitempty"`
+	BufGoType         string             `yaml:"buf_go_type,omitempty"` // Go type for buffer param (e.g., "[]byte")
 	TimeoutParam      string             `yaml:"timeout_param,omitempty"`
+	TimeoutUnit       string             `yaml:"timeout_unit,omitempty"` // "ns" (default), "ms", "us", "s"
 	ReturnsFrames     bool               `yaml:"returns_frames,omitempty"`
 	FixedParams       map[string]string  `yaml:"fixed_params,omitempty"`
 	ReturnsListStruct string             `yaml:"returns_list_struct,omitempty"` // spec name of list struct for iteration

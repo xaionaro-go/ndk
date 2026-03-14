@@ -3,6 +3,7 @@
 package audio
 
 import (
+	"time"
 	"unsafe"
 
 	capi "github.com/xaionaro-go/ndk/capi/aaudio"
@@ -58,6 +59,15 @@ func (h *Stream) XRunCount() int32 {
 	return (int32)(capi.AAudioStream_getXRunCount(h.ptr))
 }
 
+// Read calls the underlying NDK function and returns the frame count.
+func (h *Stream) Read(buffer []byte, numFrames int32, timeout time.Duration) (int32, error) {
+	r := capi.AAudioStream_read(h.ptr, unsafe.Pointer(&buffer[0]), numFrames, int64(timeout.Nanoseconds()))
+	if r < 0 {
+		return 0, Error(r)
+	}
+	return int32(r), nil
+}
+
 // Flush calls the underlying NDK function.
 func (h *Stream) Flush() error {
 	return result(int32(capi.AAudioStream_requestFlush(h.ptr)))
@@ -79,8 +89,8 @@ func (h *Stream) Stop() error {
 }
 
 // Write calls the underlying NDK function and returns the frame count.
-func (h *Stream) Write(buffer unsafe.Pointer, numFrames int32, timeoutNanoseconds int64) (int32, error) {
-	r := capi.AAudioStream_write(h.ptr, buffer, numFrames, timeoutNanoseconds)
+func (h *Stream) Write(buffer []byte, numFrames int32, timeout time.Duration) (int32, error) {
+	r := capi.AAudioStream_write(h.ptr, unsafe.Pointer(&buffer[0]), numFrames, int64(timeout.Nanoseconds()))
 	if r < 0 {
 		return 0, Error(r)
 	}

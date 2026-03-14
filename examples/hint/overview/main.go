@@ -108,7 +108,7 @@ func main() {
 	// ---------------------------------------------------------------
 	const (
 		targetFPS        = 60
-		targetDurationNs = int64(time.Second) / targetFPS // 16_666_666 ns
+		targetDurationNs = time.Second / targetFPS // ~16.67 ms
 	)
 
 	// In a real application, gather thread IDs from your render and
@@ -119,7 +119,7 @@ func main() {
 		1235, // example: physics worker tid
 	}
 
-	log.Printf("target: %d fps -> %d ns per frame", targetFPS, targetDurationNs)
+	log.Printf("target: %d fps -> %v per frame", targetFPS, targetDurationNs)
 	log.Printf("thread IDs: %v", tids)
 
 	// Create the session. On a real device this returns a valid
@@ -168,10 +168,10 @@ func main() {
 // runFrameLoop demonstrates the per-frame reporting pattern. It simulates
 // a game loop that measures work duration and reports it to the performance
 // hint session so the system can tune CPU frequency.
-func runFrameLoop(session *hint.Session, targetNs int64) {
+func runFrameLoop(session *hint.Session, target time.Duration) {
 	const totalFrames = 180 // 3 seconds at 60 fps
 
-	log.Printf("starting frame loop: %d frames, target %d ns", totalFrames, targetNs)
+	log.Printf("starting frame loop: %d frames, target %v", totalFrames, target)
 
 	for frame := 0; frame < totalFrames; frame++ {
 		start := time.Now()
@@ -180,7 +180,7 @@ func runFrameLoop(session *hint.Session, targetNs int64) {
 		// render and simulation pass.
 		doFrameWork(frame)
 
-		elapsed := time.Since(start).Nanoseconds()
+		elapsed := time.Since(start)
 
 		// Report how long the frame actually took. The system
 		// compares this against the target to decide whether to
@@ -192,20 +192,20 @@ func runFrameLoop(session *hint.Session, targetNs int64) {
 		if frame%60 == 0 {
 			fmt.Printf("  [frame %3d] actual=%5.2f ms  target=%5.2f ms  ratio=%.2f\n",
 				frame,
-				float64(elapsed)/1e6,
-				float64(targetNs)/1e6,
-				float64(elapsed)/float64(targetNs))
+				float64(elapsed.Nanoseconds())/1e6,
+				float64(target.Nanoseconds())/1e6,
+				float64(elapsed)/float64(target))
 		}
 	}
 
 	// If the application switches frame rate targets (e.g., the user
 	// changes quality settings from 60 fps to 90 fps), update the
 	// session target rather than creating a new session.
-	const newTargetNs = int64(time.Second) / 90 // 11_111_111 ns for 90 fps
-	if err := session.UpdateTargetWorkDuration(newTargetNs); err != nil {
+	const newTarget = time.Second / 90 // ~11.11 ms for 90 fps
+	if err := session.UpdateTargetWorkDuration(newTarget); err != nil {
 		log.Printf("update target failed: %v", err)
 	} else {
-		log.Printf("target updated to %d ns (90 fps)", newTargetNs)
+		log.Printf("target updated to %v (90 fps)", newTarget)
 	}
 
 	log.Println("frame loop finished")

@@ -202,6 +202,33 @@ func TestToSnakeCase(t *testing.T) {
 	}
 }
 
+func TestFixGoAcronyms(t *testing.T) {
+	fm := idiomgen.FuncMap()
+	safeGoName := fm["safeGoName"].(func(string) string)
+	tests := []struct {
+		in, want string
+	}{
+		{"deviceId", "deviceID"},
+		{"sessionId", "sessionID"},
+		{"SetDeviceId", "SetDeviceID"},
+		{"CameraIdList", "CameraIDList"},
+		{"VsyncId", "VsyncID"},
+		// Must NOT change words where "Id" is followed by lowercase.
+		{"Identify", "Identify"},
+		{"Idle", "Idle"},
+		{"Identity", "Identity"},
+		{"DeviceWaitIdle", "DeviceWaitIdle"},
+		// Plain names without "Id" are unchanged.
+		{"count", "count"},
+		{"StreamBuilder", "StreamBuilder"},
+	}
+	for _, tt := range tests {
+		if got := safeGoName(tt.in); got != tt.want {
+			t.Errorf("safeGoName(%q) = %q, want %q", tt.in, got, tt.want)
+		}
+	}
+}
+
 func TestFuncMapUnexport(t *testing.T) {
 	fm := idiomgen.FuncMap()
 	unexport := fm["unexport"].(func(string) string)

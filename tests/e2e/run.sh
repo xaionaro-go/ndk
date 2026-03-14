@@ -46,7 +46,7 @@ fi
 
 echo "=== Step 3: Start emulator ==="
 ANDROID_SDK_ROOT="$ANDROID_HOME" "$EMULATOR" \
-    -avd "$AVD_NAME" -no-window -no-audio -no-boot-anim \
+    -avd "$AVD_NAME" -no-window -no-boot-anim \
     -gpu swiftshader_indirect -no-metrics 2>/tmp/emulator_e2e.log &
 EMULATOR_PID=$!
 trap "kill $EMULATOR_PID 2>/dev/null || true" EXIT

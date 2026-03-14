@@ -153,11 +153,12 @@ func tryStartCamera() {
 	actPtr := currentActivity.Pointer()
 
 	if !jni.HasPermission(actPtr, "android.permission.CAMERA") {
-		if !permRequested {
+		switch {
+		case !permRequested:
 			logInfo("requesting camera permission")
 			jni.RequestPermission(actPtr, "android.permission.CAMERA")
 			permRequested = true
-		} else if permDialogDone {
+		case permDialogDone:
 			showError("camera permission denied")
 		}
 		return
@@ -182,7 +183,7 @@ func startPreview(win unsafe.Pointer) (_err error) {
 
 	camMgr = camera.NewManager()
 
-	ids, err := camMgr.CameraIdList()
+	ids, err := camMgr.CameraIDList()
 	if err != nil {
 		return fmt.Errorf("listing cameras: %w", err)
 	}

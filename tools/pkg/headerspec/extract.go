@@ -208,9 +208,10 @@ func extractFunction(node *ASTNode) *FuncDecl {
 		}
 
 		p := ParamInfo{Name: child.Name}
-		if child.Type != nil {
+		switch {
+		case child.Type != nil:
 			p.Type = child.Type.QualType
-		} else if paramIdx < len(paramTypes) {
+		case paramIdx < len(paramTypes):
 			p.Type = paramTypes[paramIdx]
 		}
 		fd.Params = append(fd.Params, p)

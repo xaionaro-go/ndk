@@ -1,7 +1,6 @@
 package c2ffi
 
 import (
-	"fmt"
 	"os"
 	"testing"
 )
@@ -20,9 +19,9 @@ func TestEnumIDCollision(t *testing.T) {
 	}
 
 	for k, vals := range spec.Enums {
-		fmt.Printf("Enum %s:\n", k)
+		t.Logf("Enum %s:", k)
 		for _, v := range vals {
-			fmt.Printf("  %s = %d\n", v.Name, v.Value)
+			t.Logf("  %s = %d", v.Name, v.Value)
 		}
 	}
 }
