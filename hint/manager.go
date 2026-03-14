@@ -33,3 +33,8 @@ func (h *Manager) CreateSession(threadIds *int32, size uint64, initialTargetWork
 func (h *Manager) PreferredUpdateRateNanos() int64 {
 	return (int64)(capi.APerformanceHint_getPreferredUpdateRateNanos(h.ptr))
 }
+
+// APerformanceHint_getManager calls the underlying C function.
+func APerformanceHint_getManager() *Manager {
+	return &Manager{ptr: capi.APerformanceHint_getManager()}
+}

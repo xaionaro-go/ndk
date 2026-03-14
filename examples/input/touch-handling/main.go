@@ -74,12 +74,12 @@ func main() {
 	//   lp := looper.Prepare(1) // ALOOPER_PREPARE_ALLOW_NON_CALLBACKS
 	//   defer lp.Close()
 	//
-	// Attaching the queue to the looper is done at the capi level
+	// Attaching the queue to the looper is done at the the low-level layer level
 	// (the idiomatic binding does not yet expose AttachLooper):
 	//
-	//   capi.AInputQueue_attachLooper(
-	//       (*capi.AInputQueue)(queue.Pointer()),
-	//       (*capi.ALooper)(lp.Pointer()),
+	//   AInputQueue_attachLooper(
+	//       (*AInputQueue)(queue.Pointer()),
+	//       (*ALooper)(lp.Pointer()),
 	//       looperIdent, // returned by PollOnce when events are ready
 	//       nil,         // no C callback; use poll-based reading
 	//       nil,         // no user data

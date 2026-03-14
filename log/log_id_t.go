@@ -2,8 +2,18 @@
 
 package log
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/logging"
-)
+type log_id_t int32
 
-type log_id_t = capi.Log_id_t
+const (
+	LOG_ID_MIN      log_id_t = 0
+	LOG_ID_MAIN     log_id_t = 0
+	LOG_ID_RADIO    log_id_t = 1
+	LOG_ID_EVENTS   log_id_t = 2
+	LOG_ID_SYSTEM   log_id_t = 3
+	LOG_ID_CRASH    log_id_t = 4
+	LOG_ID_STATS    log_id_t = 5
+	LOG_ID_SECURITY log_id_t = 6
+	LOG_ID_KERNEL   log_id_t = 7
+	LOG_ID_MAX      log_id_t = 8
+	LOG_ID_DEFAULT  log_id_t = 2147483647
+)

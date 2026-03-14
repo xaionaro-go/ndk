@@ -43,6 +43,11 @@ func (h *Device) NumOutputPorts() int64 {
 	return (int64)(capi.AMidiDevice_getNumOutputPorts(h.ptr))
 }
 
+// GetType calls the underlying NDK function.
+func (h *Device) GetType() error {
+	return result(int32(capi.AMidiDevice_getType(h.ptr)))
+}
+
 // OpenInputPort creates a new InputPort from this Device.
 func (h *Device) OpenInputPort(portNumber int32) (*InputPort, error) {
 	var ptr *capi.AMidiInputPort

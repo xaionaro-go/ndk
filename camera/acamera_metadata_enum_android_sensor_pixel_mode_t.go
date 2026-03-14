@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_sensor_pixel_mode_t int32
 
-type acamera_metadata_enum_android_sensor_pixel_mode_t = capi.Acamera_metadata_enum_android_sensor_pixel_mode_t
+const (
+	ACAMERA_SENSOR_PIXEL_MODE_DEFAULT            acamera_metadata_enum_android_sensor_pixel_mode_t = 0
+	ACAMERA_SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION acamera_metadata_enum_android_sensor_pixel_mode_t = 1
+)

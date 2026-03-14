@@ -22,3 +22,18 @@ func NewEventQueueFromPointer(ptr unsafe.Pointer) *EventQueue {
 func (h *EventQueue) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// GetEvents returns the value directly.
+func (h *EventQueue) GetEvents(events *SensorEvent, count uint64) int64 {
+	return (int64)(capi.ASensorEventQueue_getEvents(h.ptr, events.ptr, count))
+}
+
+// RegisterSensor calls the underlying NDK function.
+func (h *EventQueue) RegisterSensor(sensor *Sensor, samplingPeriodUs int32, maxBatchReportLatencyUs int64) error {
+	return result(int32(capi.ASensorEventQueue_registerSensor(h.ptr, sensor.ptr, samplingPeriodUs, maxBatchReportLatencyUs)))
+}
+
+// RequestAdditionalInfoEvents calls the underlying NDK function.
+func (h *EventQueue) RequestAdditionalInfoEvents(enable bool) error {
+	return result(int32(capi.ASensorEventQueue_requestAdditionalInfoEvents(h.ptr, enable)))
+}

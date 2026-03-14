@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_statistics_hot_pixel_map_mode_t int32
 
-type acamera_metadata_enum_android_statistics_hot_pixel_map_mode_t = capi.Acamera_metadata_enum_android_statistics_hot_pixel_map_mode_t
+const (
+	ACAMERA_STATISTICS_HOT_PIXEL_MAP_MODE_OFF acamera_metadata_enum_android_statistics_hot_pixel_map_mode_t = 0
+	ACAMERA_STATISTICS_HOT_PIXEL_MAP_MODE_ON  acamera_metadata_enum_android_statistics_hot_pixel_map_mode_t = 1
+)

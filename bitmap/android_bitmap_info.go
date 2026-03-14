@@ -3,7 +3,22 @@
 package bitmap
 
 import (
+	"unsafe"
+
 	capi "github.com/xaionaro-go/ndk/capi/bitmap"
 )
 
-type AndroidBitmapInfo = capi.AndroidBitmapInfo
+// AndroidBitmapInfo wraps the NDK AndroidBitmapInfo handle.
+type AndroidBitmapInfo struct {
+	ptr *capi.AndroidBitmapInfo
+}
+
+// NewAndroidBitmapInfoFromPointer wraps a raw AndroidBitmapInfo pointer.
+func NewAndroidBitmapInfoFromPointer(ptr unsafe.Pointer) *AndroidBitmapInfo {
+	return &AndroidBitmapInfo{ptr: (*capi.AndroidBitmapInfo)(ptr)}
+}
+
+// Pointer returns the underlying pointer as unsafe.Pointer.
+func (h *AndroidBitmapInfo) Pointer() unsafe.Pointer {
+	return unsafe.Pointer(h.ptr)
+}

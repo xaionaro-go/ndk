@@ -2,8 +2,13 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_ae_state_t int32
 
-type acamera_metadata_enum_android_control_ae_state_t = capi.Acamera_metadata_enum_android_control_ae_state_t
+const (
+	ACAMERA_CONTROL_AE_STATE_INACTIVE       acamera_metadata_enum_android_control_ae_state_t = 0
+	ACAMERA_CONTROL_AE_STATE_SEARCHING      acamera_metadata_enum_android_control_ae_state_t = 1
+	ACAMERA_CONTROL_AE_STATE_CONVERGED      acamera_metadata_enum_android_control_ae_state_t = 2
+	ACAMERA_CONTROL_AE_STATE_LOCKED         acamera_metadata_enum_android_control_ae_state_t = 3
+	ACAMERA_CONTROL_AE_STATE_FLASH_REQUIRED acamera_metadata_enum_android_control_ae_state_t = 4
+	ACAMERA_CONTROL_AE_STATE_PRECAPTURE     acamera_metadata_enum_android_control_ae_state_t = 5
+)

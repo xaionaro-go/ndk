@@ -2,8 +2,12 @@
 
 package media
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/media"
-)
+type OutputFormat int32
 
-type OutputFormat = capi.OutputFormat
+const (
+	AMEDIAMUXER_OUTPUT_FORMAT_MPEG_4    OutputFormat = 0
+	AMEDIAMUXER_OUTPUT_FORMAT_WEBM      OutputFormat = 1
+	AMEDIAMUXER_OUTPUT_FORMAT_THREE_GPP OutputFormat = 2
+	AMEDIAMUXER_OUTPUT_FORMAT_HEIF      OutputFormat = 3
+	AMEDIAMUXER_OUTPUT_FORMAT_OGG       OutputFormat = 4
+)

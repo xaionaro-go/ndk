@@ -2,8 +2,9 @@
 
 package media
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/media"
-)
+type AppendMode int32
 
-type AppendMode = capi.AppendMode
+const (
+	AMEDIAMUXER_APPEND_IGNORE_LAST_VIDEO_GOP AppendMode = 0
+	AMEDIAMUXER_APPEND_TO_EXISTING_DATA      AppendMode = 1
+)

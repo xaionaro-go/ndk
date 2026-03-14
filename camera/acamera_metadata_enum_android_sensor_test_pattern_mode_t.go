@@ -2,8 +2,13 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_sensor_test_pattern_mode_t int32
 
-type acamera_metadata_enum_android_sensor_test_pattern_mode_t = capi.Acamera_metadata_enum_android_sensor_test_pattern_mode_t
+const (
+	ACAMERA_SENSOR_TEST_PATTERN_MODE_OFF                     acamera_metadata_enum_android_sensor_test_pattern_mode_t = 0
+	ACAMERA_SENSOR_TEST_PATTERN_MODE_SOLID_COLOR             acamera_metadata_enum_android_sensor_test_pattern_mode_t = 1
+	ACAMERA_SENSOR_TEST_PATTERN_MODE_COLOR_BARS              acamera_metadata_enum_android_sensor_test_pattern_mode_t = 2
+	ACAMERA_SENSOR_TEST_PATTERN_MODE_COLOR_BARS_FADE_TO_GRAY acamera_metadata_enum_android_sensor_test_pattern_mode_t = 3
+	ACAMERA_SENSOR_TEST_PATTERN_MODE_PN9                     acamera_metadata_enum_android_sensor_test_pattern_mode_t = 4
+	ACAMERA_SENSOR_TEST_PATTERN_MODE_CUSTOM1                 acamera_metadata_enum_android_sensor_test_pattern_mode_t = 256
+)

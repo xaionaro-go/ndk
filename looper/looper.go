@@ -48,6 +48,11 @@ func (h *Looper) Wake() {
 	capi.ALooper_wake(h.ptr)
 }
 
+// ALooper_forThread calls the underlying C function.
+func ALooper_forThread() *Looper {
+	return &Looper{ptr: capi.ALooper_forThread()}
+}
+
 // Prepare calls the underlying C function.
 func Prepare(opts int32) *Looper {
 	return &Looper{ptr: capi.ALooper_prepare(opts)}

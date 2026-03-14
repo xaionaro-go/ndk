@@ -2,8 +2,13 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_af_mode_t int32
 
-type acamera_metadata_enum_android_control_af_mode_t = capi.Acamera_metadata_enum_android_control_af_mode_t
+const (
+	ACAMERA_CONTROL_AF_MODE_OFF                acamera_metadata_enum_android_control_af_mode_t = 0
+	ACAMERA_CONTROL_AF_MODE_AUTO               acamera_metadata_enum_android_control_af_mode_t = 1
+	ACAMERA_CONTROL_AF_MODE_MACRO              acamera_metadata_enum_android_control_af_mode_t = 2
+	ACAMERA_CONTROL_AF_MODE_CONTINUOUS_VIDEO   acamera_metadata_enum_android_control_af_mode_t = 3
+	ACAMERA_CONTROL_AF_MODE_CONTINUOUS_PICTURE acamera_metadata_enum_android_control_af_mode_t = 4
+	ACAMERA_CONTROL_AF_MODE_EDOF               acamera_metadata_enum_android_control_af_mode_t = 5
+)

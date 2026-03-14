@@ -133,6 +133,16 @@ func FenceSync(condition GLenum, flags GLbitfield) GLsync {
 	return (GLsync)(capi.GlFenceSync(capi.GLenum(condition), capi.GLbitfield(flags)))
 }
 
+// GlFinish calls the underlying C function.
+func GlFinish() {
+	capi.GlFinish()
+}
+
+// GlFlush calls the underlying C function.
+func GlFlush() {
+	capi.GlFlush()
+}
+
 // FlushMappedBufferRange calls the underlying C function.
 func FlushMappedBufferRange(target GLenum, offset GLintptr, length GLsizeiptr) {
 	capi.GlFlushMappedBufferRange(capi.GLenum(target), capi.GLintptr(offset), capi.GLsizeiptr(length))
@@ -188,14 +198,29 @@ func MapBufferRange(target GLenum, offset GLintptr, length GLsizeiptr, access GL
 	return (unsafe.Pointer)(capi.GlMapBufferRange(capi.GLenum(target), capi.GLintptr(offset), capi.GLsizeiptr(length), capi.GLbitfield(access)))
 }
 
+// GlPauseTransformFeedback calls the underlying C function.
+func GlPauseTransformFeedback() {
+	capi.GlPauseTransformFeedback()
+}
+
 // ReadBuffer calls the underlying C function.
 func ReadBuffer(src GLenum) {
 	capi.GlReadBuffer(capi.GLenum(src))
 }
 
+// GlReleaseShaderCompiler calls the underlying C function.
+func GlReleaseShaderCompiler() {
+	capi.GlReleaseShaderCompiler()
+}
+
 // RenderbufferStorageMultisample calls the underlying C function.
 func RenderbufferStorageMultisample(target GLenum, samples GLsizei, internalformat GLenum, width GLsizei, height GLsizei) {
 	capi.GlRenderbufferStorageMultisample(capi.GLenum(target), capi.GLsizei(samples), capi.GLenum(internalformat), capi.GLsizei(width), capi.GLsizei(height))
+}
+
+// GlResumeTransformFeedback calls the underlying C function.
+func GlResumeTransformFeedback() {
+	capi.GlResumeTransformFeedback()
 }
 
 // SamplerParameteri calls the underlying C function.

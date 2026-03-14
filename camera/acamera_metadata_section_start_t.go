@@ -2,8 +2,42 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_section_start_t int32
 
-type acamera_metadata_section_start_t = capi.Acamera_metadata_section_start_t
+const (
+	ACAMERA_COLOR_CORRECTION_START      acamera_metadata_section_start_t = 0
+	ACAMERA_CONTROL_START               acamera_metadata_section_start_t = 65536
+	ACAMERA_DEMOSAIC_START              acamera_metadata_section_start_t = 131072
+	ACAMERA_EDGE_START                  acamera_metadata_section_start_t = 196608
+	ACAMERA_FLASH_START                 acamera_metadata_section_start_t = 262144
+	ACAMERA_FLASH_INFO_START            acamera_metadata_section_start_t = 327680
+	ACAMERA_HOT_PIXEL_START             acamera_metadata_section_start_t = 393216
+	ACAMERA_JPEG_START                  acamera_metadata_section_start_t = 458752
+	ACAMERA_LENS_START                  acamera_metadata_section_start_t = 524288
+	ACAMERA_LENS_INFO_START             acamera_metadata_section_start_t = 589824
+	ACAMERA_NOISE_REDUCTION_START       acamera_metadata_section_start_t = 655360
+	ACAMERA_QUIRKS_START                acamera_metadata_section_start_t = 720896
+	ACAMERA_REQUEST_START               acamera_metadata_section_start_t = 786432
+	ACAMERA_SCALER_START                acamera_metadata_section_start_t = 851968
+	ACAMERA_SENSOR_START                acamera_metadata_section_start_t = 917504
+	ACAMERA_SENSOR_INFO_START           acamera_metadata_section_start_t = 983040
+	ACAMERA_SHADING_START               acamera_metadata_section_start_t = 1048576
+	ACAMERA_STATISTICS_START            acamera_metadata_section_start_t = 1114112
+	ACAMERA_STATISTICS_INFO_START       acamera_metadata_section_start_t = 1179648
+	ACAMERA_TONEMAP_START               acamera_metadata_section_start_t = 1245184
+	ACAMERA_LED_START                   acamera_metadata_section_start_t = 1310720
+	ACAMERA_INFO_START                  acamera_metadata_section_start_t = 1376256
+	ACAMERA_BLACK_LEVEL_START           acamera_metadata_section_start_t = 1441792
+	ACAMERA_SYNC_START                  acamera_metadata_section_start_t = 1507328
+	ACAMERA_REPROCESS_START             acamera_metadata_section_start_t = 1572864
+	ACAMERA_DEPTH_START                 acamera_metadata_section_start_t = 1638400
+	ACAMERA_LOGICAL_MULTI_CAMERA_START  acamera_metadata_section_start_t = 1703936
+	ACAMERA_DISTORTION_CORRECTION_START acamera_metadata_section_start_t = 1769472
+	ACAMERA_HEIC_START                  acamera_metadata_section_start_t = 1835008
+	ACAMERA_HEIC_INFO_START             acamera_metadata_section_start_t = 1900544
+	ACAMERA_AUTOMOTIVE_START            acamera_metadata_section_start_t = 1966080
+	ACAMERA_AUTOMOTIVE_LENS_START       acamera_metadata_section_start_t = 2031616
+	ACAMERA_EXTENSION_START             acamera_metadata_section_start_t = 2097152
+	ACAMERA_JPEGR_START                 acamera_metadata_section_start_t = 2162688
+	ACAMERA_VENDOR_START                acamera_metadata_section_start_t = -2147483648
+)

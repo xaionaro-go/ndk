@@ -13,6 +13,11 @@ type Parcel struct {
 	ptr *capi.AParcel
 }
 
+// NewParcel creates a new Parcel.
+func NewParcel() *Parcel {
+	return &Parcel{ptr: capi.AParcel_create()}
+}
+
 // Close releases the underlying NDK handle.
 func (h *Parcel) Close() error {
 	if h.ptr == nil {
@@ -31,4 +36,14 @@ func NewParcelFromPointer(ptr unsafe.Pointer) *Parcel {
 // Pointer returns the underlying pointer as unsafe.Pointer.
 func (h *Parcel) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
+}
+
+// GetDataPosition calls the underlying NDK function.
+func (h *Parcel) GetDataPosition() error {
+	return result(int32(capi.AParcel_getDataPosition(h.ptr)))
+}
+
+// GetDataSize calls the underlying NDK function.
+func (h *Parcel) GetDataSize() error {
+	return result(int32(capi.AParcel_getDataSize(h.ptr)))
 }

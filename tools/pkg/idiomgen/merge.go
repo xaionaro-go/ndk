@@ -56,6 +56,233 @@ func isScalarGoType(t string) bool {
 	return false
 }
 
+// autoGoTypeName derives an idiomatic Go type name from a C/spec type name.
+// It strips the common Android NDK "A" prefix when followed by an uppercase
+// letter: "AImageReader" → "ImageReader", "ALooper" → "Looper".
+// Names without that pattern are kept as-is: "GLenum" stays "GLenum".
+func autoGoTypeName(specName string) string {
+	// Strip leading "A" if followed by uppercase (Android NDK convention).
+	if len(specName) >= 2 && specName[0] == 'A' && unicode.IsUpper(rune(specName[1])) {
+		return specName[1:]
+	}
+	return specName
+}
+
+// isDestructorFunc returns true if funcName matches common destructor patterns
+// for the given spec type name: TypeName_delete, TypeName_free,
+// TypeName_destroy, TypeName_release, TypeName_close.
+func isDestructorFunc(funcName, specTypeName string) bool {
+	for _, suffix := range []string{"_delete", "_free", "_destroy", "_release", "_close"} {
+		if funcName == specTypeName+suffix {
+			return true
+		}
+	}
+	return false
+}
+
+// destructorPriority returns a priority value for destructor suffix ordering.
+// Higher values indicate preferred destructor names.
+func destructorPriority(funcName string) int {
+	switch {
+	case strings.HasSuffix(funcName, "_release"):
+		return 5
+	case strings.HasSuffix(funcName, "_delete"):
+		return 4
+	case strings.HasSuffix(funcName, "_free"):
+		return 3
+	case strings.HasSuffix(funcName, "_destroy"):
+		return 2
+	case strings.HasSuffix(funcName, "_close"):
+		return 1
+	default:
+		return 0
+	}
+}
+
+// isConstructorFunc returns true if funcName matches common constructor patterns
+// for the given spec type name: TypeName_create, TypeName_new.
+// Also matches ModuleName_createTypeName patterns (e.g. AAudio_createStreamBuilder).
+func isConstructorFunc(funcName, specTypeName string) bool {
+	for _, suffix := range []string{"_create", "_new"} {
+		if funcName == specTypeName+suffix {
+			return true
+		}
+	}
+	return false
+}
+
+// autoDetectReceiver tries to find the best opaque type receiver for a function
+// based on the function name prefix and first parameter type.
+// Returns the Go name of the receiver type, or "" if no receiver can be detected.
+func autoDetectReceiver(
+	funcName string,
+	fd specmodel.FuncDef,
+	opaqueSpecNames map[string]bool,
+	specToGoName map[string]string,
+) string {
+	// Strategy 1: Match function name prefix against known opaque type names.
+	// E.g. "ASensor_getName" matches "ASensor" if ASensor is an opaque type.
+	// Try longest match first to handle types like "ASensorEventQueue" vs "ASensor".
+	type candidate struct {
+		specName string
+		goName   string
+	}
+	var candidates []candidate
+	for specName := range opaqueSpecNames {
+		prefix := specName + "_"
+		if strings.HasPrefix(funcName, prefix) {
+			candidates = append(candidates, candidate{specName, specToGoName[specName]})
+		}
+	}
+	// Sort by spec name length descending (longest prefix first).
+	sort.Slice(candidates, func(i, j int) bool {
+		return len(candidates[i].specName) > len(candidates[j].specName)
+	})
+
+	if len(candidates) > 0 {
+		// Verify the first param is a pointer to this type (or any opaque type).
+		best := candidates[0]
+		if len(fd.Params) > 0 {
+			firstParamBase := strings.TrimPrefix(fd.Params[0].Type, "*")
+			if firstParamBase == best.specName && fd.Params[0].Direction != "out" {
+				return best.goName
+			}
+		}
+		// Even without first-param match, if the function name matches,
+		// it's likely a method (e.g. static methods or getters that take
+		// the type as first param with a different name).
+		if len(fd.Params) > 0 && strings.HasPrefix(fd.Params[0].Type, "*") && fd.Params[0].Direction != "out" {
+			firstParamBase := strings.TrimPrefix(fd.Params[0].Type, "*")
+			if firstParamBase == best.specName {
+				return best.goName
+			}
+		}
+	}
+
+	// Strategy 2: If the first param is a pointer to a known opaque type,
+	// use that as receiver.
+	if len(fd.Params) > 0 && strings.HasPrefix(fd.Params[0].Type, "*") && fd.Params[0].Direction != "out" {
+		firstParamBase := strings.TrimPrefix(fd.Params[0].Type, "*")
+		if opaqueSpecNames[firstParamBase] {
+			return specToGoName[firstParamBase]
+		}
+	}
+
+	return ""
+}
+
+// autoFuncGoName derives a Go function/method name from a C function name.
+// For methods, it strips the receiver's spec type prefix and capitalizes.
+// For free functions, it strips a common module prefix if present.
+func autoFuncGoName(funcName, receiverSpecName string) string {
+	if receiverSpecName != "" {
+		prefix := receiverSpecName + "_"
+		if strings.HasPrefix(funcName, prefix) {
+			suffix := funcName[len(prefix):]
+			if len(suffix) > 0 {
+				return fixGoAcronyms(strings.ToUpper(suffix[:1]) + suffix[1:])
+			}
+		}
+	}
+	// For free functions or unmatched methods, capitalize the function name.
+	return fixGoAcronyms(strings.ToUpper(funcName[:1]) + funcName[1:])
+}
+
+// isAutoGeneratable returns true if a function can be safely auto-generated
+// without overlay annotations. Functions with out-params, non-scalar return
+// types (except known opaque types and void), or parameters with types that
+// can't be auto-resolved are not safe to auto-generate.
+func isAutoGeneratable(fd specmodel.FuncDef, opaqueSpecNames map[string]bool) bool {
+	// Functions with out-params need output_params overlay annotations.
+	if hasOutParams(fd) {
+		return false
+	}
+
+	// Functions returning pointers to unknown types (not opaque, not scalar)
+	// can't be auto-generated because the template can't wrap them correctly.
+	if strings.HasPrefix(fd.Returns, "*") {
+		base := strings.TrimPrefix(fd.Returns, "*")
+		if !opaqueSpecNames[base] && !isScalarGoType(base) {
+			return false
+		}
+	}
+
+	// Functions returning non-scalar, non-void, non-pointer types (like structs)
+	// can't be auto-generated.
+	ret := fd.Returns
+	if ret != "" && ret != "void" && ret != "string" && ret != "bool" &&
+		ret != "unsafe.Pointer" && !isScalarGoType(ret) &&
+		!strings.HasPrefix(ret, "*") {
+		return false
+	}
+
+	// Functions with callback-type parameters (non-pointer, non-scalar types)
+	// can't be auto-generated without overlay annotations.
+	for _, p := range fd.Params {
+		base := p.Type
+		for strings.HasPrefix(base, "*") {
+			base = base[1:]
+		}
+		if base == "unsafe.Pointer" || base == "string" || base == "bool" ||
+			base == "byte" || isScalarGoType(base) || base == "" {
+			continue
+		}
+		// Opaque pointer params are handled (as handles or receivers).
+		if strings.HasPrefix(p.Type, "*") && opaqueSpecNames[base] {
+			continue
+		}
+		// Non-pointer, non-scalar type — likely a callback func type or
+		// struct value that the template can't handle.
+		if !strings.HasPrefix(p.Type, "*") {
+			return false
+		}
+	}
+
+	return true
+}
+
+// hasOutParams returns true if any parameter has direction "out".
+func hasOutParams(fd specmodel.FuncDef) bool {
+	for _, p := range fd.Params {
+		if p.Direction == "out" {
+			return true
+		}
+	}
+	return false
+}
+
+// isAutoDetectedPure returns true if a function's return type indicates it
+// should be treated as a "pure" getter (return value directly) rather than
+// an error-returning function. This is used for auto-generated methods
+// where no overlay specifies the pattern.
+//
+// Pure: string, bool, float*, uint64, int64, unsafe.Pointer, *scalar.
+// Not pure: int32 (might be an error code), error types, void,
+// pointers to opaque types (need struct wrapping via ReturnsNew).
+func isAutoDetectedPure(returns string, errorTypes map[string]bool) bool {
+	switch {
+	case returns == "" || returns == "void":
+		return false
+	case errorTypes[returns]:
+		return false
+	case returns == "string" || returns == "bool":
+		return true
+	case returns == "float32" || returns == "float64":
+		return true
+	case returns == "int64" || returns == "uint64":
+		return true
+	case returns == "unsafe.Pointer":
+		return true
+	case strings.HasPrefix(returns, "*"):
+		// Pointers to scalar types (e.g., *uint8) are safe for pure.
+		base := strings.TrimPrefix(returns, "*")
+		return isScalarGoType(base)
+	default:
+		// int32, uint32 — might be error codes, treat as error-returning.
+		return false
+	}
+}
+
 // Merge combines a specmodel.Spec and overlaymodel.Overlay into a fully
 // resolved MergedSpec ready for template rendering.
 func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
@@ -91,23 +318,14 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 		bridgeStructTypes[specName] = true
 	}
 
+	// specToGoName maps spec type names to Go type names for all opaque types.
+	// Built during opaque type processing, used for auto-receiver detection.
+	specToGoName := make(map[string]string)
+
 	// Build opaque spec name set for handle detection.
+	// Auto-include ALL opaque_ptr types (not just those with overlays).
 	// Exclude transparent types — they are type aliases, not struct wrappers.
 	opaqueSpecNames := make(map[string]bool)
-	for specName, td := range spec.Types {
-		if td.Kind == "opaque_ptr" {
-			tov, hasOverlay := overlay.Types[specName]
-			if !hasOverlay {
-				continue // No overlay entry → no struct wrapper → not a handle.
-			}
-			if tov.Transparent {
-				continue
-			}
-			opaqueSpecNames[specName] = true
-		}
-	}
-
-	// Build opaque types and populate typeMap for pointer types.
 	for specName, td := range spec.Types {
 		if td.Kind != "opaque_ptr" {
 			continue
@@ -115,18 +333,88 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 		if bridgeStructTypes[specName] {
 			continue
 		}
-		tov, hasOverlay := overlay.Types[specName]
-		if !hasOverlay {
+		tov := overlay.Types[specName]
+		if tov.Transparent {
 			continue
 		}
-		goName := tov.GoName
-		if goName == "" {
-			goName = specName
+		opaqueSpecNames[specName] = true
+	}
+
+	// Auto-detect destructors and constructors from spec function names.
+	// These are used when the overlay doesn't specify them explicitly.
+	// Functions with explicit overlay entries are NOT auto-claimed, because
+	// the overlay takes precedence over auto-detection.
+	// Functions above BaseAPILevel are also skipped, because the generated
+	// constructor/destructor would go into the base file without build tags.
+	autoDestructors := make(map[string]string)  // spec type name → destructor func name
+	autoConstructors := make(map[string]string) // spec type name → constructor func name
+	for funcName, fd := range spec.Functions {
+		// Skip functions that have explicit overlay entries — the overlay
+		// author decided what this function should be.
+		if _, hasOverlay := overlay.Functions[funcName]; hasOverlay {
+			continue
 		}
+		// Skip higher-API-level functions — their constructor/destructor code
+		// would be generated without build tags, causing compilation failures.
+		if overlay.APILevels != nil && overlay.APILevels[funcName] > capigen.BaseAPILevel {
+			continue
+		}
+		for specName := range opaqueSpecNames {
+			if isDestructorFunc(funcName, specName) {
+				// Prefer _release > _delete > _free > _destroy > _close for
+				// auto-detection. Higher-priority suffixes overwrite lower ones.
+				existing := autoDestructors[specName]
+				if existing == "" || destructorPriority(funcName) > destructorPriority(existing) {
+					autoDestructors[specName] = funcName
+				}
+			}
+			if isConstructorFunc(funcName, specName) {
+				if fd.Returns == "" || fd.Returns == "void" {
+					// Constructor that doesn't return anything — check for out-param.
+					hasOutParam := false
+					for _, p := range fd.Params {
+						if p.Direction == "out" {
+							hasOutParam = true
+							break
+						}
+					}
+					if !hasOutParam {
+						continue
+					}
+				}
+				autoConstructors[specName] = funcName
+			}
+		}
+	}
+
+	// Build opaque types and populate typeMap for pointer types.
+	// Process ALL opaque_ptr types, not just those with overlay entries.
+	for _, specName := range sortedKeys(spec.Types) {
+		td := spec.Types[specName]
+		if td.Kind != "opaque_ptr" {
+			continue
+		}
+		if bridgeStructTypes[specName] {
+			continue
+		}
+		tov, hasOverlay := overlay.Types[specName]
+
+		// Determine Go name: overlay takes precedence, then auto-naming.
+		goName := ""
+		switch {
+		case hasOverlay && tov.GoName != "":
+			goName = tov.GoName
+		case hasOverlay:
+			goName = specName
+		default:
+			goName = autoGoTypeName(specName)
+		}
+
+		specToGoName[specName] = goName
 
 		// Transparent types become simple type aliases (no struct wrapper).
 		// Used for void* typedefs like EGLDisplay that are value types in Go.
-		if tov.Transparent {
+		if hasOverlay && tov.Transparent {
 			m.TypeAliases = append(m.TypeAliases, MergedTypeAlias{
 				GoName:   goName,
 				CapiType: capiExportName(specName),
@@ -136,17 +424,34 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 			continue
 		}
 
+		// Resolve destructor: overlay takes precedence, then auto-detected.
+		destructor := ""
+		if hasOverlay && tov.Destructor != "" {
+			destructor = tov.Destructor
+		} else if d, ok := autoDestructors[specName]; ok {
+			destructor = d
+		}
+
+		// Resolve constructor: overlay takes precedence, then auto-detected.
+		constructor := ""
+		if hasOverlay && tov.Constructor != "" {
+			constructor = tov.Constructor
+		} else if c, ok := autoConstructors[specName]; ok {
+			constructor = c
+		}
+
 		destructorReturnsError := false
-		if tov.Destructor != "" {
-			if fd, ok := spec.Functions[tov.Destructor]; ok {
+		if destructor != "" {
+			if fd, ok := spec.Functions[destructor]; ok {
 				destructorReturnsError = errorTypes[fd.Returns]
 			}
 		}
 		constructorReturnsPointer := false
 		var constructorParams []MergedParam
-		if tov.Constructor != "" {
-			if fd, ok := spec.Functions[tov.Constructor]; ok {
+		if constructor != "" {
+			if fd, ok := spec.Functions[constructor]; ok {
 				constructorReturnsPointer = strings.HasPrefix(fd.Returns, "*")
+				ctorParamIdx := 0
 				for _, p := range fd.Params {
 					if p.Direction == "out" {
 						continue
@@ -167,23 +472,32 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 						capiType = "*" + capiType
 					}
 					constructorParams = append(constructorParams, MergedParam{
-						Name:     safeGoName(p.Name),
+						Name:     safeGoParamName(p.Name, ctorParamIdx),
 						GoType:   goType,
 						CapiType: capiType,
 						IsString: isString,
 						IsHandle: isHandle,
 					})
+					ctorParamIdx++
 				}
 			}
 		}
 		exportedConstructor := ""
-		if tov.Constructor != "" {
-			exportedConstructor = capiExportName(tov.Constructor)
+		if constructor != "" {
+			exportedConstructor = capiExportName(constructor)
 		}
 		exportedDestructor := ""
-		if tov.Destructor != "" {
-			exportedDestructor = capiExportName(tov.Destructor)
+		if destructor != "" {
+			exportedDestructor = capiExportName(destructor)
 		}
+
+		pattern := ""
+		var interfaces []string
+		if hasOverlay {
+			pattern = tov.Pattern
+			interfaces = tov.Interfaces
+		}
+
 		m.OpaqueTypes[goName] = MergedOpaqueType{
 			GoName:                    goName,
 			CapiType:                  capiExportName(specName),
@@ -192,8 +506,8 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 			ConstructorParams:         constructorParams,
 			Destructor:                exportedDestructor,
 			DestructorReturnsError:    destructorReturnsError,
-			Pattern:                   tov.Pattern,
-			Interfaces:                tov.Interfaces,
+			Pattern:                   pattern,
+			Interfaces:                interfaces,
 		}
 		typeMap["*"+specName] = "*" + goName
 	}
@@ -243,11 +557,10 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 		if strings.Contains(baseType, ":") {
 			continue
 		}
-		// Skip if this type is classified as an enum in the overlay.
+		// Skip if this type is classified as an enum (has spec enum values and
+		// either has an overlay entry or will be auto-generated as a value enum).
 		if _, isEnum := spec.Enums[specName]; isEnum {
-			if _, hasOverlay := overlay.Types[specName]; hasOverlay {
-				continue
-			}
+			continue
 		}
 		goName := specName
 		if tov, ok := overlay.Types[specName]; ok && tov.GoName != "" {
@@ -262,26 +575,31 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 	}
 
 	// Classify enums: error vs. value.
-	// Only include enums that have an overlay entry.
+	// Process ALL enums in the spec, not just those with overlay entries.
+	// Overlay entries customize naming; auto-generation uses defaults.
 	enumNames := sortedKeys(spec.Enums)
 	for _, enumName := range enumNames {
 		tov, hasOverlay := overlay.Types[enumName]
-		if !hasOverlay {
-			continue
-		}
 		values := spec.Enums[enumName]
 
-		if tov.GoError {
+		if hasOverlay && tov.GoError {
 			m.ErrorEnums = append(m.ErrorEnums, mergeErrorEnum(enumName, tov, values))
 			typeMap[enumName] = "Error"
 			typeMap["*"+enumName] = "*Error"
 		} else {
-			goName := tov.GoName
-			if goName == "" {
+			goName := ""
+			switch {
+			case hasOverlay && tov.GoName != "":
+				goName = tov.GoName
+			case hasOverlay:
 				goName = enumName
+			default:
+				goName = autoGoTypeName(enumName)
 			}
+			// Use overlay settings if available, otherwise empty TypeOverlay for defaults.
+			enumOverlay := tov
 			baseType := kindToBaseType(spec.Types[enumName].Kind)
-			m.ValueEnums = append(m.ValueEnums, mergeValueEnum(enumName, goName, baseType, tov, values))
+			m.ValueEnums = append(m.ValueEnums, mergeValueEnum(enumName, goName, baseType, enumOverlay, values))
 			typeMap[enumName] = goName
 			typeMap["*"+enumName] = "*" + goName
 		}
@@ -317,7 +635,7 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 	// Auto-generate type aliases for types used in function params/returns
 	// that aren't in the typeMap yet. This covers cross-module types (off_t,
 	// ANativeWindow, etc.) and callback types without explicit overlay entries.
-	autoAliasTypes := collectUnresolvedFuncTypes(spec, overlay, typeMap)
+	autoAliasTypes := collectUnresolvedFuncTypes(spec, overlay, typeMap, opaqueSpecNames, specToGoName)
 	for _, typeName := range sortedKeys(autoAliasTypes) {
 		// If this cross-module type has an overlay entry with a go_name,
 		// create a handle struct instead of a simple type alias.
@@ -352,22 +670,127 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 		typeMap["*"+typeName] = "*" + goName
 	}
 
+	// Build a set of functions that are already claimed as constructors or
+	// destructors, so they are not also emitted as regular methods.
+	// Also claim ALL destructor-like functions (even non-winners) to prevent
+	// them from generating methods that conflict with the Close() destructor.
+	claimedFuncs := make(map[string]bool)
+	for specName := range opaqueSpecNames {
+		tov := overlay.Types[specName]
+		destructor := ""
+		switch {
+		case tov.Destructor != "":
+			destructor = tov.Destructor
+		default:
+			destructor = autoDestructors[specName]
+		}
+		if destructor != "" {
+			claimedFuncs[destructor] = true
+		}
+		constructor := ""
+		switch {
+		case tov.Constructor != "":
+			constructor = tov.Constructor
+		default:
+			constructor = autoConstructors[specName]
+		}
+		if constructor != "" {
+			claimedFuncs[constructor] = true
+		}
+
+		// Claim ALL destructor-like and constructor-like functions for this
+		// type, not just the chosen one. This prevents auto-generating methods
+		// like Close() that would conflict with the destructor's Close().
+		// But do NOT claim functions that have explicit overlay entries —
+		// the overlay author controls those.
+		for funcName := range spec.Functions {
+			if _, hasOverlay := overlay.Functions[funcName]; hasOverlay {
+				continue
+			}
+			if isDestructorFunc(funcName, specName) || isConstructorFunc(funcName, specName) {
+				claimedFuncs[funcName] = true
+			}
+		}
+	}
+
 	// Resolve functions → methods or free functions.
+	// Process ALL spec functions, not just those with overlay entries.
+	// Overlay entries customize behavior; auto-generation uses defaults.
 	funcNames := sortedKeys(spec.Functions)
 	for _, funcName := range funcNames {
 		fd := spec.Functions[funcName]
-		fov, ok := overlay.Functions[funcName]
-		if !ok {
+		fov, hasOverlay := overlay.Functions[funcName]
+
+		// If explicitly skipped in overlay, skip.
+		if hasOverlay && fov.Skip {
 			continue
 		}
-		if fov.Skip {
+
+		// Skip functions claimed as constructors/destructors.
+		if claimedFuncs[funcName] {
 			continue
 		}
-		switch {
-		case fov.Receiver != "":
-			m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
-		case fov.GoName != "":
-			m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, opaqueSpecNames))
+
+		if hasOverlay {
+			// Overlay-directed processing (original behavior).
+			switch {
+			case fov.Receiver != "":
+				m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
+			case fov.GoName != "":
+				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, opaqueSpecNames))
+			}
+		} else {
+			// Auto-generate: detect receiver and derive Go name.
+			receiver := autoDetectReceiver(funcName, fd, opaqueSpecNames, specToGoName)
+			switch {
+			case receiver != "":
+				// Skip auto-generation for functions that would produce
+				// invalid code without overlay annotations.
+				if !isAutoGeneratable(fd, opaqueSpecNames) {
+					break
+				}
+
+				// Find the spec type name for this receiver to derive the method name.
+				receiverSpecName := ""
+				for sn, gn := range specToGoName {
+					if gn == receiver {
+						receiverSpecName = sn
+						break
+					}
+				}
+				goName := autoFuncGoName(funcName, receiverSpecName)
+				autoFov := overlaymodel.FuncOverlay{
+					Receiver: receiver,
+					GoName:   goName,
+				}
+				// Auto-detect Pure for functions that return non-error types.
+				autoFov.Pure = isAutoDetectedPure(fd.Returns, errorTypes)
+
+				// For methods returning a pointer to a known opaque type
+				// in this module, use ReturnsNew instead of Pure, because
+				// the template needs to wrap the capi pointer in a Go struct.
+				returnBase := strings.TrimPrefix(fd.Returns, "*")
+				if strings.HasPrefix(fd.Returns, "*") && opaqueSpecNames[returnBase] {
+					autoFov.Pure = false
+					autoFov.ReturnsNew = specToGoName[returnBase]
+				}
+
+				m.Methods = append(m.Methods, mergeMethod(funcName, fd, autoFov, overlay.APILevels, typeMap, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
+
+			default:
+				// Skip auto-generation for free functions that would produce
+				// invalid code without overlay annotations.
+				if !isAutoGeneratable(fd, opaqueSpecNames) {
+					break
+				}
+
+				// Package-level free function.
+				goName := autoFuncGoName(funcName, "")
+				autoFov := overlaymodel.FuncOverlay{
+					GoName: goName,
+				}
+				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, autoFov, overlay.APILevels, typeMap, opaqueSpecNames))
+			}
 		}
 	}
 
@@ -428,8 +851,8 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 				if field.Name == csov.ContextField {
 					continue
 				}
-				fov, hasOverlay := csov.Fields[field.Name]
-				if !hasOverlay {
+				fov, hasFieldOverlay := csov.Fields[field.Name]
+				if !hasFieldOverlay {
 					continue
 				}
 				mcs.Fields = append(mcs.Fields, MergedCallbackField{
@@ -640,6 +1063,7 @@ func toTitleCase(s string) string {
 func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, receiverCapiTypes map[string]string, opaqueSpecNames map[string]bool, callbackStructOverlays map[string]overlaymodel.CallbackStructOverlay, structAccessors map[string]overlaymodel.StructAccessorOverlay) MergedMethod {
 	var params []MergedParam
 	receiverFound := false
+	paramIdx := 0
 	for _, p := range fd.Params {
 		if !receiverFound && isReceiverParam(p) {
 			receiverFound = true
@@ -659,7 +1083,7 @@ func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOve
 			capiType = "*" + capiType
 		}
 		params = append(params, MergedParam{
-			Name:      safeGoName(p.Name),
+			Name:      safeGoParamName(p.Name, paramIdx),
 			GoType:    goType,
 			CapiType:  capiType,
 			IsHandle:  isHandle,
@@ -667,6 +1091,7 @@ func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOve
 			Remapped:  remapped,
 			Direction: p.Direction,
 		})
+		paramIdx++
 	}
 
 	// If BufGoType is set, override the GoType of the buffer param.
@@ -817,7 +1242,7 @@ func deriveGoName(funcName, receiver string, receiverCapiTypes map[string]string
 
 func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, opaqueSpecNames map[string]bool) MergedFreeFunction {
 	var params []MergedParam
-	for _, p := range fd.Params {
+	for i, p := range fd.Params {
 		goType := resolveType(p.Type, typeMap)
 		baseType := strings.TrimPrefix(p.Type, "*")
 		isHandle := strings.HasPrefix(p.Type, "*") && opaqueSpecNames[baseType]
@@ -832,7 +1257,7 @@ func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.F
 			capiType = "*" + capiType
 		}
 		params = append(params, MergedParam{
-			Name:      safeGoName(p.Name),
+			Name:      safeGoParamName(p.Name, i),
 			GoType:    goType,
 			CapiType:  capiType,
 			IsHandle:  isHandle,
@@ -1032,12 +1457,15 @@ func mergeCallback(cbName string, cbd specmodel.CallbackDef, annotations map[str
 }
 
 // collectUnresolvedFuncTypes finds type names used in function params/returns
-// (for functions that have overlay entries) that are not yet in the typeMap
-// and are not Go built-in types. These need auto-generated type aliases.
+// that are not yet in the typeMap and are not Go built-in types.
+// These need auto-generated type aliases. Scans ALL spec functions (not just
+// those with overlay entries) since auto-generation now processes all functions.
 func collectUnresolvedFuncTypes(
 	spec specmodel.Spec,
 	overlay overlaymodel.Overlay,
 	typeMap map[string]string,
+	opaqueSpecNames map[string]bool,
+	specToGoName map[string]string,
 ) map[string]bool {
 	result := make(map[string]bool)
 
@@ -1061,15 +1489,17 @@ func collectUnresolvedFuncTypes(
 		if typeMap[base] != "" || typeMap["*"+base] != "" {
 			return
 		}
+		// Skip types that are already registered as opaque types.
+		if opaqueSpecNames[base] {
+			return
+		}
 		result[base] = true
 	}
 
-	for funcName, fov := range overlay.Functions {
-		if fov.Skip {
-			continue
-		}
-		fd, ok := spec.Functions[funcName]
-		if !ok {
+	// Scan ALL spec functions, not just overlay-listed ones.
+	// Skip functions that are explicitly skipped in the overlay.
+	for funcName, fd := range spec.Functions {
+		if fov, ok := overlay.Functions[funcName]; ok && fov.Skip {
 			continue
 		}
 		for _, p := range fd.Params {

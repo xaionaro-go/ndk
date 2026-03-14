@@ -38,6 +38,21 @@ func (h *Buffer) Acquire() {
 	capi.AHardwareBuffer_acquire(h.ptr)
 }
 
+// GetID calls the underlying NDK function.
+func (h *Buffer) GetID(outID *uint64) error {
+	return result(int32(capi.AHardwareBuffer_getId(h.ptr, outID)))
+}
+
+// LockPlanes calls the underlying NDK function.
+func (h *Buffer) LockPlanes(usage uint64, fence int32, rect *ARect, outPlanes *HardwareBuffer_Planes) error {
+	return result(int32(capi.AHardwareBuffer_lockPlanes(h.ptr, usage, fence, (*capi.ARect)(rect), outPlanes.ptr)))
+}
+
+// SendHandleToUnixSocket calls the underlying NDK function.
+func (h *Buffer) SendHandleToUnixSocket(socketFd int32) error {
+	return result(int32(capi.AHardwareBuffer_sendHandleToUnixSocket(h.ptr, socketFd)))
+}
+
 // Unlock calls the underlying NDK function.
 func (h *Buffer) Unlock(fence *int32) error {
 	return result(int32(capi.AHardwareBuffer_unlock(h.ptr, fence)))

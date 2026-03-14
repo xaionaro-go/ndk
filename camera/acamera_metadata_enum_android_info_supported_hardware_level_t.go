@@ -2,8 +2,12 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_info_supported_hardware_level_t int32
 
-type acamera_metadata_enum_android_info_supported_hardware_level_t = capi.Acamera_metadata_enum_android_info_supported_hardware_level_t
+const (
+	ACAMERA_INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED  acamera_metadata_enum_android_info_supported_hardware_level_t = 0
+	ACAMERA_INFO_SUPPORTED_HARDWARE_LEVEL_FULL     acamera_metadata_enum_android_info_supported_hardware_level_t = 1
+	ACAMERA_INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY   acamera_metadata_enum_android_info_supported_hardware_level_t = 2
+	ACAMERA_INFO_SUPPORTED_HARDWARE_LEVEL_3        acamera_metadata_enum_android_info_supported_hardware_level_t = 3
+	ACAMERA_INFO_SUPPORTED_HARDWARE_LEVEL_EXTERNAL acamera_metadata_enum_android_info_supported_hardware_level_t = 4
+)

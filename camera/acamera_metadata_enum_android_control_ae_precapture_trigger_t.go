@@ -2,8 +2,10 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_ae_precapture_trigger_t int32
 
-type acamera_metadata_enum_android_control_ae_precapture_trigger_t = capi.Acamera_metadata_enum_android_control_ae_precapture_trigger_t
+const (
+	ACAMERA_CONTROL_AE_PRECAPTURE_TRIGGER_IDLE   acamera_metadata_enum_android_control_ae_precapture_trigger_t = 0
+	ACAMERA_CONTROL_AE_PRECAPTURE_TRIGGER_START  acamera_metadata_enum_android_control_ae_precapture_trigger_t = 1
+	ACAMERA_CONTROL_AE_PRECAPTURE_TRIGGER_CANCEL acamera_metadata_enum_android_control_ae_precapture_trigger_t = 2
+)

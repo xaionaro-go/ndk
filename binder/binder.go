@@ -13,6 +13,11 @@ type Binder struct {
 	ptr *capi.AIBinder
 }
 
+// NewBinder creates a new Binder.
+func NewBinder(clazz unsafe.Pointer, args unsafe.Pointer) *Binder {
+	return &Binder{ptr: capi.AIBinder_new((*capi.AIBinder_Class)(clazz), args)}
+}
+
 // Close releases the underlying NDK handle.
 func (h *Binder) Close() error {
 	if h.ptr == nil {
@@ -31,4 +36,44 @@ func NewBinderFromPointer(ptr unsafe.Pointer) *Binder {
 // Pointer returns the underlying pointer as unsafe.Pointer.
 func (h *Binder) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
+}
+
+// AssociateClass returns the value directly.
+func (h *Binder) AssociateClass(clazz *Class) bool {
+	return (bool)(capi.AIBinder_associateClass(h.ptr, clazz.ptr))
+}
+
+// DebugGetRefCount calls the underlying NDK function.
+func (h *Binder) DebugGetRefCount() error {
+	return result(int32(capi.AIBinder_debugGetRefCount(h.ptr)))
+}
+
+// GetClass creates a new Class from this Binder.
+func (h *Binder) GetClass() *Class {
+	return &Class{ptr: capi.AIBinder_getClass(h.ptr)}
+}
+
+// GetUserData returns the value directly.
+func (h *Binder) GetUserData() unsafe.Pointer {
+	return (unsafe.Pointer)(capi.AIBinder_getUserData(h.ptr))
+}
+
+// IncStrong calls the underlying NDK function.
+func (h *Binder) IncStrong() {
+	capi.AIBinder_incStrong(h.ptr)
+}
+
+// IsAlive returns the value directly.
+func (h *Binder) IsAlive() bool {
+	return (bool)(capi.AIBinder_isAlive(h.ptr))
+}
+
+// IsRemote returns the value directly.
+func (h *Binder) IsRemote() bool {
+	return (bool)(capi.AIBinder_isRemote(h.ptr))
+}
+
+// Lt returns the value directly.
+func (h *Binder) Lt(rhs *Binder) bool {
+	return (bool)(capi.AIBinder_lt(h.ptr, rhs.ptr))
 }

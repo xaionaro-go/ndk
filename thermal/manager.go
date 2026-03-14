@@ -42,3 +42,8 @@ func (h *Manager) Pointer() unsafe.Pointer {
 func (h *Manager) CurrentStatus() ThermalStatus {
 	return (ThermalStatus)(capi.AThermal_getCurrentThermalStatus(h.ptr))
 }
+
+// AThermal_getThermalHeadroom returns the value directly.
+func (h *Manager) AThermal_getThermalHeadroom(forecastSeconds int32) float32 {
+	return (float32)(capi.AThermal_getThermalHeadroom(h.ptr, forecastSeconds))
+}

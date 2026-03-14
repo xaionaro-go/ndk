@@ -2,8 +2,26 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_sensor_reference_illuminant1_t int32
 
-type acamera_metadata_enum_android_sensor_reference_illuminant1_t = capi.Acamera_metadata_enum_android_sensor_reference_illuminant1_t
+const (
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_DAYLIGHT               acamera_metadata_enum_android_sensor_reference_illuminant1_t = 1
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_FLUORESCENT            acamera_metadata_enum_android_sensor_reference_illuminant1_t = 2
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_TUNGSTEN               acamera_metadata_enum_android_sensor_reference_illuminant1_t = 3
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_FLASH                  acamera_metadata_enum_android_sensor_reference_illuminant1_t = 4
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_FINE_WEATHER           acamera_metadata_enum_android_sensor_reference_illuminant1_t = 9
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_CLOUDY_WEATHER         acamera_metadata_enum_android_sensor_reference_illuminant1_t = 10
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_SHADE                  acamera_metadata_enum_android_sensor_reference_illuminant1_t = 11
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_DAYLIGHT_FLUORESCENT   acamera_metadata_enum_android_sensor_reference_illuminant1_t = 12
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_DAY_WHITE_FLUORESCENT  acamera_metadata_enum_android_sensor_reference_illuminant1_t = 13
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_COOL_WHITE_FLUORESCENT acamera_metadata_enum_android_sensor_reference_illuminant1_t = 14
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_WHITE_FLUORESCENT      acamera_metadata_enum_android_sensor_reference_illuminant1_t = 15
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_STANDARD_A             acamera_metadata_enum_android_sensor_reference_illuminant1_t = 17
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_STANDARD_B             acamera_metadata_enum_android_sensor_reference_illuminant1_t = 18
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_STANDARD_C             acamera_metadata_enum_android_sensor_reference_illuminant1_t = 19
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_D55                    acamera_metadata_enum_android_sensor_reference_illuminant1_t = 20
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_D65                    acamera_metadata_enum_android_sensor_reference_illuminant1_t = 21
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_D75                    acamera_metadata_enum_android_sensor_reference_illuminant1_t = 22
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_D50                    acamera_metadata_enum_android_sensor_reference_illuminant1_t = 23
+	ACAMERA_SENSOR_REFERENCE_ILLUMINANT1_ISO_STUDIO_TUNGSTEN    acamera_metadata_enum_android_sensor_reference_illuminant1_t = 24
+)

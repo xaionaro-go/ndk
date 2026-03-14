@@ -23,6 +23,21 @@ func (h *HeaderInfo) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// GetAlphaFlags calls the underlying NDK function.
+func (h *HeaderInfo) GetAlphaFlags() error {
+	return result(int32(capi.AImageDecoderHeaderInfo_getAlphaFlags(h.ptr)))
+}
+
+// GetAndroidBitmapFormat calls the underlying NDK function.
+func (h *HeaderInfo) GetAndroidBitmapFormat() error {
+	return result(int32(capi.AImageDecoderHeaderInfo_getAndroidBitmapFormat(h.ptr)))
+}
+
+// GetDataSpace calls the underlying NDK function.
+func (h *HeaderInfo) GetDataSpace() error {
+	return result(int32(capi.AImageDecoderHeaderInfo_getDataSpace(h.ptr)))
+}
+
 // Height returns the value directly.
 func (h *HeaderInfo) Height() int32 {
 	return (int32)(capi.AImageDecoderHeaderInfo_getHeight(h.ptr))

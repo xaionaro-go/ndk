@@ -2,8 +2,43 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_section_t int32
 
-type acamera_metadata_section_t = capi.Acamera_metadata_section_t
+const (
+	ACAMERA_COLOR_CORRECTION      acamera_metadata_section_t = 0
+	ACAMERA_CONTROL               acamera_metadata_section_t = 1
+	ACAMERA_DEMOSAIC              acamera_metadata_section_t = 2
+	ACAMERA_EDGE                  acamera_metadata_section_t = 3
+	ACAMERA_FLASH                 acamera_metadata_section_t = 4
+	ACAMERA_FLASH_INFO            acamera_metadata_section_t = 5
+	ACAMERA_HOT_PIXEL             acamera_metadata_section_t = 6
+	ACAMERA_JPEG                  acamera_metadata_section_t = 7
+	ACAMERA_LENS                  acamera_metadata_section_t = 8
+	ACAMERA_LENS_INFO             acamera_metadata_section_t = 9
+	ACAMERA_NOISE_REDUCTION       acamera_metadata_section_t = 10
+	ACAMERA_QUIRKS                acamera_metadata_section_t = 11
+	ACAMERA_REQUEST               acamera_metadata_section_t = 12
+	ACAMERA_SCALER                acamera_metadata_section_t = 13
+	ACAMERA_SENSOR                acamera_metadata_section_t = 14
+	ACAMERA_SENSOR_INFO           acamera_metadata_section_t = 15
+	ACAMERA_SHADING               acamera_metadata_section_t = 16
+	ACAMERA_STATISTICS            acamera_metadata_section_t = 17
+	ACAMERA_STATISTICS_INFO       acamera_metadata_section_t = 18
+	ACAMERA_TONEMAP               acamera_metadata_section_t = 19
+	ACAMERA_LED                   acamera_metadata_section_t = 20
+	ACAMERA_INFO                  acamera_metadata_section_t = 21
+	ACAMERA_BLACK_LEVEL           acamera_metadata_section_t = 22
+	ACAMERA_SYNC                  acamera_metadata_section_t = 23
+	ACAMERA_REPROCESS             acamera_metadata_section_t = 24
+	ACAMERA_DEPTH                 acamera_metadata_section_t = 25
+	ACAMERA_LOGICAL_MULTI_CAMERA  acamera_metadata_section_t = 26
+	ACAMERA_DISTORTION_CORRECTION acamera_metadata_section_t = 27
+	ACAMERA_HEIC                  acamera_metadata_section_t = 28
+	ACAMERA_HEIC_INFO             acamera_metadata_section_t = 29
+	ACAMERA_AUTOMOTIVE            acamera_metadata_section_t = 30
+	ACAMERA_AUTOMOTIVE_LENS       acamera_metadata_section_t = 31
+	ACAMERA_EXTENSION             acamera_metadata_section_t = 32
+	ACAMERA_JPEGR                 acamera_metadata_section_t = 33
+	ACAMERA_SECTION_COUNT         acamera_metadata_section_t = 34
+	ACAMERA_VENDOR                acamera_metadata_section_t = 32768
+)

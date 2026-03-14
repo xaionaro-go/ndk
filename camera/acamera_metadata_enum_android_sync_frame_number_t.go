@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_sync_frame_number_t int32
 
-type acamera_metadata_enum_android_sync_frame_number_t = capi.Acamera_metadata_enum_android_sync_frame_number_t
+const (
+	ACAMERA_SYNC_FRAME_NUMBER_CONVERGING acamera_metadata_enum_android_sync_frame_number_t = -1
+	ACAMERA_SYNC_FRAME_NUMBER_UNKNOWN    acamera_metadata_enum_android_sync_frame_number_t = -2
+)

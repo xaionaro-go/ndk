@@ -33,6 +33,11 @@ func (h *Image) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// DeleteAsync calls the underlying NDK function.
+func (h *Image) DeleteAsync(releaseFenceFd int32) {
+	capi.AImage_deleteAsync(h.ptr, releaseFenceFd)
+}
+
 // Format calls the underlying NDK function.
 func (h *Image) Format(format *int32) error {
 	return result(int32(capi.AImage_getFormat(h.ptr, format)))

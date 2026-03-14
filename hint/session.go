@@ -39,6 +39,21 @@ func (h *Session) ReportActualWorkDuration(actualDuration time.Duration) error {
 	return result(int32(capi.APerformanceHint_reportActualWorkDuration(h.ptr, int64(actualDuration.Nanoseconds()))))
 }
 
+// APerformanceHint_reportActualWorkDuration2 calls the underlying NDK function.
+func (h *Session) APerformanceHint_reportActualWorkDuration2(workDuration *WorkDuration) error {
+	return result(int32(capi.APerformanceHint_reportActualWorkDuration2(h.ptr, workDuration.ptr)))
+}
+
+// APerformanceHint_setPreferPowerEfficiency calls the underlying NDK function.
+func (h *Session) APerformanceHint_setPreferPowerEfficiency(enabled bool) error {
+	return result(int32(capi.APerformanceHint_setPreferPowerEfficiency(h.ptr, enabled)))
+}
+
+// APerformanceHint_setThreads calls the underlying NDK function.
+func (h *Session) APerformanceHint_setThreads(threadIds *Pid_t, size uint64) error {
+	return result(int32(capi.APerformanceHint_setThreads(h.ptr, (*capi.Pid_t)(threadIds), size)))
+}
+
 // UpdateTargetWorkDuration calls the underlying NDK function.
 func (h *Session) UpdateTargetWorkDuration(targetDuration time.Duration) error {
 	return result(int32(capi.APerformanceHint_updateTargetWorkDuration(h.ptr, int64(targetDuration.Nanoseconds()))))

@@ -54,3 +54,8 @@ func (h *Device) CreateCaptureSession(outputs *SessionOutputContainer, cbs Sessi
 	}
 	return &CaptureSession{ptr: ptr}, nil
 }
+
+// GetID returns the value directly.
+func (h *Device) GetID() string {
+	return (string)(capi.ACameraDevice_getId(h.ptr))
+}

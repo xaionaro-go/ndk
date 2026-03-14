@@ -188,6 +188,8 @@ functions:
     pure: true
 
   # --- Muxer operations ---
+  AMediaMuxer_new:
+    skip: true  # has OutputFormat param that needs manual casting
   AMediaMuxer_addTrack:
     skip: true  # returns int32 (track index), not Media_status_t
   AMediaMuxer_start:

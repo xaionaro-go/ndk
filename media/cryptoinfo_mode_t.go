@@ -2,8 +2,11 @@
 
 package media
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/media"
-)
+type cryptoinfo_mode_t int32
 
-type cryptoinfo_mode_t = capi.Cryptoinfo_mode_t
+const (
+	AMEDIACODECRYPTOINFO_MODE_CLEAR   cryptoinfo_mode_t = 0
+	AMEDIACODECRYPTOINFO_MODE_AES_CTR cryptoinfo_mode_t = 1
+	AMEDIACODECRYPTOINFO_MODE_AES_WV  cryptoinfo_mode_t = 2
+	AMEDIACODECRYPTOINFO_MODE_AES_CBC cryptoinfo_mode_t = 3
+)

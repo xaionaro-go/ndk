@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_af_scene_change_t int32
 
-type acamera_metadata_enum_android_control_af_scene_change_t = capi.Acamera_metadata_enum_android_control_af_scene_change_t
+const (
+	ACAMERA_CONTROL_AF_SCENE_CHANGE_NOT_DETECTED acamera_metadata_enum_android_control_af_scene_change_t = 0
+	ACAMERA_CONTROL_AF_SCENE_CHANGE_DETECTED     acamera_metadata_enum_android_control_af_scene_change_t = 1
+)

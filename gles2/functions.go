@@ -253,6 +253,11 @@ func ReadPixels(x GLint, y GLint, width GLsizei, height GLsizei, format Enum, _t
 	capi.GlReadPixels(capi.GLint(x), capi.GLint(y), capi.GLsizei(width), capi.GLsizei(height), capi.GLenum(format), capi.GLenum(_type), pixels)
 }
 
+// GlReleaseShaderCompiler calls the underlying C function.
+func GlReleaseShaderCompiler() {
+	capi.GlReleaseShaderCompiler()
+}
+
 // RenderbufferStorage calls the underlying C function.
 func RenderbufferStorage(target Enum, internalformat Enum, width GLsizei, height GLsizei) {
 	capi.GlRenderbufferStorage(capi.GLenum(target), capi.GLenum(internalformat), capi.GLsizei(width), capi.GLsizei(height))

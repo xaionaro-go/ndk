@@ -13,6 +13,16 @@ type Window struct {
 	ptr *capi.ANativeWindow
 }
 
+// Close releases the underlying NDK handle.
+func (h *Window) Close() error {
+	if h.ptr == nil {
+		return nil
+	}
+	capi.ANativeWindow_release(h.ptr)
+	h.ptr = nil
+	return nil
+}
+
 // NewWindowFromPointer wraps a raw ANativeWindow pointer.
 func NewWindowFromPointer(ptr unsafe.Pointer) *Window {
 	return &Window{ptr: (*capi.ANativeWindow)(ptr)}
@@ -26,6 +36,21 @@ func (h *Window) Pointer() unsafe.Pointer {
 // Acquire calls the underlying NDK function.
 func (h *Window) Acquire() {
 	capi.ANativeWindow_acquire(h.ptr)
+}
+
+// ClearFrameRate calls the underlying NDK function.
+func (h *Window) ClearFrameRate() error {
+	return result(int32(capi.ANativeWindow_clearFrameRate(h.ptr)))
+}
+
+// GetBuffersDataSpace calls the underlying NDK function.
+func (h *Window) GetBuffersDataSpace() error {
+	return result(int32(capi.ANativeWindow_getBuffersDataSpace(h.ptr)))
+}
+
+// GetBuffersDefaultDataSpace calls the underlying NDK function.
+func (h *Window) GetBuffersDefaultDataSpace() error {
+	return result(int32(capi.ANativeWindow_getBuffersDefaultDataSpace(h.ptr)))
 }
 
 // Format returns the value directly.
@@ -43,9 +68,34 @@ func (h *Window) Width() int32 {
 	return (int32)(capi.ANativeWindow_getWidth(h.ptr))
 }
 
+// SetBuffersDataSpace calls the underlying NDK function.
+func (h *Window) SetBuffersDataSpace(dataSpace int32) error {
+	return result(int32(capi.ANativeWindow_setBuffersDataSpace(h.ptr, dataSpace)))
+}
+
 // SetBuffersGeometry calls the underlying NDK function.
 func (h *Window) SetBuffersGeometry(width int32, height int32, format int32) error {
 	return result(int32(capi.ANativeWindow_setBuffersGeometry(h.ptr, width, height, format)))
+}
+
+// SetBuffersTransform calls the underlying NDK function.
+func (h *Window) SetBuffersTransform(transform int32) error {
+	return result(int32(capi.ANativeWindow_setBuffersTransform(h.ptr, transform)))
+}
+
+// SetFrameRate calls the underlying NDK function.
+func (h *Window) SetFrameRate(frameRate float32, compatibility int8) error {
+	return result(int32(capi.ANativeWindow_setFrameRate(h.ptr, frameRate, compatibility)))
+}
+
+// SetFrameRateWithChangeStrategy calls the underlying NDK function.
+func (h *Window) SetFrameRateWithChangeStrategy(frameRate float32, compatibility int8, changeFrameRateStrategy int8) error {
+	return result(int32(capi.ANativeWindow_setFrameRateWithChangeStrategy(h.ptr, frameRate, compatibility, changeFrameRateStrategy)))
+}
+
+// TryAllocateBuffers calls the underlying NDK function.
+func (h *Window) TryAllocateBuffers() {
+	capi.ANativeWindow_tryAllocateBuffers(h.ptr)
 }
 
 // UnlockAndPost calls the underlying NDK function.

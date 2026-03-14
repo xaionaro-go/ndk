@@ -34,9 +34,24 @@ func (h *Stream) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// GetBufferCapacityInFrames calls the underlying NDK function.
+func (h *Stream) GetBufferCapacityInFrames() error {
+	return result(int32(capi.AAudioStream_getBufferCapacityInFrames(h.ptr)))
+}
+
+// GetBufferSizeInFrames calls the underlying NDK function.
+func (h *Stream) GetBufferSizeInFrames() error {
+	return result(int32(capi.AAudioStream_getBufferSizeInFrames(h.ptr)))
+}
+
 // ChannelCount returns the value directly.
 func (h *Stream) ChannelCount() int32 {
 	return (int32)(capi.AAudioStream_getChannelCount(h.ptr))
+}
+
+// GetDeviceID calls the underlying NDK function.
+func (h *Stream) GetDeviceID() error {
+	return result(int32(capi.AAudioStream_getDeviceId(h.ptr)))
 }
 
 // FramesPerBurst returns the value directly.
@@ -44,9 +59,39 @@ func (h *Stream) FramesPerBurst() int32 {
 	return (int32)(capi.AAudioStream_getFramesPerBurst(h.ptr))
 }
 
+// GetFramesPerDataCallback calls the underlying NDK function.
+func (h *Stream) GetFramesPerDataCallback() error {
+	return result(int32(capi.AAudioStream_getFramesPerDataCallback(h.ptr)))
+}
+
+// GetFramesRead returns the value directly.
+func (h *Stream) GetFramesRead() int64 {
+	return (int64)(capi.AAudioStream_getFramesRead(h.ptr))
+}
+
+// GetFramesWritten returns the value directly.
+func (h *Stream) GetFramesWritten() int64 {
+	return (int64)(capi.AAudioStream_getFramesWritten(h.ptr))
+}
+
+// GetHardwareChannelCount calls the underlying NDK function.
+func (h *Stream) GetHardwareChannelCount() error {
+	return result(int32(capi.AAudioStream_getHardwareChannelCount(h.ptr)))
+}
+
+// GetHardwareSampleRate calls the underlying NDK function.
+func (h *Stream) GetHardwareSampleRate() error {
+	return result(int32(capi.AAudioStream_getHardwareSampleRate(h.ptr)))
+}
+
 // SampleRate returns the value directly.
 func (h *Stream) SampleRate() int32 {
 	return (int32)(capi.AAudioStream_getSampleRate(h.ptr))
+}
+
+// GetSamplesPerFrame calls the underlying NDK function.
+func (h *Stream) GetSamplesPerFrame() error {
+	return result(int32(capi.AAudioStream_getSamplesPerFrame(h.ptr)))
 }
 
 // State returns the value directly.
@@ -57,6 +102,16 @@ func (h *Stream) State() StreamState {
 // XRunCount returns the value directly.
 func (h *Stream) XRunCount() int32 {
 	return (int32)(capi.AAudioStream_getXRunCount(h.ptr))
+}
+
+// IsContentSpatialized returns the value directly.
+func (h *Stream) IsContentSpatialized() bool {
+	return (bool)(capi.AAudioStream_isContentSpatialized(h.ptr))
+}
+
+// IsPrivacySensitive returns the value directly.
+func (h *Stream) IsPrivacySensitive() bool {
+	return (bool)(capi.AAudioStream_isPrivacySensitive(h.ptr))
 }
 
 // Read calls the underlying NDK function and returns the frame count.

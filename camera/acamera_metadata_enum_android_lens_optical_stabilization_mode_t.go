@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_lens_optical_stabilization_mode_t int32
 
-type acamera_metadata_enum_android_lens_optical_stabilization_mode_t = capi.Acamera_metadata_enum_android_lens_optical_stabilization_mode_t
+const (
+	ACAMERA_LENS_OPTICAL_STABILIZATION_MODE_OFF acamera_metadata_enum_android_lens_optical_stabilization_mode_t = 0
+	ACAMERA_LENS_OPTICAL_STABILIZATION_MODE_ON  acamera_metadata_enum_android_lens_optical_stabilization_mode_t = 1
+)

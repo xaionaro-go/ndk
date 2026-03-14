@@ -1,6 +1,7 @@
 package idiomgen
 
 import (
+	"fmt"
 	"regexp"
 	"sort"
 	"strings"
@@ -462,6 +463,15 @@ func safeGoName(name string) string {
 		return "_" + name
 	}
 	return fixGoAcronyms(name)
+}
+
+// safeGoParamName returns a Go-safe parameter name, synthesizing positional
+// names for unnamed C parameters: index 0 → "arg0", index 1 → "arg1", etc.
+func safeGoParamName(name string, index int) string {
+	if name == "" {
+		return fmt.Sprintf("arg%d", index)
+	}
+	return safeGoName(name)
 }
 
 // acronymRe matches "Id" when it appears as a complete word segment

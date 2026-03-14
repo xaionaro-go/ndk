@@ -38,6 +38,16 @@ func (h *Config) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// Copy calls the underlying NDK function.
+func (h *Config) Copy(src *Config) {
+	capi.AConfiguration_copy(h.ptr, src.ptr)
+}
+
+// Diff calls the underlying NDK function.
+func (h *Config) Diff(config2 *Config) error {
+	return result(int32(capi.AConfiguration_diff(h.ptr, config2.ptr)))
+}
+
 // Country calls the underlying NDK function.
 func (h *Config) Country(outCountry string) {
 	capi.AConfiguration_getCountry(h.ptr, outCountry)
@@ -48,9 +58,49 @@ func (h *Config) Density() int32 {
 	return (int32)(capi.AConfiguration_getDensity(h.ptr))
 }
 
+// GetGrammaticalGender calls the underlying NDK function.
+func (h *Config) GetGrammaticalGender() error {
+	return result(int32(capi.AConfiguration_getGrammaticalGender(h.ptr)))
+}
+
+// GetKeyboard calls the underlying NDK function.
+func (h *Config) GetKeyboard() error {
+	return result(int32(capi.AConfiguration_getKeyboard(h.ptr)))
+}
+
+// GetKeysHidden calls the underlying NDK function.
+func (h *Config) GetKeysHidden() error {
+	return result(int32(capi.AConfiguration_getKeysHidden(h.ptr)))
+}
+
 // Language calls the underlying NDK function.
 func (h *Config) Language(outLanguage string) {
 	capi.AConfiguration_getLanguage(h.ptr, outLanguage)
+}
+
+// GetLayoutDirection calls the underlying NDK function.
+func (h *Config) GetLayoutDirection() error {
+	return result(int32(capi.AConfiguration_getLayoutDirection(h.ptr)))
+}
+
+// GetMcc calls the underlying NDK function.
+func (h *Config) GetMcc() error {
+	return result(int32(capi.AConfiguration_getMcc(h.ptr)))
+}
+
+// GetMnc calls the underlying NDK function.
+func (h *Config) GetMnc() error {
+	return result(int32(capi.AConfiguration_getMnc(h.ptr)))
+}
+
+// GetNavHidden calls the underlying NDK function.
+func (h *Config) GetNavHidden() error {
+	return result(int32(capi.AConfiguration_getNavHidden(h.ptr)))
+}
+
+// GetNavigation calls the underlying NDK function.
+func (h *Config) GetNavigation() error {
+	return result(int32(capi.AConfiguration_getNavigation(h.ptr)))
 }
 
 // Orientation returns the value directly.
@@ -61,6 +111,16 @@ func (h *Config) Orientation() int32 {
 // ScreenHeightDp returns the value directly.
 func (h *Config) ScreenHeightDp() int32 {
 	return (int32)(capi.AConfiguration_getScreenHeightDp(h.ptr))
+}
+
+// GetScreenLong calls the underlying NDK function.
+func (h *Config) GetScreenLong() error {
+	return result(int32(capi.AConfiguration_getScreenLong(h.ptr)))
+}
+
+// GetScreenRound calls the underlying NDK function.
+func (h *Config) GetScreenRound() error {
+	return result(int32(capi.AConfiguration_getScreenRound(h.ptr)))
 }
 
 // ScreenSize returns the value directly.
@@ -76,4 +136,139 @@ func (h *Config) ScreenWidthDp() int32 {
 // SdkVersion returns the value directly.
 func (h *Config) SdkVersion() int32 {
 	return (int32)(capi.AConfiguration_getSdkVersion(h.ptr))
+}
+
+// GetSmallestScreenWidthDp calls the underlying NDK function.
+func (h *Config) GetSmallestScreenWidthDp() error {
+	return result(int32(capi.AConfiguration_getSmallestScreenWidthDp(h.ptr)))
+}
+
+// GetTouchscreen calls the underlying NDK function.
+func (h *Config) GetTouchscreen() error {
+	return result(int32(capi.AConfiguration_getTouchscreen(h.ptr)))
+}
+
+// GetUiModeNight calls the underlying NDK function.
+func (h *Config) GetUiModeNight() error {
+	return result(int32(capi.AConfiguration_getUiModeNight(h.ptr)))
+}
+
+// GetUiModeType calls the underlying NDK function.
+func (h *Config) GetUiModeType() error {
+	return result(int32(capi.AConfiguration_getUiModeType(h.ptr)))
+}
+
+// IsBetterThan calls the underlying NDK function.
+func (h *Config) IsBetterThan(test *Config, requested *Config) error {
+	return result(int32(capi.AConfiguration_isBetterThan(h.ptr, test.ptr, requested.ptr)))
+}
+
+// Match calls the underlying NDK function.
+func (h *Config) Match(requested *Config) error {
+	return result(int32(capi.AConfiguration_match(h.ptr, requested.ptr)))
+}
+
+// SetCountry calls the underlying NDK function.
+func (h *Config) SetCountry(country string) {
+	capi.AConfiguration_setCountry(h.ptr, country)
+}
+
+// SetDensity calls the underlying NDK function.
+func (h *Config) SetDensity(density int32) {
+	capi.AConfiguration_setDensity(h.ptr, density)
+}
+
+// SetGrammaticalGender calls the underlying NDK function.
+func (h *Config) SetGrammaticalGender(value int32) {
+	capi.AConfiguration_setGrammaticalGender(h.ptr, value)
+}
+
+// SetKeyboard calls the underlying NDK function.
+func (h *Config) SetKeyboard(keyboard int32) {
+	capi.AConfiguration_setKeyboard(h.ptr, keyboard)
+}
+
+// SetKeysHidden calls the underlying NDK function.
+func (h *Config) SetKeysHidden(keysHidden int32) {
+	capi.AConfiguration_setKeysHidden(h.ptr, keysHidden)
+}
+
+// SetLanguage calls the underlying NDK function.
+func (h *Config) SetLanguage(language string) {
+	capi.AConfiguration_setLanguage(h.ptr, language)
+}
+
+// SetLayoutDirection calls the underlying NDK function.
+func (h *Config) SetLayoutDirection(value int32) {
+	capi.AConfiguration_setLayoutDirection(h.ptr, value)
+}
+
+// SetMcc calls the underlying NDK function.
+func (h *Config) SetMcc(mcc int32) {
+	capi.AConfiguration_setMcc(h.ptr, mcc)
+}
+
+// SetMnc calls the underlying NDK function.
+func (h *Config) SetMnc(mnc int32) {
+	capi.AConfiguration_setMnc(h.ptr, mnc)
+}
+
+// SetNavHidden calls the underlying NDK function.
+func (h *Config) SetNavHidden(navHidden int32) {
+	capi.AConfiguration_setNavHidden(h.ptr, navHidden)
+}
+
+// SetNavigation calls the underlying NDK function.
+func (h *Config) SetNavigation(navigation int32) {
+	capi.AConfiguration_setNavigation(h.ptr, navigation)
+}
+
+// SetOrientation calls the underlying NDK function.
+func (h *Config) SetOrientation(orientation int32) {
+	capi.AConfiguration_setOrientation(h.ptr, orientation)
+}
+
+// SetScreenHeightDp calls the underlying NDK function.
+func (h *Config) SetScreenHeightDp(value int32) {
+	capi.AConfiguration_setScreenHeightDp(h.ptr, value)
+}
+
+// SetScreenLong calls the underlying NDK function.
+func (h *Config) SetScreenLong(screenLong int32) {
+	capi.AConfiguration_setScreenLong(h.ptr, screenLong)
+}
+
+// SetScreenSize calls the underlying NDK function.
+func (h *Config) SetScreenSize(screenSize int32) {
+	capi.AConfiguration_setScreenSize(h.ptr, screenSize)
+}
+
+// SetScreenWidthDp calls the underlying NDK function.
+func (h *Config) SetScreenWidthDp(value int32) {
+	capi.AConfiguration_setScreenWidthDp(h.ptr, value)
+}
+
+// SetSdkVersion calls the underlying NDK function.
+func (h *Config) SetSdkVersion(sdkVersion int32) {
+	capi.AConfiguration_setSdkVersion(h.ptr, sdkVersion)
+}
+
+// SetSmallestScreenWidthDp calls the underlying NDK function.
+func (h *Config) SetSmallestScreenWidthDp(value int32) {
+	capi.AConfiguration_setSmallestScreenWidthDp(h.ptr, value)
+}
+
+// SetTouchscreen calls the underlying NDK function.
+func (h *Config) SetTouchscreen(touchscreen int32) {
+	capi.AConfiguration_setTouchscreen(h.ptr, touchscreen)
+}
+
+// SetUiModeNight calls the underlying NDK function.
+func (h *Config) SetUiModeNight(uiModeNight int32) {
+	capi.AConfiguration_setUiModeNight(h.ptr, uiModeNight)
+}
+
+// SetUiModeType calls the underlying NDK function.
+func (h *Config) SetUiModeType(uiModeType int32) {
+	capi.AConfiguration_setUiModeType(h.ptr, uiModeType)
 }

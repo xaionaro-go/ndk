@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_scaler_multi_resolution_stream_supported_t int32
 
-type acamera_metadata_enum_android_scaler_multi_resolution_stream_supported_t = capi.Acamera_metadata_enum_android_scaler_multi_resolution_stream_supported_t
+const (
+	ACAMERA_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED_FALSE acamera_metadata_enum_android_scaler_multi_resolution_stream_supported_t = 0
+	ACAMERA_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED_TRUE  acamera_metadata_enum_android_scaler_multi_resolution_stream_supported_t = 1
+)

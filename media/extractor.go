@@ -38,9 +38,44 @@ func (h *Extractor) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// GetCachedDuration returns the value directly.
+func (h *Extractor) GetCachedDuration() int64 {
+	return (int64)(capi.AMediaExtractor_getCachedDuration(h.ptr))
+}
+
+// GetFileFormat creates a new Format from this Extractor.
+func (h *Extractor) GetFileFormat() *Format {
+	return &Format{ptr: capi.AMediaExtractor_getFileFormat(h.ptr)}
+}
+
+// GetPsshInfo creates a new PsshInfo from this Extractor.
+func (h *Extractor) GetPsshInfo() *PsshInfo {
+	return &PsshInfo{ptr: capi.AMediaExtractor_getPsshInfo(h.ptr)}
+}
+
+// GetSampleCryptoInfo creates a new MediaCodecCryptoInfo from this Extractor.
+func (h *Extractor) GetSampleCryptoInfo() *MediaCodecCryptoInfo {
+	return &MediaCodecCryptoInfo{ptr: capi.AMediaExtractor_getSampleCryptoInfo(h.ptr)}
+}
+
+// GetSampleFlags calls the underlying NDK function.
+func (h *Extractor) GetSampleFlags() error {
+	return result(int32(capi.AMediaExtractor_getSampleFlags(h.ptr)))
+}
+
+// GetSampleSize returns the value directly.
+func (h *Extractor) GetSampleSize() int64 {
+	return (int64)(capi.AMediaExtractor_getSampleSize(h.ptr))
+}
+
 // SampleTime returns the value directly.
 func (h *Extractor) SampleTime() int64 {
 	return (int64)(capi.AMediaExtractor_getSampleTime(h.ptr))
+}
+
+// GetSampleTrackIndex calls the underlying NDK function.
+func (h *Extractor) GetSampleTrackIndex() error {
+	return result(int32(capi.AMediaExtractor_getSampleTrackIndex(h.ptr)))
 }
 
 // TrackCount returns the value directly.

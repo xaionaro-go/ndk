@@ -2,8 +2,11 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_lens_pose_reference_t int32
 
-type acamera_metadata_enum_android_lens_pose_reference_t = capi.Acamera_metadata_enum_android_lens_pose_reference_t
+const (
+	ACAMERA_LENS_POSE_REFERENCE_PRIMARY_CAMERA acamera_metadata_enum_android_lens_pose_reference_t = 0
+	ACAMERA_LENS_POSE_REFERENCE_GYROSCOPE      acamera_metadata_enum_android_lens_pose_reference_t = 1
+	ACAMERA_LENS_POSE_REFERENCE_UNDEFINED      acamera_metadata_enum_android_lens_pose_reference_t = 2
+	ACAMERA_LENS_POSE_REFERENCE_AUTOMOTIVE     acamera_metadata_enum_android_lens_pose_reference_t = 3
+)

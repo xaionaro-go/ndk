@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_sync_max_latency_t int32
 
-type acamera_metadata_enum_android_sync_max_latency_t = capi.Acamera_metadata_enum_android_sync_max_latency_t
+const (
+	ACAMERA_SYNC_MAX_LATENCY_PER_FRAME_CONTROL acamera_metadata_enum_android_sync_max_latency_t = 0
+	ACAMERA_SYNC_MAX_LATENCY_UNKNOWN           acamera_metadata_enum_android_sync_max_latency_t = -1
+)

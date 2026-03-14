@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_depth_depth_is_exclusive_t int32
 
-type acamera_metadata_enum_android_depth_depth_is_exclusive_t = capi.Acamera_metadata_enum_android_depth_depth_is_exclusive_t
+const (
+	ACAMERA_DEPTH_DEPTH_IS_EXCLUSIVE_FALSE acamera_metadata_enum_android_depth_depth_is_exclusive_t = 0
+	ACAMERA_DEPTH_DEPTH_IS_EXCLUSIVE_TRUE  acamera_metadata_enum_android_depth_depth_is_exclusive_t = 1
+)

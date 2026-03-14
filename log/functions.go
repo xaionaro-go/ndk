@@ -6,7 +6,62 @@ import (
 	capi "github.com/xaionaro-go/ndk/capi/logging"
 )
 
+// __android_log_buf_write calls the underlying C function.
+func __android_log_buf_write(bufID int32, prio int32, tag string, text string) int32 {
+	return (int32)(capi.Android_log_buf_write(bufID, prio, tag, text))
+}
+
+// __android_log_call_aborter calls the underlying C function.
+func __android_log_call_aborter(abort_message string) {
+	capi.Android_log_call_aborter(abort_message)
+}
+
+// __android_log_default_aborter calls the underlying C function.
+func __android_log_default_aborter(abort_message string) {
+	capi.Android_log_default_aborter(abort_message)
+}
+
+// __android_log_get_minimum_priority calls the underlying C function.
+func __android_log_get_minimum_priority() int32 {
+	return (int32)(capi.Android_log_get_minimum_priority())
+}
+
+// __android_log_is_loggable calls the underlying C function.
+func __android_log_is_loggable(prio int32, tag string, default_prio int32) int32 {
+	return (int32)(capi.Android_log_is_loggable(prio, tag, default_prio))
+}
+
+// __android_log_is_loggable_len calls the underlying C function.
+func __android_log_is_loggable_len(prio int32, tag string, len uint64, default_prio int32) int32 {
+	return (int32)(capi.Android_log_is_loggable_len(prio, tag, len, default_prio))
+}
+
+// __android_log_logd_logger calls the underlying C function.
+func __android_log_logd_logger(log_message *Android_log_message) {
+	capi.Android_log_logd_logger((*capi.Android_log_message)(log_message))
+}
+
+// __android_log_set_default_tag calls the underlying C function.
+func __android_log_set_default_tag(tag string) {
+	capi.Android_log_set_default_tag(tag)
+}
+
+// __android_log_set_minimum_priority calls the underlying C function.
+func __android_log_set_minimum_priority(priority int32) int32 {
+	return (int32)(capi.Android_log_set_minimum_priority(priority))
+}
+
+// __android_log_stderr_logger calls the underlying C function.
+func __android_log_stderr_logger(log_message *Android_log_message) {
+	capi.Android_log_stderr_logger((*capi.Android_log_message)(log_message))
+}
+
 // Write calls the underlying C function.
 func Write(prio int32, tag string, text string) int32 {
 	return (int32)(capi.Android_log_write(prio, tag, text))
+}
+
+// __android_log_write_log_message calls the underlying C function.
+func __android_log_write_log_message(log_message *Android_log_message) {
+	capi.Android_log_write_log_message((*capi.Android_log_message)(log_message))
 }

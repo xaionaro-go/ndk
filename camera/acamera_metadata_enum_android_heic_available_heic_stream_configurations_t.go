@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_heic_available_heic_stream_configurations_t int32
 
-type acamera_metadata_enum_android_heic_available_heic_stream_configurations_t = capi.Acamera_metadata_enum_android_heic_available_heic_stream_configurations_t
+const (
+	ACAMERA_HEIC_AVAILABLE_HEIC_STREAM_CONFIGURATIONS_OUTPUT acamera_metadata_enum_android_heic_available_heic_stream_configurations_t = 0
+	ACAMERA_HEIC_AVAILABLE_HEIC_STREAM_CONFIGURATIONS_INPUT  acamera_metadata_enum_android_heic_available_heic_stream_configurations_t = 1
+)

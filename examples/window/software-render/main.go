@@ -7,7 +7,7 @@
 //
 // The window package exposes Window with methods for querying dimensions,
 // setting buffer geometry, and posting rendered frames. The Lock step
-// requires the capi layer because the idiomatic package does not yet
+// requires the low-level API because the idiomatic package does not yet
 // wrap ANativeWindow_lock.
 //
 // Software rendering lifecycle:
@@ -26,7 +26,7 @@
 //     Pass 0 for any dimension to keep the current value.
 //     The compositor scales the buffer to the window size.
 //
-//  4. Lock       -- Call ANativeWindow_lock (capi) to lock the next
+//  4. Lock       -- Call ANativeWindow_lock (the low-level layer) to lock the next
 //     back-buffer for CPU access. Returns an
 //     ANativeWindow_Buffer with pixel memory pointer, width,
 //     height, stride, and format.
@@ -136,16 +136,16 @@ func main() {
 	fmt.Println("  // Pass 0 for width/height to keep current dimensions.")
 	fmt.Println()
 
-	// ── Step 4: Lock the back-buffer (capi only) ────────────────
+	// ── Step 4: Lock the back-buffer (idiomatic) ────────────────
 	//
 	// The idiomatic window package does not yet expose Lock. In a
-	// real application, use the capi layer:
+	// real application, use the low-level API:
 	//
-	//   import capi "github.com/xaionaro-go/ndk/capi/nativewindow"
+	//   // use idiomatic package instead
 	//
-	//   var buf capi.ANativeWindow_Buffer
-	//   rc := capi.ANativeWindow_lock(
-	//       (*capi.ANativeWindow)(win.Pointer()),
+	//   var buf ANativeWindow_Buffer
+	//   rc := ANativeWindow_lock(
+	//       (*ANativeWindow)(win.Pointer()),
 	//       &buf,
 	//       nil,  // dirtyBounds: nil = full surface
 	//   )
@@ -159,8 +159,8 @@ func main() {
 	//   - Format: pixel format
 	//   - Bits: pointer to the pixel data
 
-	fmt.Println("Step 4: Lock the back-buffer (requires capi)")
-	fmt.Println("  capi.ANativeWindow_lock(nativeWin, &buf, nil)")
+	fmt.Println("Step 4: Lock the back-buffer (requires the low-level layer)")
+	fmt.Println("  ANativeWindow_lock(nativeWin, &buf, nil)")
 	fmt.Println("  // buf.Bits  = pointer to pixel data")
 	fmt.Println("  // buf.Stride = pixels per row (includes padding)")
 	fmt.Println()
@@ -219,7 +219,7 @@ func main() {
 	//
 	//   for running {
 	//       // Lock
-	//       capi.ANativeWindow_lock(nativeWin, &buf, nil)
+	//       ANativeWindow_lock(nativeWin, &buf, nil)
 	//
 	//       // Draw into buf.Bits
 	//       renderFrame(&buf)

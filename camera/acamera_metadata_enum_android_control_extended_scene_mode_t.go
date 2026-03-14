@@ -2,8 +2,10 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_extended_scene_mode_t int32
 
-type acamera_metadata_enum_android_control_extended_scene_mode_t = capi.Acamera_metadata_enum_android_control_extended_scene_mode_t
+const (
+	ACAMERA_CONTROL_EXTENDED_SCENE_MODE_DISABLED            acamera_metadata_enum_android_control_extended_scene_mode_t = 0
+	ACAMERA_CONTROL_EXTENDED_SCENE_MODE_BOKEH_STILL_CAPTURE acamera_metadata_enum_android_control_extended_scene_mode_t = 1
+	ACAMERA_CONTROL_EXTENDED_SCENE_MODE_BOKEH_CONTINUOUS    acamera_metadata_enum_android_control_extended_scene_mode_t = 2
+)

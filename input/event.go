@@ -13,6 +13,16 @@ type Event struct {
 	ptr *capi.AInputEvent
 }
 
+// Close releases the underlying NDK handle.
+func (h *Event) Close() error {
+	if h.ptr == nil {
+		return nil
+	}
+	capi.AInputEvent_release(h.ptr)
+	h.ptr = nil
+	return nil
+}
+
 // NewEventFromPointer wraps a raw AInputEvent pointer.
 func NewEventFromPointer(ptr unsafe.Pointer) *Event {
 	return &Event{ptr: (*capi.AInputEvent)(ptr)}
@@ -21,6 +31,11 @@ func NewEventFromPointer(ptr unsafe.Pointer) *Event {
 // Pointer returns the underlying pointer as unsafe.Pointer.
 func (h *Event) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
+}
+
+// GetDeviceID calls the underlying NDK function.
+func (h *Event) GetDeviceID() error {
+	return result(int32(capi.AInputEvent_getDeviceId(h.ptr)))
 }
 
 // Source returns the value directly.
@@ -38,9 +53,29 @@ func (h *Event) KeyAction() int32 {
 	return (int32)(capi.AKeyEvent_getAction(h.ptr))
 }
 
+// AKeyEvent_getDownTime returns the value directly.
+func (h *Event) AKeyEvent_getDownTime() int64 {
+	return (int64)(capi.AKeyEvent_getDownTime(h.ptr))
+}
+
+// AKeyEvent_getEventTime returns the value directly.
+func (h *Event) AKeyEvent_getEventTime() int64 {
+	return (int64)(capi.AKeyEvent_getEventTime(h.ptr))
+}
+
+// AKeyEvent_getFlags calls the underlying NDK function.
+func (h *Event) AKeyEvent_getFlags() error {
+	return result(int32(capi.AKeyEvent_getFlags(h.ptr)))
+}
+
 // KeyCode returns the value directly.
 func (h *Event) KeyCode() int32 {
 	return (int32)(capi.AKeyEvent_getKeyCode(h.ptr))
+}
+
+// AKeyEvent_getMetaState calls the underlying NDK function.
+func (h *Event) AKeyEvent_getMetaState() error {
+	return result(int32(capi.AKeyEvent_getMetaState(h.ptr)))
 }
 
 // RepeatCount returns the value directly.
@@ -48,9 +83,134 @@ func (h *Event) RepeatCount() int32 {
 	return (int32)(capi.AKeyEvent_getRepeatCount(h.ptr))
 }
 
+// AKeyEvent_getScanCode calls the underlying NDK function.
+func (h *Event) AKeyEvent_getScanCode() error {
+	return result(int32(capi.AKeyEvent_getScanCode(h.ptr)))
+}
+
 // MotionAction returns the value directly.
 func (h *Event) MotionAction() int32 {
 	return (int32)(capi.AMotionEvent_getAction(h.ptr))
+}
+
+// AMotionEvent_getActionButton calls the underlying NDK function.
+func (h *Event) AMotionEvent_getActionButton() error {
+	return result(int32(capi.AMotionEvent_getActionButton(h.ptr)))
+}
+
+// AMotionEvent_getAxisValue returns the value directly.
+func (h *Event) AMotionEvent_getAxisValue(axis int32, pointer_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getAxisValue(h.ptr, axis, pointer_index))
+}
+
+// AMotionEvent_getButtonState calls the underlying NDK function.
+func (h *Event) AMotionEvent_getButtonState() error {
+	return result(int32(capi.AMotionEvent_getButtonState(h.ptr)))
+}
+
+// AMotionEvent_getClassification calls the underlying NDK function.
+func (h *Event) AMotionEvent_getClassification() error {
+	return result(int32(capi.AMotionEvent_getClassification(h.ptr)))
+}
+
+// AMotionEvent_getDownTime returns the value directly.
+func (h *Event) AMotionEvent_getDownTime() int64 {
+	return (int64)(capi.AMotionEvent_getDownTime(h.ptr))
+}
+
+// AMotionEvent_getEdgeFlags calls the underlying NDK function.
+func (h *Event) AMotionEvent_getEdgeFlags() error {
+	return result(int32(capi.AMotionEvent_getEdgeFlags(h.ptr)))
+}
+
+// AMotionEvent_getEventTime returns the value directly.
+func (h *Event) AMotionEvent_getEventTime() int64 {
+	return (int64)(capi.AMotionEvent_getEventTime(h.ptr))
+}
+
+// AMotionEvent_getFlags calls the underlying NDK function.
+func (h *Event) AMotionEvent_getFlags() error {
+	return result(int32(capi.AMotionEvent_getFlags(h.ptr)))
+}
+
+// AMotionEvent_getHistoricalAxisValue returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalAxisValue(axis int32, pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalAxisValue(h.ptr, axis, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalEventTime returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalEventTime(history_index uint64) int64 {
+	return (int64)(capi.AMotionEvent_getHistoricalEventTime(h.ptr, history_index))
+}
+
+// AMotionEvent_getHistoricalOrientation returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalOrientation(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalOrientation(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalPressure returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalPressure(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalPressure(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalRawX returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalRawX(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalRawX(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalRawY returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalRawY(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalRawY(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalSize returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalSize(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalSize(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalToolMajor returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalToolMajor(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalToolMajor(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalToolMinor returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalToolMinor(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalToolMinor(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalTouchMajor returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalTouchMajor(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalTouchMajor(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalTouchMinor returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalTouchMinor(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalTouchMinor(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalX returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalX(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalX(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistoricalY returns the value directly.
+func (h *Event) AMotionEvent_getHistoricalY(pointer_index uint64, history_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getHistoricalY(h.ptr, pointer_index, history_index))
+}
+
+// AMotionEvent_getHistorySize returns the value directly.
+func (h *Event) AMotionEvent_getHistorySize() uint64 {
+	return (uint64)(capi.AMotionEvent_getHistorySize(h.ptr))
+}
+
+// AMotionEvent_getMetaState calls the underlying NDK function.
+func (h *Event) AMotionEvent_getMetaState() error {
+	return result(int32(capi.AMotionEvent_getMetaState(h.ptr)))
+}
+
+// AMotionEvent_getOrientation returns the value directly.
+func (h *Event) AMotionEvent_getOrientation(pointer_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getOrientation(h.ptr, pointer_index))
 }
 
 // PointerCount returns the value directly.
@@ -58,9 +218,54 @@ func (h *Event) PointerCount() uint64 {
 	return (uint64)(capi.AMotionEvent_getPointerCount(h.ptr))
 }
 
+// AMotionEvent_getPointerID calls the underlying NDK function.
+func (h *Event) AMotionEvent_getPointerID(pointer_index uint64) error {
+	return result(int32(capi.AMotionEvent_getPointerId(h.ptr, pointer_index)))
+}
+
 // Pressure returns the value directly.
 func (h *Event) Pressure(pointer_index uint64) float32 {
 	return (float32)(capi.AMotionEvent_getPressure(h.ptr, pointer_index))
+}
+
+// AMotionEvent_getRawX returns the value directly.
+func (h *Event) AMotionEvent_getRawX(pointer_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getRawX(h.ptr, pointer_index))
+}
+
+// AMotionEvent_getRawY returns the value directly.
+func (h *Event) AMotionEvent_getRawY(pointer_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getRawY(h.ptr, pointer_index))
+}
+
+// AMotionEvent_getSize returns the value directly.
+func (h *Event) AMotionEvent_getSize(pointer_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getSize(h.ptr, pointer_index))
+}
+
+// AMotionEvent_getToolMajor returns the value directly.
+func (h *Event) AMotionEvent_getToolMajor(pointer_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getToolMajor(h.ptr, pointer_index))
+}
+
+// AMotionEvent_getToolMinor returns the value directly.
+func (h *Event) AMotionEvent_getToolMinor(pointer_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getToolMinor(h.ptr, pointer_index))
+}
+
+// AMotionEvent_getToolType calls the underlying NDK function.
+func (h *Event) AMotionEvent_getToolType(pointer_index uint64) error {
+	return result(int32(capi.AMotionEvent_getToolType(h.ptr, pointer_index)))
+}
+
+// AMotionEvent_getTouchMajor returns the value directly.
+func (h *Event) AMotionEvent_getTouchMajor(pointer_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getTouchMajor(h.ptr, pointer_index))
+}
+
+// AMotionEvent_getTouchMinor returns the value directly.
+func (h *Event) AMotionEvent_getTouchMinor(pointer_index uint64) float32 {
+	return (float32)(capi.AMotionEvent_getTouchMinor(h.ptr, pointer_index))
 }
 
 // X returns the value directly.
@@ -68,7 +273,27 @@ func (h *Event) X(pointer_index uint64) float32 {
 	return (float32)(capi.AMotionEvent_getX(h.ptr, pointer_index))
 }
 
+// AMotionEvent_getXOffset returns the value directly.
+func (h *Event) AMotionEvent_getXOffset() float32 {
+	return (float32)(capi.AMotionEvent_getXOffset(h.ptr))
+}
+
+// AMotionEvent_getXPrecision returns the value directly.
+func (h *Event) AMotionEvent_getXPrecision() float32 {
+	return (float32)(capi.AMotionEvent_getXPrecision(h.ptr))
+}
+
 // Y returns the value directly.
 func (h *Event) Y(pointer_index uint64) float32 {
 	return (float32)(capi.AMotionEvent_getY(h.ptr, pointer_index))
+}
+
+// AMotionEvent_getYOffset returns the value directly.
+func (h *Event) AMotionEvent_getYOffset() float32 {
+	return (float32)(capi.AMotionEvent_getYOffset(h.ptr))
+}
+
+// AMotionEvent_getYPrecision returns the value directly.
+func (h *Event) AMotionEvent_getYPrecision() float32 {
+	return (float32)(capi.AMotionEvent_getYPrecision(h.ptr))
 }

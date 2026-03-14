@@ -33,6 +33,11 @@ func (h *Metadata) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// Copy creates a new Metadata from this Metadata.
+func (h *Metadata) Copy() *Metadata {
+	return &Metadata{ptr: capi.ACameraMetadata_copy(h.ptr)}
+}
+
 // I32At returns the value directly.
 func (h *Metadata) I32At(tag uint32, idx int32) int32 {
 	return (int32)(capi.BridgeMetadataI32At(h.ptr, tag, idx))

@@ -2,8 +2,25 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_scene_mode_t int32
 
-type acamera_metadata_enum_android_control_scene_mode_t = capi.Acamera_metadata_enum_android_control_scene_mode_t
+const (
+	ACAMERA_CONTROL_SCENE_MODE_DISABLED       acamera_metadata_enum_android_control_scene_mode_t = 0
+	ACAMERA_CONTROL_SCENE_MODE_FACE_PRIORITY  acamera_metadata_enum_android_control_scene_mode_t = 1
+	ACAMERA_CONTROL_SCENE_MODE_ACTION         acamera_metadata_enum_android_control_scene_mode_t = 2
+	ACAMERA_CONTROL_SCENE_MODE_PORTRAIT       acamera_metadata_enum_android_control_scene_mode_t = 3
+	ACAMERA_CONTROL_SCENE_MODE_LANDSCAPE      acamera_metadata_enum_android_control_scene_mode_t = 4
+	ACAMERA_CONTROL_SCENE_MODE_NIGHT          acamera_metadata_enum_android_control_scene_mode_t = 5
+	ACAMERA_CONTROL_SCENE_MODE_NIGHT_PORTRAIT acamera_metadata_enum_android_control_scene_mode_t = 6
+	ACAMERA_CONTROL_SCENE_MODE_THEATRE        acamera_metadata_enum_android_control_scene_mode_t = 7
+	ACAMERA_CONTROL_SCENE_MODE_BEACH          acamera_metadata_enum_android_control_scene_mode_t = 8
+	ACAMERA_CONTROL_SCENE_MODE_SNOW           acamera_metadata_enum_android_control_scene_mode_t = 9
+	ACAMERA_CONTROL_SCENE_MODE_SUNSET         acamera_metadata_enum_android_control_scene_mode_t = 10
+	ACAMERA_CONTROL_SCENE_MODE_STEADYPHOTO    acamera_metadata_enum_android_control_scene_mode_t = 11
+	ACAMERA_CONTROL_SCENE_MODE_FIREWORKS      acamera_metadata_enum_android_control_scene_mode_t = 12
+	ACAMERA_CONTROL_SCENE_MODE_SPORTS         acamera_metadata_enum_android_control_scene_mode_t = 13
+	ACAMERA_CONTROL_SCENE_MODE_PARTY          acamera_metadata_enum_android_control_scene_mode_t = 14
+	ACAMERA_CONTROL_SCENE_MODE_CANDLELIGHT    acamera_metadata_enum_android_control_scene_mode_t = 15
+	ACAMERA_CONTROL_SCENE_MODE_BARCODE        acamera_metadata_enum_android_control_scene_mode_t = 16
+	ACAMERA_CONTROL_SCENE_MODE_HDR            acamera_metadata_enum_android_control_scene_mode_t = 18
+)

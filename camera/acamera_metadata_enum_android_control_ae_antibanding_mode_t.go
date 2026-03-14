@@ -2,8 +2,11 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_ae_antibanding_mode_t int32
 
-type acamera_metadata_enum_android_control_ae_antibanding_mode_t = capi.Acamera_metadata_enum_android_control_ae_antibanding_mode_t
+const (
+	ACAMERA_CONTROL_AE_ANTIBANDING_MODE_OFF  acamera_metadata_enum_android_control_ae_antibanding_mode_t = 0
+	ACAMERA_CONTROL_AE_ANTIBANDING_MODE_50HZ acamera_metadata_enum_android_control_ae_antibanding_mode_t = 1
+	ACAMERA_CONTROL_AE_ANTIBANDING_MODE_60HZ acamera_metadata_enum_android_control_ae_antibanding_mode_t = 2
+	ACAMERA_CONTROL_AE_ANTIBANDING_MODE_AUTO acamera_metadata_enum_android_control_ae_antibanding_mode_t = 3
+)

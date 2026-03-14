@@ -33,6 +33,16 @@ func (h *Muxer) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// GetTrackCount returns the value directly.
+func (h *Muxer) GetTrackCount() int64 {
+	return (int64)(capi.AMediaMuxer_getTrackCount(h.ptr))
+}
+
+// GetTrackFormat creates a new Format from this Muxer.
+func (h *Muxer) GetTrackFormat(idx uint64) *Format {
+	return &Format{ptr: capi.AMediaMuxer_getTrackFormat(h.ptr, idx)}
+}
+
 // Start calls the underlying NDK function.
 func (h *Muxer) Start() error {
 	return result(int32(capi.AMediaMuxer_start(h.ptr)))

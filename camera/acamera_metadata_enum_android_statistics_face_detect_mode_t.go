@@ -2,8 +2,10 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_statistics_face_detect_mode_t int32
 
-type acamera_metadata_enum_android_statistics_face_detect_mode_t = capi.Acamera_metadata_enum_android_statistics_face_detect_mode_t
+const (
+	ACAMERA_STATISTICS_FACE_DETECT_MODE_OFF    acamera_metadata_enum_android_statistics_face_detect_mode_t = 0
+	ACAMERA_STATISTICS_FACE_DETECT_MODE_SIMPLE acamera_metadata_enum_android_statistics_face_detect_mode_t = 1
+	ACAMERA_STATISTICS_FACE_DETECT_MODE_FULL   acamera_metadata_enum_android_statistics_face_detect_mode_t = 2
+)

@@ -2,8 +2,12 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_scaler_rotate_and_crop_t int32
 
-type acamera_metadata_enum_android_scaler_rotate_and_crop_t = capi.Acamera_metadata_enum_android_scaler_rotate_and_crop_t
+const (
+	ACAMERA_SCALER_ROTATE_AND_CROP_NONE acamera_metadata_enum_android_scaler_rotate_and_crop_t = 0
+	ACAMERA_SCALER_ROTATE_AND_CROP_90   acamera_metadata_enum_android_scaler_rotate_and_crop_t = 1
+	ACAMERA_SCALER_ROTATE_AND_CROP_180  acamera_metadata_enum_android_scaler_rotate_and_crop_t = 2
+	ACAMERA_SCALER_ROTATE_AND_CROP_270  acamera_metadata_enum_android_scaler_rotate_and_crop_t = 3
+	ACAMERA_SCALER_ROTATE_AND_CROP_AUTO acamera_metadata_enum_android_scaler_rotate_and_crop_t = 4
+)

@@ -2,8 +2,21 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_request_available_capabilities_t int32
 
-type acamera_metadata_enum_android_request_available_capabilities_t = capi.Acamera_metadata_enum_android_request_available_capabilities_t
+const (
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_BACKWARD_COMPATIBLE          acamera_metadata_enum_android_request_available_capabilities_t = 0
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_MANUAL_SENSOR                acamera_metadata_enum_android_request_available_capabilities_t = 1
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_MANUAL_POST_PROCESSING       acamera_metadata_enum_android_request_available_capabilities_t = 2
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_RAW                          acamera_metadata_enum_android_request_available_capabilities_t = 3
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_READ_SENSOR_SETTINGS         acamera_metadata_enum_android_request_available_capabilities_t = 5
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_BURST_CAPTURE                acamera_metadata_enum_android_request_available_capabilities_t = 6
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_DEPTH_OUTPUT                 acamera_metadata_enum_android_request_available_capabilities_t = 8
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_MOTION_TRACKING              acamera_metadata_enum_android_request_available_capabilities_t = 10
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_LOGICAL_MULTI_CAMERA         acamera_metadata_enum_android_request_available_capabilities_t = 11
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_MONOCHROME                   acamera_metadata_enum_android_request_available_capabilities_t = 12
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_SECURE_IMAGE_DATA            acamera_metadata_enum_android_request_available_capabilities_t = 13
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_SYSTEM_CAMERA                acamera_metadata_enum_android_request_available_capabilities_t = 14
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR acamera_metadata_enum_android_request_available_capabilities_t = 16
+	ACAMERA_REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE              acamera_metadata_enum_android_request_available_capabilities_t = 19
+)

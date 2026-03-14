@@ -2,8 +2,16 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_awb_mode_t int32
 
-type acamera_metadata_enum_android_control_awb_mode_t = capi.Acamera_metadata_enum_android_control_awb_mode_t
+const (
+	ACAMERA_CONTROL_AWB_MODE_OFF              acamera_metadata_enum_android_control_awb_mode_t = 0
+	ACAMERA_CONTROL_AWB_MODE_AUTO             acamera_metadata_enum_android_control_awb_mode_t = 1
+	ACAMERA_CONTROL_AWB_MODE_INCANDESCENT     acamera_metadata_enum_android_control_awb_mode_t = 2
+	ACAMERA_CONTROL_AWB_MODE_FLUORESCENT      acamera_metadata_enum_android_control_awb_mode_t = 3
+	ACAMERA_CONTROL_AWB_MODE_WARM_FLUORESCENT acamera_metadata_enum_android_control_awb_mode_t = 4
+	ACAMERA_CONTROL_AWB_MODE_DAYLIGHT         acamera_metadata_enum_android_control_awb_mode_t = 5
+	ACAMERA_CONTROL_AWB_MODE_CLOUDY_DAYLIGHT  acamera_metadata_enum_android_control_awb_mode_t = 6
+	ACAMERA_CONTROL_AWB_MODE_TWILIGHT         acamera_metadata_enum_android_control_awb_mode_t = 7
+	ACAMERA_CONTROL_AWB_MODE_SHADE            acamera_metadata_enum_android_control_awb_mode_t = 8
+)

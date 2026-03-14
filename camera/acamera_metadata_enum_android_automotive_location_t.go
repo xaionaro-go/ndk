@@ -2,8 +2,18 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_automotive_location_t int32
 
-type acamera_metadata_enum_android_automotive_location_t = capi.Acamera_metadata_enum_android_automotive_location_t
+const (
+	ACAMERA_AUTOMOTIVE_LOCATION_INTERIOR       acamera_metadata_enum_android_automotive_location_t = 0
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTERIOR_OTHER acamera_metadata_enum_android_automotive_location_t = 1
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTERIOR_FRONT acamera_metadata_enum_android_automotive_location_t = 2
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTERIOR_REAR  acamera_metadata_enum_android_automotive_location_t = 3
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTERIOR_LEFT  acamera_metadata_enum_android_automotive_location_t = 4
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTERIOR_RIGHT acamera_metadata_enum_android_automotive_location_t = 5
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTRA_OTHER    acamera_metadata_enum_android_automotive_location_t = 6
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTRA_FRONT    acamera_metadata_enum_android_automotive_location_t = 7
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTRA_REAR     acamera_metadata_enum_android_automotive_location_t = 8
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTRA_LEFT     acamera_metadata_enum_android_automotive_location_t = 9
+	ACAMERA_AUTOMOTIVE_LOCATION_EXTRA_RIGHT    acamera_metadata_enum_android_automotive_location_t = 10
+)

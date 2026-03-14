@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_sensor_raw_binning_factor_used_t int32
 
-type acamera_metadata_enum_android_sensor_raw_binning_factor_used_t = capi.Acamera_metadata_enum_android_sensor_raw_binning_factor_used_t
+const (
+	ACAMERA_SENSOR_RAW_BINNING_FACTOR_USED_TRUE  acamera_metadata_enum_android_sensor_raw_binning_factor_used_t = 0
+	ACAMERA_SENSOR_RAW_BINNING_FACTOR_USED_FALSE acamera_metadata_enum_android_sensor_raw_binning_factor_used_t = 1
+)

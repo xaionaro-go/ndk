@@ -2,8 +2,18 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t int32
 
-type acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = capi.Acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t
+const (
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_PREVIEW              acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 0
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_RECORD               acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 1
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_VIDEO_SNAPSHOT       acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 2
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_SNAPSHOT             acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 3
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_ZSL                  acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 4
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_RAW                  acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 5
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_LOW_LATENCY_SNAPSHOT acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 6
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_PUBLIC_END           acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 7
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_10BIT_OUTPUT         acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 8
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_PUBLIC_END_3_8       acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 9
+	ACAMERA_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_VENDOR_START         acamera_metadata_enum_android_scaler_available_recommended_stream_configurations_t = 24
+)

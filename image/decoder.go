@@ -33,14 +33,29 @@ func (h *Decoder) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// AdvanceFrame calls the underlying NDK function.
+func (h *Decoder) AdvanceFrame() error {
+	return result(int32(capi.AImageDecoder_advanceFrame(h.ptr)))
+}
+
+// ComputeSampledSize calls the underlying NDK function.
+func (h *Decoder) ComputeSampledSize(sampleSize int32, width *int32, height *int32) error {
+	return result(int32(capi.AImageDecoder_computeSampledSize(h.ptr, sampleSize, width, height)))
+}
+
 // Decode calls the underlying NDK function.
 func (h *Decoder) Decode(pixels unsafe.Pointer, stride uint64, size uint64) error {
 	return result(int32(capi.AImageDecoder_decodeImage(h.ptr, pixels, stride, size)))
 }
 
-// HeaderInfo returns the value directly.
+// GetFrameInfo calls the underlying NDK function.
+func (h *Decoder) GetFrameInfo(info *ImageDecoderFrameInfo) error {
+	return result(int32(capi.AImageDecoder_getFrameInfo(h.ptr, info.ptr)))
+}
+
+// HeaderInfo creates a new HeaderInfo from this Decoder.
 func (h *Decoder) HeaderInfo() *HeaderInfo {
-	return (*HeaderInfo)(capi.AImageDecoder_getHeaderInfo(h.ptr))
+	return &HeaderInfo{ptr: capi.AImageDecoder_getHeaderInfo(h.ptr)}
 }
 
 // MinimumStride returns the value directly.
@@ -48,9 +63,44 @@ func (h *Decoder) MinimumStride() uint64 {
 	return (uint64)(capi.AImageDecoder_getMinimumStride(h.ptr))
 }
 
+// GetRepeatCount calls the underlying NDK function.
+func (h *Decoder) GetRepeatCount() error {
+	return result(int32(capi.AImageDecoder_getRepeatCount(h.ptr)))
+}
+
+// IsAnimated returns the value directly.
+func (h *Decoder) IsAnimated() bool {
+	return (bool)(capi.AImageDecoder_isAnimated(h.ptr))
+}
+
+// Rewind calls the underlying NDK function.
+func (h *Decoder) Rewind() error {
+	return result(int32(capi.AImageDecoder_rewind(h.ptr)))
+}
+
+// SetAndroidBitmapFormat calls the underlying NDK function.
+func (h *Decoder) SetAndroidBitmapFormat(format int32) error {
+	return result(int32(capi.AImageDecoder_setAndroidBitmapFormat(h.ptr, format)))
+}
+
+// SetDataSpace calls the underlying NDK function.
+func (h *Decoder) SetDataSpace(dataspace int32) error {
+	return result(int32(capi.AImageDecoder_setDataSpace(h.ptr, dataspace)))
+}
+
+// SetInternallyHandleDisposePrevious calls the underlying NDK function.
+func (h *Decoder) SetInternallyHandleDisposePrevious(handleInternally bool) {
+	capi.AImageDecoder_setInternallyHandleDisposePrevious(h.ptr, handleInternally)
+}
+
 // SetTargetSize calls the underlying NDK function.
 func (h *Decoder) SetTargetSize(width int32, height int32) error {
 	return result(int32(capi.AImageDecoder_setTargetSize(h.ptr, width, height)))
+}
+
+// SetUnpremultipliedRequired calls the underlying NDK function.
+func (h *Decoder) SetUnpremultipliedRequired(unpremultipliedRequired bool) error {
+	return result(int32(capi.AImageDecoder_setUnpremultipliedRequired(h.ptr, unpremultipliedRequired)))
 }
 
 // NewDecoderFromFd calls the underlying C function.

@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_scaler_cropping_type_t int32
 
-type acamera_metadata_enum_android_scaler_cropping_type_t = capi.Acamera_metadata_enum_android_scaler_cropping_type_t
+const (
+	ACAMERA_SCALER_CROPPING_TYPE_CENTER_ONLY acamera_metadata_enum_android_scaler_cropping_type_t = 0
+	ACAMERA_SCALER_CROPPING_TYPE_FREEFORM    acamera_metadata_enum_android_scaler_cropping_type_t = 1
+)

@@ -2,8 +2,11 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_request_available_color_space_profiles_map_t int32
 
-type acamera_metadata_enum_android_request_available_color_space_profiles_map_t = capi.Acamera_metadata_enum_android_request_available_color_space_profiles_map_t
+const (
+	ACAMERA_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_UNSPECIFIED acamera_metadata_enum_android_request_available_color_space_profiles_map_t = -1
+	ACAMERA_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_SRGB        acamera_metadata_enum_android_request_available_color_space_profiles_map_t = 0
+	ACAMERA_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_DISPLAY_P3  acamera_metadata_enum_android_request_available_color_space_profiles_map_t = 7
+	ACAMERA_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_BT2020_HLG  acamera_metadata_enum_android_request_available_color_space_profiles_map_t = 16
+)

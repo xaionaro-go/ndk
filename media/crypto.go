@@ -13,6 +13,21 @@ type Crypto struct {
 	ptr *capi.AMediaCrypto
 }
 
+// NewCrypto creates a new Crypto.
+func NewCrypto(uuid AMediaUUID, initData unsafe.Pointer, initDataSize uint64) *Crypto {
+	return &Crypto{ptr: capi.AMediaCrypto_new(uuid, initData, initDataSize)}
+}
+
+// Close releases the underlying NDK handle.
+func (h *Crypto) Close() error {
+	if h.ptr == nil {
+		return nil
+	}
+	capi.AMediaCrypto_delete(h.ptr)
+	h.ptr = nil
+	return nil
+}
+
 // NewCryptoFromPointer wraps a raw AMediaCrypto pointer.
 func NewCryptoFromPointer(ptr unsafe.Pointer) *Crypto {
 	return &Crypto{ptr: (*capi.AMediaCrypto)(ptr)}

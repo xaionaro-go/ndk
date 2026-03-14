@@ -37,3 +37,8 @@ func (h *InputPort) Pointer() unsafe.Pointer {
 func (h *InputPort) Send(buffer *uint8, numBytes uint64) error {
 	return result(int32(capi.AMidiInputPort_send(h.ptr, buffer, numBytes)))
 }
+
+// SendWithTimestamp returns the value directly.
+func (h *InputPort) SendWithTimestamp(buffer *uint8, numBytes uint64, timestamp int64) int64 {
+	return (int64)(capi.AMidiInputPort_sendWithTimestamp(h.ptr, buffer, numBytes, timestamp))
+}

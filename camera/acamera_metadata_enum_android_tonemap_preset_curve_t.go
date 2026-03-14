@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_tonemap_preset_curve_t int32
 
-type acamera_metadata_enum_android_tonemap_preset_curve_t = capi.Acamera_metadata_enum_android_tonemap_preset_curve_t
+const (
+	ACAMERA_TONEMAP_PRESET_CURVE_SRGB   acamera_metadata_enum_android_tonemap_preset_curve_t = 0
+	ACAMERA_TONEMAP_PRESET_CURVE_REC709 acamera_metadata_enum_android_tonemap_preset_curve_t = 1
+)

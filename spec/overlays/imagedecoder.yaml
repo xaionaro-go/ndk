@@ -36,7 +36,7 @@ functions:
   AImageDecoder_getHeaderInfo:
     receiver: Decoder
     go_name: HeaderInfo
-    pure: true
+    returns_new: HeaderInfo
 
   AImageDecoder_getMinimumStride:
     receiver: Decoder

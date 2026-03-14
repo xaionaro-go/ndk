@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_sensor_info_timestamp_source_t int32
 
-type acamera_metadata_enum_android_sensor_info_timestamp_source_t = capi.Acamera_metadata_enum_android_sensor_info_timestamp_source_t
+const (
+	ACAMERA_SENSOR_INFO_TIMESTAMP_SOURCE_UNKNOWN  acamera_metadata_enum_android_sensor_info_timestamp_source_t = 0
+	ACAMERA_SENSOR_INFO_TIMESTAMP_SOURCE_REALTIME acamera_metadata_enum_android_sensor_info_timestamp_source_t = 1
+)

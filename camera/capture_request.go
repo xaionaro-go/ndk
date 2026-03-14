@@ -39,6 +39,11 @@ func (h *CaptureRequest) AddTarget(output *OutputTarget) *CaptureRequest {
 	return h
 }
 
+// Copy creates a new CaptureRequest from this CaptureRequest.
+func (h *CaptureRequest) Copy() *CaptureRequest {
+	return &CaptureRequest{ptr: capi.ACaptureRequest_copy(h.ptr)}
+}
+
 // RemoveTarget calls the underlying NDK function.
 func (h *CaptureRequest) RemoveTarget(output *OutputTarget) error {
 	return result(int32(capi.ACaptureRequest_removeTarget(h.ptr, output.ptr)))

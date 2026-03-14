@@ -2,8 +2,14 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_scaler_available_stream_use_cases_t int32
 
-type acamera_metadata_enum_android_scaler_available_stream_use_cases_t = capi.Acamera_metadata_enum_android_scaler_available_stream_use_cases_t
+const (
+	ACAMERA_SCALER_AVAILABLE_STREAM_USE_CASES_DEFAULT             acamera_metadata_enum_android_scaler_available_stream_use_cases_t = 0
+	ACAMERA_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW             acamera_metadata_enum_android_scaler_available_stream_use_cases_t = 1
+	ACAMERA_SCALER_AVAILABLE_STREAM_USE_CASES_STILL_CAPTURE       acamera_metadata_enum_android_scaler_available_stream_use_cases_t = 2
+	ACAMERA_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_RECORD        acamera_metadata_enum_android_scaler_available_stream_use_cases_t = 3
+	ACAMERA_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW_VIDEO_STILL acamera_metadata_enum_android_scaler_available_stream_use_cases_t = 4
+	ACAMERA_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_CALL          acamera_metadata_enum_android_scaler_available_stream_use_cases_t = 5
+	ACAMERA_SCALER_AVAILABLE_STREAM_USE_CASES_CROPPED_RAW         acamera_metadata_enum_android_scaler_available_stream_use_cases_t = 6
+)

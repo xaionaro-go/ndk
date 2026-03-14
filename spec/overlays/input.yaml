@@ -89,7 +89,9 @@ functions:
     receiver: Queue
     go_name: HasEvents
   AInputQueue_getEvent:
-    skip: true
+    skip: true  # hand-written in queue_event.go
+  AInputQueue_preDispatchEvent:
+    skip: true  # hand-written in queue_event.go
   AInputQueue_finishEvent:
     receiver: Queue
     go_name: FinishEvent

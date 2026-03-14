@@ -2,8 +2,22 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_automotive_lens_facing_t int32
 
-type acamera_metadata_enum_android_automotive_lens_facing_t = capi.Acamera_metadata_enum_android_automotive_lens_facing_t
+const (
+	ACAMERA_AUTOMOTIVE_LENS_FACING_EXTERIOR_OTHER             acamera_metadata_enum_android_automotive_lens_facing_t = 0
+	ACAMERA_AUTOMOTIVE_LENS_FACING_EXTERIOR_FRONT             acamera_metadata_enum_android_automotive_lens_facing_t = 1
+	ACAMERA_AUTOMOTIVE_LENS_FACING_EXTERIOR_REAR              acamera_metadata_enum_android_automotive_lens_facing_t = 2
+	ACAMERA_AUTOMOTIVE_LENS_FACING_EXTERIOR_LEFT              acamera_metadata_enum_android_automotive_lens_facing_t = 3
+	ACAMERA_AUTOMOTIVE_LENS_FACING_EXTERIOR_RIGHT             acamera_metadata_enum_android_automotive_lens_facing_t = 4
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_OTHER             acamera_metadata_enum_android_automotive_lens_facing_t = 5
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_1_LEFT   acamera_metadata_enum_android_automotive_lens_facing_t = 6
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_1_CENTER acamera_metadata_enum_android_automotive_lens_facing_t = 7
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_1_RIGHT  acamera_metadata_enum_android_automotive_lens_facing_t = 8
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_2_LEFT   acamera_metadata_enum_android_automotive_lens_facing_t = 9
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_2_CENTER acamera_metadata_enum_android_automotive_lens_facing_t = 10
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_2_RIGHT  acamera_metadata_enum_android_automotive_lens_facing_t = 11
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_LEFT   acamera_metadata_enum_android_automotive_lens_facing_t = 12
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_CENTER acamera_metadata_enum_android_automotive_lens_facing_t = 13
+	ACAMERA_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_RIGHT  acamera_metadata_enum_android_automotive_lens_facing_t = 14
+)

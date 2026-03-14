@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_logical_multi_camera_sensor_sync_type_t int32
 
-type acamera_metadata_enum_android_logical_multi_camera_sensor_sync_type_t = capi.Acamera_metadata_enum_android_logical_multi_camera_sensor_sync_type_t
+const (
+	ACAMERA_LOGICAL_MULTI_CAMERA_SENSOR_SYNC_TYPE_APPROXIMATE acamera_metadata_enum_android_logical_multi_camera_sensor_sync_type_t = 0
+	ACAMERA_LOGICAL_MULTI_CAMERA_SENSOR_SYNC_TYPE_CALIBRATED  acamera_metadata_enum_android_logical_multi_camera_sensor_sync_type_t = 1
+)

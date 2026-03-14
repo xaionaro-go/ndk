@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_sensor_info_lens_shading_applied_t int32
 
-type acamera_metadata_enum_android_sensor_info_lens_shading_applied_t = capi.Acamera_metadata_enum_android_sensor_info_lens_shading_applied_t
+const (
+	ACAMERA_SENSOR_INFO_LENS_SHADING_APPLIED_FALSE acamera_metadata_enum_android_sensor_info_lens_shading_applied_t = 0
+	ACAMERA_SENSOR_INFO_LENS_SHADING_APPLIED_TRUE  acamera_metadata_enum_android_sensor_info_lens_shading_applied_t = 1
+)

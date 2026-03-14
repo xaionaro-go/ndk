@@ -2,8 +2,10 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_lens_facing_t int32
 
-type acamera_metadata_enum_android_lens_facing_t = capi.Acamera_metadata_enum_android_lens_facing_t
+const (
+	ACAMERA_LENS_FACING_FRONT    acamera_metadata_enum_android_lens_facing_t = 0
+	ACAMERA_LENS_FACING_BACK     acamera_metadata_enum_android_lens_facing_t = 1
+	ACAMERA_LENS_FACING_EXTERNAL acamera_metadata_enum_android_lens_facing_t = 2
+)

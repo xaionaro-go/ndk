@@ -4,3 +4,12 @@ package:
   go_name: sync
   go_import: github.com/xaionaro-go/ndk/sync
   doc: "Package sync provides Go bindings for Android sync primitives."
+
+functions:
+  # sync_file_info function has the same name as the return type in the spec,
+  # and the capi uses _s suffix for the struct type. The function/type name
+  # collision produces invalid code; skip for now.
+  sync_file_info:
+    skip: true
+  sync_file_info_free:
+    skip: true

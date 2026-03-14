@@ -32,3 +32,38 @@ func NewStatusFromPointer(ptr unsafe.Pointer) *Status {
 func (h *Status) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// GetDescription returns the value directly.
+func (h *Status) GetDescription() string {
+	return (string)(capi.AStatus_getDescription(h.ptr))
+}
+
+// GetMessage returns the value directly.
+func (h *Status) GetMessage() string {
+	return (string)(capi.AStatus_getMessage(h.ptr))
+}
+
+// GetServiceSpecificError calls the underlying NDK function.
+func (h *Status) GetServiceSpecificError() error {
+	return result(int32(capi.AStatus_getServiceSpecificError(h.ptr)))
+}
+
+// IsOk returns the value directly.
+func (h *Status) IsOk() bool {
+	return (bool)(capi.AStatus_isOk(h.ptr))
+}
+
+// AStatus_fromServiceSpecificError calls the underlying C function.
+func AStatus_fromServiceSpecificError(serviceSpecific int32) *Status {
+	return &Status{ptr: capi.AStatus_fromServiceSpecificError(serviceSpecific)}
+}
+
+// AStatus_fromServiceSpecificErrorWithMessage calls the underlying C function.
+func AStatus_fromServiceSpecificErrorWithMessage(serviceSpecific int32, message string) *Status {
+	return &Status{ptr: capi.AStatus_fromServiceSpecificErrorWithMessage(serviceSpecific, message)}
+}
+
+// AStatus_newOk calls the underlying C function.
+func AStatus_newOk() *Status {
+	return &Status{ptr: capi.AStatus_newOk()}
+}

@@ -2,8 +2,10 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_lens_info_focus_distance_calibration_t int32
 
-type acamera_metadata_enum_android_lens_info_focus_distance_calibration_t = capi.Acamera_metadata_enum_android_lens_info_focus_distance_calibration_t
+const (
+	ACAMERA_LENS_INFO_FOCUS_DISTANCE_CALIBRATION_UNCALIBRATED acamera_metadata_enum_android_lens_info_focus_distance_calibration_t = 0
+	ACAMERA_LENS_INFO_FOCUS_DISTANCE_CALIBRATION_APPROXIMATE  acamera_metadata_enum_android_lens_info_focus_distance_calibration_t = 1
+	ACAMERA_LENS_INFO_FOCUS_DISTANCE_CALIBRATION_CALIBRATED   acamera_metadata_enum_android_lens_info_focus_distance_calibration_t = 2
+)

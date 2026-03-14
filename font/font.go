@@ -33,6 +33,36 @@ func (h *Font) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// GetAxisCount returns the value directly.
+func (h *Font) GetAxisCount() uint64 {
+	return (uint64)(capi.AFont_getAxisCount(h.ptr))
+}
+
+// GetAxisTag calls the underlying NDK function.
+func (h *Font) GetAxisTag(axisIndex uint32) error {
+	return result(int32(capi.AFont_getAxisTag(h.ptr, axisIndex)))
+}
+
+// GetAxisValue returns the value directly.
+func (h *Font) GetAxisValue(axisIndex uint32) float32 {
+	return (float32)(capi.AFont_getAxisValue(h.ptr, axisIndex))
+}
+
+// GetCollectionIndex returns the value directly.
+func (h *Font) GetCollectionIndex() uint64 {
+	return (uint64)(capi.AFont_getCollectionIndex(h.ptr))
+}
+
+// GetFontFilePath returns the value directly.
+func (h *Font) GetFontFilePath() string {
+	return (string)(capi.AFont_getFontFilePath(h.ptr))
+}
+
+// GetLocale returns the value directly.
+func (h *Font) GetLocale() string {
+	return (string)(capi.AFont_getLocale(h.ptr))
+}
+
 // Weight returns the value directly.
 func (h *Font) Weight() uint16 {
 	return (uint16)(capi.AFont_getWeight(h.ptr))

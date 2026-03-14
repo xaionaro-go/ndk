@@ -2,8 +2,10 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_statistics_scene_flicker_t int32
 
-type acamera_metadata_enum_android_statistics_scene_flicker_t = capi.Acamera_metadata_enum_android_statistics_scene_flicker_t
+const (
+	ACAMERA_STATISTICS_SCENE_FLICKER_NONE acamera_metadata_enum_android_statistics_scene_flicker_t = 0
+	ACAMERA_STATISTICS_SCENE_FLICKER_50HZ acamera_metadata_enum_android_statistics_scene_flicker_t = 1
+	ACAMERA_STATISTICS_SCENE_FLICKER_60HZ acamera_metadata_enum_android_statistics_scene_flicker_t = 2
+)

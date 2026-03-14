@@ -43,9 +43,34 @@ func (h *Codec) Flush() error {
 	return result(int32(capi.AMediaCodec_flush(h.ptr)))
 }
 
+// GetBufferFormat creates a new Format from this Codec.
+func (h *Codec) GetBufferFormat(index uint64) *Format {
+	return &Format{ptr: capi.AMediaCodec_getBufferFormat(h.ptr, index)}
+}
+
+// GetInputBuffer returns the value directly.
+func (h *Codec) GetInputBuffer(idx uint64, out_size *uint64) *uint8 {
+	return (*uint8)(capi.AMediaCodec_getInputBuffer(h.ptr, idx, out_size))
+}
+
+// GetInputFormat creates a new Format from this Codec.
+func (h *Codec) GetInputFormat() *Format {
+	return &Format{ptr: capi.AMediaCodec_getInputFormat(h.ptr)}
+}
+
+// GetOutputBuffer returns the value directly.
+func (h *Codec) GetOutputBuffer(idx uint64, out_size *uint64) *uint8 {
+	return (*uint8)(capi.AMediaCodec_getOutputBuffer(h.ptr, idx, out_size))
+}
+
 // QueueInputBuffer calls the underlying NDK function.
 func (h *Codec) QueueInputBuffer(idx uint64, offset Off_t, size uint64, time uint64, flags uint32) error {
 	return result(int32(capi.AMediaCodec_queueInputBuffer(h.ptr, idx, capi.Off_t(offset), size, time, flags)))
+}
+
+// ReleaseName calls the underlying NDK function.
+func (h *Codec) ReleaseName(name string) {
+	capi.AMediaCodec_releaseName(h.ptr, name)
 }
 
 // ReleaseOutputBuffer calls the underlying NDK function.
@@ -61,6 +86,11 @@ func (h *Codec) Start() error {
 // Stop calls the underlying NDK function.
 func (h *Codec) Stop() error {
 	return result(int32(capi.AMediaCodec_stop(h.ptr)))
+}
+
+// AMediaCodec_createCodecByName calls the underlying C function.
+func AMediaCodec_createCodecByName(name string) *Codec {
+	return &Codec{ptr: capi.AMediaCodec_createCodecByName(name)}
 }
 
 // NewDecoder calls the underlying C function.

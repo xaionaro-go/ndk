@@ -10,7 +10,7 @@ import (
 
 // GetInfo calls the underlying C function.
 func GetInfo(env *JNIEnv, jbitmap Jobject, info *AndroidBitmapInfo) int32 {
-	return (int32)(capi.AndroidBitmap_getInfo((*capi.JNIEnv)(env), capi.Jobject(jbitmap), (*capi.AndroidBitmapInfo)(info)))
+	return (int32)(capi.AndroidBitmap_getInfo((*capi.JNIEnv)(env), capi.Jobject(jbitmap), info.ptr))
 }
 
 // LockPixels calls the underlying C function.

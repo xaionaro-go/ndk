@@ -27,3 +27,4 @@ capi/manifests/.gen_*.yaml
 /display
 
 cligen
+ndkcli

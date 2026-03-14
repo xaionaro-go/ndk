@@ -51,6 +51,11 @@ func (h *StreamBuilder) Open() (*Stream, error) {
 	return &Stream{ptr: ptr}, nil
 }
 
+// SetAttributionTag calls the underlying NDK function.
+func (h *StreamBuilder) SetAttributionTag(attributionTag string) {
+	capi.AAudioStreamBuilder_setAttributionTag(h.ptr, attributionTag)
+}
+
 // SetBufferCapacityInFrames sets a property and returns the receiver for chaining.
 func (h *StreamBuilder) SetBufferCapacityInFrames(numFrames int32) *StreamBuilder {
 	capi.AAudioStreamBuilder_setBufferCapacityInFrames(h.ptr, numFrames)
@@ -81,16 +86,41 @@ func (h *StreamBuilder) SetFormat(format Format) *StreamBuilder {
 	return h
 }
 
+// SetFramesPerDataCallback calls the underlying NDK function.
+func (h *StreamBuilder) SetFramesPerDataCallback(numFrames int32) {
+	capi.AAudioStreamBuilder_setFramesPerDataCallback(h.ptr, numFrames)
+}
+
+// SetIsContentSpatialized calls the underlying NDK function.
+func (h *StreamBuilder) SetIsContentSpatialized(isSpatialized bool) {
+	capi.AAudioStreamBuilder_setIsContentSpatialized(h.ptr, isSpatialized)
+}
+
+// SetPackageName calls the underlying NDK function.
+func (h *StreamBuilder) SetPackageName(packageName string) {
+	capi.AAudioStreamBuilder_setPackageName(h.ptr, packageName)
+}
+
 // SetPerformanceMode sets a property and returns the receiver for chaining.
 func (h *StreamBuilder) SetPerformanceMode(mode PerformanceMode) *StreamBuilder {
 	capi.AAudioStreamBuilder_setPerformanceMode(h.ptr, capi.Aaudio_performance_mode_t(mode))
 	return h
 }
 
+// SetPrivacySensitive calls the underlying NDK function.
+func (h *StreamBuilder) SetPrivacySensitive(privacySensitive bool) {
+	capi.AAudioStreamBuilder_setPrivacySensitive(h.ptr, privacySensitive)
+}
+
 // SetSampleRate sets a property and returns the receiver for chaining.
 func (h *StreamBuilder) SetSampleRate(sampleRate int32) *StreamBuilder {
 	capi.AAudioStreamBuilder_setSampleRate(h.ptr, sampleRate)
 	return h
+}
+
+// SetSamplesPerFrame calls the underlying NDK function.
+func (h *StreamBuilder) SetSamplesPerFrame(samplesPerFrame int32) {
+	capi.AAudioStreamBuilder_setSamplesPerFrame(h.ptr, samplesPerFrame)
 }
 
 // SetSharingMode sets a property and returns the receiver for chaining.

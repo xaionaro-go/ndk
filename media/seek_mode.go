@@ -2,8 +2,10 @@
 
 package media
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/media"
-)
+type SeekMode int32
 
-type SeekMode = capi.SeekMode
+const (
+	AMEDIAEXTRACTOR_SEEK_PREVIOUS_SYNC SeekMode = 0
+	AMEDIAEXTRACTOR_SEEK_NEXT_SYNC     SeekMode = 1
+	AMEDIAEXTRACTOR_SEEK_CLOSEST_SYNC  SeekMode = 2
+)

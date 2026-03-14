@@ -23,12 +23,47 @@ func (h *Manager) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// ConfigureDirectReport calls the underlying NDK function.
+func (h *Manager) ConfigureDirectReport(sensor *Sensor, channelID int32, rate int32) error {
+	return result(int32(capi.ASensorManager_configureDirectReport(h.ptr, sensor.ptr, channelID, rate)))
+}
+
+// CreateHardwareBufferDirectChannel calls the underlying NDK function.
+func (h *Manager) CreateHardwareBufferDirectChannel(buffer *HardwareBuffer, size uint64) error {
+	return result(int32(capi.ASensorManager_createHardwareBufferDirectChannel(h.ptr, buffer.ptr, size)))
+}
+
+// CreateSharedMemoryDirectChannel calls the underlying NDK function.
+func (h *Manager) CreateSharedMemoryDirectChannel(fd int32, size uint64) error {
+	return result(int32(capi.ASensorManager_createSharedMemoryDirectChannel(h.ptr, fd, size)))
+}
+
+// DestroyDirectChannel calls the underlying NDK function.
+func (h *Manager) DestroyDirectChannel(channelID int32) {
+	capi.ASensorManager_destroyDirectChannel(h.ptr, channelID)
+}
+
 // DefaultSensor creates a new Sensor from this Manager.
 func (h *Manager) DefaultSensor(_type int32) *Sensor {
 	return &Sensor{ptr: capi.ASensorManager_getDefaultSensor(h.ptr, _type)}
 }
 
+// GetDefaultSensorEx creates a new Sensor from this Manager.
+func (h *Manager) GetDefaultSensorEx(_type int32, wakeUp bool) *Sensor {
+	return &Sensor{ptr: capi.ASensorManager_getDefaultSensorEx(h.ptr, _type, wakeUp)}
+}
+
+// GetDynamicSensorList returns the value directly.
+func (h *Manager) GetDynamicSensorList(list *ASensorList) int64 {
+	return (int64)(capi.ASensorManager_getDynamicSensorList(h.ptr, (*capi.ASensorList)(list)))
+}
+
 // GetInstance calls the underlying C function.
 func GetInstance() *Manager {
 	return &Manager{ptr: capi.ASensorManager_getInstance()}
+}
+
+// ASensorManager_getInstanceForPackage calls the underlying C function.
+func ASensorManager_getInstanceForPackage(packageName string) *Manager {
+	return &Manager{ptr: capi.ASensorManager_getInstanceForPackage(packageName)}
 }

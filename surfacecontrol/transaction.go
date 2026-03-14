@@ -43,10 +43,25 @@ func (h *Transaction) Apply() {
 	capi.ASurfaceTransaction_apply(h.ptr)
 }
 
+// ClearFrameRate calls the underlying NDK function.
+func (h *Transaction) ClearFrameRate(surface_control *SurfaceControl) {
+	capi.ASurfaceTransaction_clearFrameRate(h.ptr, surface_control.ptr)
+}
+
+// Reparent calls the underlying NDK function.
+func (h *Transaction) Reparent(surface_control *SurfaceControl, new_parent *SurfaceControl) {
+	capi.ASurfaceTransaction_reparent(h.ptr, surface_control.ptr, new_parent.ptr)
+}
+
 // SetBufferAlpha sets a property and returns the receiver for chaining.
 func (h *Transaction) SetBufferAlpha(surface_control *SurfaceControl, alpha float32) *Transaction {
 	capi.ASurfaceTransaction_setBufferAlpha(h.ptr, surface_control.ptr, alpha)
 	return h
+}
+
+// SetBufferTransform calls the underlying NDK function.
+func (h *Transaction) SetBufferTransform(surface_control *SurfaceControl, transform int32) {
+	capi.ASurfaceTransaction_setBufferTransform(h.ptr, surface_control.ptr, transform)
 }
 
 // SetCrop sets a property and returns the receiver for chaining.
@@ -59,6 +74,41 @@ func (h *Transaction) SetCrop(surface_control *SurfaceControl, crop *ARect) *Tra
 func (h *Transaction) SetDamageRegion(surface_control *SurfaceControl, rects *ARect, count uint32) *Transaction {
 	capi.ASurfaceTransaction_setDamageRegion(h.ptr, surface_control.ptr, (*capi.ARect)(rects), count)
 	return h
+}
+
+// SetDesiredHdrHeadroom calls the underlying NDK function.
+func (h *Transaction) SetDesiredHdrHeadroom(surface_control *SurfaceControl, desiredHeadroom float32) {
+	capi.ASurfaceTransaction_setDesiredHdrHeadroom(h.ptr, surface_control.ptr, desiredHeadroom)
+}
+
+// SetDesiredPresentTime calls the underlying NDK function.
+func (h *Transaction) SetDesiredPresentTime(desiredPresentTime int64) {
+	capi.ASurfaceTransaction_setDesiredPresentTime(h.ptr, desiredPresentTime)
+}
+
+// SetEnableBackPressure calls the underlying NDK function.
+func (h *Transaction) SetEnableBackPressure(surface_control *SurfaceControl, enableBackPressure bool) {
+	capi.ASurfaceTransaction_setEnableBackPressure(h.ptr, surface_control.ptr, enableBackPressure)
+}
+
+// SetExtendedRangeBrightness calls the underlying NDK function.
+func (h *Transaction) SetExtendedRangeBrightness(surface_control *SurfaceControl, currentBufferRatio float32, desiredRatio float32) {
+	capi.ASurfaceTransaction_setExtendedRangeBrightness(h.ptr, surface_control.ptr, currentBufferRatio, desiredRatio)
+}
+
+// SetFrameRate calls the underlying NDK function.
+func (h *Transaction) SetFrameRate(surface_control *SurfaceControl, frameRate float32, compatibility int8) {
+	capi.ASurfaceTransaction_setFrameRate(h.ptr, surface_control.ptr, frameRate, compatibility)
+}
+
+// SetFrameRateWithChangeStrategy calls the underlying NDK function.
+func (h *Transaction) SetFrameRateWithChangeStrategy(surface_control *SurfaceControl, frameRate float32, compatibility int8, changeFrameRateStrategy int8) {
+	capi.ASurfaceTransaction_setFrameRateWithChangeStrategy(h.ptr, surface_control.ptr, frameRate, compatibility, changeFrameRateStrategy)
+}
+
+// SetGeometry calls the underlying NDK function.
+func (h *Transaction) SetGeometry(surface_control *SurfaceControl, source *ARect, destination *ARect, transform int32) {
+	capi.ASurfaceTransaction_setGeometry(h.ptr, surface_control.ptr, (*capi.ARect)(source), (*capi.ARect)(destination), transform)
 }
 
 // SetPosition sets a property and returns the receiver for chaining.

@@ -2,8 +2,20 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t int32
 
-type acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = capi.Acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t
+const (
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_STANDARD                    acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 1
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HLG10                       acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 2
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HDR10                       acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 4
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HDR10_PLUS                  acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 8
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_REF    acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 16
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_REF_PO acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 32
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_OEM    acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 64
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_OEM_PO acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 128
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_REF     acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 256
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_REF_PO  acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 512
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_OEM     acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 1024
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_OEM_PO  acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 2048
+	ACAMERA_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_MAX                         acamera_metadata_enum_android_request_available_dynamic_range_profiles_map_t = 4096
+)

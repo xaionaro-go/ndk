@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_settings_override_t int32
 
-type acamera_metadata_enum_android_control_settings_override_t = capi.Acamera_metadata_enum_android_control_settings_override_t
+const (
+	ACAMERA_CONTROL_SETTINGS_OVERRIDE_OFF  acamera_metadata_enum_android_control_settings_override_t = 0
+	ACAMERA_CONTROL_SETTINGS_OVERRIDE_ZOOM acamera_metadata_enum_android_control_settings_override_t = 1
+)

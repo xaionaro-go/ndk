@@ -43,6 +43,16 @@ func (h *Matcher) Match(familyName string, text *uint16, textLength uint32, runL
 	return &Font{ptr: capi.AFontMatcher_match(h.ptr, familyName, text, textLength, runLengthOut)}
 }
 
+// SetFamilyVariant calls the underlying NDK function.
+func (h *Matcher) SetFamilyVariant(familyVariant uint32) {
+	capi.AFontMatcher_setFamilyVariant(h.ptr, familyVariant)
+}
+
+// SetLocales calls the underlying NDK function.
+func (h *Matcher) SetLocales(languageTags string) {
+	capi.AFontMatcher_setLocales(h.ptr, languageTags)
+}
+
 // SetStyle sets a property and returns the receiver for chaining.
 func (h *Matcher) SetStyle(weight uint16, italic bool) *Matcher {
 	capi.AFontMatcher_setStyle(h.ptr, weight, italic)

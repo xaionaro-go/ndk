@@ -2,8 +2,15 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_capture_intent_t int32
 
-type acamera_metadata_enum_android_control_capture_intent_t = capi.Acamera_metadata_enum_android_control_capture_intent_t
+const (
+	ACAMERA_CONTROL_CAPTURE_INTENT_CUSTOM           acamera_metadata_enum_android_control_capture_intent_t = 0
+	ACAMERA_CONTROL_CAPTURE_INTENT_PREVIEW          acamera_metadata_enum_android_control_capture_intent_t = 1
+	ACAMERA_CONTROL_CAPTURE_INTENT_STILL_CAPTURE    acamera_metadata_enum_android_control_capture_intent_t = 2
+	ACAMERA_CONTROL_CAPTURE_INTENT_VIDEO_RECORD     acamera_metadata_enum_android_control_capture_intent_t = 3
+	ACAMERA_CONTROL_CAPTURE_INTENT_VIDEO_SNAPSHOT   acamera_metadata_enum_android_control_capture_intent_t = 4
+	ACAMERA_CONTROL_CAPTURE_INTENT_ZERO_SHUTTER_LAG acamera_metadata_enum_android_control_capture_intent_t = 5
+	ACAMERA_CONTROL_CAPTURE_INTENT_MANUAL           acamera_metadata_enum_android_control_capture_intent_t = 6
+	ACAMERA_CONTROL_CAPTURE_INTENT_MOTION_TRACKING  acamera_metadata_enum_android_control_capture_intent_t = 7
+)

@@ -22,3 +22,13 @@ func NewClassFromPointer(ptr unsafe.Pointer) *Class {
 func (h *Class) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// DisableInterfaceTokenHeader calls the underlying NDK function.
+func (h *Class) DisableInterfaceTokenHeader() {
+	capi.AIBinder_Class_disableInterfaceTokenHeader(h.ptr)
+}
+
+// GetDescriptor returns the value directly.
+func (h *Class) GetDescriptor() string {
+	return (string)(capi.AIBinder_Class_getDescriptor(h.ptr))
+}

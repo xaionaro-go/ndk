@@ -67,6 +67,11 @@ functions:
     go_name: SdkVersion
     pure: true
 
+  # AConfiguration_setScreenRound is in the spec but not in the capi package
+  # (missing from the C headers on this NDK version).
+  AConfiguration_setScreenRound:
+    skip: true
+
 extra_enums:
   Configuration_orientation:
     - name: ACONFIGURATION_ORIENTATION_ANY

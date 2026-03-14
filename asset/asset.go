@@ -63,6 +63,16 @@ func (h *Asset) IsAllocated() int32 {
 	return (int32)(capi.AAsset_isAllocated(h.ptr))
 }
 
+// OpenFileDescriptor calls the underlying NDK function.
+func (h *Asset) OpenFileDescriptor(outStart *Off_t, outLength *Off_t) error {
+	return result(int32(capi.AAsset_openFileDescriptor(h.ptr, (*capi.Off_t)(outStart), (*capi.Off_t)(outLength))))
+}
+
+// OpenFileDescriptor64 calls the underlying NDK function.
+func (h *Asset) OpenFileDescriptor64(outStart *Off64_t, outLength *Off64_t) error {
+	return result(int32(capi.AAsset_openFileDescriptor64(h.ptr, (*capi.Off64_t)(outStart), (*capi.Off64_t)(outLength))))
+}
+
 // Read calls the underlying NDK function.
 func (h *Asset) Read(buf unsafe.Pointer, count uint64) error {
 	return result(int32(capi.AAsset_read(h.ptr, buf, count)))

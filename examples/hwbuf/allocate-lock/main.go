@@ -1,11 +1,11 @@
 // Hardware buffer allocation and CPU-lock lifecycle.
 //
-// Demonstrates how to allocate an AHardwareBuffer via the capi layer,
+// Demonstrates how to allocate an AHardwareBuffer via the low-level API,
 // wrap it in the idiomatic hwbuf.Buffer, lock it for CPU access, write
 // pixel data, unlock it, and release the buffer.
 //
 // The idiomatic hwbuf package exposes the Buffer type with Acquire,
-// Unlock, and Close methods. Allocation and locking require the capi
+// Unlock, and Close methods. Allocation and locking require the the low-level layer
 // layer because the idiomatic package does not yet wrap
 // AHardwareBuffer_allocate or AHardwareBuffer_lock. This example
 // documents the full pattern and shows how to bridge the gap.
@@ -19,7 +19,7 @@
 //
 //  2. Allocate  -- Call AHardwareBuffer_allocate with the descriptor.
 //     The driver chooses the optimal memory domain.
-//     (Not yet exposed in the idiomatic layer; use capi.)
+//     (Not yet exposed in the idiomatic layer; use )
 //
 //  3. Lock      -- Call AHardwareBuffer_lock with the desired CPU
 //     usage (read, write, or both) and an optional dirty
@@ -82,39 +82,39 @@ func main() {
 	fmt.Printf("  Usage:   CpuWriteOften | GpuSampledImage = 0x%04X\n", uint64(usage))
 	fmt.Println()
 
-	// ── Step 2: Allocate (capi only) ────────────────────────────
+	// ── Step 2: Allocate (idiomatic) ────────────────────────────
 	//
 	// The idiomatic layer does not yet expose Allocate. In a real
-	// application you would call the capi function:
+	// application you would call the the low-level layer function:
 	//
-	//   import capi "github.com/xaionaro-go/ndk/capi/hardwarebuffer"
+	//   // use idiomatic package instead
 	//
-	//   desc := capi.AHardwareBuffer_Desc{
+	//   desc := AHardwareBuffer_Desc{
 	//       Width:  1920,
 	//       Height: 1080,
 	//       Layers: 1,
 	//       Format: uint32(hwbuf.R8g8b8a8Unorm),
 	//       Usage:  uint64(hwbuf.CpuWriteOften | hwbuf.GpuSampledImage),
 	//   }
-	//   var rawBuf *capi.AHardwareBuffer
-	//   rc := capi.AHardwareBuffer_allocate(&desc, &rawBuf)
+	//   var rawBuf *AHardwareBuffer
+	//   rc := AHardwareBuffer_allocate(&desc, &rawBuf)
 	//   if rc != 0 {
 	//       log.Fatalf("allocate failed: %d", rc)
 	//   }
 	//   buf := hwbuf.NewBufferFromPointer(unsafe.Pointer(rawBuf))
 
-	fmt.Println("Allocation: requires capi.AHardwareBuffer_allocate")
+	fmt.Println("Allocation: requires AHardwareBuffer_allocate")
 	fmt.Println("  (see comments in source for the full pattern)")
 	fmt.Println()
 
-	// ── Step 3: Lock for CPU access (capi only) ─────────────────
+	// ── Step 3: Lock for CPU access (idiomatic) ─────────────────
 	//
 	// Locking maps the buffer into the process address space for
 	// CPU access. The usage parameter must be a subset of the
 	// usage flags used at allocation time.
 	//
 	//   var pixelPtr unsafe.Pointer
-	//   rc = capi.AHardwareBuffer_lock(
+	//   rc = AHardwareBuffer_lock(
 	//       rawBuf,
 	//       uint64(hwbuf.CpuWriteOften), // lock for writing
 	//       -1,                          // fence: -1 = no fence
@@ -141,7 +141,7 @@ func main() {
 	//       }
 	//   }
 
-	fmt.Println("Lock + write: requires capi.AHardwareBuffer_lock")
+	fmt.Println("Lock + write: requires AHardwareBuffer_lock")
 	fmt.Println("  (see comments in source for the full pattern)")
 	fmt.Println()
 

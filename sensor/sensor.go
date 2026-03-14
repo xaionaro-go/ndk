@@ -23,6 +23,26 @@ func (h *Sensor) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// GetFifoMaxEventCount calls the underlying NDK function.
+func (h *Sensor) GetFifoMaxEventCount() error {
+	return result(int32(capi.ASensor_getFifoMaxEventCount(h.ptr)))
+}
+
+// GetFifoReservedEventCount calls the underlying NDK function.
+func (h *Sensor) GetFifoReservedEventCount() error {
+	return result(int32(capi.ASensor_getFifoReservedEventCount(h.ptr)))
+}
+
+// GetHandle calls the underlying NDK function.
+func (h *Sensor) GetHandle() error {
+	return result(int32(capi.ASensor_getHandle(h.ptr)))
+}
+
+// GetHighestDirectReportRateLevel calls the underlying NDK function.
+func (h *Sensor) GetHighestDirectReportRateLevel() error {
+	return result(int32(capi.ASensor_getHighestDirectReportRateLevel(h.ptr)))
+}
+
 // MinDelay returns the value directly.
 func (h *Sensor) MinDelay() int32 {
 	return (int32)(capi.ASensor_getMinDelay(h.ptr))
@@ -33,9 +53,19 @@ func (h *Sensor) Name() string {
 	return (string)(capi.ASensor_getName(h.ptr))
 }
 
+// GetReportingMode calls the underlying NDK function.
+func (h *Sensor) GetReportingMode() error {
+	return result(int32(capi.ASensor_getReportingMode(h.ptr)))
+}
+
 // Resolution returns the value directly.
 func (h *Sensor) Resolution() float32 {
 	return (float32)(capi.ASensor_getResolution(h.ptr))
+}
+
+// GetStringType returns the value directly.
+func (h *Sensor) GetStringType() string {
+	return (string)(capi.ASensor_getStringType(h.ptr))
 }
 
 // Type returns the value directly.
@@ -46,4 +76,14 @@ func (h *Sensor) Type() int32 {
 // Vendor returns the value directly.
 func (h *Sensor) Vendor() string {
 	return (string)(capi.ASensor_getVendor(h.ptr))
+}
+
+// IsDirectChannelTypeSupported returns the value directly.
+func (h *Sensor) IsDirectChannelTypeSupported(channelType int32) bool {
+	return (bool)(capi.ASensor_isDirectChannelTypeSupported(h.ptr, channelType))
+}
+
+// IsWakeUpSensor returns the value directly.
+func (h *Sensor) IsWakeUpSensor() bool {
+	return (bool)(capi.ASensor_isWakeUpSensor(h.ptr))
 }

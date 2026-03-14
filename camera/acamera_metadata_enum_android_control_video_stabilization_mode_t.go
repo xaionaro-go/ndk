@@ -2,8 +2,10 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_video_stabilization_mode_t int32
 
-type acamera_metadata_enum_android_control_video_stabilization_mode_t = capi.Acamera_metadata_enum_android_control_video_stabilization_mode_t
+const (
+	ACAMERA_CONTROL_VIDEO_STABILIZATION_MODE_OFF                   acamera_metadata_enum_android_control_video_stabilization_mode_t = 0
+	ACAMERA_CONTROL_VIDEO_STABILIZATION_MODE_ON                    acamera_metadata_enum_android_control_video_stabilization_mode_t = 1
+	ACAMERA_CONTROL_VIDEO_STABILIZATION_MODE_PREVIEW_STABILIZATION acamera_metadata_enum_android_control_video_stabilization_mode_t = 2
+)

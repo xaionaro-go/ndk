@@ -2,8 +2,12 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_noise_reduction_mode_t int32
 
-type acamera_metadata_enum_android_noise_reduction_mode_t = capi.Acamera_metadata_enum_android_noise_reduction_mode_t
+const (
+	ACAMERA_NOISE_REDUCTION_MODE_OFF              acamera_metadata_enum_android_noise_reduction_mode_t = 0
+	ACAMERA_NOISE_REDUCTION_MODE_FAST             acamera_metadata_enum_android_noise_reduction_mode_t = 1
+	ACAMERA_NOISE_REDUCTION_MODE_HIGH_QUALITY     acamera_metadata_enum_android_noise_reduction_mode_t = 2
+	ACAMERA_NOISE_REDUCTION_MODE_MINIMAL          acamera_metadata_enum_android_noise_reduction_mode_t = 3
+	ACAMERA_NOISE_REDUCTION_MODE_ZERO_SHUTTER_LAG acamera_metadata_enum_android_noise_reduction_mode_t = 4
+)

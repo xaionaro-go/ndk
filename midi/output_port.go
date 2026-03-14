@@ -32,3 +32,8 @@ func NewOutputPortFromPointer(ptr unsafe.Pointer) *OutputPort {
 func (h *OutputPort) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// Receive returns the value directly.
+func (h *OutputPort) Receive(opcodePtr *int32, buffer *uint8, maxBytes uint64, numBytesReceivedPtr *uint64, outTimestampPtr *int64) int64 {
+	return (int64)(capi.AMidiOutputPort_receive(h.ptr, opcodePtr, buffer, maxBytes, numBytesReceivedPtr, outTimestampPtr))
+}

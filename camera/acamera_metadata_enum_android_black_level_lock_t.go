@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_black_level_lock_t int32
 
-type acamera_metadata_enum_android_black_level_lock_t = capi.Acamera_metadata_enum_android_black_level_lock_t
+const (
+	ACAMERA_BLACK_LEVEL_LOCK_OFF acamera_metadata_enum_android_black_level_lock_t = 0
+	ACAMERA_BLACK_LEVEL_LOCK_ON  acamera_metadata_enum_android_black_level_lock_t = 1
+)

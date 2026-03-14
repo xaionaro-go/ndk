@@ -2,8 +2,9 @@
 
 package camera
 
-import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
-)
+type acamera_metadata_enum_android_control_awb_lock_available_t int32
 
-type acamera_metadata_enum_android_control_awb_lock_available_t = capi.Acamera_metadata_enum_android_control_awb_lock_available_t
+const (
+	ACAMERA_CONTROL_AWB_LOCK_AVAILABLE_FALSE acamera_metadata_enum_android_control_awb_lock_available_t = 0
+	ACAMERA_CONTROL_AWB_LOCK_AVAILABLE_TRUE  acamera_metadata_enum_android_control_awb_lock_available_t = 1
+)

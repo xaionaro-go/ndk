@@ -2,7 +2,7 @@
 //
 // Demonstrates sensor discovery and type enumeration using the idiomatic
 // sensor package, and documents the complete ALooper-based event queue
-// pattern in comments. The event queue creation requires capi-level access
+// pattern in comments. The event queue creation requires low-level access
 // (ASensorManager_createEventQueue), so the actual event loop is shown as
 // a documented pattern rather than executable code.
 //

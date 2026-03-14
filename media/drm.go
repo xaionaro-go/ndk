@@ -13,6 +13,16 @@ type Drm struct {
 	ptr *capi.AMediaDrm
 }
 
+// Close releases the underlying NDK handle.
+func (h *Drm) Close() error {
+	if h.ptr == nil {
+		return nil
+	}
+	capi.AMediaDrm_release(h.ptr)
+	h.ptr = nil
+	return nil
+}
+
 // NewDrmFromPointer wraps a raw AMediaDrm pointer.
 func NewDrmFromPointer(ptr unsafe.Pointer) *Drm {
 	return &Drm{ptr: (*capi.AMediaDrm)(ptr)}
@@ -21,4 +31,9 @@ func NewDrmFromPointer(ptr unsafe.Pointer) *Drm {
 // Pointer returns the underlying pointer as unsafe.Pointer.
 func (h *Drm) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
+}
+
+// AMediaDrm_createByUUID calls the underlying C function.
+func AMediaDrm_createByUUID(uuid *uint8) *Drm {
+	return &Drm{ptr: capi.AMediaDrm_createByUUID(uuid)}
 }

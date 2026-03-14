@@ -38,9 +38,54 @@ func (h *Format) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// Clear calls the underlying NDK function.
+func (h *Format) Clear() {
+	capi.AMediaFormat_clear(h.ptr)
+}
+
+// GetDouble returns the value directly.
+func (h *Format) GetDouble(name string, out *float64) bool {
+	return (bool)(capi.AMediaFormat_getDouble(h.ptr, name, out))
+}
+
+// GetFloat returns the value directly.
+func (h *Format) GetFloat(name string, out *float32) bool {
+	return (bool)(capi.AMediaFormat_getFloat(h.ptr, name, out))
+}
+
 // GetInt32 returns the value directly.
 func (h *Format) GetInt32(name string, out *int32) bool {
 	return (bool)(capi.AMediaFormat_getInt32(h.ptr, name, out))
+}
+
+// GetInt64 returns the value directly.
+func (h *Format) GetInt64(name string, out *int64) bool {
+	return (bool)(capi.AMediaFormat_getInt64(h.ptr, name, out))
+}
+
+// GetRect returns the value directly.
+func (h *Format) GetRect(name string, left *int32, top *int32, right *int32, bottom *int32) bool {
+	return (bool)(capi.AMediaFormat_getRect(h.ptr, name, left, top, right, bottom))
+}
+
+// GetSize returns the value directly.
+func (h *Format) GetSize(name string, out *uint64) bool {
+	return (bool)(capi.AMediaFormat_getSize(h.ptr, name, out))
+}
+
+// SetBuffer calls the underlying NDK function.
+func (h *Format) SetBuffer(name string, data unsafe.Pointer, size uint64) {
+	capi.AMediaFormat_setBuffer(h.ptr, name, data, size)
+}
+
+// SetDouble calls the underlying NDK function.
+func (h *Format) SetDouble(name string, value float64) {
+	capi.AMediaFormat_setDouble(h.ptr, name, value)
+}
+
+// SetFloat calls the underlying NDK function.
+func (h *Format) SetFloat(name string, value float32) {
+	capi.AMediaFormat_setFloat(h.ptr, name, value)
 }
 
 // SetInt32 sets a property and returns the receiver for chaining.
@@ -49,8 +94,28 @@ func (h *Format) SetInt32(name string, value int32) *Format {
 	return h
 }
 
+// SetInt64 calls the underlying NDK function.
+func (h *Format) SetInt64(name string, value int64) {
+	capi.AMediaFormat_setInt64(h.ptr, name, value)
+}
+
+// SetRect calls the underlying NDK function.
+func (h *Format) SetRect(name string, left int32, top int32, right int32, bottom int32) {
+	capi.AMediaFormat_setRect(h.ptr, name, left, top, right, bottom)
+}
+
+// SetSize calls the underlying NDK function.
+func (h *Format) SetSize(name string, value uint64) {
+	capi.AMediaFormat_setSize(h.ptr, name, value)
+}
+
 // SetString sets a property and returns the receiver for chaining.
 func (h *Format) SetString(name string, value string) *Format {
 	capi.AMediaFormat_setString(h.ptr, name, value)
 	return h
+}
+
+// ToString returns the value directly.
+func (h *Format) ToString() string {
+	return (string)(capi.AMediaFormat_toString(h.ptr))
 }
