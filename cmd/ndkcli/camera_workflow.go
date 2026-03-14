@@ -3,12 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+	"sync"
 	"time"
 	"unsafe"
 
 	"github.com/spf13/cobra"
 	"github.com/xaionaro-go/ndk/camera"
 	mediacapi "github.com/xaionaro-go/ndk/capi/media"
+	"github.com/xaionaro-go/ndk/looper"
 	"github.com/xaionaro-go/ndk/media"
 )
 
@@ -53,7 +55,8 @@ var cameraCaptureCmd = &cobra.Command{
 	Short: "Capture raw frames from a camera using ImageReader",
 	Long: `Captures N raw image frames from the specified camera device.
 Frames are written sequentially to the output file as raw pixel data.
-Uses the camera2 NDK pipeline: ImageReader -> OutputTarget -> CaptureSession.`,
+Uses the camera2 NDK pipeline: ImageReader -> OutputTarget -> CaptureSession.
+Runs on a looper thread so Camera2 callbacks are dispatched correctly.`,
 	RunE: func(cmd *cobra.Command, args []string) (_err error) {
 		cameraID, _ := cmd.Flags().GetString("id")
 		width, _ := cmd.Flags().GetInt32("width")
@@ -62,148 +65,180 @@ Uses the camera2 NDK pipeline: ImageReader -> OutputTarget -> CaptureSession.`,
 		count, _ := cmd.Flags().GetInt32("count")
 		output, _ := cmd.Flags().GetString("output")
 
-		// Create ImageReader via capi (the idiomatic NewImageReader has a broken
-		// signature that casts **ImageReader to **capi.AImageReader incorrectly).
-		// maxImages is the max number of images the reader can hold simultaneously.
-		// Keep it small (4) — we acquire and release frames in a loop.
-		var maxImages int32 = 4
-		var readerPtr *mediacapi.AImageReader
-		status := mediacapi.AImageReader_new(width, height, format, maxImages, &readerPtr)
-		if status < 0 {
-			return fmt.Errorf("creating image reader: media error %d", status)
-		}
-		reader := media.NewImageReaderFromPointer(unsafe.Pointer(readerPtr))
-		defer reader.Close()
-
-		// Get ANativeWindow from the ImageReader.
-		var nativeWindow *mediacapi.ANativeWindow
-		status = mediacapi.AImageReader_getWindow(readerPtr, &nativeWindow)
-		if status < 0 {
-			return fmt.Errorf("getting window from image reader: media error %d", status)
-		}
-
-		// The camera package has its own ANativeWindow type alias; cast through
-		// unsafe.Pointer since both are C.ANativeWindow underneath.
-		camWindow := (*camera.ANativeWindow)(unsafe.Pointer(nativeWindow))
-
-		mgr := camera.NewManager()
-		defer mgr.Close()
-
-		// Create OutputTarget for the capture request.
-		outputTarget, err := camera.NewOutputTarget(camWindow)
-		if err != nil {
-			return fmt.Errorf("creating output target: %w", err)
-		}
-		defer outputTarget.Close()
-
-		// Create SessionOutput + container for the capture session.
-		sessionOutput, err := camera.NewSessionOutput(camWindow)
-		if err != nil {
-			return fmt.Errorf("creating session output: %w", err)
-		}
-		defer sessionOutput.Close()
-
-		container, err := camera.NewSessionOutputContainer()
-		if err != nil {
-			return fmt.Errorf("creating session output container: %w", err)
-		}
-		defer container.Close()
-
-		if err := container.Add(sessionOutput); err != nil {
-			return fmt.Errorf("adding session output to container: %w", err)
-		}
-
-		// Open the camera device with no-op state callbacks.
-		device, err := mgr.OpenCamera(cameraID, camera.DeviceStateCallbacks{
-			OnDisconnected: func() {},
-			OnError:        func(int) {},
+		// Run the entire capture pipeline on a looper thread.
+		// Camera2 NDK dispatches session callbacks (OnReady, OnActive)
+		// on the calling thread's looper — without one, callbacks never
+		// fire and the session never produces frames.
+		looper.Run(func(lp *looper.Looper) {
+			_err = runCameraCapture(lp, cameraID, width, height, format, count, output)
 		})
-		if err != nil {
-			return fmt.Errorf("opening camera %q: %w", cameraID, err)
-		}
-		defer device.Close()
-
-		// Create a capture request using the StillCapture template.
-		request, err := device.CreateCaptureRequest(camera.StillCapture)
-		if err != nil {
-			return fmt.Errorf("creating capture request: %w", err)
-		}
-		defer request.Close()
-
-		request.AddTarget(outputTarget)
-
-		// Create a capture session with no-op state callbacks.
-		session, err := device.CreateCaptureSession(container, camera.SessionStateCallbacks{
-			OnClosed: func() {},
-			OnReady:  func() {},
-			OnActive: func() {},
-		})
-		if err != nil {
-			return fmt.Errorf("creating capture session: %w", err)
-		}
-		defer session.Close()
-
-		// Start repeating request so the camera produces frames.
-		if err := session.SetRepeatingRequest(request); err != nil {
-			return fmt.Errorf("setting repeating request: %w", err)
-		}
-		defer func() {
-			if stopErr := session.StopRepeating(); stopErr != nil && _err == nil {
-				_err = fmt.Errorf("stopping repeating request: %w", stopErr)
-			}
-		}()
-
-		// Open output file.
-		f, err := os.Create(output)
-		if err != nil {
-			return fmt.Errorf("creating output file: %w", err)
-		}
-		defer f.Close()
-
-		// Wait for the camera pipeline to start producing frames.
-		time.Sleep(500 * time.Millisecond)
-
-		// Acquire and write frames.
-		var totalBytes int64
-		for i := int32(0); i < count; i++ {
-			var imagePtr *mediacapi.AImage
-
-			// Retry acquiring — the camera may not have a frame ready yet.
-			for retries := 0; retries < 100; retries++ {
-				status = mediacapi.AImageReader_acquireNextImage(readerPtr, &imagePtr)
-				if status >= 0 {
-					break
-				}
-				time.Sleep(33 * time.Millisecond) // ~30fps polling
-			}
-			if status < 0 {
-				return fmt.Errorf("acquiring image %d: media error %d", i, status)
-			}
-
-			// Read plane 0 data.
-			var dataPtr *uint8
-			var dataLen int32
-			status = mediacapi.AImage_getPlaneData(imagePtr, 0, &dataPtr, &dataLen)
-			if status < 0 {
-				mediacapi.AImage_delete(imagePtr)
-				return fmt.Errorf("getting plane data for image %d: media error %d", i, status)
-			}
-
-			// Copy the pixel data from the C buffer to a Go slice and write it.
-			data := unsafe.Slice(dataPtr, dataLen)
-			if _, err := f.Write(data); err != nil {
-				mediacapi.AImage_delete(imagePtr)
-				return fmt.Errorf("writing image %d to file: %w", i, err)
-			}
-			totalBytes += int64(dataLen)
-
-			mediacapi.AImage_delete(imagePtr)
-			fmt.Printf("captured frame %d/%d (%d bytes)\n", i+1, count, dataLen)
-		}
-
-		fmt.Printf("captured %d frames (%d bytes total) to %s\n", count, totalBytes, output)
-		return nil
+		return _err
 	},
+}
+
+func runCameraCapture(
+	lp *looper.Looper,
+	cameraID string,
+	width int32,
+	height int32,
+	format int32,
+	count int32,
+	output string,
+) (_err error) {
+	// Create ImageReader via capi with CPU_READ_OFTEN usage for frame access.
+	const usageCPUReadOften = uint64(0x3) // AHARDWAREBUFFER_USAGE_CPU_READ_OFTEN
+	var maxImages int32 = 4
+	var readerPtr *mediacapi.AImageReader
+	status := mediacapi.AImageReader_newWithUsage(width, height, format, usageCPUReadOften, maxImages, &readerPtr)
+	if status < 0 {
+		return fmt.Errorf("creating image reader: media error %d", status)
+	}
+	reader := media.NewImageReaderFromPointer(unsafe.Pointer(readerPtr))
+	defer reader.Close()
+
+	// Get ANativeWindow from the ImageReader.
+	var nativeWindow *mediacapi.ANativeWindow
+	status = mediacapi.AImageReader_getWindow(readerPtr, &nativeWindow)
+	if status < 0 {
+		return fmt.Errorf("getting window from image reader: media error %d", status)
+	}
+
+	camWindow := (*camera.ANativeWindow)(unsafe.Pointer(nativeWindow))
+
+	mgr := camera.NewManager()
+	defer mgr.Close()
+
+	outputTarget, err := camera.NewOutputTarget(camWindow)
+	if err != nil {
+		return fmt.Errorf("creating output target: %w", err)
+	}
+	defer outputTarget.Close()
+
+	sessionOutput, err := camera.NewSessionOutput(camWindow)
+	if err != nil {
+		return fmt.Errorf("creating session output: %w", err)
+	}
+	defer sessionOutput.Close()
+
+	container, err := camera.NewSessionOutputContainer()
+	if err != nil {
+		return fmt.Errorf("creating session output container: %w", err)
+	}
+	defer container.Close()
+
+	if err := container.Add(sessionOutput); err != nil {
+		return fmt.Errorf("adding session output to container: %w", err)
+	}
+
+	fmt.Println("opening camera...")
+	device, err := mgr.OpenCamera(cameraID, camera.DeviceStateCallbacks{
+		OnDisconnected: func() { fmt.Println("callback: camera disconnected") },
+		OnError:        func(code int) { fmt.Printf("callback: camera error %d\n", code) },
+	})
+	if err != nil {
+		return fmt.Errorf("opening camera %q: %w", cameraID, err)
+	}
+	defer device.Close()
+
+	request, err := device.CreateCaptureRequest(camera.Preview)
+	if err != nil {
+		return fmt.Errorf("creating capture request: %w", err)
+	}
+	defer request.Close()
+
+	request.AddTarget(outputTarget)
+
+	// Use a WaitGroup to block until the session reports ready.
+	var wg sync.WaitGroup
+	wg.Add(1)
+	var readyOnce sync.Once
+
+	fmt.Println("creating capture session...")
+	session, err := device.CreateCaptureSession(container, camera.SessionStateCallbacks{
+		OnClosed: func() { fmt.Println("callback: session closed") },
+		OnReady: func() {
+			fmt.Println("callback: session ready")
+			readyOnce.Do(wg.Done)
+		},
+		OnActive: func() { fmt.Println("callback: session active") },
+	})
+	if err != nil {
+		return fmt.Errorf("creating capture session: %w", err)
+	}
+	defer session.Close()
+
+	// Wait for the session to become ready. Camera2 dispatches callbacks
+	// on its own internal thread — we just need to wait for OnReady.
+	fmt.Println("waiting for session ready...")
+	done := make(chan struct{})
+	go func() {
+		wg.Wait()
+		close(done)
+	}()
+
+	select {
+	case <-done:
+		// Session is ready.
+	case <-time.After(10 * time.Second):
+		return fmt.Errorf("timeout waiting for camera session to become ready")
+	}
+
+	fmt.Println("camera session ready")
+
+	if err := session.SetRepeatingRequest(request); err != nil {
+		return fmt.Errorf("setting repeating request: %w", err)
+	}
+	defer func() {
+		if stopErr := session.StopRepeating(); stopErr != nil && _err == nil {
+			_err = fmt.Errorf("stopping repeating request: %w", stopErr)
+		}
+	}()
+
+	f, err := os.Create(output)
+	if err != nil {
+		return fmt.Errorf("creating output file: %w", err)
+	}
+	defer f.Close()
+
+	// Acquire and write frames. Poll the looper between acquires
+	// to keep Camera2 callbacks flowing.
+	var totalBytes int64
+	for i := int32(0); i < count; i++ {
+		var imagePtr *mediacapi.AImage
+
+		for retries := 0; retries < 200; retries++ {
+			status = mediacapi.AImageReader_acquireNextImage(readerPtr, &imagePtr)
+			if status >= 0 {
+				break
+			}
+			// Poll looper to let Camera2 process internally.
+			looper.PollOnce(16*time.Millisecond, nil, nil, nil)
+		}
+		if status < 0 {
+			return fmt.Errorf("acquiring image %d: media error %d", i, status)
+		}
+
+		var dataPtr *uint8
+		var dataLen int32
+		status = mediacapi.AImage_getPlaneData(imagePtr, 0, &dataPtr, &dataLen)
+		if status < 0 {
+			mediacapi.AImage_delete(imagePtr)
+			return fmt.Errorf("getting plane data for image %d: media error %d", i, status)
+		}
+
+		data := unsafe.Slice(dataPtr, dataLen)
+		if _, err := f.Write(data); err != nil {
+			mediacapi.AImage_delete(imagePtr)
+			return fmt.Errorf("writing image %d to file: %w", i, err)
+		}
+		totalBytes += int64(dataLen)
+
+		mediacapi.AImage_delete(imagePtr)
+		fmt.Printf("captured frame %d/%d (%d bytes)\n", i+1, count, dataLen)
+	}
+
+	fmt.Printf("captured %d frames (%d bytes total) to %s\n", count, totalBytes, output)
+	return nil
 }
 
 var cameraListDetailsCmd = &cobra.Command{
