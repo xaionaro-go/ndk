@@ -295,7 +295,7 @@ flowchart TD
 
 ### Stage 1: Spec Extraction (`make specs`)
 
-**Tool**: `tools/specgen` + `c2ffi` (external)
+**Tool**: `tools/cmd/specgen` + `c2ffi` (external)
 
 Parses NDK C headers via c2ffi and extracts a structured YAML specification containing types, enums, functions, callbacks, and structs.
 
@@ -344,7 +344,7 @@ functions:
 
 ### Stage 2: Raw CGo Bindings (`make capi`)
 
-**Tool**: `tools/capigen` (in-repo)
+**Tool**: `tools/cmd/capigen` (in-repo)
 
 Reads the generated spec YAML and manifest YAML, then produces raw CGo wrapper packages with type aliases, function wrappers, callback proxies, and enum constants.
 
@@ -360,7 +360,7 @@ Reads the generated spec YAML and manifest YAML, then produces raw CGo wrapper p
 
 ### Stage 3: Idiomatic Go Generation (`make idiomatic`)
 
-**Tool**: `tools/idiomgen` (in-repo)
+**Tool**: `tools/cmd/idiomgen` (in-repo)
 
 Merges the generated spec with a hand-written overlay and renders Go templates to produce the final user-facing packages.
 
@@ -513,10 +513,12 @@ flowchart TD
 .
 ├── Makefile                      # Build orchestration
 ├── tools/
-│   ├── specgen/                  # Stage 1: spec extraction via c2ffi
-│   ├── capigen/                  # Stage 2: CGo wrapper generator
-│   ├── idiomgen/                 # Stage 3: idiomatic Go generator
-│   ├── headerspec/               # Standalone header spec extraction tool
+│   ├── cmd/
+│   │   ├── specgen/              # Stage 1: spec extraction via c2ffi
+│   │   ├── capigen/              # Stage 2: CGo wrapper generator
+│   │   ├── idiomgen/             # Stage 3: idiomatic Go generator
+│   │   ├── headerspec/           # Standalone header spec extraction tool
+│   │   └── ndk-build/            # APK packaging tool
 │   └── pkg/
 │       ├── c2ffi/                # c2ffi invocation and JSON→spec conversion
 │       ├── capigen/              # CGo code generation from spec + manifest

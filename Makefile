@@ -27,7 +27,7 @@ specs:
 		manifest="capi/manifests/$$m.yaml"; \
 		[ -f "$$manifest" ] || continue; \
 		echo "specgen $$m (c2ffi)"; \
-		go run ./tools/specgen \
+		go run ./tools/cmd/specgen \
 			-manifest "$$manifest" \
 			-ndk-include "$(NDK_SYSROOT)" \
 			-c2ffi-bin "$(C2FFI_BIN)" \
@@ -42,7 +42,7 @@ capi:
 		[ -f "$$manifest" ] || continue; \
 		[ -f "$$spec" ] || continue; \
 		echo "capigen $$m"; \
-		go run ./tools/capigen \
+		go run ./tools/cmd/capigen \
 			-spec "$$spec" \
 			-manifest "$$manifest" \
 			-out "capi/$$m/"; \
@@ -53,7 +53,7 @@ specs-fixtures:
 	@for m in $(FIXTURE_MODULES); do \
 		case $$m in simple|edgecases) continue;; esac; \
 		echo "specgen $$m (fixture)"; \
-		go run ./tools/specgen \
+		go run ./tools/cmd/specgen \
 			-module $$m \
 			-pkg tools/pkg/specgen/testdata/$$m \
 			-out spec/generated/$$m.yaml; \
@@ -68,7 +68,7 @@ idiomatic:
 		goname=$$(grep 'go_name:' "$$overlay" | head -1 | awk '{print $$2}'); \
 		[ -z "$$goname" ] && goname="$$m"; \
 		echo "idiomgen $$m -> $$goname/"; \
-		go run ./tools/idiomgen \
+		go run ./tools/cmd/idiomgen \
 			-spec "$$spec" \
 			-overlay "$$overlay" \
 			-templates templates/ \
