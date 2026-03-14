@@ -107,6 +107,86 @@ func TestGeneratePackage(t *testing.T) {
 	}
 }
 
+func TestGeneratePackageWithAPILevels(t *testing.T) {
+	spec := looperSpec()
+	// Add an API-36 function to the spec.
+	spec.Functions["ALooper_newFeature"] = specmodel.FuncDef{
+		CName: "ALooper_newFeature",
+		Params: []specmodel.Param{
+			{Name: "looper", Type: "*ALooper"},
+		},
+		Returns: "int32",
+	}
+	manifest := looperManifest()
+	apiLevels := map[string]int{
+		"ALooper_newFeature": 36,
+	}
+
+	outDir := t.TempDir()
+	err := GeneratePackage(spec, manifest, outDir, apiLevels)
+	require.NoError(t, err)
+
+	// Base file should exist and not contain the API-36 function.
+	basePath := filepath.Join(outDir, "looper.go")
+	baseContent, err := os.ReadFile(basePath)
+	require.NoError(t, err)
+	assert.NotContains(t, string(baseContent), "ALooper_newFeature",
+		"base file must not contain API-36 function")
+	assert.Contains(t, string(baseContent), "ALooper_forThread",
+		"base file must contain base-level functions")
+
+	// API-36 file should exist with build tag and the function.
+	api36Path := filepath.Join(outDir, "looper_api36.go")
+	api36Content, err := os.ReadFile(api36Path)
+	require.NoError(t, err)
+	api36Str := string(api36Content)
+	assert.Contains(t, api36Str, "//go:build android_ndk36",
+		"API-36 file must have build tag")
+	assert.Contains(t, api36Str, "ALooper_newFeature",
+		"API-36 file must contain the higher-API function")
+	assert.Contains(t, api36Str, "#undef __ANDROID_MIN_SDK_VERSION__",
+		"API-36 preamble must undef the SDK version")
+	assert.Contains(t, api36Str, "#define __ANDROID_MIN_SDK_VERSION__ 36",
+		"API-36 preamble must define SDK version 36")
+	assert.Contains(t, api36Str, "__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
+		"API-36 preamble must enable weak symbols")
+}
+
+func TestGeneratePackageWithoutAPILevels(t *testing.T) {
+	spec := looperSpec()
+	manifest := looperManifest()
+
+	outDir := t.TempDir()
+	// No API levels — should produce the same output as before.
+	err := GeneratePackage(spec, manifest, outDir)
+	require.NoError(t, err)
+
+	basePath := filepath.Join(outDir, "looper.go")
+	baseContent, err := os.ReadFile(basePath)
+	require.NoError(t, err)
+	assert.Contains(t, string(baseContent), "ALooper_forThread")
+	assert.Contains(t, string(baseContent), "ALooper_addFd")
+
+	// No API-level files should be generated.
+	entries, err := os.ReadDir(outDir)
+	require.NoError(t, err)
+	for _, e := range entries {
+		assert.NotContains(t, e.Name(), "_api",
+			"no API-level files should exist without API levels")
+	}
+}
+
+func TestBuildAPILevelPreamble(t *testing.T) {
+	manifest := looperManifest()
+	preamble := buildAPILevelPreamble(manifest, 36)
+
+	assert.Contains(t, preamble, "#undef __ANDROID_MIN_SDK_VERSION__")
+	assert.Contains(t, preamble, "#define __ANDROID_MIN_SDK_VERSION__ 36")
+	assert.Contains(t, preamble, "#define __ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ 1")
+	assert.Contains(t, preamble, "#cgo LDFLAGS: -landroid")
+	assert.Contains(t, preamble, "#include \"android/looper.h\"")
+}
+
 func TestGenerateDocGo(t *testing.T) {
 	content := generateDocGo("looper", "Raw CGo bindings for Android looper")
 	assert.Contains(t, content, "package looper")

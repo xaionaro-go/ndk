@@ -2,15 +2,18 @@ package idiomgen
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"go/format"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+	"text/template"
 
 	"gopkg.in/yaml.v3"
 
+	"github.com/xaionaro-go/ndk/tools/pkg/capigen"
 	"github.com/xaionaro-go/ndk/tools/pkg/overlaymodel"
 	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
 )
@@ -52,7 +55,19 @@ func Generate(
 	}
 	merged.FreeFunctions = sharedFreeFuncs
 
-	// Shared templates rendered against the full MergedSpec.
+	// Pre-filter: remove higher-API-level free functions from merged.FreeFunctions
+	// so that shared templates (functions.go) only contain base-level functions.
+	// Higher-API functions are emitted into separate build-tagged files below.
+	var baseSharedFreeFuncs []MergedFreeFunction
+	for _, f := range merged.FreeFunctions {
+		if f.APILevel <= capigen.BaseAPILevel {
+			baseSharedFreeFuncs = append(baseSharedFreeFuncs, f)
+		}
+	}
+	allSharedFreeFuncs := merged.FreeFunctions
+	merged.FreeFunctions = baseSharedFreeFuncs
+
+	// Shared templates rendered against the MergedSpec (with base-level functions only).
 	sharedTemplates := map[string]string{
 		"package.go":   "package.go.tmpl",
 		"errors.go":    "errors.go.tmpl",
@@ -79,6 +94,9 @@ func Generate(
 		}
 		written[outFile] = true
 	}
+
+	// Restore all free functions for later processing.
+	merged.FreeFunctions = allSharedFreeFuncs
 
 	// Per-value-enum files: one file per value enum type.
 	enumTmplPath := filepath.Join(tmplDir, "value_enum_file.go.tmpl")
@@ -150,6 +168,46 @@ func Generate(
 		}
 	}
 
+	// Collect higher-API-level methods and free functions for separate files.
+	// Methods and functions at or below BaseAPILevel stay in the main files;
+	// those above go into build-tagged files ({type}_api{N}.go, functions_api{N}.go).
+	higherMethodsByLevel := make(map[int][]MergedMethod)         // api level -> methods
+	higherFreeFuncsByLevel := make(map[int][]MergedFreeFunction) // api level -> free functions
+
+	// Separate methods by API level.
+	var baseMethods []MergedMethod
+	for _, m := range merged.Methods {
+		if m.APILevel > capigen.BaseAPILevel {
+			higherMethodsByLevel[m.APILevel] = append(higherMethodsByLevel[m.APILevel], m)
+		} else {
+			baseMethods = append(baseMethods, m)
+		}
+	}
+
+	// Separate shared free functions by API level.
+	for _, f := range merged.FreeFunctions {
+		if f.APILevel > capigen.BaseAPILevel {
+			higherFreeFuncsByLevel[f.APILevel] = append(higherFreeFuncsByLevel[f.APILevel], f)
+		}
+	}
+
+	// Separate per-type free functions by API level.
+	baseTypeFreeFuncs := make(map[string][]MergedFreeFunction)
+	higherTypeFreeFuncsByLevel := make(map[int]map[string][]MergedFreeFunction)
+	for typeName, funcs := range typeFreeFuncs {
+		for _, f := range funcs {
+			if f.APILevel > capigen.BaseAPILevel {
+				level := f.APILevel
+				if higherTypeFreeFuncsByLevel[level] == nil {
+					higherTypeFreeFuncsByLevel[level] = make(map[string][]MergedFreeFunction)
+				}
+				higherTypeFreeFuncsByLevel[level][typeName] = append(higherTypeFreeFuncsByLevel[level][typeName], f)
+			} else {
+				baseTypeFreeFuncs[typeName] = append(baseTypeFreeFuncs[typeName], f)
+			}
+		}
+	}
+
 	// Per-type files: one file per opaque type containing struct + constructor + destructor + methods + factory functions.
 	typeTmplPath := filepath.Join(tmplDir, "type_file.go.tmpl")
 	if _, err := os.Stat(typeTmplPath); err == nil {
@@ -163,9 +221,9 @@ func Generate(
 		for _, typeName := range typeNames {
 			opaqueType := merged.OpaqueTypes[typeName]
 
-			// Collect methods belonging to this type.
+			// Collect base-level methods belonging to this type.
 			var methods []MergedMethod
-			for _, m := range merged.Methods {
+			for _, m := range baseMethods {
 				if m.ReceiverType == typeName {
 					methods = append(methods, m)
 				}
@@ -176,7 +234,7 @@ func Generate(
 				SourcePackage: merged.SourcePackage,
 				Type:          opaqueType,
 				Methods:       methods,
-				FreeFunctions: typeFreeFuncs[typeName],
+				FreeFunctions: baseTypeFreeFuncs[typeName],
 				OpaqueTypes:   merged.OpaqueTypes,
 			}
 
@@ -191,6 +249,88 @@ func Generate(
 				return fmt.Errorf("write %s: %w", fileName, err)
 			}
 			written[fileName] = true
+		}
+	}
+
+	// Generate per-API-level files for methods and free functions above BaseAPILevel.
+	apiLevelMethodsTmplPath := filepath.Join(tmplDir, "type_file.go.tmpl")
+	allHigherLevels := collectHigherAPILevels(higherMethodsByLevel, higherFreeFuncsByLevel, higherTypeFreeFuncsByLevel)
+	for _, level := range allHigherLevels {
+		// Per-type higher-API files: methods and factory functions for this API level.
+		if _, err := os.Stat(apiLevelMethodsTmplPath); err == nil {
+			typeNames := make([]string, 0, len(merged.OpaqueTypes))
+			for name := range merged.OpaqueTypes {
+				typeNames = append(typeNames, name)
+			}
+			sort.Strings(typeNames)
+
+			for _, typeName := range typeNames {
+				// Collect methods for this type at this API level.
+				var levelMethods []MergedMethod
+				for _, m := range higherMethodsByLevel[level] {
+					if m.ReceiverType == typeName {
+						levelMethods = append(levelMethods, m)
+					}
+				}
+
+				// Collect factory functions for this type at this API level.
+				var levelFreeFuncs []MergedFreeFunction
+				if higherTypeFreeFuncsByLevel[level] != nil {
+					levelFreeFuncs = higherTypeFreeFuncsByLevel[level][typeName]
+				}
+
+				if len(levelMethods) == 0 && len(levelFreeFuncs) == 0 {
+					continue
+				}
+
+				// Render a methods-only template (no struct/constructor/destructor).
+				data := PerTypeData{
+					PackageName:   merged.PackageName,
+					SourcePackage: merged.SourcePackage,
+					Type:          merged.OpaqueTypes[typeName],
+					Methods:       levelMethods,
+					FreeFunctions: levelFreeFuncs,
+					OpaqueTypes:   merged.OpaqueTypes,
+				}
+
+				content, err := renderAPILevelTypeFile(apiLevelMethodsTmplPath, data, level)
+				if err != nil {
+					return fmt.Errorf("render type %s api%d: %w", typeName, level, err)
+				}
+
+				fileName := fmt.Sprintf("%s_api%d.go", toSnakeCase(typeName), level)
+				outPath := filepath.Join(outDir, fileName)
+				if err := os.WriteFile(outPath, []byte(content), 0o644); err != nil {
+					return fmt.Errorf("write %s: %w", fileName, err)
+				}
+				written[fileName] = true
+			}
+		}
+
+		// Higher-API free functions file.
+		levelFreeFuncs := higherFreeFuncsByLevel[level]
+		if len(levelFreeFuncs) > 0 {
+			levelMerged := MergedSpec{
+				PackageName:   merged.PackageName,
+				SourcePackage: merged.SourcePackage,
+				FreeFunctions: levelFreeFuncs,
+			}
+			funcsTmplPath := filepath.Join(tmplDir, "functions.go.tmpl")
+			if _, err := os.Stat(funcsTmplPath); err == nil {
+				content, err := RenderTemplateFile(funcsTmplPath, levelMerged)
+				if err != nil {
+					return fmt.Errorf("render functions api%d: %w", level, err)
+				}
+				// Prepend build tag.
+				content = fmt.Sprintf("//go:build android_ndk%d\n\n%s", level, content)
+
+				fileName := fmt.Sprintf("functions_api%d.go", level)
+				outPath := filepath.Join(outDir, fileName)
+				if err := os.WriteFile(outPath, []byte(content), 0o644); err != nil {
+					return fmt.Errorf("write %s: %w", fileName, err)
+				}
+				written[fileName] = true
+			}
 		}
 	}
 
@@ -217,6 +357,195 @@ func Generate(
 	}
 
 	return nil
+}
+
+// collectHigherAPILevels returns sorted unique API levels from the higher-level maps.
+func collectHigherAPILevels(
+	methodsByLevel map[int][]MergedMethod,
+	freeFuncsByLevel map[int][]MergedFreeFunction,
+	typeFreeFuncsByLevel map[int]map[string][]MergedFreeFunction,
+) []int {
+	seen := make(map[int]bool)
+	for level := range methodsByLevel {
+		seen[level] = true
+	}
+	for level := range freeFuncsByLevel {
+		seen[level] = true
+	}
+	for level := range typeFreeFuncsByLevel {
+		seen[level] = true
+	}
+	levels := make([]int, 0, len(seen))
+	for level := range seen {
+		levels = append(levels, level)
+	}
+	sort.Ints(levels)
+	return levels
+}
+
+// renderAPILevelTypeFile renders a type file for a specific API level,
+// containing only methods (no struct definition, constructor, or destructor).
+func renderAPILevelTypeFile(
+	tmplPath string,
+	data PerTypeData,
+	apiLevel int,
+) (string, error) {
+	// Render using a minimal template that only emits methods and free functions.
+	tmplText := fmt.Sprintf(`//go:build android_ndk%d
+
+// Code generated by idiomgen. DO NOT EDIT.
+
+package {{ .PackageName }}
+
+import (
+{{- if anyDurationParam .Methods .FreeFunctions }}
+	"time"
+{{- end }}
+{{- if or (anyUnsafeParam .Methods) (anyUnsafeFreeFunc .FreeFunctions) }}
+	"unsafe"
+{{- end }}
+
+	capi "{{ .SourcePackage }}"
+)
+
+var _ = capi.CgoAllocsUnknown
+`, apiLevel)
+
+	// Append method rendering from the type_file template.
+	// We render each method using the same patterns as type_file.go.tmpl.
+	tmplText += `{{ range $m := .Methods }}
+{{- if $m.CustomCall }}
+// {{ $m.GoName }} calls the underlying NDK function.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := $m.CustomCall.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) error {
+	return result(int32(capi.{{ $m.CName }}(h.ptr, {{ $m.CustomCall.Args }})))
+}
+{{- else if and $m.CallbackParam $m.ReturnsNew }}
+// {{ $m.GoName }} creates a new {{ $m.ReturnsNew }} from this {{ $m.ReceiverType }}.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := callbackVisibleParams $m.Params $m.CallbackParam }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}{{ if callbackVisibleParams $m.Params $m.CallbackParam }}, {{ end }}cbs {{ $m.CallbackGoType }}) (*{{ $m.ReturnsNew }}, error) {
+{{ range $p := stringParams (callbackVisibleParams $m.Params $m.CallbackParam) }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
+{{ end }}	cbID := capi.BridgeRegister{{ $m.CallbackGoType }}(cbs)
+	var cbsC capi.{{ $m.CallbackStruct }}
+	capi.BridgeInit{{ $m.CallbackGoType }}(&cbsC, cbID)
+	var ptr *capi.{{ lookupCapiType $.OpaqueTypes $m.ReturnsNew }}
+	if err := result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ callbackCapiArg . $m.CallbackParam }}{{ end }}, &ptr))); err != nil {
+		capi.BridgeUnregister{{ $m.CallbackGoType }}(cbID)
+		return nil, err
+	}
+	return &{{ $m.ReturnsNew }}{ptr: ptr}, nil
+}
+{{- else if $m.ReturnsListAccessor }}
+// {{ $m.GoName }} returns items from the underlying list.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) ([]{{ $m.ReturnsListAccessor.ItemType }}, error) {
+	var list *capi.{{ $m.ReturnsListAccessor.SpecName }}
+	if err := result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}, &list))); err != nil {
+		return nil, err
+	}
+	defer capi.{{ $m.ReturnsListAccessor.DeleteFunc }}(list)
+	count := capi.Bridge{{ $m.ReturnsListAccessor.SpecName }}Count(list)
+	items := make([]{{ $m.ReturnsListAccessor.ItemType }}, count)
+	for i := range items {
+		items[i] = capi.Bridge{{ $m.ReturnsListAccessor.SpecName }}Item(list, i)
+	}
+	return items, nil
+}
+{{- else if $m.FixedParams }}
+{{- if $m.ReturnsNew }}
+// {{ $m.GoName }} creates a new {{ $m.ReturnsNew }} from this {{ $m.ReceiverType }}.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterFixedParams (skipAndFilterOut $m.Params) $m.FixedParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) (*{{ $m.ReturnsNew }}, error) {
+	var ptr *capi.{{ lookupCapiType $.OpaqueTypes $m.ReturnsNew }}
+	if err := result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArgOrFixed . $m.FixedParams }}{{ end }}, &ptr))); err != nil {
+		return nil, err
+	}
+	return &{{ $m.ReturnsNew }}{ptr: ptr}, nil
+}
+{{- else if eq $m.Returns "" }}
+// {{ $m.GoName }} calls the underlying NDK function.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterFixedParams (skipAndFilterOut $m.Params) $m.FixedParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) {
+	capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArgOrFixed . $m.FixedParams }}{{ end }})
+}
+{{- else }}
+// {{ $m.GoName }} calls the underlying NDK function.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterFixedParams (skipAndFilterOut $m.Params) $m.FixedParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) error {
+	return result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArgOrFixed . $m.FixedParams }}{{ end }})))
+}
+{{- end }}
+{{ else if $m.Chain }}
+// {{ $m.GoName }} sets a property and returns the receiver for chaining.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) *{{ $m.ReceiverType }} {
+	capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }})
+	return h
+}
+{{ else if and $m.Pure (ne $m.Returns "") }}
+// {{ $m.GoName }} returns the value directly.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) {{ $m.Returns }} {
+	return ({{ $m.Returns }})(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}))
+}
+{{ else if $m.ReturnsNew }}
+{{ if $m.ReturnsNewDirect }}
+// {{ $m.GoName }} creates a new {{ $m.ReturnsNew }} from this {{ $m.ReceiverType }}.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) *{{ $m.ReturnsNew }} {
+	return &{{ $m.ReturnsNew }}{ptr: capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }})}
+}
+{{ else }}
+// {{ $m.GoName }} creates a new {{ $m.ReturnsNew }} from this {{ $m.ReceiverType }}.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) (*{{ $m.ReturnsNew }}, error) {
+{{ range $p := stringParams (skipAndFilterOut $m.Params) }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
+{{ end }}	var ptr *capi.{{ lookupCapiType $.OpaqueTypes $m.ReturnsNew }}
+	if err := result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}, &ptr))); err != nil {
+		return nil, err
+	}
+	return &{{ $m.ReturnsNew }}{ptr: ptr}, nil
+}
+{{ end }}
+{{ else if $m.ReturnsFrames }}
+// {{ $m.GoName }} calls the underlying NDK function and returns the frame count.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) (int32, error) {
+{{- if $m.BufGoType }}
+	r := capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArgBuf . $m.BufGoType }}{{ end }})
+{{- else }}
+	r := capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }})
+{{- end }}
+	if r < 0 {
+		return 0, Error(r)
+	}
+	return int32(r), nil
+}
+{{ else if eq $m.Returns "" }}
+// {{ $m.GoName }} calls the underlying NDK function.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) {
+	capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }})
+}
+{{ else }}
+// {{ $m.GoName }} calls the underlying NDK function.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) error {
+	return result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }})))
+}
+{{ end }}
+{{- end }}
+{{ range $f := .FreeFunctions }}
+// {{ $f.GoName }} calls the underlying C function.
+func {{ $f.GoName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}){{ if $f.Returns }} {{ $f.Returns }}{{ end }} {
+{{ range $p := stringParams $f.Params }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
+{{ end }}	{{ if $f.IsHandleReturn -}}
+	return &{{ trimStar $f.Returns }}{ptr: capi.{{ $f.CName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ capiArg $p }}{{ end }})}
+	{{- else if $f.Returns -}}
+	return ({{ $f.Returns }})(capi.{{ $f.CName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ capiArg $p }}{{ end }}))
+	{{- else -}}
+	capi.{{ $f.CName }}({{ range $i, $p := $f.Params }}{{ if $i }}, {{ end }}{{ capiArg $p }}{{ end }})
+	{{- end }}
+}
+{{ end }}
+`
+
+	tmpl, err := template.New("api_level_type").Funcs(FuncMap()).Parse(tmplText)
+	if err != nil {
+		return "", fmt.Errorf("parse api level type template: %w", err)
+	}
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", fmt.Errorf("execute api level type template: %w", err)
+	}
+	return buf.String(), nil
 }
 
 // cleanStaleFiles removes generated .go files in outDir that are not in the written set.

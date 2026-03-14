@@ -86,13 +86,23 @@ type FlagGroup struct {
 	Flags []string `yaml:"flags"`
 }
 
+// BaseAPILevel is the default Android API level. Functions at or below this
+// level go into the main generated file; functions above it are emitted into
+// separate build-tagged files.
+const BaseAPILevel = 35
+
 // GeneratePackage generates a complete capi/ Go package from the spec
 // and manifest. It writes doc.go, types.go, const.go, cgo_helpers.go,
 // cgo_helpers.h, and {module}.go into outDir.
+//
+// apiLevels is an optional map from C function name to the minimum Android
+// API level required. Functions above BaseAPILevel are placed in separate
+// files with //go:build android_ndk{N} tags.
 func GeneratePackage(
 	spec *specmodel.Spec,
 	manifest *Manifest,
 	outDir string,
+	apiLevels ...map[string]int,
 ) error {
 	if err := os.MkdirAll(outDir, 0o755); err != nil {
 		return fmt.Errorf("creating output directory %s: %w", outDir, err)
@@ -132,6 +142,31 @@ func GeneratePackage(
 	// the same name, so the type gets a "_s" suffix.
 	typeRenameMap := computeTypeRenameMap(spec, structPrefixSet)
 
+	// Resolve API levels map.
+	var levels map[string]int
+	if len(apiLevels) > 0 && apiLevels[0] != nil {
+		levels = apiLevels[0]
+	}
+
+	// Split functions into base (no tag) and per-API-level groups.
+	baseFunctions := make(map[string]specmodel.FuncDef)
+	higherFunctions := make(map[int]map[string]specmodel.FuncDef) // api level -> functions
+	for name, fn := range spec.Functions {
+		level := levels[name]
+		if level > BaseAPILevel {
+			if higherFunctions[level] == nil {
+				higherFunctions[level] = make(map[string]specmodel.FuncDef)
+			}
+			higherFunctions[level][name] = fn
+		} else {
+			baseFunctions[name] = fn
+		}
+	}
+
+	// Build a base spec (without higher-API functions) for the main file.
+	baseSpec := *spec
+	baseSpec.Functions = baseFunctions
+
 	files := map[string]string{}
 	files["doc.go"] = generateDocGo(pkgName, manifest.Generator.PackageDescription)
 	files["types.go"] = generateTypesGo(pkgName, preamble, spec, callbackSet, structPrefixSet, typeRenameMap)
@@ -139,7 +174,19 @@ func GeneratePackage(
 	files["cgo_helpers.go"] = generateCgoHelpersGo(pkgName, preamble, spec, callbackSet)
 	files["cgo_helpers.h"] = generateCgoHelpersH(pkgName, manifest, spec, structPrefixSet)
 	files["cgo_helpers.c"] = generateCgoHelpersC(pkgName, spec, structPrefixSet)
-	files[pkgName+".go"] = generateFunctionsGo(pkgName, preamble, spec, callbackSet, structPrefixSet, typeRenameMap)
+	files[pkgName+".go"] = generateFunctionsGo(pkgName, preamble, &baseSpec, callbackSet, structPrefixSet, typeRenameMap)
+
+	// Generate per-API-level function files with build tags.
+	apiLevelKeys := sortedIntKeys(higherFunctions)
+	for _, level := range apiLevelKeys {
+		funcs := higherFunctions[level]
+		levelSpec := *spec
+		levelSpec.Functions = funcs
+		fileName := fmt.Sprintf("%s_api%d.go", pkgName, level)
+		levelPreamble := buildAPILevelPreamble(manifest, level)
+		buildTag := fmt.Sprintf("//go:build android_ndk%d\n\n", level)
+		files[fileName] = buildTag + generateFunctionsGo(pkgName, levelPreamble, &levelSpec, callbackSet, structPrefixSet, typeRenameMap)
+	}
 
 	for name, content := range files {
 		path := filepath.Join(outDir, name)
@@ -179,6 +226,46 @@ func buildCGoPreamble(manifest *Manifest) string {
 	sb.WriteString("#include \"cgo_helpers.h\"\n")
 	sb.WriteString("*/")
 	return sb.String()
+}
+
+// buildAPILevelPreamble constructs a CGo comment block for a higher API level.
+// It uses #undef + #define __ANDROID_MIN_SDK_VERSION__ before the includes
+// so the preprocessor exposes declarations guarded by __INTRODUCED_IN(N).
+// The #undef is necessary because the compiler's target triple (e.g.
+// android35-clang) pre-defines __ANDROID_MIN_SDK_VERSION__ to the base level.
+// __ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ disables the strict availability
+// attribute that would otherwise cause Clang to reject the declarations even
+// when __BIONIC_AVAILABILITY_GUARD passes.
+func buildAPILevelPreamble(manifest *Manifest, apiLevel int) string {
+	var sb strings.Builder
+	sb.WriteString("/*\n")
+	for _, fg := range manifest.Generator.FlagGroups {
+		sb.WriteString("#cgo ")
+		sb.WriteString(fg.Name)
+		sb.WriteString(": ")
+		sb.WriteString(strings.Join(fg.Flags, " "))
+		sb.WriteString("\n")
+	}
+	sb.WriteString("#undef __ANDROID_MIN_SDK_VERSION__\n")
+	fmt.Fprintf(&sb, "#define __ANDROID_MIN_SDK_VERSION__ %d\n", apiLevel)
+	sb.WriteString("#define __ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ 1\n")
+	for _, inc := range manifest.Generator.Includes {
+		fmt.Fprintf(&sb, "#include \"%s\"\n", inc)
+	}
+	sb.WriteString("#include <stdlib.h>\n")
+	sb.WriteString("#include \"cgo_helpers.h\"\n")
+	sb.WriteString("*/")
+	return sb.String()
+}
+
+// sortedIntKeys returns sorted keys from a map[int]V.
+func sortedIntKeys[V any](m map[int]V) []int {
+	keys := make([]int, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Ints(keys)
+	return keys
 }
 
 // buildEnumTypedefSet returns the set of type names that have matching enum groups.

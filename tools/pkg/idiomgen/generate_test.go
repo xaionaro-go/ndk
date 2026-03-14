@@ -91,6 +91,63 @@ func TestGenerate(t *testing.T) {
 	}
 }
 
+func TestGenerate_APILevelSplitting(t *testing.T) {
+	spec, overlay := buildFixture()
+
+	// Add a higher-API method to test splitting.
+	spec.Functions["AAudioStreamBuilder_setNewFeature"] = specmodel.FuncDef{
+		CName: "AAudioStreamBuilder_setNewFeature",
+		Params: []specmodel.Param{
+			{Name: "builder", Type: "*AAudioStreamBuilder"},
+			{Name: "value", Type: "int32"},
+		},
+	}
+	overlay.Functions["AAudioStreamBuilder_setNewFeature"] = overlaymodel.FuncOverlay{
+		Receiver: "StreamBuilder",
+		GoName:   "SetNewFeature",
+		Chain:    true,
+	}
+	overlay.APILevels["AAudioStreamBuilder_setNewFeature"] = 36
+
+	tmplDir := filepath.Join("..", "..", "..", "templates")
+	if _, err := os.Stat(tmplDir); os.IsNotExist(err) {
+		t.Fatalf("templates dir not found at %s", tmplDir)
+	}
+
+	outDir := t.TempDir()
+	if err := idiomgen.Generate(spec, overlay, tmplDir, outDir); err != nil {
+		t.Fatalf("Generate: %v", err)
+	}
+
+	// Base per-type file should have base methods but NOT the API-36 method.
+	sbPath := filepath.Join(outDir, "stream_builder.go")
+	sbContent, err := os.ReadFile(sbPath)
+	if err != nil {
+		t.Fatalf("read stream_builder.go: %v", err)
+	}
+	sbStr := string(sbContent)
+	if !strings.Contains(sbStr, "SetDeviceID") {
+		t.Error("stream_builder.go missing base method SetDeviceID")
+	}
+	if strings.Contains(sbStr, "SetNewFeature") {
+		t.Error("stream_builder.go must NOT contain API-36 method SetNewFeature")
+	}
+
+	// API-36 file should exist with build tag and the higher-API method.
+	api36Path := filepath.Join(outDir, "stream_builder_api36.go")
+	api36Content, err := os.ReadFile(api36Path)
+	if err != nil {
+		t.Fatalf("expected stream_builder_api36.go: %v", err)
+	}
+	api36Str := string(api36Content)
+	if !strings.Contains(api36Str, "//go:build android_ndk36") {
+		t.Error("stream_builder_api36.go missing build tag")
+	}
+	if !strings.Contains(api36Str, "SetNewFeature") {
+		t.Error("stream_builder_api36.go missing API-36 method SetNewFeature")
+	}
+}
+
 func TestGenerate_MissingTemplate_Skipped(t *testing.T) {
 	spec, overlay := buildFixture()
 

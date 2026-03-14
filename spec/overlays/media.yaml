@@ -260,3 +260,43 @@ api_levels:
   AMediaMuxer_addTrack: 21
   AMediaMuxer_start: 21
   AMediaMuxer_stop: 21
+  AMediaCodecInfo_getCanonicalName: 36
+  AMediaCodecInfo_getKind: 36
+  AMediaCodecInfo_isVendor: 36
+  AMediaCodecInfo_getMediaCodecInfoType: 36
+  AMediaCodecInfo_getMediaType: 36
+  AMediaCodecInfo_getMaxSupportedInstances: 36
+  AMediaCodecInfo_isFeatureSupported: 36
+  AMediaCodecInfo_isFeatureRequired: 36
+  AMediaCodecInfo_isFormatSupported: 36
+  AMediaCodecInfo_getAudioCapabilities: 36
+  AMediaCodecInfo_getVideoCapabilities: 36
+  AMediaCodecInfo_getEncoderCapabilities: 36
+  ACodecAudioCapabilities_getBitrateRange: 36
+  ACodecAudioCapabilities_getSupportedSampleRates: 36
+  ACodecAudioCapabilities_getSupportedSampleRateRanges: 36
+  ACodecAudioCapabilities_getMaxInputChannelCount: 36
+  ACodecAudioCapabilities_getMinInputChannelCount: 36
+  ACodecAudioCapabilities_getInputChannelCountRanges: 36
+  ACodecAudioCapabilities_isSampleRateSupported: 36
+  ACodecPerformancePoint_create: 36
+  ACodecPerformancePoint_destroy: 36
+  ACodecPerformancePoint_coversFormat: 36
+  ACodecPerformancePoint_covers: 36
+  ACodecPerformancePoint_equals: 36
+  ACodecVideoCapabilities_getBitrateRange: 36
+  ACodecVideoCapabilities_getSupportedWidths: 36
+  ACodecVideoCapabilities_getSupportedHeights: 36
+  ACodecVideoCapabilities_getWidthAlignment: 36
+  ACodecVideoCapabilities_getHeightAlignment: 36
+  ACodecVideoCapabilities_getSupportedFrameRates: 36
+  ACodecVideoCapabilities_getSupportedWidthsFor: 36
+  ACodecVideoCapabilities_getSupportedHeightsFor: 36
+  ACodecVideoCapabilities_getSupportedFrameRatesFor: 36
+  ACodecVideoCapabilities_getAchievableFrameRatesFor: 36
+  ACodecVideoCapabilities_getNextSupportedPerformancePoint: 36
+  ACodecVideoCapabilities_areSizeAndRateSupported: 36
+  ACodecVideoCapabilities_isSizeSupported: 36
+  ACodecEncoderCapabilities_getQualityRange: 36
+  ACodecEncoderCapabilities_getComplexityRange: 36
+  ACodecEncoderCapabilities_isBitrateModeSupported: 36

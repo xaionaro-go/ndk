@@ -41,10 +41,14 @@ capi:
 		spec="spec/generated/$$m.yaml"; \
 		[ -f "$$manifest" ] || continue; \
 		[ -f "$$spec" ] || continue; \
+		overlay="spec/overlays/$$m.yaml"; \
+		overlay_flag=""; \
+		[ -f "$$overlay" ] && overlay_flag="-overlay $$overlay"; \
 		echo "capigen $$m"; \
 		go run ./tools/cmd/capigen \
 			-spec "$$spec" \
 			-manifest "$$manifest" \
+			$$overlay_flag \
 			-out "capi/$$m/"; \
 	done
 
