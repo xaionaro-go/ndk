@@ -83,16 +83,16 @@ fixtures: specs-fixtures idiomatic
 regen: clean specs capi idiomatic
 
 test:
-	go test $$(go list ./... | grep -v -E '/(capi|tests|examples)/|/ndk/[a-z][a-z0-9]*$$') -count=1
+	go test $$(go list ./... | grep -v -E '/(capi|cmd|tests|examples)/|/ndk/[a-z][a-z0-9]*$$') -count=1
 
 lint:
 	golangci-lint run ./tools/...
 
-# Cross-compile all examples for Android arm64 to catch compile errors (requires NDK)
+# Cross-compile all examples and ndkcli for Android arm64 to catch compile errors (requires NDK)
 check-examples:
 	CGO_ENABLED=1 GOOS=android GOARCH=arm64 \
 		CC=$(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android35-clang \
-		go build ./examples/...
+		go build ./examples/... ./cmd/ndkcli/
 
 # Cross-compile E2E test binary for Android x86_64 (requires NDK)
 e2e-build:
