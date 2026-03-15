@@ -13,6 +13,15 @@ type PersistableBundle struct {
 	ptr *capi.APersistableBundle
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *PersistableBundle) cptr() *capi.APersistableBundle {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewPersistableBundle creates a new PersistableBundle.
 func NewPersistableBundle() *PersistableBundle {
 	return &PersistableBundle{ptr: capi.APersistableBundle_new()}
@@ -100,7 +109,7 @@ func (h *PersistableBundle) GetPersistableBundle(key string) (*PersistableBundle
 
 // IsEqual returns the value directly.
 func (h *PersistableBundle) IsEqual(rhs *PersistableBundle) bool {
-	return (bool)(capi.APersistableBundle_isEqual(h.ptr, rhs.ptr))
+	return (bool)(capi.APersistableBundle_isEqual(h.ptr, rhs.cptr()))
 }
 
 // PutBoolean calls the underlying NDK function.
@@ -145,7 +154,7 @@ func (h *PersistableBundle) PutLongVector(key string, vec *int64, num int32) {
 
 // PutPersistableBundle calls the underlying NDK function.
 func (h *PersistableBundle) PutPersistableBundle(key string, val *PersistableBundle) {
-	capi.APersistableBundle_putPersistableBundle(h.ptr, key, val.ptr)
+	capi.APersistableBundle_putPersistableBundle(h.ptr, key, val.cptr())
 }
 
 // PutString calls the underlying NDK function.
@@ -160,5 +169,5 @@ func (h *PersistableBundle) Size() int32 {
 
 // WriteToParcel calls the underlying NDK function.
 func (h *PersistableBundle) WriteToParcel(parcel *AParcel) error {
-	return result(int32(capi.APersistableBundle_writeToParcel(h.ptr, (*capi.AParcel)(parcel))))
+	return result(capi.APersistableBundle_writeToParcel(h.ptr, (*capi.AParcel)(parcel)))
 }

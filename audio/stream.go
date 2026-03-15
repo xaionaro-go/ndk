@@ -14,12 +14,21 @@ type Stream struct {
 	ptr *capi.AAudioStream
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Stream) cptr() *capi.AAudioStream {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Stream) Close() error {
 	if h.ptr == nil {
 		return nil
 	}
-	err := result(int32(capi.AAudioStream_close(h.ptr)))
+	err := result(capi.AAudioStream_close(h.ptr))
 	h.ptr = nil
 	return err
 }
@@ -36,12 +45,12 @@ func (h *Stream) Pointer() unsafe.Pointer {
 
 // GetBufferCapacityInFrames calls the underlying NDK function.
 func (h *Stream) GetBufferCapacityInFrames() error {
-	return result(int32(capi.AAudioStream_getBufferCapacityInFrames(h.ptr)))
+	return result(capi.AAudioStream_getBufferCapacityInFrames(h.ptr))
 }
 
 // GetBufferSizeInFrames calls the underlying NDK function.
 func (h *Stream) GetBufferSizeInFrames() error {
-	return result(int32(capi.AAudioStream_getBufferSizeInFrames(h.ptr)))
+	return result(capi.AAudioStream_getBufferSizeInFrames(h.ptr))
 }
 
 // ChannelCount returns the value directly.
@@ -51,7 +60,7 @@ func (h *Stream) ChannelCount() int32 {
 
 // GetDeviceID calls the underlying NDK function.
 func (h *Stream) GetDeviceID() error {
-	return result(int32(capi.AAudioStream_getDeviceId(h.ptr)))
+	return result(capi.AAudioStream_getDeviceId(h.ptr))
 }
 
 // FramesPerBurst returns the value directly.
@@ -61,7 +70,7 @@ func (h *Stream) FramesPerBurst() int32 {
 
 // GetFramesPerDataCallback calls the underlying NDK function.
 func (h *Stream) GetFramesPerDataCallback() error {
-	return result(int32(capi.AAudioStream_getFramesPerDataCallback(h.ptr)))
+	return result(capi.AAudioStream_getFramesPerDataCallback(h.ptr))
 }
 
 // GetFramesRead returns the value directly.
@@ -76,12 +85,12 @@ func (h *Stream) GetFramesWritten() int64 {
 
 // GetHardwareChannelCount calls the underlying NDK function.
 func (h *Stream) GetHardwareChannelCount() error {
-	return result(int32(capi.AAudioStream_getHardwareChannelCount(h.ptr)))
+	return result(capi.AAudioStream_getHardwareChannelCount(h.ptr))
 }
 
 // GetHardwareSampleRate calls the underlying NDK function.
 func (h *Stream) GetHardwareSampleRate() error {
-	return result(int32(capi.AAudioStream_getHardwareSampleRate(h.ptr)))
+	return result(capi.AAudioStream_getHardwareSampleRate(h.ptr))
 }
 
 // SampleRate returns the value directly.
@@ -91,7 +100,7 @@ func (h *Stream) SampleRate() int32 {
 
 // GetSamplesPerFrame calls the underlying NDK function.
 func (h *Stream) GetSamplesPerFrame() error {
-	return result(int32(capi.AAudioStream_getSamplesPerFrame(h.ptr)))
+	return result(capi.AAudioStream_getSamplesPerFrame(h.ptr))
 }
 
 // State returns the value directly.
@@ -125,22 +134,22 @@ func (h *Stream) Read(buffer []byte, numFrames int32, timeout time.Duration) (in
 
 // Flush calls the underlying NDK function.
 func (h *Stream) Flush() error {
-	return result(int32(capi.AAudioStream_requestFlush(h.ptr)))
+	return result(capi.AAudioStream_requestFlush(h.ptr))
 }
 
 // Pause calls the underlying NDK function.
 func (h *Stream) Pause() error {
-	return result(int32(capi.AAudioStream_requestPause(h.ptr)))
+	return result(capi.AAudioStream_requestPause(h.ptr))
 }
 
 // Start calls the underlying NDK function.
 func (h *Stream) Start() error {
-	return result(int32(capi.AAudioStream_requestStart(h.ptr)))
+	return result(capi.AAudioStream_requestStart(h.ptr))
 }
 
 // Stop calls the underlying NDK function.
 func (h *Stream) Stop() error {
-	return result(int32(capi.AAudioStream_requestStop(h.ptr)))
+	return result(capi.AAudioStream_requestStop(h.ptr))
 }
 
 // Write calls the underlying NDK function and returns the frame count.

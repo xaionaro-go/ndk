@@ -13,6 +13,15 @@ type Transaction struct {
 	ptr *capi.ASurfaceTransaction
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Transaction) cptr() *capi.ASurfaceTransaction {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewTransaction creates a new Transaction.
 func NewTransaction() *Transaction {
 	return &Transaction{ptr: capi.ASurfaceTransaction_create()}
@@ -45,40 +54,40 @@ func (h *Transaction) Apply() {
 
 // ClearFrameRate calls the underlying NDK function.
 func (h *Transaction) ClearFrameRate(surface_control *SurfaceControl) {
-	capi.ASurfaceTransaction_clearFrameRate(h.ptr, surface_control.ptr)
+	capi.ASurfaceTransaction_clearFrameRate(h.ptr, surface_control.cptr())
 }
 
 // Reparent calls the underlying NDK function.
 func (h *Transaction) Reparent(surface_control *SurfaceControl, new_parent *SurfaceControl) {
-	capi.ASurfaceTransaction_reparent(h.ptr, surface_control.ptr, new_parent.ptr)
+	capi.ASurfaceTransaction_reparent(h.ptr, surface_control.cptr(), new_parent.cptr())
 }
 
 // SetBufferAlpha sets a property and returns the receiver for chaining.
 func (h *Transaction) SetBufferAlpha(surface_control *SurfaceControl, alpha float32) *Transaction {
-	capi.ASurfaceTransaction_setBufferAlpha(h.ptr, surface_control.ptr, alpha)
+	capi.ASurfaceTransaction_setBufferAlpha(h.ptr, surface_control.cptr(), alpha)
 	return h
 }
 
 // SetBufferTransform calls the underlying NDK function.
 func (h *Transaction) SetBufferTransform(surface_control *SurfaceControl, transform int32) {
-	capi.ASurfaceTransaction_setBufferTransform(h.ptr, surface_control.ptr, transform)
+	capi.ASurfaceTransaction_setBufferTransform(h.ptr, surface_control.cptr(), transform)
 }
 
 // SetCrop sets a property and returns the receiver for chaining.
 func (h *Transaction) SetCrop(surface_control *SurfaceControl, crop *ARect) *Transaction {
-	capi.ASurfaceTransaction_setCrop(h.ptr, surface_control.ptr, (*capi.ARect)(crop))
+	capi.ASurfaceTransaction_setCrop(h.ptr, surface_control.cptr(), (*capi.ARect)(crop))
 	return h
 }
 
 // SetDamageRegion sets a property and returns the receiver for chaining.
 func (h *Transaction) SetDamageRegion(surface_control *SurfaceControl, rects *ARect, count uint32) *Transaction {
-	capi.ASurfaceTransaction_setDamageRegion(h.ptr, surface_control.ptr, (*capi.ARect)(rects), count)
+	capi.ASurfaceTransaction_setDamageRegion(h.ptr, surface_control.cptr(), (*capi.ARect)(rects), count)
 	return h
 }
 
 // SetDesiredHdrHeadroom calls the underlying NDK function.
 func (h *Transaction) SetDesiredHdrHeadroom(surface_control *SurfaceControl, desiredHeadroom float32) {
-	capi.ASurfaceTransaction_setDesiredHdrHeadroom(h.ptr, surface_control.ptr, desiredHeadroom)
+	capi.ASurfaceTransaction_setDesiredHdrHeadroom(h.ptr, surface_control.cptr(), desiredHeadroom)
 }
 
 // SetDesiredPresentTime calls the underlying NDK function.
@@ -88,43 +97,43 @@ func (h *Transaction) SetDesiredPresentTime(desiredPresentTime int64) {
 
 // SetEnableBackPressure calls the underlying NDK function.
 func (h *Transaction) SetEnableBackPressure(surface_control *SurfaceControl, enableBackPressure bool) {
-	capi.ASurfaceTransaction_setEnableBackPressure(h.ptr, surface_control.ptr, enableBackPressure)
+	capi.ASurfaceTransaction_setEnableBackPressure(h.ptr, surface_control.cptr(), enableBackPressure)
 }
 
 // SetExtendedRangeBrightness calls the underlying NDK function.
 func (h *Transaction) SetExtendedRangeBrightness(surface_control *SurfaceControl, currentBufferRatio float32, desiredRatio float32) {
-	capi.ASurfaceTransaction_setExtendedRangeBrightness(h.ptr, surface_control.ptr, currentBufferRatio, desiredRatio)
+	capi.ASurfaceTransaction_setExtendedRangeBrightness(h.ptr, surface_control.cptr(), currentBufferRatio, desiredRatio)
 }
 
 // SetFrameRate calls the underlying NDK function.
 func (h *Transaction) SetFrameRate(surface_control *SurfaceControl, frameRate float32, compatibility int8) {
-	capi.ASurfaceTransaction_setFrameRate(h.ptr, surface_control.ptr, frameRate, compatibility)
+	capi.ASurfaceTransaction_setFrameRate(h.ptr, surface_control.cptr(), frameRate, compatibility)
 }
 
 // SetFrameRateWithChangeStrategy calls the underlying NDK function.
 func (h *Transaction) SetFrameRateWithChangeStrategy(surface_control *SurfaceControl, frameRate float32, compatibility int8, changeFrameRateStrategy int8) {
-	capi.ASurfaceTransaction_setFrameRateWithChangeStrategy(h.ptr, surface_control.ptr, frameRate, compatibility, changeFrameRateStrategy)
+	capi.ASurfaceTransaction_setFrameRateWithChangeStrategy(h.ptr, surface_control.cptr(), frameRate, compatibility, changeFrameRateStrategy)
 }
 
 // SetGeometry calls the underlying NDK function.
 func (h *Transaction) SetGeometry(surface_control *SurfaceControl, source *ARect, destination *ARect, transform int32) {
-	capi.ASurfaceTransaction_setGeometry(h.ptr, surface_control.ptr, (*capi.ARect)(source), (*capi.ARect)(destination), transform)
+	capi.ASurfaceTransaction_setGeometry(h.ptr, surface_control.cptr(), (*capi.ARect)(source), (*capi.ARect)(destination), transform)
 }
 
 // SetPosition sets a property and returns the receiver for chaining.
 func (h *Transaction) SetPosition(surface_control *SurfaceControl, x int32, y int32) *Transaction {
-	capi.ASurfaceTransaction_setPosition(h.ptr, surface_control.ptr, x, y)
+	capi.ASurfaceTransaction_setPosition(h.ptr, surface_control.cptr(), x, y)
 	return h
 }
 
 // SetScale sets a property and returns the receiver for chaining.
 func (h *Transaction) SetScale(surface_control *SurfaceControl, xScale float32, yScale float32) *Transaction {
-	capi.ASurfaceTransaction_setScale(h.ptr, surface_control.ptr, xScale, yScale)
+	capi.ASurfaceTransaction_setScale(h.ptr, surface_control.cptr(), xScale, yScale)
 	return h
 }
 
 // SetZOrder sets a property and returns the receiver for chaining.
 func (h *Transaction) SetZOrder(surface_control *SurfaceControl, z_order int32) *Transaction {
-	capi.ASurfaceTransaction_setZOrder(h.ptr, surface_control.ptr, z_order)
+	capi.ASurfaceTransaction_setZOrder(h.ptr, surface_control.cptr(), z_order)
 	return h
 }

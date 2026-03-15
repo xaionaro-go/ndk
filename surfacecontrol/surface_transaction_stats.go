@@ -13,6 +13,15 @@ type SurfaceTransactionStats struct {
 	ptr *capi.ASurfaceTransactionStats
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *SurfaceTransactionStats) cptr() *capi.ASurfaceTransactionStats {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewSurfaceTransactionStatsFromPointer wraps a raw ASurfaceTransactionStats pointer.
 func NewSurfaceTransactionStatsFromPointer(ptr unsafe.Pointer) *SurfaceTransactionStats {
 	return &SurfaceTransactionStats{ptr: (*capi.ASurfaceTransactionStats)(ptr)}
@@ -25,7 +34,7 @@ func (h *SurfaceTransactionStats) Pointer() unsafe.Pointer {
 
 // GetAcquireTime returns the value directly.
 func (h *SurfaceTransactionStats) GetAcquireTime(surface_control *SurfaceControl) int64 {
-	return (int64)(capi.ASurfaceTransactionStats_getAcquireTime(h.ptr, surface_control.ptr))
+	return (int64)(capi.ASurfaceTransactionStats_getAcquireTime(h.ptr, surface_control.cptr()))
 }
 
 // GetLatchTime returns the value directly.
@@ -35,10 +44,10 @@ func (h *SurfaceTransactionStats) GetLatchTime() int64 {
 
 // GetPresentFenceFd calls the underlying NDK function.
 func (h *SurfaceTransactionStats) GetPresentFenceFd() error {
-	return result(int32(capi.ASurfaceTransactionStats_getPresentFenceFd(h.ptr)))
+	return result(capi.ASurfaceTransactionStats_getPresentFenceFd(h.ptr))
 }
 
 // GetPreviousReleaseFenceFd calls the underlying NDK function.
 func (h *SurfaceTransactionStats) GetPreviousReleaseFenceFd(surface_control *SurfaceControl) error {
-	return result(int32(capi.ASurfaceTransactionStats_getPreviousReleaseFenceFd(h.ptr, surface_control.ptr)))
+	return result(capi.ASurfaceTransactionStats_getPreviousReleaseFenceFd(h.ptr, surface_control.cptr()))
 }

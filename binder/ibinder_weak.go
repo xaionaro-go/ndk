@@ -13,6 +13,15 @@ type IBinder_Weak struct {
 	ptr *capi.AIBinder_Weak
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *IBinder_Weak) cptr() *capi.AIBinder_Weak {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewIBinder_Weak creates a new IBinder_Weak.
 func NewIBinder_Weak(binder unsafe.Pointer) *IBinder_Weak {
 	return &IBinder_Weak{ptr: capi.AIBinder_Weak_new((*capi.AIBinder)(binder))}
@@ -45,7 +54,7 @@ func (h *IBinder_Weak) Clone() *IBinder_Weak {
 
 // Lt returns the value directly.
 func (h *IBinder_Weak) Lt(rhs *IBinder_Weak) bool {
-	return (bool)(capi.AIBinder_Weak_lt(h.ptr, rhs.ptr))
+	return (bool)(capi.AIBinder_Weak_lt(h.ptr, rhs.cptr()))
 }
 
 // Promote creates a new Binder from this IBinder_Weak.

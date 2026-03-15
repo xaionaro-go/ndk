@@ -37,7 +37,7 @@ func (h *MediaCodecInfo) IsFeatureSupported(featureName string) error {
 
 // IsFormatSupported calls the underlying NDK function.
 func (h *MediaCodecInfo) IsFormatSupported(format *Format) error {
-	return result(int32(capi.AMediaCodecInfo_isFormatSupported(h.ptr, format.ptr)))
+	return result(int32(capi.AMediaCodecInfo_isFormatSupported(h.ptr, format.cptr())))
 }
 
 // IsVendor calls the underlying NDK function.

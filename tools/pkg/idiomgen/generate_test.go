@@ -86,7 +86,7 @@ func TestGenerate(t *testing.T) {
 	if !strings.Contains(errorsStr, "type Error int32") {
 		t.Error("errors.go missing 'type Error int32'")
 	}
-	if !strings.Contains(errorsStr, "func result(") {
+	if !strings.Contains(errorsStr, "func result[") {
 		t.Error("errors.go missing result() helper")
 	}
 }

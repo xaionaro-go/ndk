@@ -13,12 +13,21 @@ type Device struct {
 	ptr *capi.ACameraDevice
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Device) cptr() *capi.ACameraDevice {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Device) Close() error {
 	if h.ptr == nil {
 		return nil
 	}
-	err := result(int32(capi.ACameraDevice_close(h.ptr)))
+	err := result(capi.ACameraDevice_close(h.ptr))
 	h.ptr = nil
 	return err
 }
@@ -36,7 +45,7 @@ func (h *Device) Pointer() unsafe.Pointer {
 // CreateCaptureRequest creates a new CaptureRequest from this Device.
 func (h *Device) CreateCaptureRequest(templateID TemplateType) (*CaptureRequest, error) {
 	var ptr *capi.ACaptureRequest
-	if err := result(int32(capi.ACameraDevice_createCaptureRequest(h.ptr, capi.ACameraDevice_request_template(templateID), &ptr))); err != nil {
+	if err := result(capi.ACameraDevice_createCaptureRequest(h.ptr, capi.ACameraDevice_request_template(templateID), &ptr)); err != nil {
 		return nil, err
 	}
 	return &CaptureRequest{ptr: ptr}, nil
@@ -48,7 +57,7 @@ func (h *Device) CreateCaptureSession(outputs *SessionOutputContainer, cbs Sessi
 	var cbsC capi.ACameraCaptureSession_stateCallbacks
 	capi.BridgeInitSessionStateCallbacks(&cbsC, cbID)
 	var ptr *capi.ACameraCaptureSession
-	if err := result(int32(capi.ACameraDevice_createCaptureSession(h.ptr, outputs.ptr, &cbsC, &ptr))); err != nil {
+	if err := result(capi.ACameraDevice_createCaptureSession(h.ptr, outputs.cptr(), &cbsC, &ptr)); err != nil {
 		capi.BridgeUnregisterSessionStateCallbacks(cbID)
 		return nil, err
 	}

@@ -13,6 +13,15 @@ type ChoreographerFrameCallbackData struct {
 	ptr *capi.AChoreographerFrameCallbackData
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *ChoreographerFrameCallbackData) cptr() *capi.AChoreographerFrameCallbackData {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewChoreographerFrameCallbackDataFromPointer wraps a raw AChoreographerFrameCallbackData pointer.
 func NewChoreographerFrameCallbackDataFromPointer(ptr unsafe.Pointer) *ChoreographerFrameCallbackData {
 	return &ChoreographerFrameCallbackData{ptr: (*capi.AChoreographerFrameCallbackData)(ptr)}

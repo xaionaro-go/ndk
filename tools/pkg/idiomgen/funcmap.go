@@ -32,6 +32,11 @@ func capiArg(p MergedParam) string {
 		}
 	}
 	if p.IsHandle && p.GoType != "unsafe.Pointer" {
+		// Pointer params (e.g. *Window) can be nil — use the nil-safe
+		// cptr() method instead of direct .ptr field access.
+		if strings.HasPrefix(p.GoType, "*") {
+			return p.Name + ".cptr()"
+		}
 		return p.Name + ".ptr"
 	}
 	if p.IsString {
@@ -252,6 +257,9 @@ func FuncMap() template.FuncMap {
 				return v
 			}
 			if p.IsHandle {
+				if strings.HasPrefix(p.GoType, "*") {
+					return p.Name + ".cptr()"
+				}
 				return p.Name + ".ptr"
 			}
 			if p.IsString {
@@ -289,6 +297,9 @@ func FuncMap() template.FuncMap {
 				return "&" + p.Name + "Bytes[0]"
 			}
 			if p.IsHandle {
+				if strings.HasPrefix(p.GoType, "*") {
+					return p.Name + ".cptr()"
+				}
 				return p.Name + ".ptr"
 			}
 			if p.CapiType != "" && (p.CapiType != p.GoType || p.Remapped) {

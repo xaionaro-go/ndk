@@ -13,6 +13,15 @@ type MediaDrmByteArray struct {
 	ptr *capi.AMediaDrmByteArray
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *MediaDrmByteArray) cptr() *capi.AMediaDrmByteArray {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewMediaDrmByteArrayFromPointer wraps a raw AMediaDrmByteArray pointer.
 func NewMediaDrmByteArrayFromPointer(ptr unsafe.Pointer) *MediaDrmByteArray {
 	return &MediaDrmByteArray{ptr: (*capi.AMediaDrmByteArray)(ptr)}

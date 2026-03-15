@@ -13,6 +13,15 @@ type Activity struct {
 	ptr *capi.ANativeActivity
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Activity) cptr() *capi.ANativeActivity {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewActivityFromPointer wraps a raw ANativeActivity pointer.
 func NewActivityFromPointer(ptr unsafe.Pointer) *Activity {
 	return &Activity{ptr: (*capi.ANativeActivity)(ptr)}

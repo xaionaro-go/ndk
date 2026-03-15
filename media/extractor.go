@@ -13,6 +13,15 @@ type Extractor struct {
 	ptr *capi.AMediaExtractor
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Extractor) cptr() *capi.AMediaExtractor {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewExtractor creates a new Extractor.
 func NewExtractor() *Extractor {
 	return &Extractor{ptr: capi.AMediaExtractor_new()}
@@ -23,7 +32,7 @@ func (h *Extractor) Close() error {
 	if h.ptr == nil {
 		return nil
 	}
-	err := result(int32(capi.AMediaExtractor_delete(h.ptr)))
+	err := result(capi.AMediaExtractor_delete(h.ptr))
 	h.ptr = nil
 	return err
 }
@@ -60,7 +69,7 @@ func (h *Extractor) GetSampleCryptoInfo() *MediaCodecCryptoInfo {
 
 // GetSampleFlags calls the underlying NDK function.
 func (h *Extractor) GetSampleFlags() error {
-	return result(int32(capi.AMediaExtractor_getSampleFlags(h.ptr)))
+	return result(capi.AMediaExtractor_getSampleFlags(h.ptr))
 }
 
 // GetSampleSize returns the value directly.
@@ -75,7 +84,7 @@ func (h *Extractor) SampleTime() int64 {
 
 // GetSampleTrackIndex calls the underlying NDK function.
 func (h *Extractor) GetSampleTrackIndex() error {
-	return result(int32(capi.AMediaExtractor_getSampleTrackIndex(h.ptr)))
+	return result(capi.AMediaExtractor_getSampleTrackIndex(h.ptr))
 }
 
 // TrackCount returns the value directly.
@@ -85,10 +94,10 @@ func (h *Extractor) TrackCount() uint64 {
 
 // SelectTrack calls the underlying NDK function.
 func (h *Extractor) SelectTrack(idx uint64) error {
-	return result(int32(capi.AMediaExtractor_selectTrack(h.ptr, idx)))
+	return result(capi.AMediaExtractor_selectTrack(h.ptr, idx))
 }
 
 // SetDataSourceFd calls the underlying NDK function.
 func (h *Extractor) SetDataSourceFd(fd int32, offset Off64_t, length Off64_t) error {
-	return result(int32(capi.AMediaExtractor_setDataSourceFd(h.ptr, fd, capi.Off64_t(offset), capi.Off64_t(length))))
+	return result(capi.AMediaExtractor_setDataSourceFd(h.ptr, fd, capi.Off64_t(offset), capi.Off64_t(length)))
 }

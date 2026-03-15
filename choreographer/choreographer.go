@@ -13,6 +13,15 @@ type Choreographer struct {
 	ptr *capi.AChoreographer
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Choreographer) cptr() *capi.AChoreographer {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewChoreographerFromPointer wraps a raw AChoreographer pointer.
 func NewChoreographerFromPointer(ptr unsafe.Pointer) *Choreographer {
 	return &Choreographer{ptr: (*capi.AChoreographer)(ptr)}

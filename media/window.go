@@ -13,6 +13,15 @@ type Window struct {
 	ptr *capi.ANativeWindow
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Window) cptr() *capi.ANativeWindow {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewWindowFromPointer wraps a raw ANativeWindow pointer.
 func NewWindowFromPointer(ptr unsafe.Pointer) *Window {
 	return &Window{ptr: (*capi.ANativeWindow)(ptr)}

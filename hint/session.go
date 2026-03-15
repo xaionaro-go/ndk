@@ -14,6 +14,15 @@ type Session struct {
 	ptr *capi.APerformanceHintSession
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Session) cptr() *capi.APerformanceHintSession {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Session) Close() error {
 	if h.ptr == nil {
@@ -36,25 +45,25 @@ func (h *Session) Pointer() unsafe.Pointer {
 
 // ReportActualWorkDuration calls the underlying NDK function.
 func (h *Session) ReportActualWorkDuration(actualDuration time.Duration) error {
-	return result(int32(capi.APerformanceHint_reportActualWorkDuration(h.ptr, int64(actualDuration.Nanoseconds()))))
+	return result(capi.APerformanceHint_reportActualWorkDuration(h.ptr, int64(actualDuration.Nanoseconds())))
 }
 
 // APerformanceHint_reportActualWorkDuration2 calls the underlying NDK function.
 func (h *Session) APerformanceHint_reportActualWorkDuration2(workDuration *WorkDuration) error {
-	return result(int32(capi.APerformanceHint_reportActualWorkDuration2(h.ptr, workDuration.ptr)))
+	return result(capi.APerformanceHint_reportActualWorkDuration2(h.ptr, workDuration.cptr()))
 }
 
 // APerformanceHint_setPreferPowerEfficiency calls the underlying NDK function.
 func (h *Session) APerformanceHint_setPreferPowerEfficiency(enabled bool) error {
-	return result(int32(capi.APerformanceHint_setPreferPowerEfficiency(h.ptr, enabled)))
+	return result(capi.APerformanceHint_setPreferPowerEfficiency(h.ptr, enabled))
 }
 
 // APerformanceHint_setThreads calls the underlying NDK function.
 func (h *Session) APerformanceHint_setThreads(threadIds *Pid_t, size uint64) error {
-	return result(int32(capi.APerformanceHint_setThreads(h.ptr, (*capi.Pid_t)(threadIds), size)))
+	return result(capi.APerformanceHint_setThreads(h.ptr, (*capi.Pid_t)(threadIds), size))
 }
 
 // UpdateTargetWorkDuration calls the underlying NDK function.
 func (h *Session) UpdateTargetWorkDuration(targetDuration time.Duration) error {
-	return result(int32(capi.APerformanceHint_updateTargetWorkDuration(h.ptr, int64(targetDuration.Nanoseconds()))))
+	return result(capi.APerformanceHint_updateTargetWorkDuration(h.ptr, int64(targetDuration.Nanoseconds())))
 }

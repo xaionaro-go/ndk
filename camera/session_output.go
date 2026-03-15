@@ -13,10 +13,19 @@ type SessionOutput struct {
 	ptr *capi.ACaptureSessionOutput
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *SessionOutput) cptr() *capi.ACaptureSessionOutput {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewSessionOutput creates a new SessionOutput.
 func NewSessionOutput(anw *ANativeWindow) (*SessionOutput, error) {
 	var ptr *capi.ACaptureSessionOutput
-	if err := result(int32(capi.ACaptureSessionOutput_create(anw, &ptr))); err != nil {
+	if err := result(capi.ACaptureSessionOutput_create(anw, &ptr)); err != nil {
 		return nil, err
 	}
 	return &SessionOutput{ptr: ptr}, nil

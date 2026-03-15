@@ -13,6 +13,15 @@ type CaptureRequest struct {
 	ptr *capi.ACaptureRequest
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *CaptureRequest) cptr() *capi.ACaptureRequest {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *CaptureRequest) Close() error {
 	if h.ptr == nil {
@@ -35,7 +44,7 @@ func (h *CaptureRequest) Pointer() unsafe.Pointer {
 
 // AddTarget sets a property and returns the receiver for chaining.
 func (h *CaptureRequest) AddTarget(output *OutputTarget) *CaptureRequest {
-	capi.ACaptureRequest_addTarget(h.ptr, output.ptr)
+	capi.ACaptureRequest_addTarget(h.ptr, output.cptr())
 	return h
 }
 
@@ -46,5 +55,5 @@ func (h *CaptureRequest) Copy() *CaptureRequest {
 
 // RemoveTarget calls the underlying NDK function.
 func (h *CaptureRequest) RemoveTarget(output *OutputTarget) error {
-	return result(int32(capi.ACaptureRequest_removeTarget(h.ptr, output.ptr)))
+	return result(capi.ACaptureRequest_removeTarget(h.ptr, output.cptr()))
 }

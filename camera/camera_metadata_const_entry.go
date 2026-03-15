@@ -13,6 +13,15 @@ type CameraMetadata_const_entry struct {
 	ptr *capi.ACameraMetadata_const_entry
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *CameraMetadata_const_entry) cptr() *capi.ACameraMetadata_const_entry {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewCameraMetadata_const_entryFromPointer wraps a raw ACameraMetadata_const_entry pointer.
 func NewCameraMetadata_const_entryFromPointer(ptr unsafe.Pointer) *CameraMetadata_const_entry {
 	return &CameraMetadata_const_entry{ptr: (*capi.ACameraMetadata_const_entry)(ptr)}

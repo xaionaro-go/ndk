@@ -13,6 +13,15 @@ type MediaDrmKeyStatus struct {
 	ptr *capi.AMediaDrmKeyStatus
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *MediaDrmKeyStatus) cptr() *capi.AMediaDrmKeyStatus {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewMediaDrmKeyStatusFromPointer wraps a raw AMediaDrmKeyStatus pointer.
 func NewMediaDrmKeyStatusFromPointer(ptr unsafe.Pointer) *MediaDrmKeyStatus {
 	return &MediaDrmKeyStatus{ptr: (*capi.AMediaDrmKeyStatus)(ptr)}

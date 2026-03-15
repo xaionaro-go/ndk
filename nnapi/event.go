@@ -13,6 +13,15 @@ type Event struct {
 	ptr *capi.ANeuralNetworksEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Event) cptr() *capi.ANeuralNetworksEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewEventFromPointer wraps a raw ANeuralNetworksEvent pointer.
 func NewEventFromPointer(ptr unsafe.Pointer) *Event {
 	return &Event{ptr: (*capi.ANeuralNetworksEvent)(ptr)}
@@ -25,5 +34,5 @@ func (h *Event) Pointer() unsafe.Pointer {
 
 // Wait calls the underlying NDK function.
 func (h *Event) Wait() error {
-	return result(int32(capi.ANeuralNetworksEvent_wait(h.ptr)))
+	return result(capi.ANeuralNetworksEvent_wait(h.ptr))
 }

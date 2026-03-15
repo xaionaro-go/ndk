@@ -15,6 +15,15 @@ import (
 type {{ .Type.GoName }} struct {
 	ptr *capi.{{ .Type.CapiType }}
 }
+
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *{{ .Type.GoName }}) cptr() *capi.{{ .Type.CapiType }} {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
 {{ if .Type.Constructor }}
 {{ if .Type.ConstructorReturnsPointer }}
 // New{{ .Type.GoName }} creates a new {{ .Type.GoName }}.
@@ -26,7 +35,7 @@ func New{{ .Type.GoName }}({{ range $i, $p := .Type.ConstructorParams }}{{ if $i
 func New{{ .Type.GoName }}({{ range $i, $p := .Type.ConstructorParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) (*{{ .Type.GoName }}, error) {
 {{ range $p := stringParams .Type.ConstructorParams }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
 {{ end }}	var ptr *capi.{{ .Type.CapiType }}
-	if err := result(int32(capi.{{ .Type.Constructor }}({{ range $p := .Type.ConstructorParams }}{{ capiArg $p }}, {{ end }}&ptr))); err != nil {
+	if err := result(capi.{{ .Type.Constructor }}({{ range $p := .Type.ConstructorParams }}{{ capiArg $p }}, {{ end }}&ptr)); err != nil {
 		return nil, err
 	}
 	return &{{ .Type.GoName }}{ptr: ptr}, nil
@@ -40,7 +49,7 @@ func (h *{{ .Type.GoName }}) Close() error {
 		return nil
 	}
 	{{ if .Type.DestructorReturnsError -}}
-	err := result(int32(capi.{{ .Type.Destructor }}(h.ptr)))
+	err := result(capi.{{ .Type.Destructor }}(h.ptr))
 	h.ptr = nil
 	return err
 	{{- else -}}
@@ -64,7 +73,7 @@ func (h *{{ .Type.GoName }}) Pointer() unsafe.Pointer {
 {{- if $m.CustomCall }}
 // {{ $m.GoName }} calls the underlying NDK function.
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := $m.CustomCall.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) error {
-	return result(int32(capi.{{ $m.CName }}(h.ptr, {{ $m.CustomCall.Args }})))
+	return result(capi.{{ $m.CName }}(h.ptr, {{ $m.CustomCall.Args }}))
 }
 {{- else if $m.OutputParams }}
 {{- if $m.ReturnsBool }}
@@ -82,7 +91,7 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterOutputP
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterOutputParams (skipAndFilterOut $m.Params) $m.OutputParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) ({{ range $i, $op := $m.OutputParams }}{{ if $i }}, {{ end }}{{ $op.GoType }}{{ end }}, error) {
 {{ range $op := $m.OutputParams }}	var {{ $op.CParamName }}Ptr {{ $op.CapiType }}
 {{ end }}	ret := capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}{{ range $op := $m.OutputParams }}, &{{ $op.CParamName }}Ptr{{ end }})
-	if err := result(int32(ret)); err != nil {
+	if err := result(ret); err != nil {
 		return {{ range $op := $m.OutputParams }}{{ zeroValue $op }}, {{ end }}err
 	}
 	return {{ range $op := $m.OutputParams }}{{ if $op.IsHandle }}&{{ trimStarPrefix $op.GoType }}{ptr: {{ $op.CParamName }}Ptr}{{ else }}{{ $op.CParamName }}Ptr{{ end }}, {{ end }}nil
@@ -96,7 +105,7 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := callbackVisib
 	var cbsC capi.{{ $m.CallbackStruct }}
 	capi.BridgeInit{{ $m.CallbackGoType }}(&cbsC, cbID)
 	var ptr *capi.{{ lookupCapiType $.OpaqueTypes $m.ReturnsNew }}
-	if err := result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ callbackCapiArg . $m.CallbackParam }}{{ end }}, &ptr))); err != nil {
+	if err := result(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ callbackCapiArg . $m.CallbackParam }}{{ end }}, &ptr)); err != nil {
 		capi.BridgeUnregister{{ $m.CallbackGoType }}(cbID)
 		return nil, err
 	}
@@ -106,7 +115,7 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := callbackVisib
 // {{ $m.GoName }} returns items from the underlying list.
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) ([]{{ $m.ReturnsListAccessor.ItemType }}, error) {
 	var list *capi.{{ $m.ReturnsListAccessor.SpecName }}
-	if err := result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}, &list))); err != nil {
+	if err := result(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}, &list)); err != nil {
 		return nil, err
 	}
 	defer capi.{{ $m.ReturnsListAccessor.DeleteFunc }}(list)
@@ -122,7 +131,7 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilter
 // {{ $m.GoName }} creates a new {{ $m.ReturnsNew }} from this {{ $m.ReceiverType }}.
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterFixedParams (skipAndFilterOut $m.Params) $m.FixedParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) (*{{ $m.ReturnsNew }}, error) {
 	var ptr *capi.{{ lookupCapiType $.OpaqueTypes $m.ReturnsNew }}
-	if err := result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArgOrFixed . $m.FixedParams }}{{ end }}, &ptr))); err != nil {
+	if err := result(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArgOrFixed . $m.FixedParams }}{{ end }}, &ptr)); err != nil {
 		return nil, err
 	}
 	return &{{ $m.ReturnsNew }}{ptr: ptr}, nil
@@ -135,7 +144,7 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterFixedPa
 {{- else }}
 // {{ $m.GoName }} calls the underlying NDK function.
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterFixedParams (skipAndFilterOut $m.Params) $m.FixedParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) error {
-	return result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArgOrFixed . $m.FixedParams }}{{ end }})))
+	return result(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArgOrFixed . $m.FixedParams }}{{ end }}))
 }
 {{- end }}
 {{ else if $m.Chain }}
@@ -160,7 +169,7 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilter
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) (*{{ $m.ReturnsNew }}, error) {
 {{ range $p := stringParams (skipAndFilterOut $m.Params) }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
 {{ end }}	var ptr *capi.{{ lookupCapiType $.OpaqueTypes $m.ReturnsNew }}
-	if err := result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}, &ptr))); err != nil {
+	if err := result(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}, &ptr)); err != nil {
 		return nil, err
 	}
 	return &{{ $m.ReturnsNew }}{ptr: ptr}, nil
@@ -187,7 +196,7 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilter
 {{ else }}
 // {{ $m.GoName }} calls the underlying NDK function.
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := skipAndFilterOut $m.Params }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) error {
-	return result(int32(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }})))
+	return result(capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}))
 }
 {{ end }}
 {{- end }}
@@ -210,7 +219,7 @@ func {{ $f.GoName }}({{ range $i, $p := filterOutputParams $f.Params $f.OutputPa
 {{ range $p := stringParams (filterOutputParams $f.Params $f.OutputParams) }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
 {{ end }}{{ range $op := $f.OutputParams }}	var {{ $op.CParamName }}Ptr {{ $op.CapiType }}
 {{ end }}	ret := capi.{{ $f.CName }}({{ range $i, $p := filterOutputParams $f.Params $f.OutputParams }}{{ if $i }}, {{ end }}{{ capiArg $p }}{{ end }}{{ if filterOutputParams $f.Params $f.OutputParams }}{{ range $op := $f.OutputParams }}, &{{ $op.CParamName }}Ptr{{ end }}{{ else }}{{ range $i, $op := $f.OutputParams }}{{ if $i }}, {{ end }}&{{ $op.CParamName }}Ptr{{ end }}{{ end }})
-	if err := result(int32(ret)); err != nil {
+	if err := result(ret); err != nil {
 		return {{ range $op := $f.OutputParams }}{{ zeroValue $op }}, {{ end }}err
 	}
 	return {{ range $op := $f.OutputParams }}{{ if $op.IsHandle }}&{{ trimStarPrefix $op.GoType }}{ptr: {{ $op.CParamName }}Ptr}{{ else }}{{ $op.CParamName }}Ptr{{ end }}, {{ end }}nil

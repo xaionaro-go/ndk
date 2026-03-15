@@ -13,6 +13,15 @@ type UncalibratedEvent struct {
 	ptr *capi.AUncalibratedEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *UncalibratedEvent) cptr() *capi.AUncalibratedEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewUncalibratedEventFromPointer wraps a raw AUncalibratedEvent pointer.
 func NewUncalibratedEventFromPointer(ptr unsafe.Pointer) *UncalibratedEvent {
 	return &UncalibratedEvent{ptr: (*capi.AUncalibratedEvent)(ptr)}

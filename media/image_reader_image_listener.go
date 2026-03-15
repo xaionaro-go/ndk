@@ -13,6 +13,15 @@ type ImageReader_ImageListener struct {
 	ptr *capi.AImageReader_ImageListener
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *ImageReader_ImageListener) cptr() *capi.AImageReader_ImageListener {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewImageReader_ImageListenerFromPointer wraps a raw AImageReader_ImageListener pointer.
 func NewImageReader_ImageListenerFromPointer(ptr unsafe.Pointer) *ImageReader_ImageListener {
 	return &ImageReader_ImageListener{ptr: (*capi.AImageReader_ImageListener)(ptr)}

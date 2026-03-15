@@ -13,6 +13,15 @@ type Sensor struct {
 	ptr *capi.ASensor
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Sensor) cptr() *capi.ASensor {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewSensorFromPointer wraps a raw ASensor pointer.
 func NewSensorFromPointer(ptr unsafe.Pointer) *Sensor {
 	return &Sensor{ptr: (*capi.ASensor)(ptr)}
@@ -25,22 +34,22 @@ func (h *Sensor) Pointer() unsafe.Pointer {
 
 // GetFifoMaxEventCount calls the underlying NDK function.
 func (h *Sensor) GetFifoMaxEventCount() error {
-	return result(int32(capi.ASensor_getFifoMaxEventCount(h.ptr)))
+	return result(capi.ASensor_getFifoMaxEventCount(h.ptr))
 }
 
 // GetFifoReservedEventCount calls the underlying NDK function.
 func (h *Sensor) GetFifoReservedEventCount() error {
-	return result(int32(capi.ASensor_getFifoReservedEventCount(h.ptr)))
+	return result(capi.ASensor_getFifoReservedEventCount(h.ptr))
 }
 
 // GetHandle calls the underlying NDK function.
 func (h *Sensor) GetHandle() error {
-	return result(int32(capi.ASensor_getHandle(h.ptr)))
+	return result(capi.ASensor_getHandle(h.ptr))
 }
 
 // GetHighestDirectReportRateLevel calls the underlying NDK function.
 func (h *Sensor) GetHighestDirectReportRateLevel() error {
-	return result(int32(capi.ASensor_getHighestDirectReportRateLevel(h.ptr)))
+	return result(capi.ASensor_getHighestDirectReportRateLevel(h.ptr))
 }
 
 // MinDelay returns the value directly.
@@ -55,7 +64,7 @@ func (h *Sensor) Name() string {
 
 // GetReportingMode calls the underlying NDK function.
 func (h *Sensor) GetReportingMode() error {
-	return result(int32(capi.ASensor_getReportingMode(h.ptr)))
+	return result(capi.ASensor_getReportingMode(h.ptr))
 }
 
 // Resolution returns the value directly.

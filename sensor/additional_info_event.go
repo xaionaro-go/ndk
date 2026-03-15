@@ -13,6 +13,15 @@ type AdditionalInfoEvent struct {
 	ptr *capi.AAdditionalInfoEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *AdditionalInfoEvent) cptr() *capi.AAdditionalInfoEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewAdditionalInfoEventFromPointer wraps a raw AAdditionalInfoEvent pointer.
 func NewAdditionalInfoEventFromPointer(ptr unsafe.Pointer) *AdditionalInfoEvent {
 	return &AdditionalInfoEvent{ptr: (*capi.AAdditionalInfoEvent)(ptr)}

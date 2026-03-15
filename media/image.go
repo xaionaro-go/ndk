@@ -13,6 +13,15 @@ type Image struct {
 	ptr *capi.AImage
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Image) cptr() *capi.AImage {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Image) Close() error {
 	if h.ptr == nil {
@@ -40,17 +49,17 @@ func (h *Image) DeleteAsync(releaseFenceFd int32) {
 
 // Format calls the underlying NDK function.
 func (h *Image) Format(format *int32) error {
-	return result(int32(capi.AImage_getFormat(h.ptr, format)))
+	return result(capi.AImage_getFormat(h.ptr, format))
 }
 
 // Height calls the underlying NDK function.
 func (h *Image) Height(height *int32) error {
-	return result(int32(capi.AImage_getHeight(h.ptr, height)))
+	return result(capi.AImage_getHeight(h.ptr, height))
 }
 
 // NumberOfPlanes calls the underlying NDK function.
 func (h *Image) NumberOfPlanes(numPlanes *int32) error {
-	return result(int32(capi.AImage_getNumberOfPlanes(h.ptr, numPlanes)))
+	return result(capi.AImage_getNumberOfPlanes(h.ptr, numPlanes))
 }
 
 // PlaneData calls the underlying NDK function.
@@ -58,7 +67,7 @@ func (h *Image) PlaneData(planeIdx int32) (*uint8, int32, error) {
 	var dataPtr *uint8
 	var dataLengthPtr int32
 	ret := capi.AImage_getPlaneData(h.ptr, planeIdx, &dataPtr, &dataLengthPtr)
-	if err := result(int32(ret)); err != nil {
+	if err := result(ret); err != nil {
 		return nil, 0, err
 	}
 	return dataPtr, dataLengthPtr, nil
@@ -66,20 +75,20 @@ func (h *Image) PlaneData(planeIdx int32) (*uint8, int32, error) {
 
 // PlanePixelStride calls the underlying NDK function.
 func (h *Image) PlanePixelStride(planeIdx int32, pixelStride *int32) error {
-	return result(int32(capi.AImage_getPlanePixelStride(h.ptr, planeIdx, pixelStride)))
+	return result(capi.AImage_getPlanePixelStride(h.ptr, planeIdx, pixelStride))
 }
 
 // PlaneRowStride calls the underlying NDK function.
 func (h *Image) PlaneRowStride(planeIdx int32, rowStride *int32) error {
-	return result(int32(capi.AImage_getPlaneRowStride(h.ptr, planeIdx, rowStride)))
+	return result(capi.AImage_getPlaneRowStride(h.ptr, planeIdx, rowStride))
 }
 
 // Timestamp calls the underlying NDK function.
 func (h *Image) Timestamp(timestampNs *int64) error {
-	return result(int32(capi.AImage_getTimestamp(h.ptr, timestampNs)))
+	return result(capi.AImage_getTimestamp(h.ptr, timestampNs))
 }
 
 // Width calls the underlying NDK function.
 func (h *Image) Width(width *int32) error {
-	return result(int32(capi.AImage_getWidth(h.ptr, width)))
+	return result(capi.AImage_getWidth(h.ptr, width))
 }

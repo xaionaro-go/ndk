@@ -13,10 +13,19 @@ type SessionOutputContainer struct {
 	ptr *capi.ACaptureSessionOutputContainer
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *SessionOutputContainer) cptr() *capi.ACaptureSessionOutputContainer {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewSessionOutputContainer creates a new SessionOutputContainer.
 func NewSessionOutputContainer() (*SessionOutputContainer, error) {
 	var ptr *capi.ACaptureSessionOutputContainer
-	if err := result(int32(capi.ACaptureSessionOutputContainer_create(&ptr))); err != nil {
+	if err := result(capi.ACaptureSessionOutputContainer_create(&ptr)); err != nil {
 		return nil, err
 	}
 	return &SessionOutputContainer{ptr: ptr}, nil
@@ -44,10 +53,10 @@ func (h *SessionOutputContainer) Pointer() unsafe.Pointer {
 
 // Add calls the underlying NDK function.
 func (h *SessionOutputContainer) Add(output *SessionOutput) error {
-	return result(int32(capi.ACaptureSessionOutputContainer_add(h.ptr, output.ptr)))
+	return result(capi.ACaptureSessionOutputContainer_add(h.ptr, output.cptr()))
 }
 
 // Remove calls the underlying NDK function.
 func (h *SessionOutputContainer) Remove(output *SessionOutput) error {
-	return result(int32(capi.ACaptureSessionOutputContainer_remove(h.ptr, output.ptr)))
+	return result(capi.ACaptureSessionOutputContainer_remove(h.ptr, output.cptr()))
 }

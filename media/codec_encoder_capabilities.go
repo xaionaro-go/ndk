@@ -13,6 +13,15 @@ type CodecEncoderCapabilities struct {
 	ptr *capi.ACodecEncoderCapabilities
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *CodecEncoderCapabilities) cptr() *capi.ACodecEncoderCapabilities {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewCodecEncoderCapabilitiesFromPointer wraps a raw ACodecEncoderCapabilities pointer.
 func NewCodecEncoderCapabilitiesFromPointer(ptr unsafe.Pointer) *CodecEncoderCapabilities {
 	return &CodecEncoderCapabilities{ptr: (*capi.ACodecEncoderCapabilities)(ptr)}

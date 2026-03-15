@@ -13,12 +13,21 @@ type Muxer struct {
 	ptr *capi.AMediaMuxer
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Muxer) cptr() *capi.AMediaMuxer {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Muxer) Close() error {
 	if h.ptr == nil {
 		return nil
 	}
-	err := result(int32(capi.AMediaMuxer_delete(h.ptr)))
+	err := result(capi.AMediaMuxer_delete(h.ptr))
 	h.ptr = nil
 	return err
 }
@@ -45,10 +54,10 @@ func (h *Muxer) GetTrackFormat(idx uint64) *Format {
 
 // Start calls the underlying NDK function.
 func (h *Muxer) Start() error {
-	return result(int32(capi.AMediaMuxer_start(h.ptr)))
+	return result(capi.AMediaMuxer_start(h.ptr))
 }
 
 // Stop calls the underlying NDK function.
 func (h *Muxer) Stop() error {
-	return result(int32(capi.AMediaMuxer_stop(h.ptr)))
+	return result(capi.AMediaMuxer_stop(h.ptr))
 }

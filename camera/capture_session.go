@@ -13,6 +13,15 @@ type CaptureSession struct {
 	ptr *capi.ACameraCaptureSession
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *CaptureSession) cptr() *capi.ACameraCaptureSession {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *CaptureSession) Close() error {
 	if h.ptr == nil {
@@ -35,10 +44,10 @@ func (h *CaptureSession) Pointer() unsafe.Pointer {
 
 // SetRepeatingRequest calls the underlying NDK function.
 func (h *CaptureSession) SetRepeatingRequest(req *CaptureRequest) error {
-	return result(int32(capi.ACameraCaptureSession_setRepeatingRequest(h.ptr, nil, 1, &req.ptr, nil)))
+	return result(capi.ACameraCaptureSession_setRepeatingRequest(h.ptr, nil, 1, &req.ptr, nil))
 }
 
 // StopRepeating calls the underlying NDK function.
 func (h *CaptureSession) StopRepeating() error {
-	return result(int32(capi.ACameraCaptureSession_stopRepeating(h.ptr)))
+	return result(capi.ACameraCaptureSession_stopRepeating(h.ptr))
 }

@@ -13,6 +13,15 @@ type NativeWindow_Buffer struct {
 	ptr *capi.ANativeWindow_Buffer
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *NativeWindow_Buffer) cptr() *capi.ANativeWindow_Buffer {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewNativeWindow_BufferFromPointer wraps a raw ANativeWindow_Buffer pointer.
 func NewNativeWindow_BufferFromPointer(ptr unsafe.Pointer) *NativeWindow_Buffer {
 	return &NativeWindow_Buffer{ptr: (*capi.ANativeWindow_Buffer)(ptr)}

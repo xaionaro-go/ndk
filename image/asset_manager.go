@@ -13,6 +13,15 @@ type AssetManager struct {
 	ptr *capi.AAssetManager
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *AssetManager) cptr() *capi.AAssetManager {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewAssetManagerFromPointer wraps a raw AAssetManager pointer.
 func NewAssetManagerFromPointer(ptr unsafe.Pointer) *AssetManager {
 	return &AssetManager{ptr: (*capi.AAssetManager)(ptr)}

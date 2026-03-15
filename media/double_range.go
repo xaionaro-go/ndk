@@ -13,6 +13,15 @@ type DoubleRange struct {
 	ptr *capi.ADoubleRange
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *DoubleRange) cptr() *capi.ADoubleRange {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewDoubleRangeFromPointer wraps a raw ADoubleRange pointer.
 func NewDoubleRangeFromPointer(ptr unsafe.Pointer) *DoubleRange {
 	return &DoubleRange{ptr: (*capi.ADoubleRange)(ptr)}

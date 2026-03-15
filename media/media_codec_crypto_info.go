@@ -13,6 +13,15 @@ type MediaCodecCryptoInfo struct {
 	ptr *capi.AMediaCodecCryptoInfo
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *MediaCodecCryptoInfo) cptr() *capi.AMediaCodecCryptoInfo {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewMediaCodecCryptoInfo creates a new MediaCodecCryptoInfo.
 func NewMediaCodecCryptoInfo(numsubsamples int32, key *[16]uint8, iv *[16]uint8, mode cryptoinfo_mode_t, clearbytes *uint64, encryptedbytes *uint64) *MediaCodecCryptoInfo {
 	return &MediaCodecCryptoInfo{ptr: capi.AMediaCodecCryptoInfo_new(numsubsamples, key, iv, capi.Cryptoinfo_mode_t(mode), clearbytes, encryptedbytes)}
@@ -23,7 +32,7 @@ func (h *MediaCodecCryptoInfo) Close() error {
 	if h.ptr == nil {
 		return nil
 	}
-	err := result(int32(capi.AMediaCodecCryptoInfo_delete(h.ptr)))
+	err := result(capi.AMediaCodecCryptoInfo_delete(h.ptr))
 	h.ptr = nil
 	return err
 }
@@ -45,5 +54,5 @@ func (h *MediaCodecCryptoInfo) GetNumSubSamples() uint64 {
 
 // SetPattern calls the underlying NDK function.
 func (h *MediaCodecCryptoInfo) SetPattern(pattern *cryptoinfo_pattern_t) {
-	capi.AMediaCodecCryptoInfo_setPattern(h.ptr, pattern.ptr)
+	capi.AMediaCodecCryptoInfo_setPattern(h.ptr, pattern.cptr())
 }

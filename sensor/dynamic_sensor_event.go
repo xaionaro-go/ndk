@@ -13,6 +13,15 @@ type DynamicSensorEvent struct {
 	ptr *capi.ADynamicSensorEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *DynamicSensorEvent) cptr() *capi.ADynamicSensorEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewDynamicSensorEventFromPointer wraps a raw ADynamicSensorEvent pointer.
 func NewDynamicSensorEventFromPointer(ptr unsafe.Pointer) *DynamicSensorEvent {
 	return &DynamicSensorEvent{ptr: (*capi.ADynamicSensorEvent)(ptr)}

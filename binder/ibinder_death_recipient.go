@@ -13,6 +13,15 @@ type IBinder_DeathRecipient struct {
 	ptr *capi.AIBinder_DeathRecipient
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *IBinder_DeathRecipient) cptr() *capi.AIBinder_DeathRecipient {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewIBinder_DeathRecipient creates a new IBinder_DeathRecipient.
 func NewIBinder_DeathRecipient(onBinderDied AIBinder_DeathRecipient_onBinderDied) *IBinder_DeathRecipient {
 	return &IBinder_DeathRecipient{ptr: capi.AIBinder_DeathRecipient_new(onBinderDied)}

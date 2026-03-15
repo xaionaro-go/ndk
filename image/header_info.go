@@ -13,6 +13,15 @@ type HeaderInfo struct {
 	ptr *capi.AImageDecoderHeaderInfo
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *HeaderInfo) cptr() *capi.AImageDecoderHeaderInfo {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewHeaderInfoFromPointer wraps a raw AImageDecoderHeaderInfo pointer.
 func NewHeaderInfoFromPointer(ptr unsafe.Pointer) *HeaderInfo {
 	return &HeaderInfo{ptr: (*capi.AImageDecoderHeaderInfo)(ptr)}
@@ -25,17 +34,17 @@ func (h *HeaderInfo) Pointer() unsafe.Pointer {
 
 // GetAlphaFlags calls the underlying NDK function.
 func (h *HeaderInfo) GetAlphaFlags() error {
-	return result(int32(capi.AImageDecoderHeaderInfo_getAlphaFlags(h.ptr)))
+	return result(capi.AImageDecoderHeaderInfo_getAlphaFlags(h.ptr))
 }
 
 // GetAndroidBitmapFormat calls the underlying NDK function.
 func (h *HeaderInfo) GetAndroidBitmapFormat() error {
-	return result(int32(capi.AImageDecoderHeaderInfo_getAndroidBitmapFormat(h.ptr)))
+	return result(capi.AImageDecoderHeaderInfo_getAndroidBitmapFormat(h.ptr))
 }
 
 // GetDataSpace calls the underlying NDK function.
 func (h *HeaderInfo) GetDataSpace() error {
-	return result(int32(capi.AImageDecoderHeaderInfo_getDataSpace(h.ptr)))
+	return result(capi.AImageDecoderHeaderInfo_getDataSpace(h.ptr))
 }
 
 // Height returns the value directly.

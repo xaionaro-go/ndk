@@ -13,6 +13,15 @@ type LogicalCameraCaptureFailure struct {
 	ptr *capi.ALogicalCameraCaptureFailure
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *LogicalCameraCaptureFailure) cptr() *capi.ALogicalCameraCaptureFailure {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewLogicalCameraCaptureFailureFromPointer wraps a raw ALogicalCameraCaptureFailure pointer.
 func NewLogicalCameraCaptureFailureFromPointer(ptr unsafe.Pointer) *LogicalCameraCaptureFailure {
 	return &LogicalCameraCaptureFailure{ptr: (*capi.ALogicalCameraCaptureFailure)(ptr)}

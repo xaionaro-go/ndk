@@ -13,6 +13,15 @@ type Binder struct {
 	ptr *capi.AIBinder
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Binder) cptr() *capi.AIBinder {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewBinder creates a new Binder.
 func NewBinder(clazz unsafe.Pointer, args unsafe.Pointer) *Binder {
 	return &Binder{ptr: capi.AIBinder_new((*capi.AIBinder_Class)(clazz), args)}
@@ -40,12 +49,12 @@ func (h *Binder) Pointer() unsafe.Pointer {
 
 // AssociateClass returns the value directly.
 func (h *Binder) AssociateClass(clazz *Class) bool {
-	return (bool)(capi.AIBinder_associateClass(h.ptr, clazz.ptr))
+	return (bool)(capi.AIBinder_associateClass(h.ptr, clazz.cptr()))
 }
 
 // DebugGetRefCount calls the underlying NDK function.
 func (h *Binder) DebugGetRefCount() error {
-	return result(int32(capi.AIBinder_debugGetRefCount(h.ptr)))
+	return result(capi.AIBinder_debugGetRefCount(h.ptr))
 }
 
 // GetClass creates a new Class from this Binder.
@@ -75,5 +84,5 @@ func (h *Binder) IsRemote() bool {
 
 // Lt returns the value directly.
 func (h *Binder) Lt(rhs *Binder) bool {
-	return (bool)(capi.AIBinder_lt(h.ptr, rhs.ptr))
+	return (bool)(capi.AIBinder_lt(h.ptr, rhs.cptr()))
 }

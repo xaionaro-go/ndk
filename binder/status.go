@@ -13,6 +13,15 @@ type Status struct {
 	ptr *capi.AStatus
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Status) cptr() *capi.AStatus {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Status) Close() error {
 	if h.ptr == nil {
@@ -45,7 +54,7 @@ func (h *Status) GetMessage() string {
 
 // GetServiceSpecificError calls the underlying NDK function.
 func (h *Status) GetServiceSpecificError() error {
-	return result(int32(capi.AStatus_getServiceSpecificError(h.ptr)))
+	return result(capi.AStatus_getServiceSpecificError(h.ptr))
 }
 
 // IsOk returns the value directly.

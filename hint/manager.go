@@ -14,6 +14,15 @@ type Manager struct {
 	ptr *capi.APerformanceHintManager
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Manager) cptr() *capi.APerformanceHintManager {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewManagerFromPointer wraps a raw APerformanceHintManager pointer.
 func NewManagerFromPointer(ptr unsafe.Pointer) *Manager {
 	return &Manager{ptr: (*capi.APerformanceHintManager)(ptr)}

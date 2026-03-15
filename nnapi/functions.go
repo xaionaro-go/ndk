@@ -8,72 +8,72 @@ import (
 
 // ANeuralNetworksCompilation_getPreferredMemoryAlignmentForInput calls the underlying C function.
 func ANeuralNetworksCompilation_getPreferredMemoryAlignmentForInput(compilation *Compilation, index uint32, alignment *uint32) int32 {
-	return (int32)(capi.ANeuralNetworksCompilation_getPreferredMemoryAlignmentForInput(compilation.ptr, index, alignment))
+	return (int32)(capi.ANeuralNetworksCompilation_getPreferredMemoryAlignmentForInput(compilation.cptr(), index, alignment))
 }
 
 // ANeuralNetworksCompilation_getPreferredMemoryAlignmentForOutput calls the underlying C function.
 func ANeuralNetworksCompilation_getPreferredMemoryAlignmentForOutput(compilation *Compilation, index uint32, alignment *uint32) int32 {
-	return (int32)(capi.ANeuralNetworksCompilation_getPreferredMemoryAlignmentForOutput(compilation.ptr, index, alignment))
+	return (int32)(capi.ANeuralNetworksCompilation_getPreferredMemoryAlignmentForOutput(compilation.cptr(), index, alignment))
 }
 
 // ANeuralNetworksCompilation_getPreferredMemoryPaddingForInput calls the underlying C function.
 func ANeuralNetworksCompilation_getPreferredMemoryPaddingForInput(compilation *Compilation, index uint32, padding *uint32) int32 {
-	return (int32)(capi.ANeuralNetworksCompilation_getPreferredMemoryPaddingForInput(compilation.ptr, index, padding))
+	return (int32)(capi.ANeuralNetworksCompilation_getPreferredMemoryPaddingForInput(compilation.cptr(), index, padding))
 }
 
 // ANeuralNetworksCompilation_getPreferredMemoryPaddingForOutput calls the underlying C function.
 func ANeuralNetworksCompilation_getPreferredMemoryPaddingForOutput(compilation *Compilation, index uint32, padding *uint32) int32 {
-	return (int32)(capi.ANeuralNetworksCompilation_getPreferredMemoryPaddingForOutput(compilation.ptr, index, padding))
+	return (int32)(capi.ANeuralNetworksCompilation_getPreferredMemoryPaddingForOutput(compilation.cptr(), index, padding))
 }
 
 // ANeuralNetworksDevice_wait calls the underlying C function.
 func ANeuralNetworksDevice_wait(device *Device) int32 {
-	return (int32)(capi.ANeuralNetworksDevice_wait(device.ptr))
+	return (int32)(capi.ANeuralNetworksDevice_wait(device.cptr()))
 }
 
 // ANeuralNetworksEvent_getSyncFenceFd calls the underlying C function.
 func ANeuralNetworksEvent_getSyncFenceFd(event *Event, sync_fence_fd *int32) int32 {
-	return (int32)(capi.ANeuralNetworksEvent_getSyncFenceFd(event.ptr, sync_fence_fd))
+	return (int32)(capi.ANeuralNetworksEvent_getSyncFenceFd(event.cptr(), sync_fence_fd))
 }
 
 // ANeuralNetworksExecution_burstCompute calls the underlying C function.
 func ANeuralNetworksExecution_burstCompute(execution *Execution, burst *Burst) int32 {
-	return (int32)(capi.ANeuralNetworksExecution_burstCompute(execution.ptr, burst.ptr))
+	return (int32)(capi.ANeuralNetworksExecution_burstCompute(execution.cptr(), burst.cptr()))
 }
 
 // ANeuralNetworksExecution_enableInputAndOutputPadding calls the underlying C function.
 func ANeuralNetworksExecution_enableInputAndOutputPadding(execution *Execution, enable bool) int32 {
-	return (int32)(capi.ANeuralNetworksExecution_enableInputAndOutputPadding(execution.ptr, enable))
+	return (int32)(capi.ANeuralNetworksExecution_enableInputAndOutputPadding(execution.cptr(), enable))
 }
 
 // ANeuralNetworksExecution_getOutputOperandDimensions calls the underlying C function.
 func ANeuralNetworksExecution_getOutputOperandDimensions(execution *Execution, index int32, dimensions *uint32) int32 {
-	return (int32)(capi.ANeuralNetworksExecution_getOutputOperandDimensions(execution.ptr, index, dimensions))
+	return (int32)(capi.ANeuralNetworksExecution_getOutputOperandDimensions(execution.cptr(), index, dimensions))
 }
 
 // ANeuralNetworksExecution_getOutputOperandRank calls the underlying C function.
 func ANeuralNetworksExecution_getOutputOperandRank(execution *Execution, index int32, rank *uint32) int32 {
-	return (int32)(capi.ANeuralNetworksExecution_getOutputOperandRank(execution.ptr, index, rank))
+	return (int32)(capi.ANeuralNetworksExecution_getOutputOperandRank(execution.cptr(), index, rank))
 }
 
 // ANeuralNetworksExecution_setLoopTimeout calls the underlying C function.
 func ANeuralNetworksExecution_setLoopTimeout(execution *Execution, duration uint64) int32 {
-	return (int32)(capi.ANeuralNetworksExecution_setLoopTimeout(execution.ptr, duration))
+	return (int32)(capi.ANeuralNetworksExecution_setLoopTimeout(execution.cptr(), duration))
 }
 
 // ANeuralNetworksExecution_setReusable calls the underlying C function.
 func ANeuralNetworksExecution_setReusable(execution *Execution, reusable bool) int32 {
-	return (int32)(capi.ANeuralNetworksExecution_setReusable(execution.ptr, reusable))
+	return (int32)(capi.ANeuralNetworksExecution_setReusable(execution.cptr(), reusable))
 }
 
 // ANeuralNetworksMemoryDesc_addInputRole calls the underlying C function.
 func ANeuralNetworksMemoryDesc_addInputRole(desc *ANeuralNetworksMemoryDesc, compilation *Compilation, index uint32, frequency float32) int32 {
-	return (int32)(capi.ANeuralNetworksMemoryDesc_addInputRole((*capi.ANeuralNetworksMemoryDesc)(desc), compilation.ptr, index, frequency))
+	return (int32)(capi.ANeuralNetworksMemoryDesc_addInputRole((*capi.ANeuralNetworksMemoryDesc)(desc), compilation.cptr(), index, frequency))
 }
 
 // ANeuralNetworksMemoryDesc_addOutputRole calls the underlying C function.
 func ANeuralNetworksMemoryDesc_addOutputRole(desc *ANeuralNetworksMemoryDesc, compilation *Compilation, index uint32, frequency float32) int32 {
-	return (int32)(capi.ANeuralNetworksMemoryDesc_addOutputRole((*capi.ANeuralNetworksMemoryDesc)(desc), compilation.ptr, index, frequency))
+	return (int32)(capi.ANeuralNetworksMemoryDesc_addOutputRole((*capi.ANeuralNetworksMemoryDesc)(desc), compilation.cptr(), index, frequency))
 }
 
 // ANeuralNetworksMemoryDesc_finish calls the underlying C function.
@@ -93,22 +93,22 @@ func ANeuralNetworksMemoryDesc_setDimensions(desc *ANeuralNetworksMemoryDesc, ra
 
 // ANeuralNetworksMemory_copy calls the underlying C function.
 func ANeuralNetworksMemory_copy(src *Memory, dst *Memory) int32 {
-	return (int32)(capi.ANeuralNetworksMemory_copy(src.ptr, dst.ptr))
+	return (int32)(capi.ANeuralNetworksMemory_copy(src.cptr(), dst.cptr()))
 }
 
 // ANeuralNetworksModel_setOperandSymmPerChannelQuantParams calls the underlying C function.
 func ANeuralNetworksModel_setOperandSymmPerChannelQuantParams(model *Model, index int32, channelQuant *ANeuralNetworksSymmPerChannelQuantParams) int32 {
-	return (int32)(capi.ANeuralNetworksModel_setOperandSymmPerChannelQuantParams(model.ptr, index, (*capi.ANeuralNetworksSymmPerChannelQuantParams)(channelQuant)))
+	return (int32)(capi.ANeuralNetworksModel_setOperandSymmPerChannelQuantParams(model.cptr(), index, (*capi.ANeuralNetworksSymmPerChannelQuantParams)(channelQuant)))
 }
 
 // ANeuralNetworksModel_setOperandValueFromMemory calls the underlying C function.
 func ANeuralNetworksModel_setOperandValueFromMemory(model *Model, index int32, memory *Memory, offset uint64, length uint64) int32 {
-	return (int32)(capi.ANeuralNetworksModel_setOperandValueFromMemory(model.ptr, index, memory.ptr, offset, length))
+	return (int32)(capi.ANeuralNetworksModel_setOperandValueFromMemory(model.cptr(), index, memory.cptr(), offset, length))
 }
 
 // ANeuralNetworksModel_setOperandValueFromModel calls the underlying C function.
 func ANeuralNetworksModel_setOperandValueFromModel(model *Model, index int32, value *Model) int32 {
-	return (int32)(capi.ANeuralNetworksModel_setOperandValueFromModel(model.ptr, index, value.ptr))
+	return (int32)(capi.ANeuralNetworksModel_setOperandValueFromModel(model.cptr(), index, value.cptr()))
 }
 
 // ANeuralNetworks_getDefaultLoopTimeout calls the underlying C function.

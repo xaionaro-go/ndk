@@ -13,6 +13,15 @@ type Memory struct {
 	ptr *capi.ANeuralNetworksMemory
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Memory) cptr() *capi.ANeuralNetworksMemory {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewMemoryFromPointer wraps a raw ANeuralNetworksMemory pointer.
 func NewMemoryFromPointer(ptr unsafe.Pointer) *Memory {
 	return &Memory{ptr: (*capi.ANeuralNetworksMemory)(ptr)}

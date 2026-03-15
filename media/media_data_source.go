@@ -13,6 +13,15 @@ type MediaDataSource struct {
 	ptr *capi.AMediaDataSource
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *MediaDataSource) cptr() *capi.AMediaDataSource {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewMediaDataSource creates a new MediaDataSource.
 func NewMediaDataSource() *MediaDataSource {
 	return &MediaDataSource{ptr: capi.AMediaDataSource_new()}

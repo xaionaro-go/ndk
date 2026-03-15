@@ -13,6 +13,15 @@ type Metadata struct {
 	ptr *capi.ACameraMetadata
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Metadata) cptr() *capi.ACameraMetadata {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Metadata) Close() error {
 	if h.ptr == nil {

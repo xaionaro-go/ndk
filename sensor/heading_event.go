@@ -13,6 +13,15 @@ type HeadingEvent struct {
 	ptr *capi.AHeadingEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *HeadingEvent) cptr() *capi.AHeadingEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewHeadingEventFromPointer wraps a raw AHeadingEvent pointer.
 func NewHeadingEventFromPointer(ptr unsafe.Pointer) *HeadingEvent {
 	return &HeadingEvent{ptr: (*capi.AHeadingEvent)(ptr)}

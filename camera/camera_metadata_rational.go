@@ -13,6 +13,15 @@ type CameraMetadata_rational struct {
 	ptr *capi.ACameraMetadata_rational
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *CameraMetadata_rational) cptr() *capi.ACameraMetadata_rational {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewCameraMetadata_rationalFromPointer wraps a raw ACameraMetadata_rational pointer.
 func NewCameraMetadata_rationalFromPointer(ptr unsafe.Pointer) *CameraMetadata_rational {
 	return &CameraMetadata_rational{ptr: (*capi.ACameraMetadata_rational)(ptr)}

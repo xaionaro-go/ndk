@@ -13,6 +13,15 @@ type Looper struct {
 	ptr *capi.ALooper
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Looper) cptr() *capi.ALooper {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Looper) Close() error {
 	if h.ptr == nil {
@@ -40,7 +49,7 @@ func (h *Looper) Acquire() {
 
 // RemoveFd calls the underlying NDK function.
 func (h *Looper) RemoveFd(fd int32) error {
-	return result(int32(capi.ALooper_removeFd(h.ptr, fd)))
+	return result(capi.ALooper_removeFd(h.ptr, fd))
 }
 
 // Wake calls the underlying NDK function.

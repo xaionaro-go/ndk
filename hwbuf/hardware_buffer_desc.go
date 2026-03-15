@@ -13,6 +13,15 @@ type HardwareBuffer_Desc struct {
 	ptr *capi.AHardwareBuffer_Desc
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *HardwareBuffer_Desc) cptr() *capi.AHardwareBuffer_Desc {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewHardwareBuffer_DescFromPointer wraps a raw AHardwareBuffer_Desc pointer.
 func NewHardwareBuffer_DescFromPointer(ptr unsafe.Pointer) *HardwareBuffer_Desc {
 	return &HardwareBuffer_Desc{ptr: (*capi.AHardwareBuffer_Desc)(ptr)}

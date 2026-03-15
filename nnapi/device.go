@@ -13,6 +13,15 @@ type Device struct {
 	ptr *capi.ANeuralNetworksDevice
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Device) cptr() *capi.ANeuralNetworksDevice {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewDeviceFromPointer wraps a raw ANeuralNetworksDevice pointer.
 func NewDeviceFromPointer(ptr unsafe.Pointer) *Device {
 	return &Device{ptr: (*capi.ANeuralNetworksDevice)(ptr)}

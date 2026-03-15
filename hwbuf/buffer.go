@@ -13,6 +13,15 @@ type Buffer struct {
 	ptr *capi.AHardwareBuffer
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Buffer) cptr() *capi.AHardwareBuffer {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Buffer) Close() error {
 	if h.ptr == nil {
@@ -40,20 +49,20 @@ func (h *Buffer) Acquire() {
 
 // GetID calls the underlying NDK function.
 func (h *Buffer) GetID(outID *uint64) error {
-	return result(int32(capi.AHardwareBuffer_getId(h.ptr, outID)))
+	return result(capi.AHardwareBuffer_getId(h.ptr, outID))
 }
 
 // LockPlanes calls the underlying NDK function.
 func (h *Buffer) LockPlanes(usage uint64, fence int32, rect *ARect, outPlanes *HardwareBuffer_Planes) error {
-	return result(int32(capi.AHardwareBuffer_lockPlanes(h.ptr, usage, fence, (*capi.ARect)(rect), outPlanes.ptr)))
+	return result(capi.AHardwareBuffer_lockPlanes(h.ptr, usage, fence, (*capi.ARect)(rect), outPlanes.cptr()))
 }
 
 // SendHandleToUnixSocket calls the underlying NDK function.
 func (h *Buffer) SendHandleToUnixSocket(socketFd int32) error {
-	return result(int32(capi.AHardwareBuffer_sendHandleToUnixSocket(h.ptr, socketFd)))
+	return result(capi.AHardwareBuffer_sendHandleToUnixSocket(h.ptr, socketFd))
 }
 
 // Unlock calls the underlying NDK function.
 func (h *Buffer) Unlock(fence *int32) error {
-	return result(int32(capi.AHardwareBuffer_unlock(h.ptr, fence)))
+	return result(capi.AHardwareBuffer_unlock(h.ptr, fence))
 }

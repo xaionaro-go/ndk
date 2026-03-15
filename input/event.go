@@ -13,6 +13,15 @@ type Event struct {
 	ptr *capi.AInputEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Event) cptr() *capi.AInputEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Event) Close() error {
 	if h.ptr == nil {
@@ -35,7 +44,7 @@ func (h *Event) Pointer() unsafe.Pointer {
 
 // GetDeviceID calls the underlying NDK function.
 func (h *Event) GetDeviceID() error {
-	return result(int32(capi.AInputEvent_getDeviceId(h.ptr)))
+	return result(capi.AInputEvent_getDeviceId(h.ptr))
 }
 
 // Source returns the value directly.
@@ -65,7 +74,7 @@ func (h *Event) AKeyEvent_getEventTime() int64 {
 
 // AKeyEvent_getFlags calls the underlying NDK function.
 func (h *Event) AKeyEvent_getFlags() error {
-	return result(int32(capi.AKeyEvent_getFlags(h.ptr)))
+	return result(capi.AKeyEvent_getFlags(h.ptr))
 }
 
 // KeyCode returns the value directly.
@@ -75,7 +84,7 @@ func (h *Event) KeyCode() int32 {
 
 // AKeyEvent_getMetaState calls the underlying NDK function.
 func (h *Event) AKeyEvent_getMetaState() error {
-	return result(int32(capi.AKeyEvent_getMetaState(h.ptr)))
+	return result(capi.AKeyEvent_getMetaState(h.ptr))
 }
 
 // RepeatCount returns the value directly.
@@ -85,7 +94,7 @@ func (h *Event) RepeatCount() int32 {
 
 // AKeyEvent_getScanCode calls the underlying NDK function.
 func (h *Event) AKeyEvent_getScanCode() error {
-	return result(int32(capi.AKeyEvent_getScanCode(h.ptr)))
+	return result(capi.AKeyEvent_getScanCode(h.ptr))
 }
 
 // MotionAction returns the value directly.
@@ -95,7 +104,7 @@ func (h *Event) MotionAction() int32 {
 
 // AMotionEvent_getActionButton calls the underlying NDK function.
 func (h *Event) AMotionEvent_getActionButton() error {
-	return result(int32(capi.AMotionEvent_getActionButton(h.ptr)))
+	return result(capi.AMotionEvent_getActionButton(h.ptr))
 }
 
 // AMotionEvent_getAxisValue returns the value directly.
@@ -105,12 +114,12 @@ func (h *Event) AMotionEvent_getAxisValue(axis int32, pointer_index uint64) floa
 
 // AMotionEvent_getButtonState calls the underlying NDK function.
 func (h *Event) AMotionEvent_getButtonState() error {
-	return result(int32(capi.AMotionEvent_getButtonState(h.ptr)))
+	return result(capi.AMotionEvent_getButtonState(h.ptr))
 }
 
 // AMotionEvent_getClassification calls the underlying NDK function.
 func (h *Event) AMotionEvent_getClassification() error {
-	return result(int32(capi.AMotionEvent_getClassification(h.ptr)))
+	return result(capi.AMotionEvent_getClassification(h.ptr))
 }
 
 // AMotionEvent_getDownTime returns the value directly.
@@ -120,7 +129,7 @@ func (h *Event) AMotionEvent_getDownTime() int64 {
 
 // AMotionEvent_getEdgeFlags calls the underlying NDK function.
 func (h *Event) AMotionEvent_getEdgeFlags() error {
-	return result(int32(capi.AMotionEvent_getEdgeFlags(h.ptr)))
+	return result(capi.AMotionEvent_getEdgeFlags(h.ptr))
 }
 
 // AMotionEvent_getEventTime returns the value directly.
@@ -130,7 +139,7 @@ func (h *Event) AMotionEvent_getEventTime() int64 {
 
 // AMotionEvent_getFlags calls the underlying NDK function.
 func (h *Event) AMotionEvent_getFlags() error {
-	return result(int32(capi.AMotionEvent_getFlags(h.ptr)))
+	return result(capi.AMotionEvent_getFlags(h.ptr))
 }
 
 // AMotionEvent_getHistoricalAxisValue returns the value directly.
@@ -205,7 +214,7 @@ func (h *Event) AMotionEvent_getHistorySize() uint64 {
 
 // AMotionEvent_getMetaState calls the underlying NDK function.
 func (h *Event) AMotionEvent_getMetaState() error {
-	return result(int32(capi.AMotionEvent_getMetaState(h.ptr)))
+	return result(capi.AMotionEvent_getMetaState(h.ptr))
 }
 
 // AMotionEvent_getOrientation returns the value directly.
@@ -220,7 +229,7 @@ func (h *Event) PointerCount() uint64 {
 
 // AMotionEvent_getPointerID calls the underlying NDK function.
 func (h *Event) AMotionEvent_getPointerID(pointer_index uint64) error {
-	return result(int32(capi.AMotionEvent_getPointerId(h.ptr, pointer_index)))
+	return result(capi.AMotionEvent_getPointerId(h.ptr, pointer_index))
 }
 
 // Pressure returns the value directly.
@@ -255,7 +264,7 @@ func (h *Event) AMotionEvent_getToolMinor(pointer_index uint64) float32 {
 
 // AMotionEvent_getToolType calls the underlying NDK function.
 func (h *Event) AMotionEvent_getToolType(pointer_index uint64) error {
-	return result(int32(capi.AMotionEvent_getToolType(h.ptr, pointer_index)))
+	return result(capi.AMotionEvent_getToolType(h.ptr, pointer_index))
 }
 
 // AMotionEvent_getTouchMajor returns the value directly.

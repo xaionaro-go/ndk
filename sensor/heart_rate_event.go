@@ -13,6 +13,15 @@ type HeartRateEvent struct {
 	ptr *capi.AHeartRateEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *HeartRateEvent) cptr() *capi.AHeartRateEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewHeartRateEventFromPointer wraps a raw AHeartRateEvent pointer.
 func NewHeartRateEventFromPointer(ptr unsafe.Pointer) *HeartRateEvent {
 	return &HeartRateEvent{ptr: (*capi.AHeartRateEvent)(ptr)}

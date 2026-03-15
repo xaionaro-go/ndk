@@ -13,6 +13,15 @@ type CameraOutputTargets struct {
 	ptr *capi.ACameraOutputTargets
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *CameraOutputTargets) cptr() *capi.ACameraOutputTargets {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewCameraOutputTargetsFromPointer wraps a raw ACameraOutputTargets pointer.
 func NewCameraOutputTargetsFromPointer(ptr unsafe.Pointer) *CameraOutputTargets {
 	return &CameraOutputTargets{ptr: (*capi.ACameraOutputTargets)(ptr)}

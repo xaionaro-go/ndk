@@ -13,6 +13,15 @@ type Font struct {
 	ptr *capi.AFont
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Font) cptr() *capi.AFont {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Font) Close() error {
 	if h.ptr == nil {
@@ -40,7 +49,7 @@ func (h *Font) GetAxisCount() uint64 {
 
 // GetAxisTag calls the underlying NDK function.
 func (h *Font) GetAxisTag(axisIndex uint32) error {
-	return result(int32(capi.AFont_getAxisTag(h.ptr, axisIndex)))
+	return result(capi.AFont_getAxisTag(h.ptr, axisIndex))
 }
 
 // GetAxisValue returns the value directly.

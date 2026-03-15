@@ -13,6 +13,15 @@ type LimitedAxesImuEvent struct {
 	ptr *capi.ALimitedAxesImuEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *LimitedAxesImuEvent) cptr() *capi.ALimitedAxesImuEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewLimitedAxesImuEventFromPointer wraps a raw ALimitedAxesImuEvent pointer.
 func NewLimitedAxesImuEventFromPointer(ptr unsafe.Pointer) *LimitedAxesImuEvent {
 	return &LimitedAxesImuEvent{ptr: (*capi.ALimitedAxesImuEvent)(ptr)}

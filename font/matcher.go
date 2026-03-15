@@ -13,6 +13,15 @@ type Matcher struct {
 	ptr *capi.AFontMatcher
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Matcher) cptr() *capi.AFontMatcher {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewMatcher creates a new Matcher.
 func NewMatcher() *Matcher {
 	return &Matcher{ptr: capi.AFontMatcher_create()}

@@ -13,6 +13,15 @@ type CodecPerformancePoint struct {
 	ptr *capi.ACodecPerformancePoint
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *CodecPerformancePoint) cptr() *capi.ACodecPerformancePoint {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewCodecPerformancePointFromPointer wraps a raw ACodecPerformancePoint pointer.
 func NewCodecPerformancePointFromPointer(ptr unsafe.Pointer) *CodecPerformancePoint {
 	return &CodecPerformancePoint{ptr: (*capi.ACodecPerformancePoint)(ptr)}

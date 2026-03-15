@@ -13,6 +13,15 @@ type MediaCodecOnAsyncNotifyCallback struct {
 	ptr *capi.AMediaCodecOnAsyncNotifyCallback
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *MediaCodecOnAsyncNotifyCallback) cptr() *capi.AMediaCodecOnAsyncNotifyCallback {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewMediaCodecOnAsyncNotifyCallbackFromPointer wraps a raw AMediaCodecOnAsyncNotifyCallback pointer.
 func NewMediaCodecOnAsyncNotifyCallbackFromPointer(ptr unsafe.Pointer) *MediaCodecOnAsyncNotifyCallback {
 	return &MediaCodecOnAsyncNotifyCallback{ptr: (*capi.AMediaCodecOnAsyncNotifyCallback)(ptr)}

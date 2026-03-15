@@ -13,6 +13,15 @@ type SensorEvent struct {
 	ptr *capi.ASensorEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *SensorEvent) cptr() *capi.ASensorEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewSensorEventFromPointer wraps a raw ASensorEvent pointer.
 func NewSensorEventFromPointer(ptr unsafe.Pointer) *SensorEvent {
 	return &SensorEvent{ptr: (*capi.ASensorEvent)(ptr)}

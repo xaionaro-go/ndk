@@ -13,6 +13,15 @@ type AndroidBitmapInfo struct {
 	ptr *capi.AndroidBitmapInfo
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *AndroidBitmapInfo) cptr() *capi.AndroidBitmapInfo {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewAndroidBitmapInfoFromPointer wraps a raw AndroidBitmapInfo pointer.
 func NewAndroidBitmapInfoFromPointer(ptr unsafe.Pointer) *AndroidBitmapInfo {
 	return &AndroidBitmapInfo{ptr: (*capi.AndroidBitmapInfo)(ptr)}

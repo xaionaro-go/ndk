@@ -13,6 +13,15 @@ type cryptoinfo_pattern_t struct {
 	ptr *capi.Cryptoinfo_pattern_t
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *cryptoinfo_pattern_t) cptr() *capi.Cryptoinfo_pattern_t {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Newcryptoinfo_pattern_tFromPointer wraps a raw Cryptoinfo_pattern_t pointer.
 func Newcryptoinfo_pattern_tFromPointer(ptr unsafe.Pointer) *cryptoinfo_pattern_t {
 	return &cryptoinfo_pattern_t{ptr: (*capi.Cryptoinfo_pattern_t)(ptr)}

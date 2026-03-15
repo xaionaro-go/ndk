@@ -13,6 +13,15 @@ type Decoder struct {
 	ptr *capi.AImageDecoder
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Decoder) cptr() *capi.AImageDecoder {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Decoder) Close() error {
 	if h.ptr == nil {
@@ -35,22 +44,22 @@ func (h *Decoder) Pointer() unsafe.Pointer {
 
 // AdvanceFrame calls the underlying NDK function.
 func (h *Decoder) AdvanceFrame() error {
-	return result(int32(capi.AImageDecoder_advanceFrame(h.ptr)))
+	return result(capi.AImageDecoder_advanceFrame(h.ptr))
 }
 
 // ComputeSampledSize calls the underlying NDK function.
 func (h *Decoder) ComputeSampledSize(sampleSize int32, width *int32, height *int32) error {
-	return result(int32(capi.AImageDecoder_computeSampledSize(h.ptr, sampleSize, width, height)))
+	return result(capi.AImageDecoder_computeSampledSize(h.ptr, sampleSize, width, height))
 }
 
 // Decode calls the underlying NDK function.
 func (h *Decoder) Decode(pixels unsafe.Pointer, stride uint64, size uint64) error {
-	return result(int32(capi.AImageDecoder_decodeImage(h.ptr, pixels, stride, size)))
+	return result(capi.AImageDecoder_decodeImage(h.ptr, pixels, stride, size))
 }
 
 // GetFrameInfo calls the underlying NDK function.
 func (h *Decoder) GetFrameInfo(info *ImageDecoderFrameInfo) error {
-	return result(int32(capi.AImageDecoder_getFrameInfo(h.ptr, info.ptr)))
+	return result(capi.AImageDecoder_getFrameInfo(h.ptr, info.cptr()))
 }
 
 // HeaderInfo creates a new HeaderInfo from this Decoder.
@@ -65,7 +74,7 @@ func (h *Decoder) MinimumStride() uint64 {
 
 // GetRepeatCount calls the underlying NDK function.
 func (h *Decoder) GetRepeatCount() error {
-	return result(int32(capi.AImageDecoder_getRepeatCount(h.ptr)))
+	return result(capi.AImageDecoder_getRepeatCount(h.ptr))
 }
 
 // IsAnimated returns the value directly.
@@ -75,17 +84,17 @@ func (h *Decoder) IsAnimated() bool {
 
 // Rewind calls the underlying NDK function.
 func (h *Decoder) Rewind() error {
-	return result(int32(capi.AImageDecoder_rewind(h.ptr)))
+	return result(capi.AImageDecoder_rewind(h.ptr))
 }
 
 // SetAndroidBitmapFormat calls the underlying NDK function.
 func (h *Decoder) SetAndroidBitmapFormat(format int32) error {
-	return result(int32(capi.AImageDecoder_setAndroidBitmapFormat(h.ptr, format)))
+	return result(capi.AImageDecoder_setAndroidBitmapFormat(h.ptr, format))
 }
 
 // SetDataSpace calls the underlying NDK function.
 func (h *Decoder) SetDataSpace(dataspace int32) error {
-	return result(int32(capi.AImageDecoder_setDataSpace(h.ptr, dataspace)))
+	return result(capi.AImageDecoder_setDataSpace(h.ptr, dataspace))
 }
 
 // SetInternallyHandleDisposePrevious calls the underlying NDK function.
@@ -95,19 +104,19 @@ func (h *Decoder) SetInternallyHandleDisposePrevious(handleInternally bool) {
 
 // SetTargetSize calls the underlying NDK function.
 func (h *Decoder) SetTargetSize(width int32, height int32) error {
-	return result(int32(capi.AImageDecoder_setTargetSize(h.ptr, width, height)))
+	return result(capi.AImageDecoder_setTargetSize(h.ptr, width, height))
 }
 
 // SetUnpremultipliedRequired calls the underlying NDK function.
 func (h *Decoder) SetUnpremultipliedRequired(unpremultipliedRequired bool) error {
-	return result(int32(capi.AImageDecoder_setUnpremultipliedRequired(h.ptr, unpremultipliedRequired)))
+	return result(capi.AImageDecoder_setUnpremultipliedRequired(h.ptr, unpremultipliedRequired))
 }
 
 // NewDecoderFromFd calls the underlying C function.
 func NewDecoderFromFd(fd int32) (*Decoder, error) {
 	var outDecoderPtr *capi.AImageDecoder
 	ret := capi.AImageDecoder_createFromFd(fd, &outDecoderPtr)
-	if err := result(int32(ret)); err != nil {
+	if err := result(ret); err != nil {
 		return nil, err
 	}
 	return &Decoder{ptr: outDecoderPtr}, nil

@@ -13,6 +13,15 @@ type Burst struct {
 	ptr *capi.ANeuralNetworksBurst
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Burst) cptr() *capi.ANeuralNetworksBurst {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewBurstFromPointer wraps a raw ANeuralNetworksBurst pointer.
 func NewBurstFromPointer(ptr unsafe.Pointer) *Burst {
 	return &Burst{ptr: (*capi.ANeuralNetworksBurst)(ptr)}

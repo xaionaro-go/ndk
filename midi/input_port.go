@@ -13,6 +13,15 @@ type InputPort struct {
 	ptr *capi.AMidiInputPort
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *InputPort) cptr() *capi.AMidiInputPort {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *InputPort) Close() error {
 	if h.ptr == nil {
@@ -35,7 +44,7 @@ func (h *InputPort) Pointer() unsafe.Pointer {
 
 // Send calls the underlying NDK function.
 func (h *InputPort) Send(buffer *uint8, numBytes uint64) error {
-	return result(int32(capi.AMidiInputPort_send(h.ptr, buffer, numBytes)))
+	return result(capi.AMidiInputPort_send(h.ptr, buffer, numBytes))
 }
 
 // SendWithTimestamp returns the value directly.

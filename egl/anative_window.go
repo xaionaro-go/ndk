@@ -13,6 +13,15 @@ type ANativeWindow struct {
 	ptr *capi.ANativeWindow
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *ANativeWindow) cptr() *capi.ANativeWindow {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *ANativeWindow) Close() error {
 	if h.ptr == nil {
@@ -40,62 +49,62 @@ func (h *ANativeWindow) Acquire() {
 
 // ClearFrameRate calls the underlying NDK function.
 func (h *ANativeWindow) ClearFrameRate() error {
-	return result(int32(capi.ANativeWindow_clearFrameRate(h.ptr)))
+	return result(capi.ANativeWindow_clearFrameRate(h.ptr))
 }
 
 // GetBuffersDataSpace calls the underlying NDK function.
 func (h *ANativeWindow) GetBuffersDataSpace() error {
-	return result(int32(capi.ANativeWindow_getBuffersDataSpace(h.ptr)))
+	return result(capi.ANativeWindow_getBuffersDataSpace(h.ptr))
 }
 
 // GetBuffersDefaultDataSpace calls the underlying NDK function.
 func (h *ANativeWindow) GetBuffersDefaultDataSpace() error {
-	return result(int32(capi.ANativeWindow_getBuffersDefaultDataSpace(h.ptr)))
+	return result(capi.ANativeWindow_getBuffersDefaultDataSpace(h.ptr))
 }
 
 // GetFormat calls the underlying NDK function.
 func (h *ANativeWindow) GetFormat() error {
-	return result(int32(capi.ANativeWindow_getFormat(h.ptr)))
+	return result(capi.ANativeWindow_getFormat(h.ptr))
 }
 
 // GetHeight calls the underlying NDK function.
 func (h *ANativeWindow) GetHeight() error {
-	return result(int32(capi.ANativeWindow_getHeight(h.ptr)))
+	return result(capi.ANativeWindow_getHeight(h.ptr))
 }
 
 // GetWidth calls the underlying NDK function.
 func (h *ANativeWindow) GetWidth() error {
-	return result(int32(capi.ANativeWindow_getWidth(h.ptr)))
+	return result(capi.ANativeWindow_getWidth(h.ptr))
 }
 
 // Lock calls the underlying NDK function.
 func (h *ANativeWindow) Lock(outBuffer *NativeWindow_Buffer, inOutDirtyBounds *ARect) error {
-	return result(int32(capi.ANativeWindow_lock(h.ptr, outBuffer.ptr, (*capi.ARect)(inOutDirtyBounds))))
+	return result(capi.ANativeWindow_lock(h.ptr, outBuffer.cptr(), (*capi.ARect)(inOutDirtyBounds)))
 }
 
 // SetBuffersDataSpace calls the underlying NDK function.
 func (h *ANativeWindow) SetBuffersDataSpace(dataSpace int32) error {
-	return result(int32(capi.ANativeWindow_setBuffersDataSpace(h.ptr, dataSpace)))
+	return result(capi.ANativeWindow_setBuffersDataSpace(h.ptr, dataSpace))
 }
 
 // SetBuffersGeometry calls the underlying NDK function.
 func (h *ANativeWindow) SetBuffersGeometry(width int32, height int32, format int32) error {
-	return result(int32(capi.ANativeWindow_setBuffersGeometry(h.ptr, width, height, format)))
+	return result(capi.ANativeWindow_setBuffersGeometry(h.ptr, width, height, format))
 }
 
 // SetBuffersTransform calls the underlying NDK function.
 func (h *ANativeWindow) SetBuffersTransform(transform int32) error {
-	return result(int32(capi.ANativeWindow_setBuffersTransform(h.ptr, transform)))
+	return result(capi.ANativeWindow_setBuffersTransform(h.ptr, transform))
 }
 
 // SetFrameRate calls the underlying NDK function.
 func (h *ANativeWindow) SetFrameRate(frameRate float32, compatibility int8) error {
-	return result(int32(capi.ANativeWindow_setFrameRate(h.ptr, frameRate, compatibility)))
+	return result(capi.ANativeWindow_setFrameRate(h.ptr, frameRate, compatibility))
 }
 
 // SetFrameRateWithChangeStrategy calls the underlying NDK function.
 func (h *ANativeWindow) SetFrameRateWithChangeStrategy(frameRate float32, compatibility int8, changeFrameRateStrategy int8) error {
-	return result(int32(capi.ANativeWindow_setFrameRateWithChangeStrategy(h.ptr, frameRate, compatibility, changeFrameRateStrategy)))
+	return result(capi.ANativeWindow_setFrameRateWithChangeStrategy(h.ptr, frameRate, compatibility, changeFrameRateStrategy))
 }
 
 // TryAllocateBuffers calls the underlying NDK function.
@@ -105,5 +114,5 @@ func (h *ANativeWindow) TryAllocateBuffers() {
 
 // UnlockAndPost calls the underlying NDK function.
 func (h *ANativeWindow) UnlockAndPost() error {
-	return result(int32(capi.ANativeWindow_unlockAndPost(h.ptr)))
+	return result(capi.ANativeWindow_unlockAndPost(h.ptr))
 }

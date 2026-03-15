@@ -12,15 +12,15 @@ var _ = capi.CgoAllocsUnknown
 
 // Covers calls the underlying NDK function.
 func (h *CodecPerformancePoint) Covers(another *CodecPerformancePoint) error {
-	return result(int32(capi.ACodecPerformancePoint_covers(h.ptr, another.ptr)))
+	return result(int32(capi.ACodecPerformancePoint_covers(h.ptr, another.cptr())))
 }
 
 // CoversFormat calls the underlying NDK function.
 func (h *CodecPerformancePoint) CoversFormat(format *Format) error {
-	return result(int32(capi.ACodecPerformancePoint_coversFormat(h.ptr, format.ptr)))
+	return result(int32(capi.ACodecPerformancePoint_coversFormat(h.ptr, format.cptr())))
 }
 
 // Equals calls the underlying NDK function.
 func (h *CodecPerformancePoint) Equals(another *CodecPerformancePoint) error {
-	return result(int32(capi.ACodecPerformancePoint_equals(h.ptr, another.ptr)))
+	return result(int32(capi.ACodecPerformancePoint_equals(h.ptr, another.cptr())))
 }

@@ -13,6 +13,15 @@ type MediaCodecBufferInfo struct {
 	ptr *capi.AMediaCodecBufferInfo
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *MediaCodecBufferInfo) cptr() *capi.AMediaCodecBufferInfo {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewMediaCodecBufferInfoFromPointer wraps a raw AMediaCodecBufferInfo pointer.
 func NewMediaCodecBufferInfoFromPointer(ptr unsafe.Pointer) *MediaCodecBufferInfo {
 	return &MediaCodecBufferInfo{ptr: (*capi.AMediaCodecBufferInfo)(ptr)}

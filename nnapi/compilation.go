@@ -13,6 +13,15 @@ type Compilation struct {
 	ptr *capi.ANeuralNetworksCompilation
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Compilation) cptr() *capi.ANeuralNetworksCompilation {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewCompilationFromPointer wraps a raw ANeuralNetworksCompilation pointer.
 func NewCompilationFromPointer(ptr unsafe.Pointer) *Compilation {
 	return &Compilation{ptr: (*capi.ANeuralNetworksCompilation)(ptr)}
@@ -26,7 +35,7 @@ func (h *Compilation) Pointer() unsafe.Pointer {
 // NewBurst creates a new Burst from this Compilation.
 func (h *Compilation) NewBurst() (*Burst, error) {
 	var ptr *capi.ANeuralNetworksBurst
-	if err := result(int32(capi.ANeuralNetworksBurst_create(h.ptr, &ptr))); err != nil {
+	if err := result(capi.ANeuralNetworksBurst_create(h.ptr, &ptr)); err != nil {
 		return nil, err
 	}
 	return &Burst{ptr: ptr}, nil
@@ -34,33 +43,33 @@ func (h *Compilation) NewBurst() (*Burst, error) {
 
 // Finish calls the underlying NDK function.
 func (h *Compilation) Finish() error {
-	return result(int32(capi.ANeuralNetworksCompilation_finish(h.ptr)))
+	return result(capi.ANeuralNetworksCompilation_finish(h.ptr))
 }
 
 // SetCaching calls the underlying NDK function.
 func (h *Compilation) SetCaching(cacheDir string, token *uint8) error {
-	return result(int32(capi.ANeuralNetworksCompilation_setCaching(h.ptr, cacheDir, token)))
+	return result(capi.ANeuralNetworksCompilation_setCaching(h.ptr, cacheDir, token))
 }
 
 // SetPreference calls the underlying NDK function.
 func (h *Compilation) SetPreference(preference Preference) error {
-	return result(int32(capi.ANeuralNetworksCompilation_setPreference(h.ptr, int32(preference))))
+	return result(capi.ANeuralNetworksCompilation_setPreference(h.ptr, int32(preference)))
 }
 
 // SetPriority calls the underlying NDK function.
 func (h *Compilation) SetPriority(priority int32) error {
-	return result(int32(capi.ANeuralNetworksCompilation_setPriority(h.ptr, priority)))
+	return result(capi.ANeuralNetworksCompilation_setPriority(h.ptr, priority))
 }
 
 // SetTimeout calls the underlying NDK function.
 func (h *Compilation) SetTimeout(duration uint64) error {
-	return result(int32(capi.ANeuralNetworksCompilation_setTimeout(h.ptr, duration)))
+	return result(capi.ANeuralNetworksCompilation_setTimeout(h.ptr, duration))
 }
 
 // NewExecution creates a new Execution from this Compilation.
 func (h *Compilation) NewExecution() (*Execution, error) {
 	var ptr *capi.ANeuralNetworksExecution
-	if err := result(int32(capi.ANeuralNetworksExecution_create(h.ptr, &ptr))); err != nil {
+	if err := result(capi.ANeuralNetworksExecution_create(h.ptr, &ptr)); err != nil {
 		return nil, err
 	}
 	return &Execution{ptr: ptr}, nil

@@ -13,6 +13,15 @@ type CameraCaptureSession_captureCallbacks struct {
 	ptr *capi.ACameraCaptureSession_captureCallbacks
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *CameraCaptureSession_captureCallbacks) cptr() *capi.ACameraCaptureSession_captureCallbacks {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewCameraCaptureSession_captureCallbacksFromPointer wraps a raw ACameraCaptureSession_captureCallbacks pointer.
 func NewCameraCaptureSession_captureCallbacksFromPointer(ptr unsafe.Pointer) *CameraCaptureSession_captureCallbacks {
 	return &CameraCaptureSession_captureCallbacks{ptr: (*capi.ACameraCaptureSession_captureCallbacks)(ptr)}

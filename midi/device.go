@@ -13,6 +13,15 @@ type Device struct {
 	ptr *capi.AMidiDevice
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Device) cptr() *capi.AMidiDevice {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Device) Close() error {
 	if h.ptr == nil {
@@ -45,13 +54,13 @@ func (h *Device) NumOutputPorts() int64 {
 
 // GetType calls the underlying NDK function.
 func (h *Device) GetType() error {
-	return result(int32(capi.AMidiDevice_getType(h.ptr)))
+	return result(capi.AMidiDevice_getType(h.ptr))
 }
 
 // OpenInputPort creates a new InputPort from this Device.
 func (h *Device) OpenInputPort(portNumber int32) (*InputPort, error) {
 	var ptr *capi.AMidiInputPort
-	if err := result(int32(capi.AMidiInputPort_open(h.ptr, portNumber, &ptr))); err != nil {
+	if err := result(capi.AMidiInputPort_open(h.ptr, portNumber, &ptr)); err != nil {
 		return nil, err
 	}
 	return &InputPort{ptr: ptr}, nil
@@ -60,7 +69,7 @@ func (h *Device) OpenInputPort(portNumber int32) (*InputPort, error) {
 // OpenOutputPort creates a new OutputPort from this Device.
 func (h *Device) OpenOutputPort(portNumber int32) (*OutputPort, error) {
 	var ptr *capi.AMidiOutputPort
-	if err := result(int32(capi.AMidiOutputPort_open(h.ptr, portNumber, &ptr))); err != nil {
+	if err := result(capi.AMidiOutputPort_open(h.ptr, portNumber, &ptr)); err != nil {
 		return nil, err
 	}
 	return &OutputPort{ptr: ptr}, nil

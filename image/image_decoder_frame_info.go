@@ -13,6 +13,15 @@ type ImageDecoderFrameInfo struct {
 	ptr *capi.AImageDecoderFrameInfo
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *ImageDecoderFrameInfo) cptr() *capi.AImageDecoderFrameInfo {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewImageDecoderFrameInfo creates a new ImageDecoderFrameInfo.
 func NewImageDecoderFrameInfo() *ImageDecoderFrameInfo {
 	return &ImageDecoderFrameInfo{ptr: capi.AImageDecoderFrameInfo_create()}
@@ -40,12 +49,12 @@ func (h *ImageDecoderFrameInfo) Pointer() unsafe.Pointer {
 
 // GetBlendOp calls the underlying NDK function.
 func (h *ImageDecoderFrameInfo) GetBlendOp() error {
-	return result(int32(capi.AImageDecoderFrameInfo_getBlendOp(h.ptr)))
+	return result(capi.AImageDecoderFrameInfo_getBlendOp(h.ptr))
 }
 
 // GetDisposeOp calls the underlying NDK function.
 func (h *ImageDecoderFrameInfo) GetDisposeOp() error {
-	return result(int32(capi.AImageDecoderFrameInfo_getDisposeOp(h.ptr)))
+	return result(capi.AImageDecoderFrameInfo_getDisposeOp(h.ptr))
 }
 
 // GetDuration returns the value directly.

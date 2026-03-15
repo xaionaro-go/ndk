@@ -13,6 +13,15 @@ type Manager struct {
 	ptr *capi.ACameraManager
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Manager) cptr() *capi.ACameraManager {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewManager creates a new Manager.
 func NewManager() *Manager {
 	return &Manager{ptr: capi.ACameraManager_create()}
@@ -41,7 +50,7 @@ func (h *Manager) Pointer() unsafe.Pointer {
 // GetCameraCharacteristics creates a new Metadata from this Manager.
 func (h *Manager) GetCameraCharacteristics(cameraID string) (*Metadata, error) {
 	var ptr *capi.ACameraMetadata
-	if err := result(int32(capi.ACameraManager_getCameraCharacteristics(h.ptr, cameraID, &ptr))); err != nil {
+	if err := result(capi.ACameraManager_getCameraCharacteristics(h.ptr, cameraID, &ptr)); err != nil {
 		return nil, err
 	}
 	return &Metadata{ptr: ptr}, nil
@@ -50,7 +59,7 @@ func (h *Manager) GetCameraCharacteristics(cameraID string) (*Metadata, error) {
 // CameraIDList returns items from the underlying list.
 func (h *Manager) CameraIDList() ([]string, error) {
 	var list *capi.ACameraIdList
-	if err := result(int32(capi.ACameraManager_getCameraIdList(h.ptr, &list))); err != nil {
+	if err := result(capi.ACameraManager_getCameraIdList(h.ptr, &list)); err != nil {
 		return nil, err
 	}
 	defer capi.ACameraManager_deleteCameraIdList(list)
@@ -68,7 +77,7 @@ func (h *Manager) OpenCamera(cameraID string, cbs DeviceStateCallbacks) (*Device
 	var cbsC capi.ACameraDevice_StateCallbacks
 	capi.BridgeInitDeviceStateCallbacks(&cbsC, cbID)
 	var ptr *capi.ACameraDevice
-	if err := result(int32(capi.ACameraManager_openCamera(h.ptr, cameraID, &cbsC, &ptr))); err != nil {
+	if err := result(capi.ACameraManager_openCamera(h.ptr, cameraID, &cbsC, &ptr)); err != nil {
 		capi.BridgeUnregisterDeviceStateCallbacks(cbID)
 		return nil, err
 	}

@@ -13,12 +13,21 @@ type Codec struct {
 	ptr *capi.AMediaCodec
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Codec) cptr() *capi.AMediaCodec {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Codec) Close() error {
 	if h.ptr == nil {
 		return nil
 	}
-	err := result(int32(capi.AMediaCodec_delete(h.ptr)))
+	err := result(capi.AMediaCodec_delete(h.ptr))
 	h.ptr = nil
 	return err
 }
@@ -35,12 +44,12 @@ func (h *Codec) Pointer() unsafe.Pointer {
 
 // Configure calls the underlying NDK function.
 func (h *Codec) Configure(format *Format, surface *Window, crypto *Crypto, flags uint32) error {
-	return result(int32(capi.AMediaCodec_configure(h.ptr, format.ptr, surface.ptr, crypto.ptr, flags)))
+	return result(capi.AMediaCodec_configure(h.ptr, format.cptr(), surface.cptr(), crypto.cptr(), flags))
 }
 
 // Flush calls the underlying NDK function.
 func (h *Codec) Flush() error {
-	return result(int32(capi.AMediaCodec_flush(h.ptr)))
+	return result(capi.AMediaCodec_flush(h.ptr))
 }
 
 // GetBufferFormat creates a new Format from this Codec.
@@ -65,7 +74,7 @@ func (h *Codec) GetOutputBuffer(idx uint64, out_size *uint64) *uint8 {
 
 // QueueInputBuffer calls the underlying NDK function.
 func (h *Codec) QueueInputBuffer(idx uint64, offset Off_t, size uint64, time uint64, flags uint32) error {
-	return result(int32(capi.AMediaCodec_queueInputBuffer(h.ptr, idx, capi.Off_t(offset), size, time, flags)))
+	return result(capi.AMediaCodec_queueInputBuffer(h.ptr, idx, capi.Off_t(offset), size, time, flags))
 }
 
 // ReleaseName calls the underlying NDK function.
@@ -75,17 +84,17 @@ func (h *Codec) ReleaseName(name string) {
 
 // ReleaseOutputBuffer calls the underlying NDK function.
 func (h *Codec) ReleaseOutputBuffer(idx uint64, render bool) error {
-	return result(int32(capi.AMediaCodec_releaseOutputBuffer(h.ptr, idx, render)))
+	return result(capi.AMediaCodec_releaseOutputBuffer(h.ptr, idx, render))
 }
 
 // Start calls the underlying NDK function.
 func (h *Codec) Start() error {
-	return result(int32(capi.AMediaCodec_start(h.ptr)))
+	return result(capi.AMediaCodec_start(h.ptr))
 }
 
 // Stop calls the underlying NDK function.
 func (h *Codec) Stop() error {
-	return result(int32(capi.AMediaCodec_stop(h.ptr)))
+	return result(capi.AMediaCodec_stop(h.ptr))
 }
 
 // AMediaCodec_createCodecByName calls the underlying C function.

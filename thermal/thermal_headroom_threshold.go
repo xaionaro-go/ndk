@@ -13,6 +13,15 @@ type ThermalHeadroomThreshold struct {
 	ptr *capi.AThermalHeadroomThreshold
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *ThermalHeadroomThreshold) cptr() *capi.AThermalHeadroomThreshold {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewThermalHeadroomThresholdFromPointer wraps a raw AThermalHeadroomThreshold pointer.
 func NewThermalHeadroomThresholdFromPointer(ptr unsafe.Pointer) *ThermalHeadroomThreshold {
 	return &ThermalHeadroomThreshold{ptr: (*capi.AThermalHeadroomThreshold)(ptr)}

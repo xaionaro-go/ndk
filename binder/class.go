@@ -13,6 +13,15 @@ type Class struct {
 	ptr *capi.AIBinder_Class
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Class) cptr() *capi.AIBinder_Class {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewClassFromPointer wraps a raw AIBinder_Class pointer.
 func NewClassFromPointer(ptr unsafe.Pointer) *Class {
 	return &Class{ptr: (*capi.AIBinder_Class)(ptr)}

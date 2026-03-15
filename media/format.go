@@ -13,6 +13,15 @@ type Format struct {
 	ptr *capi.AMediaFormat
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Format) cptr() *capi.AMediaFormat {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewFormat creates a new Format.
 func NewFormat() *Format {
 	return &Format{ptr: capi.AMediaFormat_new()}
@@ -23,7 +32,7 @@ func (h *Format) Close() error {
 	if h.ptr == nil {
 		return nil
 	}
-	err := result(int32(capi.AMediaFormat_delete(h.ptr)))
+	err := result(capi.AMediaFormat_delete(h.ptr))
 	h.ptr = nil
 	return err
 }

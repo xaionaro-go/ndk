@@ -13,10 +13,19 @@ type StreamBuilder struct {
 	ptr *capi.AAudioStreamBuilder
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *StreamBuilder) cptr() *capi.AAudioStreamBuilder {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewStreamBuilder creates a new StreamBuilder.
 func NewStreamBuilder() (*StreamBuilder, error) {
 	var ptr *capi.AAudioStreamBuilder
-	if err := result(int32(capi.AAudio_createStreamBuilder(&ptr))); err != nil {
+	if err := result(capi.AAudio_createStreamBuilder(&ptr)); err != nil {
 		return nil, err
 	}
 	return &StreamBuilder{ptr: ptr}, nil
@@ -27,7 +36,7 @@ func (h *StreamBuilder) Close() error {
 	if h.ptr == nil {
 		return nil
 	}
-	err := result(int32(capi.AAudioStreamBuilder_delete(h.ptr)))
+	err := result(capi.AAudioStreamBuilder_delete(h.ptr))
 	h.ptr = nil
 	return err
 }
@@ -45,7 +54,7 @@ func (h *StreamBuilder) Pointer() unsafe.Pointer {
 // Open creates a new Stream from this StreamBuilder.
 func (h *StreamBuilder) Open() (*Stream, error) {
 	var ptr *capi.AAudioStream
-	if err := result(int32(capi.AAudioStreamBuilder_openStream(h.ptr, &ptr))); err != nil {
+	if err := result(capi.AAudioStreamBuilder_openStream(h.ptr, &ptr)); err != nil {
 		return nil, err
 	}
 	return &Stream{ptr: ptr}, nil

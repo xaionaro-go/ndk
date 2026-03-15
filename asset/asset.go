@@ -13,6 +13,15 @@ type Asset struct {
 	ptr *capi.AAsset
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Asset) cptr() *capi.AAsset {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Asset) Close() error {
 	if h.ptr == nil {
@@ -65,17 +74,17 @@ func (h *Asset) IsAllocated() int32 {
 
 // OpenFileDescriptor calls the underlying NDK function.
 func (h *Asset) OpenFileDescriptor(outStart *Off_t, outLength *Off_t) error {
-	return result(int32(capi.AAsset_openFileDescriptor(h.ptr, (*capi.Off_t)(outStart), (*capi.Off_t)(outLength))))
+	return result(capi.AAsset_openFileDescriptor(h.ptr, (*capi.Off_t)(outStart), (*capi.Off_t)(outLength)))
 }
 
 // OpenFileDescriptor64 calls the underlying NDK function.
 func (h *Asset) OpenFileDescriptor64(outStart *Off64_t, outLength *Off64_t) error {
-	return result(int32(capi.AAsset_openFileDescriptor64(h.ptr, (*capi.Off64_t)(outStart), (*capi.Off64_t)(outLength))))
+	return result(capi.AAsset_openFileDescriptor64(h.ptr, (*capi.Off64_t)(outStart), (*capi.Off64_t)(outLength)))
 }
 
 // Read calls the underlying NDK function.
 func (h *Asset) Read(buf unsafe.Pointer, count uint64) error {
-	return result(int32(capi.AAsset_read(h.ptr, buf, count)))
+	return result(capi.AAsset_read(h.ptr, buf, count))
 }
 
 // Seek returns the value directly.

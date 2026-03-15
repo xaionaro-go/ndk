@@ -13,6 +13,15 @@ type HardwareBuffer_Planes struct {
 	ptr *capi.AHardwareBuffer_Planes
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *HardwareBuffer_Planes) cptr() *capi.AHardwareBuffer_Planes {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewHardwareBuffer_PlanesFromPointer wraps a raw AHardwareBuffer_Planes pointer.
 func NewHardwareBuffer_PlanesFromPointer(ptr unsafe.Pointer) *HardwareBuffer_Planes {
 	return &HardwareBuffer_Planes{ptr: (*capi.AHardwareBuffer_Planes)(ptr)}

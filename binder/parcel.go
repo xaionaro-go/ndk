@@ -13,6 +13,15 @@ type Parcel struct {
 	ptr *capi.AParcel
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Parcel) cptr() *capi.AParcel {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewParcel creates a new Parcel.
 func NewParcel() *Parcel {
 	return &Parcel{ptr: capi.AParcel_create()}
@@ -40,10 +49,10 @@ func (h *Parcel) Pointer() unsafe.Pointer {
 
 // GetDataPosition calls the underlying NDK function.
 func (h *Parcel) GetDataPosition() error {
-	return result(int32(capi.AParcel_getDataPosition(h.ptr)))
+	return result(capi.AParcel_getDataPosition(h.ptr))
 }
 
 // GetDataSize calls the underlying NDK function.
 func (h *Parcel) GetDataSize() error {
-	return result(int32(capi.AParcel_getDataSize(h.ptr)))
+	return result(capi.AParcel_getDataSize(h.ptr))
 }

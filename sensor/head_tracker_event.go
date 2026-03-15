@@ -13,6 +13,15 @@ type HeadTrackerEvent struct {
 	ptr *capi.AHeadTrackerEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *HeadTrackerEvent) cptr() *capi.AHeadTrackerEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewHeadTrackerEventFromPointer wraps a raw AHeadTrackerEvent pointer.
 func NewHeadTrackerEventFromPointer(ptr unsafe.Pointer) *HeadTrackerEvent {
 	return &HeadTrackerEvent{ptr: (*capi.AHeadTrackerEvent)(ptr)}

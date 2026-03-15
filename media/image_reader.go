@@ -13,6 +13,15 @@ type ImageReader struct {
 	ptr *capi.AImageReader
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *ImageReader) cptr() *capi.AImageReader {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *ImageReader) Close() error {
 	if h.ptr == nil {
@@ -37,7 +46,7 @@ func (h *ImageReader) Pointer() unsafe.Pointer {
 func (h *ImageReader) AcquireLatestImage() (*Image, error) {
 	var imagePtr *capi.AImage
 	ret := capi.AImageReader_acquireLatestImage(h.ptr, &imagePtr)
-	if err := result(int32(ret)); err != nil {
+	if err := result(ret); err != nil {
 		return nil, err
 	}
 	return &Image{ptr: imagePtr}, nil
@@ -47,7 +56,7 @@ func (h *ImageReader) AcquireLatestImage() (*Image, error) {
 func (h *ImageReader) AcquireNextImage() (*Image, error) {
 	var imagePtr *capi.AImage
 	ret := capi.AImageReader_acquireNextImage(h.ptr, &imagePtr)
-	if err := result(int32(ret)); err != nil {
+	if err := result(ret); err != nil {
 		return nil, err
 	}
 	return &Image{ptr: imagePtr}, nil
@@ -55,29 +64,29 @@ func (h *ImageReader) AcquireNextImage() (*Image, error) {
 
 // Format calls the underlying NDK function.
 func (h *ImageReader) Format(format *int32) error {
-	return result(int32(capi.AImageReader_getFormat(h.ptr, format)))
+	return result(capi.AImageReader_getFormat(h.ptr, format))
 }
 
 // Height calls the underlying NDK function.
 func (h *ImageReader) Height(height *int32) error {
-	return result(int32(capi.AImageReader_getHeight(h.ptr, height)))
+	return result(capi.AImageReader_getHeight(h.ptr, height))
 }
 
 // MaxImages calls the underlying NDK function.
 func (h *ImageReader) MaxImages(maxImages *int32) error {
-	return result(int32(capi.AImageReader_getMaxImages(h.ptr, maxImages)))
+	return result(capi.AImageReader_getMaxImages(h.ptr, maxImages))
 }
 
 // Width calls the underlying NDK function.
 func (h *ImageReader) Width(width *int32) error {
-	return result(int32(capi.AImageReader_getWidth(h.ptr, width)))
+	return result(capi.AImageReader_getWidth(h.ptr, width))
 }
 
 // Window calls the underlying NDK function.
 func (h *ImageReader) Window() (*Window, error) {
 	var windowPtr *capi.ANativeWindow
 	ret := capi.AImageReader_getWindow(h.ptr, &windowPtr)
-	if err := result(int32(ret)); err != nil {
+	if err := result(ret); err != nil {
 		return nil, err
 	}
 	return &Window{ptr: windowPtr}, nil
@@ -87,7 +96,7 @@ func (h *ImageReader) Window() (*Window, error) {
 func NewImageReader(width int32, height int32, format int32, maxImages int32) (*ImageReader, error) {
 	var readerPtr *capi.AImageReader
 	ret := capi.AImageReader_new(width, height, format, maxImages, &readerPtr)
-	if err := result(int32(ret)); err != nil {
+	if err := result(ret); err != nil {
 		return nil, err
 	}
 	return &ImageReader{ptr: readerPtr}, nil
@@ -97,7 +106,7 @@ func NewImageReader(width int32, height int32, format int32, maxImages int32) (*
 func NewImageReaderWithUsage(width int32, height int32, format int32, usage uint64, maxImages int32) (*ImageReader, error) {
 	var readerPtr *capi.AImageReader
 	ret := capi.AImageReader_newWithUsage(width, height, format, usage, maxImages, &readerPtr)
-	if err := result(int32(ret)); err != nil {
+	if err := result(ret); err != nil {
 		return nil, err
 	}
 	return &ImageReader{ptr: readerPtr}, nil

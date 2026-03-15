@@ -13,6 +13,15 @@ type Dir struct {
 	ptr *capi.AAssetDir
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Dir) cptr() *capi.AAssetDir {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *Dir) Close() error {
 	if h.ptr == nil {

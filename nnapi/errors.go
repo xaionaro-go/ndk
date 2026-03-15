@@ -29,7 +29,7 @@ func (e Error) Error() string {
 }
 
 // result converts a C result code to nil or an Error.
-func result(r int32) error {
+func result[T ~int32 | ~uint32 | ~int64](r T) error {
 	if r >= 0 {
 		return nil
 	}

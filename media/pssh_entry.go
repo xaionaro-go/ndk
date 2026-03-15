@@ -13,6 +13,15 @@ type PsshEntry struct {
 	ptr *capi.PsshEntry
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *PsshEntry) cptr() *capi.PsshEntry {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewPsshEntryFromPointer wraps a raw PsshEntry pointer.
 func NewPsshEntryFromPointer(ptr unsafe.Pointer) *PsshEntry {
 	return &PsshEntry{ptr: (*capi.PsshEntry)(ptr)}

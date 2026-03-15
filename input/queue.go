@@ -13,6 +13,15 @@ type Queue struct {
 	ptr *capi.AInputQueue
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Queue) cptr() *capi.AInputQueue {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewQueueFromPointer wraps a raw AInputQueue pointer.
 func NewQueueFromPointer(ptr unsafe.Pointer) *Queue {
 	return &Queue{ptr: (*capi.AInputQueue)(ptr)}
@@ -30,10 +39,10 @@ func (h *Queue) DetachLooper() {
 
 // FinishEvent calls the underlying NDK function.
 func (h *Queue) FinishEvent(event *Event, handled int32) {
-	capi.AInputQueue_finishEvent(h.ptr, event.ptr, handled)
+	capi.AInputQueue_finishEvent(h.ptr, event.cptr(), handled)
 }
 
 // HasEvents calls the underlying NDK function.
 func (h *Queue) HasEvents() error {
-	return result(int32(capi.AInputQueue_hasEvents(h.ptr)))
+	return result(capi.AInputQueue_hasEvents(h.ptr))
 }

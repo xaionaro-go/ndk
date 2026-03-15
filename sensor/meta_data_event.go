@@ -13,6 +13,15 @@ type MetaDataEvent struct {
 	ptr *capi.AMetaDataEvent
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *MetaDataEvent) cptr() *capi.AMetaDataEvent {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewMetaDataEventFromPointer wraps a raw AMetaDataEvent pointer.
 func NewMetaDataEventFromPointer(ptr unsafe.Pointer) *MetaDataEvent {
 	return &MetaDataEvent{ptr: (*capi.AMetaDataEvent)(ptr)}

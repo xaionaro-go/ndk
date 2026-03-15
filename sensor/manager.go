@@ -13,6 +13,15 @@ type Manager struct {
 	ptr *capi.ASensorManager
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Manager) cptr() *capi.ASensorManager {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewManagerFromPointer wraps a raw ASensorManager pointer.
 func NewManagerFromPointer(ptr unsafe.Pointer) *Manager {
 	return &Manager{ptr: (*capi.ASensorManager)(ptr)}
@@ -25,7 +34,7 @@ func (h *Manager) Pointer() unsafe.Pointer {
 
 // ConfigureDirectReport calls the underlying NDK function.
 func (h *Manager) ConfigureDirectReport(sensor *Sensor, channelID int32, rate int32) error {
-	return result(int32(capi.ASensorManager_configureDirectReport(h.ptr, sensor.ptr, channelID, rate)))
+	return result(capi.ASensorManager_configureDirectReport(h.ptr, sensor.cptr(), channelID, rate))
 }
 
 // CreateEventQueue creates a new EventQueue from this Manager.
@@ -35,12 +44,12 @@ func (h *Manager) CreateEventQueue(looper *ALooper, ident int32, callback ALoope
 
 // CreateHardwareBufferDirectChannel calls the underlying NDK function.
 func (h *Manager) CreateHardwareBufferDirectChannel(buffer *HardwareBuffer, size uint64) error {
-	return result(int32(capi.ASensorManager_createHardwareBufferDirectChannel(h.ptr, buffer.ptr, size)))
+	return result(capi.ASensorManager_createHardwareBufferDirectChannel(h.ptr, buffer.cptr(), size))
 }
 
 // CreateSharedMemoryDirectChannel calls the underlying NDK function.
 func (h *Manager) CreateSharedMemoryDirectChannel(fd int32, size uint64) error {
-	return result(int32(capi.ASensorManager_createSharedMemoryDirectChannel(h.ptr, fd, size)))
+	return result(capi.ASensorManager_createSharedMemoryDirectChannel(h.ptr, fd, size))
 }
 
 // DestroyDirectChannel calls the underlying NDK function.
@@ -50,7 +59,7 @@ func (h *Manager) DestroyDirectChannel(channelID int32) {
 
 // DestroyEventQueue calls the underlying NDK function.
 func (h *Manager) DestroyEventQueue(queue *EventQueue) error {
-	return result(int32(capi.ASensorManager_destroyEventQueue(h.ptr, queue.ptr)))
+	return result(capi.ASensorManager_destroyEventQueue(h.ptr, queue.cptr()))
 }
 
 // DefaultSensor creates a new Sensor from this Manager.

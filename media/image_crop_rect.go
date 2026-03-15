@@ -13,6 +13,15 @@ type ImageCropRect struct {
 	ptr *capi.AImageCropRect
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *ImageCropRect) cptr() *capi.AImageCropRect {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewImageCropRectFromPointer wraps a raw AImageCropRect pointer.
 func NewImageCropRectFromPointer(ptr unsafe.Pointer) *ImageCropRect {
 	return &ImageCropRect{ptr: (*capi.AImageCropRect)(ptr)}

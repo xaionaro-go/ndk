@@ -13,6 +13,15 @@ type EventQueue struct {
 	ptr *capi.ASensorEventQueue
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *EventQueue) cptr() *capi.ASensorEventQueue {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewEventQueueFromPointer wraps a raw ASensorEventQueue pointer.
 func NewEventQueueFromPointer(ptr unsafe.Pointer) *EventQueue {
 	return &EventQueue{ptr: (*capi.ASensorEventQueue)(ptr)}
@@ -25,17 +34,17 @@ func (h *EventQueue) Pointer() unsafe.Pointer {
 
 // DisableSensor calls the underlying NDK function.
 func (h *EventQueue) DisableSensor(sensor *Sensor) error {
-	return result(int32(capi.ASensorEventQueue_disableSensor(h.ptr, sensor.ptr)))
+	return result(capi.ASensorEventQueue_disableSensor(h.ptr, sensor.cptr()))
 }
 
 // EnableSensor calls the underlying NDK function.
 func (h *EventQueue) EnableSensor(sensor *Sensor) error {
-	return result(int32(capi.ASensorEventQueue_enableSensor(h.ptr, sensor.ptr)))
+	return result(capi.ASensorEventQueue_enableSensor(h.ptr, sensor.cptr()))
 }
 
 // GetEvents returns the value directly.
 func (h *EventQueue) GetEvents(events *SensorEvent, count uint64) int64 {
-	return (int64)(capi.ASensorEventQueue_getEvents(h.ptr, events.ptr, count))
+	return (int64)(capi.ASensorEventQueue_getEvents(h.ptr, events.cptr(), count))
 }
 
 // HasEvents returns the value directly.
@@ -45,15 +54,15 @@ func (h *EventQueue) HasEvents() int32 {
 
 // RegisterSensor calls the underlying NDK function.
 func (h *EventQueue) RegisterSensor(sensor *Sensor, samplingPeriodUs int32, maxBatchReportLatencyUs int64) error {
-	return result(int32(capi.ASensorEventQueue_registerSensor(h.ptr, sensor.ptr, samplingPeriodUs, maxBatchReportLatencyUs)))
+	return result(capi.ASensorEventQueue_registerSensor(h.ptr, sensor.cptr(), samplingPeriodUs, maxBatchReportLatencyUs))
 }
 
 // RequestAdditionalInfoEvents calls the underlying NDK function.
 func (h *EventQueue) RequestAdditionalInfoEvents(enable bool) error {
-	return result(int32(capi.ASensorEventQueue_requestAdditionalInfoEvents(h.ptr, enable)))
+	return result(capi.ASensorEventQueue_requestAdditionalInfoEvents(h.ptr, enable))
 }
 
 // SetEventRate calls the underlying NDK function.
 func (h *EventQueue) SetEventRate(sensor *Sensor, usec int32) error {
-	return result(int32(capi.ASensorEventQueue_setEventRate(h.ptr, sensor.ptr, usec)))
+	return result(capi.ASensorEventQueue_setEventRate(h.ptr, sensor.cptr(), usec))
 }

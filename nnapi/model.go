@@ -13,6 +13,15 @@ type Model struct {
 	ptr *capi.ANeuralNetworksModel
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Model) cptr() *capi.ANeuralNetworksModel {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewModelFromPointer wraps a raw ANeuralNetworksModel pointer.
 func NewModelFromPointer(ptr unsafe.Pointer) *Model {
 	return &Model{ptr: (*capi.ANeuralNetworksModel)(ptr)}
@@ -26,7 +35,7 @@ func (h *Model) Pointer() unsafe.Pointer {
 // NewCompilation creates a new Compilation from this Model.
 func (h *Model) NewCompilation() (*Compilation, error) {
 	var ptr *capi.ANeuralNetworksCompilation
-	if err := result(int32(capi.ANeuralNetworksCompilation_create(h.ptr, &ptr))); err != nil {
+	if err := result(capi.ANeuralNetworksCompilation_create(h.ptr, &ptr)); err != nil {
 		return nil, err
 	}
 	return &Compilation{ptr: ptr}, nil
@@ -34,25 +43,25 @@ func (h *Model) NewCompilation() (*Compilation, error) {
 
 // AddOperation calls the underlying NDK function.
 func (h *Model) AddOperation(_type ANeuralNetworksOperationType, inputCount uint32, inputs *uint32, outputCount uint32, outputs *uint32) error {
-	return result(int32(capi.ANeuralNetworksModel_addOperation(h.ptr, capi.ANeuralNetworksOperationType(_type), inputCount, inputs, outputCount, outputs)))
+	return result(capi.ANeuralNetworksModel_addOperation(h.ptr, capi.ANeuralNetworksOperationType(_type), inputCount, inputs, outputCount, outputs))
 }
 
 // Finish calls the underlying NDK function.
 func (h *Model) Finish() error {
-	return result(int32(capi.ANeuralNetworksModel_finish(h.ptr)))
+	return result(capi.ANeuralNetworksModel_finish(h.ptr))
 }
 
 // IdentifyInputsAndOutputs calls the underlying NDK function.
 func (h *Model) IdentifyInputsAndOutputs(inputCount uint32, inputs *uint32, outputCount uint32, outputs *uint32) error {
-	return result(int32(capi.ANeuralNetworksModel_identifyInputsAndOutputs(h.ptr, inputCount, inputs, outputCount, outputs)))
+	return result(capi.ANeuralNetworksModel_identifyInputsAndOutputs(h.ptr, inputCount, inputs, outputCount, outputs))
 }
 
 // RelaxFloat32toFloat16 calls the underlying NDK function.
 func (h *Model) RelaxFloat32toFloat16(allow bool) error {
-	return result(int32(capi.ANeuralNetworksModel_relaxComputationFloat32toFloat16(h.ptr, allow)))
+	return result(capi.ANeuralNetworksModel_relaxComputationFloat32toFloat16(h.ptr, allow))
 }
 
 // SetOperandValue calls the underlying NDK function.
 func (h *Model) SetOperandValue(index int32, buffer unsafe.Pointer, length uint64) error {
-	return result(int32(capi.ANeuralNetworksModel_setOperandValue(h.ptr, index, buffer, length)))
+	return result(capi.ANeuralNetworksModel_setOperandValue(h.ptr, index, buffer, length))
 }

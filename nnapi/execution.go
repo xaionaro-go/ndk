@@ -13,6 +13,15 @@ type Execution struct {
 	ptr *capi.ANeuralNetworksExecution
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Execution) cptr() *capi.ANeuralNetworksExecution {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewExecutionFromPointer wraps a raw ANeuralNetworksExecution pointer.
 func NewExecutionFromPointer(ptr unsafe.Pointer) *Execution {
 	return &Execution{ptr: (*capi.ANeuralNetworksExecution)(ptr)}
@@ -25,28 +34,28 @@ func (h *Execution) Pointer() unsafe.Pointer {
 
 // Compute calls the underlying NDK function.
 func (h *Execution) Compute() error {
-	return result(int32(capi.ANeuralNetworksExecution_compute(h.ptr)))
+	return result(capi.ANeuralNetworksExecution_compute(h.ptr))
 }
 
 // GetDuration calls the underlying NDK function.
 func (h *Execution) GetDuration(durationCode int32, duration *uint64) error {
-	return result(int32(capi.ANeuralNetworksExecution_getDuration(h.ptr, durationCode, duration)))
+	return result(capi.ANeuralNetworksExecution_getDuration(h.ptr, durationCode, duration))
 }
 
 // SetMeasureTiming calls the underlying NDK function.
 func (h *Execution) SetMeasureTiming(measure bool) error {
-	return result(int32(capi.ANeuralNetworksExecution_setMeasureTiming(h.ptr, measure)))
+	return result(capi.ANeuralNetworksExecution_setMeasureTiming(h.ptr, measure))
 }
 
 // SetTimeout calls the underlying NDK function.
 func (h *Execution) SetTimeout(duration uint64) error {
-	return result(int32(capi.ANeuralNetworksExecution_setTimeout(h.ptr, duration)))
+	return result(capi.ANeuralNetworksExecution_setTimeout(h.ptr, duration))
 }
 
 // StartCompute creates a new Event from this Execution.
 func (h *Execution) StartCompute() (*Event, error) {
 	var ptr *capi.ANeuralNetworksEvent
-	if err := result(int32(capi.ANeuralNetworksExecution_startCompute(h.ptr, &ptr))); err != nil {
+	if err := result(capi.ANeuralNetworksExecution_startCompute(h.ptr, &ptr)); err != nil {
 		return nil, err
 	}
 	return &Event{ptr: ptr}, nil

@@ -13,6 +13,15 @@ type SurfaceTexture struct {
 	ptr *capi.ASurfaceTexture
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *SurfaceTexture) cptr() *capi.ASurfaceTexture {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // Close releases the underlying NDK handle.
 func (h *SurfaceTexture) Close() error {
 	if h.ptr == nil {
@@ -40,12 +49,12 @@ func (h *SurfaceTexture) AcquireWindow() *NativeWindow {
 
 // AttachToGLContext calls the underlying NDK function.
 func (h *SurfaceTexture) AttachToGLContext(texName uint32) error {
-	return result(int32(capi.ASurfaceTexture_attachToGLContext(h.ptr, texName)))
+	return result(capi.ASurfaceTexture_attachToGLContext(h.ptr, texName))
 }
 
 // DetachFromGLContext calls the underlying NDK function.
 func (h *SurfaceTexture) DetachFromGLContext() error {
-	return result(int32(capi.ASurfaceTexture_detachFromGLContext(h.ptr)))
+	return result(capi.ASurfaceTexture_detachFromGLContext(h.ptr))
 }
 
 // Timestamp returns the value directly.
@@ -60,5 +69,5 @@ func (h *SurfaceTexture) TransformMatrix(mtx *[16]float32) {
 
 // UpdateTexImage calls the underlying NDK function.
 func (h *SurfaceTexture) UpdateTexImage() error {
-	return result(int32(capi.ASurfaceTexture_updateTexImage(h.ptr)))
+	return result(capi.ASurfaceTexture_updateTexImage(h.ptr))
 }

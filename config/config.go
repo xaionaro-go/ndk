@@ -13,6 +13,15 @@ type Config struct {
 	ptr *capi.AConfiguration
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Config) cptr() *capi.AConfiguration {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewConfig creates a new Config.
 func NewConfig() *Config {
 	return &Config{ptr: capi.AConfiguration_new()}
@@ -40,12 +49,12 @@ func (h *Config) Pointer() unsafe.Pointer {
 
 // Copy calls the underlying NDK function.
 func (h *Config) Copy(src *Config) {
-	capi.AConfiguration_copy(h.ptr, src.ptr)
+	capi.AConfiguration_copy(h.ptr, src.cptr())
 }
 
 // Diff calls the underlying NDK function.
 func (h *Config) Diff(config2 *Config) error {
-	return result(int32(capi.AConfiguration_diff(h.ptr, config2.ptr)))
+	return result(capi.AConfiguration_diff(h.ptr, config2.cptr()))
 }
 
 // Country calls the underlying NDK function.
@@ -60,17 +69,17 @@ func (h *Config) Density() int32 {
 
 // GetGrammaticalGender calls the underlying NDK function.
 func (h *Config) GetGrammaticalGender() error {
-	return result(int32(capi.AConfiguration_getGrammaticalGender(h.ptr)))
+	return result(capi.AConfiguration_getGrammaticalGender(h.ptr))
 }
 
 // GetKeyboard calls the underlying NDK function.
 func (h *Config) GetKeyboard() error {
-	return result(int32(capi.AConfiguration_getKeyboard(h.ptr)))
+	return result(capi.AConfiguration_getKeyboard(h.ptr))
 }
 
 // GetKeysHidden calls the underlying NDK function.
 func (h *Config) GetKeysHidden() error {
-	return result(int32(capi.AConfiguration_getKeysHidden(h.ptr)))
+	return result(capi.AConfiguration_getKeysHidden(h.ptr))
 }
 
 // Language calls the underlying NDK function.
@@ -80,27 +89,27 @@ func (h *Config) Language(outLanguage string) {
 
 // GetLayoutDirection calls the underlying NDK function.
 func (h *Config) GetLayoutDirection() error {
-	return result(int32(capi.AConfiguration_getLayoutDirection(h.ptr)))
+	return result(capi.AConfiguration_getLayoutDirection(h.ptr))
 }
 
 // GetMcc calls the underlying NDK function.
 func (h *Config) GetMcc() error {
-	return result(int32(capi.AConfiguration_getMcc(h.ptr)))
+	return result(capi.AConfiguration_getMcc(h.ptr))
 }
 
 // GetMnc calls the underlying NDK function.
 func (h *Config) GetMnc() error {
-	return result(int32(capi.AConfiguration_getMnc(h.ptr)))
+	return result(capi.AConfiguration_getMnc(h.ptr))
 }
 
 // GetNavHidden calls the underlying NDK function.
 func (h *Config) GetNavHidden() error {
-	return result(int32(capi.AConfiguration_getNavHidden(h.ptr)))
+	return result(capi.AConfiguration_getNavHidden(h.ptr))
 }
 
 // GetNavigation calls the underlying NDK function.
 func (h *Config) GetNavigation() error {
-	return result(int32(capi.AConfiguration_getNavigation(h.ptr)))
+	return result(capi.AConfiguration_getNavigation(h.ptr))
 }
 
 // Orientation returns the value directly.
@@ -115,12 +124,12 @@ func (h *Config) ScreenHeightDp() int32 {
 
 // GetScreenLong calls the underlying NDK function.
 func (h *Config) GetScreenLong() error {
-	return result(int32(capi.AConfiguration_getScreenLong(h.ptr)))
+	return result(capi.AConfiguration_getScreenLong(h.ptr))
 }
 
 // GetScreenRound calls the underlying NDK function.
 func (h *Config) GetScreenRound() error {
-	return result(int32(capi.AConfiguration_getScreenRound(h.ptr)))
+	return result(capi.AConfiguration_getScreenRound(h.ptr))
 }
 
 // ScreenSize returns the value directly.
@@ -140,32 +149,32 @@ func (h *Config) SdkVersion() int32 {
 
 // GetSmallestScreenWidthDp calls the underlying NDK function.
 func (h *Config) GetSmallestScreenWidthDp() error {
-	return result(int32(capi.AConfiguration_getSmallestScreenWidthDp(h.ptr)))
+	return result(capi.AConfiguration_getSmallestScreenWidthDp(h.ptr))
 }
 
 // GetTouchscreen calls the underlying NDK function.
 func (h *Config) GetTouchscreen() error {
-	return result(int32(capi.AConfiguration_getTouchscreen(h.ptr)))
+	return result(capi.AConfiguration_getTouchscreen(h.ptr))
 }
 
 // GetUiModeNight calls the underlying NDK function.
 func (h *Config) GetUiModeNight() error {
-	return result(int32(capi.AConfiguration_getUiModeNight(h.ptr)))
+	return result(capi.AConfiguration_getUiModeNight(h.ptr))
 }
 
 // GetUiModeType calls the underlying NDK function.
 func (h *Config) GetUiModeType() error {
-	return result(int32(capi.AConfiguration_getUiModeType(h.ptr)))
+	return result(capi.AConfiguration_getUiModeType(h.ptr))
 }
 
 // IsBetterThan calls the underlying NDK function.
 func (h *Config) IsBetterThan(test *Config, requested *Config) error {
-	return result(int32(capi.AConfiguration_isBetterThan(h.ptr, test.ptr, requested.ptr)))
+	return result(capi.AConfiguration_isBetterThan(h.ptr, test.cptr(), requested.cptr()))
 }
 
 // Match calls the underlying NDK function.
 func (h *Config) Match(requested *Config) error {
-	return result(int32(capi.AConfiguration_match(h.ptr, requested.ptr)))
+	return result(capi.AConfiguration_match(h.ptr, requested.cptr()))
 }
 
 // SetCountry calls the underlying NDK function.

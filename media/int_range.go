@@ -13,6 +13,15 @@ type IntRange struct {
 	ptr *capi.AIntRange
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *IntRange) cptr() *capi.AIntRange {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewIntRangeFromPointer wraps a raw AIntRange pointer.
 func NewIntRangeFromPointer(ptr unsafe.Pointer) *IntRange {
 	return &IntRange{ptr: (*capi.AIntRange)(ptr)}

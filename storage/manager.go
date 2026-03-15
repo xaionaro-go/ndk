@@ -13,6 +13,15 @@ type Manager struct {
 	ptr *capi.AStorageManager
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Manager) cptr() *capi.AStorageManager {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewManager creates a new Manager.
 func NewManager() *Manager {
 	return &Manager{ptr: capi.AStorageManager_new()}

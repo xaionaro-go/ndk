@@ -346,7 +346,7 @@ func TestRenderErrors(t *testing.T) {
 	for _, want := range []string{
 		"type Error int32",
 		"func (e Error) Error() string",
-		"func result(",
+		"func result[T ~int32 | ~uint32 | ~int64](",
 		"ErrorBase Error = -900",
 		"ErrorDisconnected Error = -899",
 	} {

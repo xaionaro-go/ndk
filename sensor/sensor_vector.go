@@ -13,6 +13,15 @@ type SensorVector struct {
 	ptr *capi.ASensorVector
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *SensorVector) cptr() *capi.ASensorVector {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewSensorVectorFromPointer wraps a raw ASensorVector pointer.
 func NewSensorVectorFromPointer(ptr unsafe.Pointer) *SensorVector {
 	return &SensorVector{ptr: (*capi.ASensorVector)(ptr)}

@@ -13,6 +13,15 @@ type Crypto struct {
 	ptr *capi.AMediaCrypto
 }
 
+// cptr returns the underlying C pointer, or nil if h is nil.
+// This allows passing optional (nullable) handle parameters to capi functions.
+func (h *Crypto) cptr() *capi.AMediaCrypto {
+	if h == nil {
+		return nil
+	}
+	return h.ptr
+}
+
 // NewCrypto creates a new Crypto.
 func NewCrypto(uuid AMediaUUID, initData unsafe.Pointer, initDataSize uint64) *Crypto {
 	return &Crypto{ptr: capi.AMediaCrypto_new(uuid, initData, initDataSize)}

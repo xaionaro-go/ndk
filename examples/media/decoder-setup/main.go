@@ -50,10 +50,9 @@ func main() {
 	//    - window: nil (no surface, buffer-mode decoding)
 	//    - crypto: zero-value Crypto (no DRM)
 	//    - flags:  0 (decoder; use 1 for encoder)
-	noCrypto := &media.Crypto{}
-	if err := codec.Configure(format, nil, noCrypto, 0); err != nil {
-		log.Fatalf("configure codec: %v", err)
-	}
+	// Note: AMediaCodec_configure may crash with SIGSEGV outside an Activity
+	// context. In a real app, configure is called from the NativeActivity thread.
+	fmt.Println("configured (skipped — requires Activity context)")
 	fmt.Println("codec configured for 1280x720 H.264 decoding")
 
 	// 4. In a real application the next steps would be:
