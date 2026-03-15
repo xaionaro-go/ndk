@@ -1110,6 +1110,10 @@ func TestMerge_OutputParams_Method(t *testing.T) {
 	if !op.IsHandle {
 		t.Error("IsHandle = false, want true")
 	}
+	// media_status_t is not bool, so ReturnsBool must be false.
+	if m.ReturnsBool {
+		t.Error("ReturnsBool = true, want false")
+	}
 	// The image param should be marked as "out" so it's filtered from visible params.
 	foundOut := false
 	for _, p := range m.Params {
@@ -1263,6 +1267,138 @@ func TestMerge_OutputParams_ScalarTypes(t *testing.T) {
 	}
 	if lenOp.IsHandle {
 		t.Error("OutputParams[1].IsHandle = true, want false")
+	}
+}
+
+func TestMerge_OutputParams_ReturnsBool_Method(t *testing.T) {
+	spec := specmodel.Spec{
+		Module:        "persistablebundle",
+		SourcePackage: "github.com/xaionaro-go/ndk/capi/persistablebundle",
+		Types: map[string]specmodel.TypeDef{
+			"APersistableBundle": {Kind: "opaque_ptr", CType: "APersistableBundle", GoType: "*C.APersistableBundle"},
+		},
+		Functions: map[string]specmodel.FuncDef{
+			"APersistableBundle_getPersistableBundle": {
+				CName: "APersistableBundle_getPersistableBundle",
+				Params: []specmodel.Param{
+					{Name: "pBundle", Type: "*APersistableBundle"},
+					{Name: "key", Type: "string"},
+					{Name: "val", Type: "**APersistableBundle", Direction: "out"},
+				},
+				Returns: "bool",
+			},
+		},
+	}
+	overlay := overlaymodel.Overlay{
+		Module: "persistablebundle",
+		Package: overlaymodel.PackageOverlay{
+			GoName:   "persistablebundle",
+			GoImport: "github.com/xaionaro-go/ndk/persistablebundle",
+		},
+		Types: map[string]overlaymodel.TypeOverlay{
+			"APersistableBundle": {GoName: "PersistableBundle"},
+		},
+		Functions: map[string]overlaymodel.FuncOverlay{
+			"APersistableBundle_getPersistableBundle": {
+				Receiver: "PersistableBundle",
+				GoName:   "PersistableBundle",
+				OutputParams: map[string]string{
+					"val": "*PersistableBundle",
+				},
+			},
+		},
+	}
+	merged := idiomgen.Merge(spec, overlay)
+	if len(merged.Methods) != 1 {
+		t.Fatalf("Methods count = %d, want 1", len(merged.Methods))
+	}
+	m := merged.Methods[0]
+	if m.GoName != "PersistableBundle" {
+		t.Errorf("GoName = %q, want %q", m.GoName, "PersistableBundle")
+	}
+	// The C function returns bool, so ReturnsBool must be true.
+	if !m.ReturnsBool {
+		t.Error("ReturnsBool = false, want true")
+	}
+	if len(m.OutputParams) != 1 {
+		t.Fatalf("OutputParams count = %d, want 1", len(m.OutputParams))
+	}
+	op := m.OutputParams[0]
+	if op.CParamName != "val" {
+		t.Errorf("CParamName = %q, want %q", op.CParamName, "val")
+	}
+	if op.GoType != "*PersistableBundle" {
+		t.Errorf("GoType = %q, want %q", op.GoType, "*PersistableBundle")
+	}
+	if op.CapiType != "*capi.APersistableBundle" {
+		t.Errorf("CapiType = %q, want %q", op.CapiType, "*capi.APersistableBundle")
+	}
+	if !op.IsHandle {
+		t.Error("IsHandle = false, want true")
+	}
+}
+
+func TestMerge_OutputParams_ReturnsBool_FreeFunction(t *testing.T) {
+	spec := specmodel.Spec{
+		Module:        "persistablebundle",
+		SourcePackage: "github.com/xaionaro-go/ndk/capi/persistablebundle",
+		Types: map[string]specmodel.TypeDef{
+			"APersistableBundle": {Kind: "opaque_ptr", CType: "APersistableBundle", GoType: "*C.APersistableBundle"},
+		},
+		Functions: map[string]specmodel.FuncDef{
+			"APersistableBundle_createFromBytes": {
+				CName: "APersistableBundle_createFromBytes",
+				Params: []specmodel.Param{
+					{Name: "data", Type: "*uint8"},
+					{Name: "size", Type: "int32"},
+					{Name: "outBundle", Type: "**APersistableBundle", Direction: "out"},
+				},
+				Returns: "bool",
+			},
+		},
+	}
+	overlay := overlaymodel.Overlay{
+		Module: "persistablebundle",
+		Package: overlaymodel.PackageOverlay{
+			GoName:   "persistablebundle",
+			GoImport: "github.com/xaionaro-go/ndk/persistablebundle",
+		},
+		Types: map[string]overlaymodel.TypeOverlay{
+			"APersistableBundle": {GoName: "PersistableBundle"},
+		},
+		Functions: map[string]overlaymodel.FuncOverlay{
+			"APersistableBundle_createFromBytes": {
+				GoName: "CreateFromBytes",
+				OutputParams: map[string]string{
+					"outBundle": "*PersistableBundle",
+				},
+			},
+		},
+	}
+	merged := idiomgen.Merge(spec, overlay)
+	if len(merged.FreeFunctions) != 1 {
+		t.Fatalf("FreeFunctions count = %d, want 1", len(merged.FreeFunctions))
+	}
+	f := merged.FreeFunctions[0]
+	if f.GoName != "CreateFromBytes" {
+		t.Errorf("GoName = %q, want %q", f.GoName, "CreateFromBytes")
+	}
+	// The C function returns bool, so ReturnsBool must be true.
+	if !f.ReturnsBool {
+		t.Error("ReturnsBool = false, want true")
+	}
+	if len(f.OutputParams) != 1 {
+		t.Fatalf("OutputParams count = %d, want 1", len(f.OutputParams))
+	}
+	op := f.OutputParams[0]
+	if op.CParamName != "outBundle" {
+		t.Errorf("CParamName = %q, want %q", op.CParamName, "outBundle")
+	}
+	if op.GoType != "*PersistableBundle" {
+		t.Errorf("GoType = %q, want %q", op.GoType, "*PersistableBundle")
+	}
+	if !op.IsHandle {
+		t.Error("IsHandle = false, want true")
 	}
 }
 
