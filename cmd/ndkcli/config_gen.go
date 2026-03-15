@@ -493,7 +493,7 @@ var configConfigSetOrientationCmd = &cobra.Command{
 		obj := config.NewConfig()
 		defer obj.Close()
 		orientation, _ := cmd.Flags().GetInt32("orientation")
-		obj.SetOrientation(orientation)
+		obj.SetOrientation(config.Orientation(orientation))
 		fmt.Println("ok")
 		return nil
 	},
@@ -532,7 +532,7 @@ var configConfigSetScreenSizeCmd = &cobra.Command{
 		obj := config.NewConfig()
 		defer obj.Close()
 		screenSize, _ := cmd.Flags().GetInt32("screen-size")
-		obj.SetScreenSize(screenSize)
+		obj.SetScreenSize(config.ScreenSize(screenSize))
 		fmt.Println("ok")
 		return nil
 	},

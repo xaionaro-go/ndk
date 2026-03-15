@@ -742,8 +742,9 @@ func genFuncBody(
 
 	hasError := len(fn.returns) > 0 && fn.returns[len(fn.returns)-1].goType == "error"
 	hasResult := len(fn.returns) > 0 && fn.returns[0].goType != "error"
+	hasExtra := len(fn.returns) > 1 && !hasError
 
-	writeCall(&body, pkgRef+"."+fn.name, callArgs, hasResult, hasError, false)
+	writeCall(&body, pkgRef+"."+fn.name, callArgs, hasResult, hasError, hasExtra, false)
 
 	return body.String(), flagRegs
 }
@@ -839,7 +840,8 @@ func genMethodBody(
 	hasError := len(m.returns) > 0 && m.returns[len(m.returns)-1].goType == "error"
 	hasResult := len(m.returns) > 0 && m.returns[0].goType != "error"
 
-	writeCall(&body, "obj."+m.name, mCallArgs, hasResult, hasError, ctorHasError)
+	hasExtra := len(m.returns) > 1 && !hasError
+	writeCall(&body, "obj."+m.name, mCallArgs, hasResult, hasError, hasExtra, ctorHasError)
 
 	return body.String(), allFlagRegs
 }
@@ -850,6 +852,7 @@ func writeCall(
 	callArgs string,
 	hasResult bool,
 	hasError bool,
+	hasExtra bool,
 	alreadyHasErr bool,
 ) {
 	errAssign := "err :="
@@ -862,6 +865,10 @@ func writeCall(
 		// Always use := since result is new. err gets re-declared (valid in Go).
 		fmt.Fprintf(buf, "\t\tresult, err := %s(%s)\n", callExpr, callArgs)
 		buf.WriteString("\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n")
+		buf.WriteString("\t\tfmt.Println(result)\n")
+	case hasResult && hasExtra:
+		fmt.Fprintf(buf, "\t\tresult, extra := %s(%s)\n", callExpr, callArgs)
+		buf.WriteString("\t\t_ = extra\n")
 		buf.WriteString("\t\tfmt.Println(result)\n")
 	case hasResult:
 		fmt.Fprintf(buf, "\t\tresult := %s(%s)\n", callExpr, callArgs)

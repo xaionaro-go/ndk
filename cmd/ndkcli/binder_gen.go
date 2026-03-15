@@ -44,27 +44,6 @@ var binderStatusCmd = &cobra.Command{
 	Short: "Status operations",
 }
 
-var binderAIBinder_isHandlingTransactionCmd = &cobra.Command{
-	Use:   "ai-binder_is-handling-transaction",
-	Short: "binder.AIBinder_isHandlingTransaction()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		result := binder.AIBinder_isHandlingTransaction()
-		fmt.Println(result)
-		return nil
-	},
-}
-
-var binderAStatus_deleteDescriptionCmd = &cobra.Command{
-	Use:   "a-status_delete-description",
-	Short: "binder.AStatus_deleteDescription()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		description, _ := cmd.Flags().GetString("description")
-		binder.AStatus_deleteDescription(description)
-		fmt.Println("ok")
-		return nil
-	},
-}
-
 var binderAStatus_fromServiceSpecificErrorCmd = &cobra.Command{
 	Use:   "a-status_from-service-specific-error",
 	Short: "binder.AStatus_fromServiceSpecificError()",
@@ -94,6 +73,27 @@ var binderAStatus_newOkCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		result := binder.AStatus_newOk()
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var binderAIBinder_isHandlingTransactionCmd = &cobra.Command{
+	Use:   "ai-binder_is-handling-transaction",
+	Short: "binder.AIBinder_isHandlingTransaction()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		result := binder.AIBinder_isHandlingTransaction()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var binderAStatus_deleteDescriptionCmd = &cobra.Command{
+	Use:   "a-status_delete-description",
+	Short: "binder.AStatus_deleteDescription()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		description, _ := cmd.Flags().GetString("description")
+		binder.AStatus_deleteDescription(description)
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -275,21 +275,21 @@ var binderStatusIsOkCmd = &cobra.Command{
 }
 
 func init() {
-	binderAStatus_deleteDescriptionCmd.Flags().String("description", "", "description")
 	binderAStatus_fromServiceSpecificErrorCmd.Flags().Int32("service-specific", 0, "serviceSpecific")
 	binderAStatus_fromServiceSpecificErrorWithMessageCmd.Flags().Int32("service-specific", 0, "serviceSpecific")
 	binderAStatus_fromServiceSpecificErrorWithMessageCmd.Flags().String("message", "", "message")
+	binderAStatus_deleteDescriptionCmd.Flags().String("description", "", "description")
 	binderCmd.AddCommand(binderBinderCmd)
 	binderCmd.AddCommand(binderClassCmd)
 	binderCmd.AddCommand(binderErrorCmd)
 	binderCmd.AddCommand(binderIBinder_WeakCmd)
 	binderCmd.AddCommand(binderParcelCmd)
 	binderCmd.AddCommand(binderStatusCmd)
-	binderCmd.AddCommand(binderAIBinder_isHandlingTransactionCmd)
-	binderCmd.AddCommand(binderAStatus_deleteDescriptionCmd)
 	binderCmd.AddCommand(binderAStatus_fromServiceSpecificErrorCmd)
 	binderCmd.AddCommand(binderAStatus_fromServiceSpecificErrorWithMessageCmd)
 	binderCmd.AddCommand(binderAStatus_newOkCmd)
+	binderCmd.AddCommand(binderAIBinder_isHandlingTransactionCmd)
+	binderCmd.AddCommand(binderAStatus_deleteDescriptionCmd)
 	binderBinderCmd.AddCommand(binderBinderDebugGetRefCountCmd)
 	binderBinderCmd.AddCommand(binderBinderGetClassCmd)
 	binderBinderCmd.AddCommand(binderBinderGetUserDataCmd)

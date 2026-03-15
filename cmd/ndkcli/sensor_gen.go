@@ -64,6 +64,15 @@ var sensorErrorErrorCmd = &cobra.Command{
 	},
 }
 
+var sensorEventQueueHasEventsCmd = &cobra.Command{
+	Use:   "has-events",
+	Short: "EventQueue.HasEvents()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var sensorEventQueueRequestAdditionalInfoEventsCmd = &cobra.Command{
 	Use:   "request-additional-info-events",
 	Short: "EventQueue.RequestAdditionalInfoEvents()",
@@ -117,7 +126,7 @@ var sensorManagerDefaultSensorCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		obj := sensor.GetInstance()
 		_type, _ := cmd.Flags().GetInt32("_type")
-		result := obj.DefaultSensor(_type)
+		result := obj.DefaultSensor(sensor.Type(_type))
 		fmt.Println(result)
 		return nil
 	},
@@ -130,7 +139,7 @@ var sensorManagerGetDefaultSensorExCmd = &cobra.Command{
 		obj := sensor.GetInstance()
 		_type, _ := cmd.Flags().GetInt32("_type")
 		wakeUp, _ := cmd.Flags().GetBool("wake-up")
-		result := obj.GetDefaultSensorEx(_type, wakeUp)
+		result := obj.GetDefaultSensorEx(sensor.Type(_type), wakeUp)
 		fmt.Println(result)
 		return nil
 	},
@@ -287,6 +296,7 @@ func init() {
 	sensorCmd.AddCommand(sensorTypeCmd)
 	sensorCmd.AddCommand(sensorASensorManager_getInstanceForPackageCmd)
 	sensorErrorCmd.AddCommand(sensorErrorErrorCmd)
+	sensorEventQueueCmd.AddCommand(sensorEventQueueHasEventsCmd)
 	sensorEventQueueCmd.AddCommand(sensorEventQueueRequestAdditionalInfoEventsCmd)
 	sensorManagerCmd.AddCommand(sensorManagerNewCmd)
 	sensorManagerCmd.AddCommand(sensorManagerCreateSharedMemoryDirectChannelCmd)

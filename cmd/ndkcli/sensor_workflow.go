@@ -31,7 +31,7 @@ var sensorReadCmd = &cobra.Command{
 	Long: `Reads real-time sensor events using a looper and event queue.
 Prints x, y, z values for each event at the configured sample rate.`,
 	RunE: func(cmd *cobra.Command, args []string) (_err error) {
-		sensorType, _ := cmd.Flags().GetInt32("type")
+		sensorTypeInt, _ := cmd.Flags().GetInt32("type")
 		duration, _ := cmd.Flags().GetDuration("duration")
 		rate, _ := cmd.Flags().GetInt32("rate")
 
@@ -40,7 +40,7 @@ Prints x, y, z values for each event at the configured sample rate.`,
 		}
 
 		looper.Run(func(lp *looper.Looper) {
-			_err = readSensorEvents(lp, sensorType, duration, rate)
+			_err = readSensorEvents(lp, sensor.Type(sensorTypeInt), duration, rate)
 		})
 		return
 	},
@@ -48,7 +48,7 @@ Prints x, y, z values for each event at the configured sample rate.`,
 
 func readSensorEvents(
 	lp *looper.Looper,
-	sensorType int32,
+	sensorType sensor.Type,
 	duration time.Duration,
 	rateUs int32,
 ) error {

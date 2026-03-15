@@ -49,6 +49,17 @@ var imageImageDecoderFrameInfoCmd = &cobra.Command{
 	Short: "ImageDecoderFrameInfo operations",
 }
 
+var imageAImageDecoder_resultToStringCmd = &cobra.Command{
+	Use:   "a-image-decoder_result-to-string",
+	Short: "image.AImageDecoder_resultToString()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		arg0, _ := cmd.Flags().GetInt32("arg0")
+		result := ndkimage.AImageDecoder_resultToString(arg0)
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var imageNewDecoderFromFdCmd = &cobra.Command{
 	Use:   "new-decoder-from-fd",
 	Short: "image.NewDecoderFromFd()",
@@ -58,17 +69,6 @@ var imageNewDecoderFromFdCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Println(result)
-		return nil
-	},
-}
-
-var imageAImageDecoder_resultToStringCmd = &cobra.Command{
-	Use:   "a-image-decoder_result-to-string",
-	Short: "image.AImageDecoder_resultToString()",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		arg0, _ := cmd.Flags().GetInt32("arg0")
-		result := ndkimage.AImageDecoder_resultToString(arg0)
 		fmt.Println(result)
 		return nil
 	},
@@ -365,8 +365,8 @@ var imageImageDecoderFrameInfoHasAlphaWithinBoundsCmd = &cobra.Command{
 }
 
 func init() {
-	imageNewDecoderFromFdCmd.Flags().Int32("fd", 0, "fd")
 	imageAImageDecoder_resultToStringCmd.Flags().Int32("arg0", 0, "arg0")
+	imageNewDecoderFromFdCmd.Flags().Int32("fd", 0, "fd")
 	imageCmd.AddCommand(imageAssetCmd)
 	imageCmd.AddCommand(imageAssetDirCmd)
 	imageCmd.AddCommand(imageAssetManagerCmd)
@@ -374,8 +374,8 @@ func init() {
 	imageCmd.AddCommand(imageErrorCmd)
 	imageCmd.AddCommand(imageHeaderInfoCmd)
 	imageCmd.AddCommand(imageImageDecoderFrameInfoCmd)
-	imageCmd.AddCommand(imageNewDecoderFromFdCmd)
 	imageCmd.AddCommand(imageAImageDecoder_resultToStringCmd)
+	imageCmd.AddCommand(imageNewDecoderFromFdCmd)
 	imageAssetCmd.AddCommand(imageAssetGetBufferCmd)
 	imageAssetCmd.AddCommand(imageAssetIsAllocatedCmd)
 	imageAssetDirCmd.AddCommand(imageAssetDirGetNextFileNameCmd)
