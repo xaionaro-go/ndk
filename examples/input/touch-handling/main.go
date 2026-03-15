@@ -71,7 +71,7 @@ func main() {
 	//
 	//   import "github.com/xaionaro-go/ndk/looper"
 	//
-	//   lp := looper.Prepare(1) // ALOOPER_PREPARE_ALLOW_NON_CALLBACKS
+	//   lp := looper.Prepare(int32(looper.ALOOPER_PREPARE_ALLOW_NON_CALLBACKS))
 	//   defer lp.Close()
 	//
 	// Attaching the queue to the looper is done at the the low-level layer level
