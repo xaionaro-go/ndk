@@ -1609,6 +1609,21 @@ flowchart TD
     SPEC --> GO
 ```
 
+## E2E Verification
+
+Run `make e2e-examples-test` to test ndkcli commands on a connected device or emulator.
+
+<details>
+<summary>Verified platforms (click to expand)</summary>
+
+| Type | Device | Android | API | ABI | Build | Date | Passed | Total |
+|------|--------|---------|-----|-----|-------|------|--------|-------|
+| Phone | Pixel 8a | 16 | 36 | arm64-v8a | BP4A.260205.001 | 2026-03-15 | 17 | 17 |
+| Emulator | sdk_gphone64_x86_64 | 15 | 35 | x86_64 | Pixel_7_API_35 | 2026-03-15 | 17 | 17 |
+
+</details>
+
+
 ## Project Layout
 
 ```
