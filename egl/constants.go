@@ -46,7 +46,7 @@ const (
 	EGL_DISPLAY_SCALING                            = 10000
 	EGL_DRAW                                       = 12377
 	EGL_EXTENSIONS                                 = 12373
-	EGL_FOREVER                                    = -1
+	EGL_FOREVER                                    = 0xFFFFFFFFFFFFFFFF
 	EGL_GL_COLORSPACE                              = 12445
 	EGL_GL_COLORSPACE_LINEAR                       = 12426
 	EGL_GL_COLORSPACE_SRGB                         = 12425

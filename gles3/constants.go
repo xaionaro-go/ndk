@@ -533,7 +533,7 @@ const (
 	GL_TEXTURE_WRAP_R                                = 32882
 	GL_TEXTURE_WRAP_S                                = 10242
 	GL_TEXTURE_WRAP_T                                = 10243
-	GL_TIMEOUT_IGNORED                               = -1
+	GL_TIMEOUT_IGNORED                               = 0xFFFFFFFFFFFFFFFF
 	GL_TRANSFORM_FEEDBACK_ACTIVE                     = 36388
 	GL_TRANSFORM_FEEDBACK_BINDING                    = 36389
 	GL_TRANSFORM_FEEDBACK_BUFFER_BINDING             = 35983

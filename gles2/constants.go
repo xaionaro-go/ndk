@@ -1327,7 +1327,7 @@ const (
 	GL_TEXTURE_WRAP_R_OES                                                    = 32882
 	GL_TILING_TYPES_EXT                                                      = 38275
 	GL_TIMEOUT_EXPIRED_APPLE                                                 = 37147
-	GL_TIMEOUT_IGNORED_APPLE                                                 = -1
+	GL_TIMEOUT_IGNORED_APPLE                                                 = 0xFFFFFFFFFFFFFFFF
 	GL_TIMESTAMP_EXT                                                         = 36392
 	GL_TIME_ELAPSED_EXT                                                      = 35007
 	GL_TRANSFORM_FEEDBACK                                                    = 36386

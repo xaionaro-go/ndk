@@ -393,7 +393,15 @@ func generateUntypedMacros(
 	var b strings.Builder
 	b.WriteString(generatedHeader + "\n\npackage " + packageName + "\n\nconst (\n")
 	for _, name := range names {
-		fmt.Fprintf(&b, "\t%s = %d\n", name, macros[name])
+		v := macros[name]
+		// Emit negative values as hex to preserve the unsigned bit pattern.
+		// E.g. GL_TIMEOUT_IGNORED = 0xFFFFFFFFFFFFFFFF, not -1, so it
+		// can be used with both signed and unsigned Go types.
+		if v < 0 {
+			fmt.Fprintf(&b, "\t%s = 0x%X\n", name, uint64(v))
+		} else {
+			fmt.Fprintf(&b, "\t%s = %d\n", name, v)
+		}
 	}
 	b.WriteString(")\n")
 	return b.String()
