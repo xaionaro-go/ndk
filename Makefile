@@ -9,7 +9,8 @@ MODULES  := aaudio camera sensor gles2 gles3 egl vulkan media \
             performancehint neuralnetworks trace logging font \
             imagedecoder midi multinetwork sync choreographer \
             configuration asset looper nativeactivity surfacecontrol \
-            sharedmem permission bitmap storage surfacetexture
+            sharedmem permission bitmap storage surfacetexture \
+            persistablebundle
 
 # Modules with testdata fixtures (no NDK required).
 FIXTURE_MODULES := $(notdir $(wildcard tools/pkg/specgen/testdata/*/))
