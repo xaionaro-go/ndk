@@ -1,0 +1,12 @@
+GENERATOR:
+  PackageName: persistablebundle
+  PackageDescription: "Raw CGo bindings for Android PersistableBundle NDK"
+  PackageLicense: "Apache-2.0"
+  Includes:
+    - "android/persistable_bundle.h"
+  FlagGroups:
+    - {name: LDFLAGS, flags: [-lbinder_ndk]}
+TRANSLATOR:
+  Rules:
+    global:
+      - {action: accept, from: "."}
