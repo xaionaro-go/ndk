@@ -42,11 +42,11 @@ graph TD
     CAPI -. "some use" .-> BINDER
 ```
 
-| Library | Interface | Requires | Best for |
-|---|---|---|---|
-| **[ndk](https://github.com/xaionaro-go/ndk)** (this project) | Android NDK C APIs | cgo + NDK toolchain | High-performance hardware access: camera, audio, sensors, OpenGL/Vulkan, media codecs |
-| **[jni](https://github.com/xaionaro-go/jni)** | Java Android SDK via JNI | cgo + JNI + JVM/ART | Java-only APIs with no NDK equivalent: Bluetooth, WiFi, NFC, location, telephony, content providers |
-| **[binder](https://github.com/xaionaro-go/binder)** | Binder IPC (system services) | pure Go (no cgo) | Direct system service calls without Java: works on non-Android Linux with binder, minimal footprint |
+| Library                                                      | Interface                    | Requires            | Best for                                                                                            |
+| ------------------------------------------------------------ | ---------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| **[ndk](https://github.com/xaionaro-go/ndk)** (this project) | Android NDK C APIs           | cgo + NDK toolchain | High-performance hardware access: camera, audio, sensors, OpenGL/Vulkan, media codecs               |
+| **[jni](https://github.com/xaionaro-go/jni)**                | Java Android SDK via JNI     | cgo + JNI + JVM/ART | Java-only APIs with no NDK equivalent: Bluetooth, WiFi, NFC, location, telephony, content providers |
+| **[binder](https://github.com/xaionaro-go/binder)**          | Binder IPC (system services) | pure Go (no cgo)    | Direct system service calls without Java: works on non-Android Linux with binder, minimal footprint |
 
 ### When to use which
 
@@ -247,309 +247,7 @@ import "github.com/xaionaro-go/ndk/asset"
 
 All types implement idempotent, nil-safe `Close() error`. Error types wrap NDK status codes and work with `errors.Is`.
 
-More examples: [`examples/`](examples/)
-
-## ndkcli
-
-`ndkcli` is a CLI tool that exposes the full Android NDK surface from the command line. Supports 273 commands across 33 modules — query cameras, record audio, probe GPU capabilities, check sensors, and more.
-
-### Install
-
-**Option A: Download pre-built binary** from [GitHub Releases](https://github.com/xaionaro-go/ndk/releases):
-
-```bash
-# Download for your device architecture
-wget https://github.com/xaionaro-go/ndk/releases/latest/download/ndkcli-android-arm64
-adb push ndkcli-android-arm64 /data/local/tmp/ndkcli
-adb shell chmod 755 /data/local/tmp/ndkcli
-```
-
-**Option B: Build from source** (requires Android NDK):
-
-```bash
-make ndkcli                                # → build/ndkcli (arm64)
-adb push build/ndkcli /data/local/tmp/
-adb shell chmod 755 /data/local/tmp/ndkcli
-```
-
-### Quick start
-
-```bash
-# List cameras
-adb shell /data/local/tmp/ndkcli camera list-details
-
-# Record 5 seconds of audio
-adb shell /data/local/tmp/ndkcli audio record --output /data/local/tmp/rec.pcm --duration 5s
-
-# Check thermal status
-adb shell /data/local/tmp/ndkcli thermal manager current-status
-
-# Query GPU
-adb shell /data/local/tmp/ndkcli gles2 info
-
-# List sensors
-adb shell /data/local/tmp/ndkcli sensor read --type 1
-```
-
-### List all commands
-
-```bash
-# From source (no Android needed):
-make ndkcli-commands
-
-# On device:
-adb shell /data/local/tmp/ndkcli --help
-adb shell /data/local/tmp/ndkcli camera --help
-```
-
-### Examples
-
-<details>
-<summary>List available cameras and their characteristics</summary>
-
-```bash
-# List camera IDs
-adb shell /data/local/tmp/ndkcli camera manager camera-id-list
-
-# Show full details (lens facing, orientation, hardware level) for all cameras
-adb shell /data/local/tmp/ndkcli camera list-details
-
-# Query characteristics for a specific camera
-adb shell /data/local/tmp/ndkcli camera manager get-camera-characteristics --camera-id 0
-```
-
-</details>
-
-<details>
-<summary>Capture raw frames from the camera</summary>
-
-```bash
-# Capture 10 frames from camera 0 at 640x480 in RGBA format, save to file
-adb shell /data/local/tmp/ndkcli camera capture \
-    --id 0 --width 640 --height 480 --format 1 --count 10 \
-    --output /data/local/tmp/frames.raw
-```
-
-</details>
-
-<details>
-<summary>Record audio from the microphone</summary>
-
-```bash
-# Record 5 seconds of mono 44.1kHz PCM16 audio
-adb shell /data/local/tmp/ndkcli audio record \
-    --output /data/local/tmp/recording.pcm \
-    --duration 5s --sample-rate 44100 --channels 1
-
-# Record 10 seconds of stereo 48kHz audio
-adb shell /data/local/tmp/ndkcli audio record \
-    --output /data/local/tmp/stereo.pcm \
-    --duration 10s --sample-rate 48000 --channels 2
-```
-
-</details>
-
-<details>
-<summary>Play back recorded audio</summary>
-
-```bash
-# Play a previously recorded PCM file
-adb shell /data/local/tmp/ndkcli audio play \
-    --input /data/local/tmp/recording.pcm \
-    --sample-rate 44100 --channels 1
-```
-
-</details>
-
-<details>
-<summary>Query audio system capabilities</summary>
-
-```bash
-# Open a probe stream and print audio properties
-adb shell /data/local/tmp/ndkcli audio stream-builder new
-adb shell /data/local/tmp/ndkcli audio stream channel-count
-adb shell /data/local/tmp/ndkcli audio stream sample-rate
-adb shell /data/local/tmp/ndkcli audio stream frames-per-burst
-```
-
-</details>
-
-<details>
-<summary>List sensors and read sensor data</summary>
-
-```bash
-# List all available sensors (probes known types)
-adb shell /data/local/tmp/ndkcli sensor read --type 1   # Accelerometer
-adb shell /data/local/tmp/ndkcli sensor read --type 4   # Gyroscope
-adb shell /data/local/tmp/ndkcli sensor read --type 5   # Light
-
-# Query a specific sensor by type number
-adb shell /data/local/tmp/ndkcli sensor manager default-sensor --value 1
-adb shell /data/local/tmp/ndkcli sensor sensor name
-adb shell /data/local/tmp/ndkcli sensor sensor vendor
-adb shell /data/local/tmp/ndkcli sensor sensor resolution
-```
-
-</details>
-
-<details>
-<summary>Check thermal status</summary>
-
-```bash
-# One-shot thermal status
-adb shell /data/local/tmp/ndkcli thermal manager current-status
-
-# Monitor thermal status every 2 seconds for 30 seconds
-adb shell /data/local/tmp/ndkcli thermal monitor --interval 2s --duration 30s
-```
-
-</details>
-
-<details>
-<summary>Query EGL and GPU capabilities</summary>
-
-```bash
-# EGL display information (vendor, version, extensions)
-adb shell /data/local/tmp/ndkcli egl info
-
-# List EGL configurations
-adb shell /data/local/tmp/ndkcli egl configs
-
-# OpenGL ES 2.0 info (creates pbuffer context, queries GL strings)
-adb shell /data/local/tmp/ndkcli gles2 info
-
-# OpenGL ES 3.0 info
-adb shell /data/local/tmp/ndkcli gles3 info
-```
-
-</details>
-
-<details>
-<summary>Probe available media codecs</summary>
-
-```bash
-# Check which codecs are available (H.264, H.265, VP8/9, AV1, AAC, etc.)
-adb shell /data/local/tmp/ndkcli media codecs
-
-# Create specific encoder/decoder
-adb shell /data/local/tmp/ndkcli media new-encoder --mime_type video/avc
-adb shell /data/local/tmp/ndkcli media new-decoder --mime_type audio/mp4a-latm
-
-# Probe a media file
-adb shell /data/local/tmp/ndkcli media probe --file /sdcard/video.mp4
-```
-
-</details>
-
-<details>
-<summary>Read device configuration</summary>
-
-```bash
-# Show all configuration values (density, orientation, screen, SDK version)
-adb shell /data/local/tmp/ndkcli config show
-
-# Individual queries
-adb shell /data/local/tmp/ndkcli config config density
-adb shell /data/local/tmp/ndkcli config config sdk-version
-adb shell /data/local/tmp/ndkcli config config screen-width-dp
-adb shell /data/local/tmp/ndkcli config config orientation
-```
-
-</details>
-
-<details>
-<summary>Decode an image file</summary>
-
-```bash
-# Decode a JPEG/PNG and print dimensions, stride, format
-adb shell /data/local/tmp/ndkcli image decode --file /sdcard/photo.jpg
-
-# Decode with target size (downscale)
-adb shell /data/local/tmp/ndkcli image decode --file /sdcard/photo.jpg --width 320 --height 240
-```
-
-</details>
-
-<details>
-<summary>Match system fonts</summary>
-
-```bash
-# Find a matching font by family name and weight
-adb shell /data/local/tmp/ndkcli font match --family sans-serif --weight 400
-adb shell /data/local/tmp/ndkcli font match --family serif --weight 700 --italic
-```
-
-</details>
-
-<details>
-<summary>Check permissions</summary>
-
-```bash
-# Check if a permission is granted for a PID/UID
-adb shell /data/local/tmp/ndkcli permission check \
-    --name android.permission.CAMERA --pid 1000 --uid 1000
-```
-
-</details>
-
-<details>
-<summary>Trace and logging</summary>
-
-```bash
-# Check if tracing is enabled
-adb shell /data/local/tmp/ndkcli trace is-enabled
-
-# Add a trace marker
-adb shell /data/local/tmp/ndkcli trace begin-section --section-name "my_operation"
-adb shell /data/local/tmp/ndkcli trace end-section
-
-# Set a trace counter
-adb shell /data/local/tmp/ndkcli trace set-counter --counter-name "frames" --counter-value 42
-
-# Write to Android log
-adb shell /data/local/tmp/ndkcli log write --tag myapp --text "hello from ndkcli" --prio 4
-```
-
-</details>
-
-<details>
-<summary>NNAPI (Neural Networks) probe</summary>
-
-```bash
-# Check if NNAPI is available
-adb shell /data/local/tmp/ndkcli nnapi probe
-
-# Create and inspect a model
-adb shell /data/local/tmp/ndkcli nnapi model new
-```
-
-</details>
-
-<details>
-<summary>Storage and OBB</summary>
-
-```bash
-# Check OBB mount status
-adb shell /data/local/tmp/ndkcli storage obb --file /sdcard/main.obb
-adb shell /data/local/tmp/ndkcli storage manager is-obb-mounted --filename /sdcard/main.obb
-```
-
-</details>
-
-<details>
-<summary>Looper and window utilities</summary>
-
-```bash
-# Test looper functionality (prepare, wake, poll)
-adb shell /data/local/tmp/ndkcli looper test
-
-# Query window properties via ImageReader-backed window
-adb shell /data/local/tmp/ndkcli window query
-```
-
-</details>
-
-## Examples
+### Other examples
 
 <details>
 <summary>How to record from the microphone</summary>
@@ -1319,53 +1017,357 @@ func main() {
 
 </details>
 
+> **More examples**
+
+For more examples, see: [`examples/`](examples/).
+
+## ndkcli
+
+`ndkcli` is a CLI tool that exposes the full Android NDK surface from the command line. Supports 273 commands across 33 modules — query cameras, record audio, probe GPU capabilities, check sensors, and more.
+
+### Install
+
+**Option A: Download pre-built binary** from [GitHub Releases](https://github.com/xaionaro-go/ndk/releases):
+
+```bash
+# Download for your device architecture
+wget https://github.com/xaionaro-go/ndk/releases/latest/download/ndkcli-android-arm64
+adb push ndkcli-android-arm64 /data/local/tmp/ndkcli
+adb shell chmod 755 /data/local/tmp/ndkcli
+```
+
+**Option B: Build from source** (requires Android NDK):
+
+```bash
+make ndkcli                                # → build/ndkcli (arm64)
+adb push build/ndkcli /data/local/tmp/
+adb shell chmod 755 /data/local/tmp/ndkcli
+```
+
+### Quick start
+
+```bash
+# List cameras
+adb shell /data/local/tmp/ndkcli camera list-details
+
+# Record 5 seconds of audio
+adb shell /data/local/tmp/ndkcli audio record --output /data/local/tmp/rec.pcm --duration 5s
+
+# Check thermal status
+adb shell /data/local/tmp/ndkcli thermal manager current-status
+
+# Query GPU
+adb shell /data/local/tmp/ndkcli gles2 info
+
+# List sensors
+adb shell /data/local/tmp/ndkcli sensor read --type 1
+```
+
+### List all commands
+
+```bash
+# From source (no Android needed):
+make ndkcli-commands
+
+# On device:
+adb shell /data/local/tmp/ndkcli --help
+adb shell /data/local/tmp/ndkcli camera --help
+```
+
+### Examples
+
+<details>
+<summary>List available cameras and their characteristics</summary>
+
+```bash
+# List camera IDs
+adb shell /data/local/tmp/ndkcli camera manager camera-id-list
+
+# Show full details (lens facing, orientation, hardware level) for all cameras
+adb shell /data/local/tmp/ndkcli camera list-details
+
+# Query characteristics for a specific camera
+adb shell /data/local/tmp/ndkcli camera manager get-camera-characteristics --camera-id 0
+```
+
+</details>
+
+<details>
+<summary>Capture raw frames from the camera</summary>
+
+```bash
+# Capture 10 frames from camera 0 at 640x480 in RGBA format, save to file
+adb shell /data/local/tmp/ndkcli camera capture \
+    --id 0 --width 640 --height 480 --format 1 --count 10 \
+    --output /data/local/tmp/frames.raw
+```
+
+</details>
+
+<details>
+<summary>Record audio from the microphone</summary>
+
+```bash
+# Record 5 seconds of mono 44.1kHz PCM16 audio
+adb shell /data/local/tmp/ndkcli audio record \
+    --output /data/local/tmp/recording.pcm \
+    --duration 5s --sample-rate 44100 --channels 1
+
+# Record 10 seconds of stereo 48kHz audio
+adb shell /data/local/tmp/ndkcli audio record \
+    --output /data/local/tmp/stereo.pcm \
+    --duration 10s --sample-rate 48000 --channels 2
+```
+
+</details>
+
+<details>
+<summary>Play back recorded audio</summary>
+
+```bash
+# Play a previously recorded PCM file
+adb shell /data/local/tmp/ndkcli audio play \
+    --input /data/local/tmp/recording.pcm \
+    --sample-rate 44100 --channels 1
+```
+
+</details>
+
+<details>
+<summary>Query audio system capabilities</summary>
+
+```bash
+# Open a probe stream and print audio properties
+adb shell /data/local/tmp/ndkcli audio stream-builder new
+adb shell /data/local/tmp/ndkcli audio stream channel-count
+adb shell /data/local/tmp/ndkcli audio stream sample-rate
+adb shell /data/local/tmp/ndkcli audio stream frames-per-burst
+```
+
+</details>
+
+<details>
+<summary>List sensors and read sensor data</summary>
+
+```bash
+# List all available sensors (probes known types)
+adb shell /data/local/tmp/ndkcli sensor read --type 1   # Accelerometer
+adb shell /data/local/tmp/ndkcli sensor read --type 4   # Gyroscope
+adb shell /data/local/tmp/ndkcli sensor read --type 5   # Light
+
+# Query a specific sensor by type number
+adb shell /data/local/tmp/ndkcli sensor manager default-sensor --value 1
+adb shell /data/local/tmp/ndkcli sensor sensor name
+adb shell /data/local/tmp/ndkcli sensor sensor vendor
+adb shell /data/local/tmp/ndkcli sensor sensor resolution
+```
+
+</details>
+
+<details>
+<summary>Check thermal status</summary>
+
+```bash
+# One-shot thermal status
+adb shell /data/local/tmp/ndkcli thermal manager current-status
+
+# Monitor thermal status every 2 seconds for 30 seconds
+adb shell /data/local/tmp/ndkcli thermal monitor --interval 2s --duration 30s
+```
+
+</details>
+
+<details>
+<summary>Query EGL and GPU capabilities</summary>
+
+```bash
+# EGL display information (vendor, version, extensions)
+adb shell /data/local/tmp/ndkcli egl info
+
+# List EGL configurations
+adb shell /data/local/tmp/ndkcli egl configs
+
+# OpenGL ES 2.0 info (creates pbuffer context, queries GL strings)
+adb shell /data/local/tmp/ndkcli gles2 info
+
+# OpenGL ES 3.0 info
+adb shell /data/local/tmp/ndkcli gles3 info
+```
+
+</details>
+
+<details>
+<summary>Probe available media codecs</summary>
+
+```bash
+# Check which codecs are available (H.264, H.265, VP8/9, AV1, AAC, etc.)
+adb shell /data/local/tmp/ndkcli media codecs
+
+# Create specific encoder/decoder
+adb shell /data/local/tmp/ndkcli media new-encoder --mime_type video/avc
+adb shell /data/local/tmp/ndkcli media new-decoder --mime_type audio/mp4a-latm
+
+# Probe a media file
+adb shell /data/local/tmp/ndkcli media probe --file /sdcard/video.mp4
+```
+
+</details>
+
+<details>
+<summary>Read device configuration</summary>
+
+```bash
+# Show all configuration values (density, orientation, screen, SDK version)
+adb shell /data/local/tmp/ndkcli config show
+
+# Individual queries
+adb shell /data/local/tmp/ndkcli config config density
+adb shell /data/local/tmp/ndkcli config config sdk-version
+adb shell /data/local/tmp/ndkcli config config screen-width-dp
+adb shell /data/local/tmp/ndkcli config config orientation
+```
+
+</details>
+
+<details>
+<summary>Decode an image file</summary>
+
+```bash
+# Decode a JPEG/PNG and print dimensions, stride, format
+adb shell /data/local/tmp/ndkcli image decode --file /sdcard/photo.jpg
+
+# Decode with target size (downscale)
+adb shell /data/local/tmp/ndkcli image decode --file /sdcard/photo.jpg --width 320 --height 240
+```
+
+</details>
+
+<details>
+<summary>Match system fonts</summary>
+
+```bash
+# Find a matching font by family name and weight
+adb shell /data/local/tmp/ndkcli font match --family sans-serif --weight 400
+adb shell /data/local/tmp/ndkcli font match --family serif --weight 700 --italic
+```
+
+</details>
+
+<details>
+<summary>Check permissions</summary>
+
+```bash
+# Check if a permission is granted for a PID/UID
+adb shell /data/local/tmp/ndkcli permission check \
+    --name android.permission.CAMERA --pid 1000 --uid 1000
+```
+
+</details>
+
+<details>
+<summary>Trace and logging</summary>
+
+```bash
+# Check if tracing is enabled
+adb shell /data/local/tmp/ndkcli trace is-enabled
+
+# Add a trace marker
+adb shell /data/local/tmp/ndkcli trace begin-section --section-name "my_operation"
+adb shell /data/local/tmp/ndkcli trace end-section
+
+# Set a trace counter
+adb shell /data/local/tmp/ndkcli trace set-counter --counter-name "frames" --counter-value 42
+
+# Write to Android log
+adb shell /data/local/tmp/ndkcli log write --tag myapp --text "hello from ndkcli" --prio 4
+```
+
+</details>
+
+<details>
+<summary>NNAPI (Neural Networks) probe</summary>
+
+```bash
+# Check if NNAPI is available
+adb shell /data/local/tmp/ndkcli nnapi probe
+
+# Create and inspect a model
+adb shell /data/local/tmp/ndkcli nnapi model new
+```
+
+</details>
+
+<details>
+<summary>Storage and OBB</summary>
+
+```bash
+# Check OBB mount status
+adb shell /data/local/tmp/ndkcli storage obb --file /sdcard/main.obb
+adb shell /data/local/tmp/ndkcli storage manager is-obb-mounted --filename /sdcard/main.obb
+```
+
+</details>
+
+<details>
+<summary>Looper and window utilities</summary>
+
+```bash
+# Test looper functionality (prepare, wake, poll)
+adb shell /data/local/tmp/ndkcli looper test
+
+# Query window properties via ImageReader-backed window
+adb shell /data/local/tmp/ndkcli window query
+```
+
+</details>
+
 ## Supported Modules
 
-| NDK Module                                                                                                                                           | Go Package       | Import Path                                 |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------- |
-| **Graphics & Rendering**                                                                                                                             |                  |                                             |
-| [![egl](https://img.shields.io/badge/egl-EGL-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/egl)                                             | `egl`            | `github.com/xaionaro-go/ndk/egl`            |
-| [![gles2](https://img.shields.io/badge/gles2-OpenGL_ES_2.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles2)                             | `gles2`          | `github.com/xaionaro-go/ndk/gles2`          |
-| [![gles3](https://img.shields.io/badge/gles3-OpenGL_ES_3.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles3)                             | `gles3`          | `github.com/xaionaro-go/ndk/gles3`          |
-| [![vulkan](https://img.shields.io/badge/vulkan-Vulkan-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/vulkan)                                 | `vulkan`         | `github.com/xaionaro-go/ndk/vulkan`         |
-| [![surfacecontrol](https://img.shields.io/badge/surfacecontrol-SurfaceControl-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/surfacecontrol) | `surfacecontrol` | `github.com/xaionaro-go/ndk/surfacecontrol` |
-| [![surfacetexture](https://img.shields.io/badge/surfacetexture-SurfaceTexture-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/surfacetexture) | `surfacetexture` | `github.com/xaionaro-go/ndk/surfacetexture` |
-| [![hwbuf](https://img.shields.io/badge/hwbuf-HardwareBuffer-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hwbuf)                            | `hwbuf`          | `github.com/xaionaro-go/ndk/hwbuf`          |
-| [![window](https://img.shields.io/badge/window-NativeWindow-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/window)                           | `window`         | `github.com/xaionaro-go/ndk/window`         |
-| [![bitmap](https://img.shields.io/badge/bitmap-Bitmap-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/bitmap)                                 | `bitmap`         | `github.com/xaionaro-go/ndk/bitmap`         |
-| **Camera & Imaging**                                                                                                                                 |                  |                                             |
-| [![camera](https://img.shields.io/badge/camera-Camera2-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/camera)                                | `camera`         | `github.com/xaionaro-go/ndk/camera`         |
-| [![image](https://img.shields.io/badge/image-ImageDecoder-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/image)                              | `image`          | `github.com/xaionaro-go/ndk/image`          |
-| **Audio & Media**                                                                                                                                    |                  |                                             |
-| [![audio](https://img.shields.io/badge/audio-AAudio-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/audio)                                    | `audio`          | `github.com/xaionaro-go/ndk/audio`          |
-| [![media](https://img.shields.io/badge/media-MediaCodec-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/media)                                | `media`          | `github.com/xaionaro-go/ndk/media`          |
-| [![midi](https://img.shields.io/badge/midi-MIDI-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/midi)                                         | `midi`           | `github.com/xaionaro-go/ndk/midi`           |
-| **Sensors & Input**                                                                                                                                  |                  |                                             |
-| [![sensor](https://img.shields.io/badge/sensor-Sensors-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sensor)                                | `sensor`         | `github.com/xaionaro-go/ndk/sensor`         |
-| [![input](https://img.shields.io/badge/input-Input-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/input)                                     | `input`          | `github.com/xaionaro-go/ndk/input`          |
-| [![choreographer](https://img.shields.io/badge/choreographer-Choreographer-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/choreographer)     | `choreographer`  | `github.com/xaionaro-go/ndk/choreographer`  |
-| **Activity & Lifecycle**                                                                                                                             |                  |                                             |
-| [![activity](https://img.shields.io/badge/activity-NativeActivity-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/activity)                   | `activity`       | `github.com/xaionaro-go/ndk/activity`       |
-| [![config](https://img.shields.io/badge/config-Configuration-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/config)                          | `config`         | `github.com/xaionaro-go/ndk/config`         |
-| [![thermal](https://img.shields.io/badge/thermal-ThermalManager-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/thermal)                      | `thermal`        | `github.com/xaionaro-go/ndk/thermal`        |
-| [![hint](https://img.shields.io/badge/hint-PerformanceHint-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hint)                              | `hint`           | `github.com/xaionaro-go/ndk/hint`           |
-| [![permission](https://img.shields.io/badge/permission-Permission-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/permission)                 | `permission`     | `github.com/xaionaro-go/ndk/permission`     |
-| **Storage & Assets**                                                                                                                                 |                  |                                             |
-| [![asset](https://img.shields.io/badge/asset-AssetManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/asset)                              | `asset`          | `github.com/xaionaro-go/ndk/asset`          |
-| [![storage](https://img.shields.io/badge/storage-StorageManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/storage)                      | `storage`        | `github.com/xaionaro-go/ndk/storage`        |
-| **System & IPC**                                                                                                                                     |                  |                                             |
-| [![binder](https://img.shields.io/badge/binder-Binder-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/binder)                                 | `binder`         | `github.com/xaionaro-go/ndk/binder`         |
+| NDK Module                                                                                                                                                       | Go Package          | Import Path                                    |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ---------------------------------------------- |
+| **Graphics & Rendering**                                                                                                                                         |                     |                                                |
+| [![egl](https://img.shields.io/badge/egl-EGL-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/egl)                                                         | `egl`               | `github.com/xaionaro-go/ndk/egl`               |
+| [![gles2](https://img.shields.io/badge/gles2-OpenGL_ES_2.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles2)                                         | `gles2`             | `github.com/xaionaro-go/ndk/gles2`             |
+| [![gles3](https://img.shields.io/badge/gles3-OpenGL_ES_3.0-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/gles3)                                         | `gles3`             | `github.com/xaionaro-go/ndk/gles3`             |
+| [![vulkan](https://img.shields.io/badge/vulkan-Vulkan-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/vulkan)                                             | `vulkan`            | `github.com/xaionaro-go/ndk/vulkan`            |
+| [![surfacecontrol](https://img.shields.io/badge/surfacecontrol-SurfaceControl-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/surfacecontrol)             | `surfacecontrol`    | `github.com/xaionaro-go/ndk/surfacecontrol`    |
+| [![surfacetexture](https://img.shields.io/badge/surfacetexture-SurfaceTexture-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/surfacetexture)             | `surfacetexture`    | `github.com/xaionaro-go/ndk/surfacetexture`    |
+| [![hwbuf](https://img.shields.io/badge/hwbuf-HardwareBuffer-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hwbuf)                                        | `hwbuf`             | `github.com/xaionaro-go/ndk/hwbuf`             |
+| [![window](https://img.shields.io/badge/window-NativeWindow-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/window)                                       | `window`            | `github.com/xaionaro-go/ndk/window`            |
+| [![bitmap](https://img.shields.io/badge/bitmap-Bitmap-2962FF)](https://pkg.go.dev/github.com/xaionaro-go/ndk/bitmap)                                             | `bitmap`            | `github.com/xaionaro-go/ndk/bitmap`            |
+| **Camera & Imaging**                                                                                                                                             |                     |                                                |
+| [![camera](https://img.shields.io/badge/camera-Camera2-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/camera)                                            | `camera`            | `github.com/xaionaro-go/ndk/camera`            |
+| [![image](https://img.shields.io/badge/image-ImageDecoder-2E7D32)](https://pkg.go.dev/github.com/xaionaro-go/ndk/image)                                          | `image`             | `github.com/xaionaro-go/ndk/image`             |
+| **Audio & Media**                                                                                                                                                |                     |                                                |
+| [![audio](https://img.shields.io/badge/audio-AAudio-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/audio)                                                | `audio`             | `github.com/xaionaro-go/ndk/audio`             |
+| [![media](https://img.shields.io/badge/media-MediaCodec-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/media)                                            | `media`             | `github.com/xaionaro-go/ndk/media`             |
+| [![midi](https://img.shields.io/badge/midi-MIDI-7B1FA2)](https://pkg.go.dev/github.com/xaionaro-go/ndk/midi)                                                     | `midi`              | `github.com/xaionaro-go/ndk/midi`              |
+| **Sensors & Input**                                                                                                                                              |                     |                                                |
+| [![sensor](https://img.shields.io/badge/sensor-Sensors-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sensor)                                            | `sensor`            | `github.com/xaionaro-go/ndk/sensor`            |
+| [![input](https://img.shields.io/badge/input-Input-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/input)                                                 | `input`             | `github.com/xaionaro-go/ndk/input`             |
+| [![choreographer](https://img.shields.io/badge/choreographer-Choreographer-E65100)](https://pkg.go.dev/github.com/xaionaro-go/ndk/choreographer)                 | `choreographer`     | `github.com/xaionaro-go/ndk/choreographer`     |
+| **Activity & Lifecycle**                                                                                                                                         |                     |                                                |
+| [![activity](https://img.shields.io/badge/activity-NativeActivity-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/activity)                               | `activity`          | `github.com/xaionaro-go/ndk/activity`          |
+| [![config](https://img.shields.io/badge/config-Configuration-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/config)                                      | `config`            | `github.com/xaionaro-go/ndk/config`            |
+| [![thermal](https://img.shields.io/badge/thermal-ThermalManager-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/thermal)                                  | `thermal`           | `github.com/xaionaro-go/ndk/thermal`           |
+| [![hint](https://img.shields.io/badge/hint-PerformanceHint-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/hint)                                          | `hint`              | `github.com/xaionaro-go/ndk/hint`              |
+| [![permission](https://img.shields.io/badge/permission-Permission-00838F)](https://pkg.go.dev/github.com/xaionaro-go/ndk/permission)                             | `permission`        | `github.com/xaionaro-go/ndk/permission`        |
+| **Storage & Assets**                                                                                                                                             |                     |                                                |
+| [![asset](https://img.shields.io/badge/asset-AssetManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/asset)                                          | `asset`             | `github.com/xaionaro-go/ndk/asset`             |
+| [![storage](https://img.shields.io/badge/storage-StorageManager-6D4C41)](https://pkg.go.dev/github.com/xaionaro-go/ndk/storage)                                  | `storage`           | `github.com/xaionaro-go/ndk/storage`           |
+| **System & IPC**                                                                                                                                                 |                     |                                                |
+| [![binder](https://img.shields.io/badge/binder-Binder-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/binder)                                             | `binder`            | `github.com/xaionaro-go/ndk/binder`            |
 | [![persistablebundle](https://img.shields.io/badge/persistablebundle-PersistableBundle-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/persistablebundle) | `persistablebundle` | `github.com/xaionaro-go/ndk/persistablebundle` |
-| [![looper](https://img.shields.io/badge/looper-ALooper-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/looper)                                | `looper`         | `github.com/xaionaro-go/ndk/looper`         |
-| [![log](https://img.shields.io/badge/log-Logging-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/log)                                         | `log`            | `github.com/xaionaro-go/ndk/log`            |
-| [![sharedmem](https://img.shields.io/badge/sharedmem-SharedMemory-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sharedmem)                  | `sharedmem`      | `github.com/xaionaro-go/ndk/sharedmem`      |
-| [![sync](https://img.shields.io/badge/sync-SyncFence-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sync)                                    | `sync`           | `github.com/xaionaro-go/ndk/sync`           |
-| [![net](https://img.shields.io/badge/net-Multinetwork-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/net)                                    | `net`            | `github.com/xaionaro-go/ndk/net`            |
-| **Machine Learning**                                                                                                                                 |                  |                                             |
-| [![nnapi](https://img.shields.io/badge/nnapi-NNAPI-C62828)](https://pkg.go.dev/github.com/xaionaro-go/ndk/nnapi)                                     | `nnapi`          | `github.com/xaionaro-go/ndk/nnapi`          |
-| **Debugging & Fonts**                                                                                                                                |                  |                                             |
-| [![trace](https://img.shields.io/badge/trace-Trace-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/trace)                                     | `trace`          | `github.com/xaionaro-go/ndk/trace`          |
-| [![font](https://img.shields.io/badge/font-FontManager-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/font)                                  | `font`           | `github.com/xaionaro-go/ndk/font`           |
+| [![looper](https://img.shields.io/badge/looper-ALooper-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/looper)                                            | `looper`            | `github.com/xaionaro-go/ndk/looper`            |
+| [![log](https://img.shields.io/badge/log-Logging-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/log)                                                     | `log`               | `github.com/xaionaro-go/ndk/log`               |
+| [![sharedmem](https://img.shields.io/badge/sharedmem-SharedMemory-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sharedmem)                              | `sharedmem`         | `github.com/xaionaro-go/ndk/sharedmem`         |
+| [![sync](https://img.shields.io/badge/sync-SyncFence-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/sync)                                                | `sync`              | `github.com/xaionaro-go/ndk/sync`              |
+| [![net](https://img.shields.io/badge/net-Multinetwork-546E7A)](https://pkg.go.dev/github.com/xaionaro-go/ndk/net)                                                | `net`               | `github.com/xaionaro-go/ndk/net`               |
+| **Machine Learning**                                                                                                                                             |                     |                                                |
+| [![nnapi](https://img.shields.io/badge/nnapi-NNAPI-C62828)](https://pkg.go.dev/github.com/xaionaro-go/ndk/nnapi)                                                 | `nnapi`             | `github.com/xaionaro-go/ndk/nnapi`             |
+| **Debugging & Fonts**                                                                                                                                            |                     |                                                |
+| [![trace](https://img.shields.io/badge/trace-Trace-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/trace)                                                 | `trace`             | `github.com/xaionaro-go/ndk/trace`             |
+| [![font](https://img.shields.io/badge/font-FontManager-455A64)](https://pkg.go.dev/github.com/xaionaro-go/ndk/font)                                              | `font`              | `github.com/xaionaro-go/ndk/font`              |
 
 ## Architecture
 
@@ -1644,13 +1646,12 @@ Run `make e2e-examples-test` to test ndkcli commands on a connected device or em
 <details>
 <summary>Verified platforms (click to expand)</summary>
 
-| Type | Device | Android | API | ABI | Build | Date | Passed | Total |
-|------|--------|---------|-----|-----|-------|------|--------|-------|
-| Phone | Pixel 8a | 16 | 36 | arm64-v8a | BP4A.260205.001 | 2026-03-15 | 17 | 17 |
-| Emulator | sdk_gphone64_x86_64 | 15 | 35 | x86_64 | Pixel_7_API_35 | 2026-03-15 | 17 | 17 |
+| Type     | Device              | Android | API | ABI       | Build           | Date       | Passed | Total |
+| -------- | ------------------- | ------- | --- | --------- | --------------- | ---------- | ------ | ----- |
+| Phone    | Pixel 8a            | 16      | 36  | arm64-v8a | BP4A.260205.001 | 2026-03-15 | 17     | 17    |
+| Emulator | sdk_gphone64_x86_64 | 15      | 35  | x86_64    | Pixel_7_API_35  | 2026-03-15 | 17     | 17    |
 
 </details>
-
 
 ## Project Layout
 
