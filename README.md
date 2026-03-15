@@ -20,7 +20,7 @@ graph TD
     subgraph "Interface libraries"
         NDK["<b>ndk</b><br/>C API bindings via cgo"]
         JNI["<b>jni</b><br/>Java API bindings via JNI+cgo"]
-        AIDL["<b>aidl</b><br/>Binder IPC, pure Go"]
+        AIDL["<b>binder</b><br/>Binder IPC, pure Go"]
     end
 
     subgraph "Android platform"
@@ -46,7 +46,7 @@ graph TD
 |---|---|---|---|
 | **[ndk](https://github.com/xaionaro-go/ndk)** (this project) | Android NDK C APIs | cgo + NDK toolchain | High-performance hardware access: camera, audio, sensors, OpenGL/Vulkan, media codecs |
 | **[jni](https://github.com/xaionaro-go/jni)** | Java Android SDK via JNI | cgo + JNI + JVM/ART | Java-only APIs with no NDK equivalent: Bluetooth, WiFi, NFC, location, telephony, content providers |
-| **[aidl](https://github.com/xaionaro-go/aidl)** | Binder IPC (system services) | pure Go (no cgo) | Direct system service calls without Java: works on non-Android Linux with binder, minimal footprint |
+| **[binder](https://github.com/xaionaro-go/binder)** | Binder IPC (system services) | pure Go (no cgo) | Direct system service calls without Java: works on non-Android Linux with binder, minimal footprint |
 
 ### When to use which
 
@@ -54,9 +54,9 @@ graph TD
 
 - **Use jni** when you need a Java Android SDK API that the NDK does not expose. Examples: Bluetooth discovery, WiFi P2P, NFC tag reading, location services, telephony, content providers, notifications. JNI is also the right choice when you need to interact with Java components (Activities, Services, BroadcastReceivers) or when you need the gRPC remote-access layer.
 
-- **Use aidl** when you want pure-Go access to Android system services without any cgo dependency. This is ideal for lightweight tools, CLI programs, or scenarios where you want to talk to the binder driver from a non-Android Linux system. AIDL covers the same system services that Java SDK wraps (ActivityManager, PowerManager, etc.) but at the wire-protocol level.
+- **Use binder** when you want pure-Go access to Android system services without any cgo dependency. This is ideal for lightweight tools, CLI programs, or scenarios where you want to talk to the binder driver from a non-Android Linux system. AIDL covers the same system services that Java SDK wraps (ActivityManager, PowerManager, etc.) but at the wire-protocol level.
 
-- **Combine them** when your application needs multiple layers. For example, a streaming app might use **ndk** for camera capture and audio encoding, **jni** for Bluetooth controller discovery, and **aidl** for querying battery status from a companion daemon.
+- **Combine them** when your application needs multiple layers. For example, a streaming app might use **ndk** for camera capture and audio encoding, **jni** for Bluetooth controller discovery, and **binder** for querying battery status from a companion daemon.
 
 ### How they relate to each other
 
@@ -64,7 +64,7 @@ All three libraries talk to the same Android system services, but through differ
 
 - The **NDK C APIs** are provided by Google as stable C interfaces to Android platform features. Some (camera, sensors, audio) internally use binder IPC to talk to system services; others (EGL, Vulkan, OpenGL) talk directly to kernel drivers. The `ndk` library wraps these C APIs via cgo.
 - The **Java SDK** uses binder IPC internally for system service access (BluetoothManager, LocationManager, etc.), routing calls through the Android Runtime (ART/Dalvik). The `jni` library calls into these Java APIs via the JNI C interface and cgo.
-- The **AIDL binder protocol** is the underlying IPC mechanism that system-facing NDK and Java SDK APIs use. The `aidl` library implements this protocol directly in pure Go, bypassing both C and Java layers entirely.
+- The **AIDL binder protocol** is the underlying IPC mechanism that system-facing NDK and Java SDK APIs use. The `binder` library implements this protocol directly in pure Go, bypassing both C and Java layers entirely.
 
 ## Requirements
 
@@ -976,7 +976,7 @@ func main() {
 <details>
 <summary>How to query battery status</summary>
 
-> **Library:** [aidl](https://github.com/xaionaro-go/aidl) — Battery info is available via the AIDL interface.
+> **Library:** [binder](https://github.com/xaionaro-go/binder) — Battery info is available via the AIDL interface.
 
 ```go
 package main
@@ -985,7 +985,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xaionaro-go/aidl/android/os"
+	"github.com/xaionaro-go/binder/android/os"
 )
 
 func main() {
