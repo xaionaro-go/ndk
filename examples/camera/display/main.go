@@ -33,6 +33,7 @@ import (
 	"github.com/xaionaro-go/ndk/input"
 	"github.com/xaionaro-go/ndk/jni"
 	ndklog "github.com/xaionaro-go/ndk/log"
+	"github.com/xaionaro-go/ndk/media"
 	"github.com/xaionaro-go/ndk/surfacetexture"
 	"github.com/xaionaro-go/ndk/window"
 )
@@ -360,8 +361,7 @@ func getCameraInfo(
 		if isInput != 0 {
 			continue
 		}
-		// 0x22 = YUV_420_888, 0x23 = RAW_SENSOR
-		if format != 0x22 && format != 0x23 {
+		if format != int32(media.AIMAGE_FORMAT_PRIVATE) && format != int32(media.AIMAGE_FORMAT_YUV_420_888) {
 			continue
 		}
 		ar := float64(w) / float64(h)

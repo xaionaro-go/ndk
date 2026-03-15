@@ -17,26 +17,15 @@ import (
 	"github.com/xaionaro-go/ndk/looper"
 )
 
-// ALooper_prepare constants.
-const prepareAllowNonCallbacks = int32(1) // ALOOPER_PREPARE_ALLOW_NON_CALLBACKS
-
-// ALooper_pollOnce return values.
-const (
-	pollWake     = int32(-1) // ALOOPER_POLL_WAKE
-	pollCallback = int32(-2) // ALOOPER_POLL_CALLBACK
-	pollTimeout  = int32(-3) // ALOOPER_POLL_TIMEOUT
-	pollError    = int32(-4) // ALOOPER_POLL_ERROR
-)
-
-func pollResultString(r int32) string {
+func pollResultString(r looper.LOOPER_POLL) string {
 	switch r {
-	case pollWake:
+	case looper.ALOOPER_POLL_WAKE:
 		return "WAKE"
-	case pollCallback:
+	case looper.ALOOPER_POLL_CALLBACK:
 		return "CALLBACK"
-	case pollTimeout:
+	case looper.ALOOPER_POLL_TIMEOUT:
 		return "TIMEOUT"
-	case pollError:
+	case looper.ALOOPER_POLL_ERROR:
 		return "ERROR"
 	default:
 		return "FD_EVENT"
@@ -48,7 +37,7 @@ func main() {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	lp := looper.Prepare(prepareAllowNonCallbacks)
+	lp := looper.Prepare(int32(looper.ALOOPER_PREPARE_ALLOW_NON_CALLBACKS))
 	if lp == nil {
 		log.Fatal("failed to prepare looper")
 	}
@@ -69,11 +58,11 @@ func main() {
 	var data unsafe.Pointer
 
 	for i := 1; i <= iterations; i++ {
-		result := looper.PollOnce(timeout, &fd, &events, &data)
+		result := looper.LOOPER_POLL(looper.PollOnce(timeout, &fd, &events, &data))
 		log.Printf("poll %d/%d: result=%s (%d)", i, iterations,
 			pollResultString(result), result)
 
-		if result == pollTimeout {
+		if result == looper.ALOOPER_POLL_TIMEOUT {
 			// No events arrived within the timeout window. This is the
 			// expected path in this example since nothing is waking the
 			// looper or registering file descriptors.
@@ -81,12 +70,12 @@ func main() {
 			continue
 		}
 
-		if result == pollWake {
+		if result == looper.ALOOPER_POLL_WAKE {
 			log.Printf("  -> looper was woken externally")
 			continue
 		}
 
-		if result == pollError {
+		if result == looper.ALOOPER_POLL_ERROR {
 			log.Fatal("  -> poll error, exiting")
 		}
 

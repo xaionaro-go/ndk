@@ -16,17 +16,6 @@ import (
 	"github.com/xaionaro-go/ndk/looper"
 )
 
-// ALooper_prepare constants.
-const prepareAllowNonCallbacks = int32(1) // ALOOPER_PREPARE_ALLOW_NON_CALLBACKS
-
-// ALooper_pollOnce return values.
-const (
-	pollWake     = int32(-1) // ALOOPER_POLL_WAKE
-	pollCallback = int32(-2) // ALOOPER_POLL_CALLBACK
-	pollTimeout  = int32(-3) // ALOOPER_POLL_TIMEOUT
-	pollError    = int32(-4) // ALOOPER_POLL_ERROR
-)
-
 func main() {
 	// Lock this goroutine to its OS thread. ALooper is thread-local, so the
 	// prepare and poll calls must happen on the same OS thread.
@@ -36,7 +25,7 @@ func main() {
 	// Prepare a looper for the current thread. The non-callbacks flag allows
 	// PollOnce to return file descriptor events directly instead of requiring
 	// a C callback.
-	lp := looper.Prepare(prepareAllowNonCallbacks)
+	lp := looper.Prepare(int32(looper.ALOOPER_PREPARE_ALLOW_NON_CALLBACKS))
 	if lp == nil {
 		log.Fatal("failed to prepare looper")
 	}
@@ -66,16 +55,16 @@ func main() {
 	var fd, events int32
 	var data unsafe.Pointer
 
-	result := looper.PollOnce(-1, &fd, &events, &data)
+	result := looper.LOOPER_POLL(looper.PollOnce(-1, &fd, &events, &data))
 
 	switch result {
-	case pollWake:
+	case looper.ALOOPER_POLL_WAKE:
 		log.Println("poll returned: WAKE -- looper was woken successfully")
-	case pollCallback:
+	case looper.ALOOPER_POLL_CALLBACK:
 		log.Println("poll returned: CALLBACK")
-	case pollTimeout:
+	case looper.ALOOPER_POLL_TIMEOUT:
 		log.Println("poll returned: TIMEOUT (unexpected with infinite wait)")
-	case pollError:
+	case looper.ALOOPER_POLL_ERROR:
 		log.Fatal("poll returned: ERROR")
 	default:
 		// A non-negative value is a file descriptor that has events.

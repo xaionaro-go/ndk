@@ -191,6 +191,11 @@ func TestToSnakeCase(t *testing.T) {
 		{"Model", "model"},
 		{"Manager", "manager"},
 		{"SessionOutputContainer", "session_output_container"},
+		{"AUDIO", "audio"},
+		{"LOOPER_POLL", "looper_poll"},
+		{"IMAGE_FORMATS", "image_formats"},
+		{"NDROID_BITMAP_FLAGS", "ndroid_bitmap_flags"},
+		{"STATUS", "status"},
 		{"", ""},
 	}
 	fm := idiomgen.FuncMap()

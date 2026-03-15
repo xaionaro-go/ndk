@@ -485,14 +485,21 @@ func fixGoAcronyms(s string) string {
 	return acronymRe.ReplaceAllString(s, "ID$1")
 }
 
-// toSnakeCase converts PascalCase to snake_case.
-// Examples: StreamBuilder → stream_builder, Model → model, CaptureRequest → capture_request.
+// toSnakeCase converts PascalCase or UPPER_CASE to snake_case.
+// Examples: StreamBuilder → stream_builder, Model → model, AUDIO → audio,
+// LOOPER_POLL → looper_poll, IMAGE_FORMATS → image_formats.
 func toSnakeCase(s string) string {
 	var b strings.Builder
 	for i, r := range s {
 		if unicode.IsUpper(r) {
+			// Insert underscore only when transitioning from a lowercase
+			// letter or digit to an uppercase letter. Consecutive uppercase
+			// letters (e.g. "AUDIO") are treated as a single word.
 			if i > 0 {
-				b.WriteByte('_')
+				prev := rune(s[i-1])
+				if unicode.IsLower(prev) || unicode.IsDigit(prev) {
+					b.WriteByte('_')
+				}
 			}
 			b.WriteRune(unicode.ToLower(r))
 		} else {
