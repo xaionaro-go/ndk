@@ -157,6 +157,16 @@ var gles2GetStringCmd = &cobra.Command{
 	},
 }
 
+var gles2GlReleaseShaderCompilerCmd = &cobra.Command{
+	Use:   "gl-release-shader-compiler",
+	Short: "gles2.GlReleaseShaderCompiler()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		gles2.GlReleaseShaderCompiler()
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 var gles2StencilOpCmd = &cobra.Command{
 	Use:   "stencil-op",
 	Short: "gles2.StencilOp()",
@@ -200,6 +210,7 @@ func init() {
 	gles2Cmd.AddCommand(gles2FlushCmd)
 	gles2Cmd.AddCommand(gles2GetErrorCmd)
 	gles2Cmd.AddCommand(gles2GetStringCmd)
+	gles2Cmd.AddCommand(gles2GlReleaseShaderCompilerCmd)
 	gles2Cmd.AddCommand(gles2StencilOpCmd)
 	rootCmd.AddCommand(gles2Cmd)
 }

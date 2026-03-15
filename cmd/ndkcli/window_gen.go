@@ -46,6 +46,42 @@ var windowFormatStringCmd = &cobra.Command{
 	},
 }
 
+var windowWindowAcquireCmd = &cobra.Command{
+	Use:   "acquire",
+	Short: "Window.Acquire()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var windowWindowClearFrameRateCmd = &cobra.Command{
+	Use:   "clear-frame-rate",
+	Short: "Window.ClearFrameRate()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var windowWindowGetBuffersDataSpaceCmd = &cobra.Command{
+	Use:   "get-buffers-data-space",
+	Short: "Window.GetBuffersDataSpace()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var windowWindowGetBuffersDefaultDataSpaceCmd = &cobra.Command{
+	Use:   "get-buffers-default-data-space",
+	Short: "Window.GetBuffersDefaultDataSpace()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var windowWindowFormatCmd = &cobra.Command{
 	Use:   "format",
 	Short: "Window.Format()",
@@ -73,9 +109,36 @@ var windowWindowWidthCmd = &cobra.Command{
 	},
 }
 
+var windowWindowSetBuffersDataSpaceCmd = &cobra.Command{
+	Use:   "set-buffers-data-space",
+	Short: "Window.SetBuffersDataSpace()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var windowWindowSetBuffersGeometryCmd = &cobra.Command{
 	Use:   "set-buffers-geometry",
 	Short: "Window.SetBuffersGeometry()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var windowWindowSetBuffersTransformCmd = &cobra.Command{
+	Use:   "set-buffers-transform",
+	Short: "Window.SetBuffersTransform()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var windowWindowTryAllocateBuffersCmd = &cobra.Command{
+	Use:   "try-allocate-buffers",
+	Short: "Window.TryAllocateBuffers()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -97,10 +160,17 @@ func init() {
 	windowCmd.AddCommand(windowWindowCmd)
 	windowErrorCmd.AddCommand(windowErrorErrorCmd)
 	windowFormatCmd.AddCommand(windowFormatStringCmd)
+	windowWindowCmd.AddCommand(windowWindowAcquireCmd)
+	windowWindowCmd.AddCommand(windowWindowClearFrameRateCmd)
+	windowWindowCmd.AddCommand(windowWindowGetBuffersDataSpaceCmd)
+	windowWindowCmd.AddCommand(windowWindowGetBuffersDefaultDataSpaceCmd)
 	windowWindowCmd.AddCommand(windowWindowFormatCmd)
 	windowWindowCmd.AddCommand(windowWindowHeightCmd)
 	windowWindowCmd.AddCommand(windowWindowWidthCmd)
+	windowWindowCmd.AddCommand(windowWindowSetBuffersDataSpaceCmd)
 	windowWindowCmd.AddCommand(windowWindowSetBuffersGeometryCmd)
+	windowWindowCmd.AddCommand(windowWindowSetBuffersTransformCmd)
+	windowWindowCmd.AddCommand(windowWindowTryAllocateBuffersCmd)
 	windowWindowCmd.AddCommand(windowWindowUnlockAndPostCmd)
 	rootCmd.AddCommand(windowCmd)
 }

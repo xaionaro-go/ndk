@@ -24,6 +24,16 @@ var looperLooperCmd = &cobra.Command{
 	Short: "Looper operations",
 }
 
+var looperALooper_forThreadCmd = &cobra.Command{
+	Use:   "a-looper_for-thread",
+	Short: "looper.ALooper_forThread()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		result := looper.ALooper_forThread()
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var looperPrepareCmd = &cobra.Command{
 	Use:   "prepare",
 	Short: "looper.Prepare()",
@@ -75,6 +85,7 @@ func init() {
 	looperPrepareCmd.Flags().Int32("opts", 0, "opts")
 	looperCmd.AddCommand(looperErrorCmd)
 	looperCmd.AddCommand(looperLooperCmd)
+	looperCmd.AddCommand(looperALooper_forThreadCmd)
 	looperCmd.AddCommand(looperPrepareCmd)
 	looperErrorCmd.AddCommand(looperErrorErrorCmd)
 	looperLooperCmd.AddCommand(looperLooperAcquireCmd)

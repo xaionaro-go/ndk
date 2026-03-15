@@ -58,12 +58,73 @@ var gles3FenceSyncCmd = &cobra.Command{
 	},
 }
 
+var gles3GlFinishCmd = &cobra.Command{
+	Use:   "gl-finish",
+	Short: "gles3.GlFinish()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		gles3.GlFinish()
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var gles3GlFlushCmd = &cobra.Command{
+	Use:   "gl-flush",
+	Short: "gles3.GlFlush()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		gles3.GlFlush()
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var gles3GetStringCmd = &cobra.Command{
+	Use:   "get-string",
+	Short: "gles3.GetString()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		name, _ := cmd.Flags().GetUint32("name")
+		result := gles3.GetString(gles3.GLenum(name))
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var gles3GlPauseTransformFeedbackCmd = &cobra.Command{
+	Use:   "gl-pause-transform-feedback",
+	Short: "gles3.GlPauseTransformFeedback()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		gles3.GlPauseTransformFeedback()
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 var gles3ReadBufferCmd = &cobra.Command{
 	Use:   "read-buffer",
 	Short: "gles3.ReadBuffer()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		src, _ := cmd.Flags().GetUint32("src")
 		gles3.ReadBuffer(gles3.GLenum(src))
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var gles3GlReleaseShaderCompilerCmd = &cobra.Command{
+	Use:   "gl-release-shader-compiler",
+	Short: "gles3.GlReleaseShaderCompiler()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		gles3.GlReleaseShaderCompiler()
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var gles3GlResumeTransformFeedbackCmd = &cobra.Command{
+	Use:   "gl-resume-transform-feedback",
+	Short: "gles3.GlResumeTransformFeedback()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		gles3.GlResumeTransformFeedback()
 		fmt.Println("ok")
 		return nil
 	},
@@ -85,13 +146,20 @@ func init() {
 	gles3EndQueryCmd.Flags().Uint32("target", 0, "target")
 	gles3FenceSyncCmd.Flags().Uint32("condition", 0, "condition")
 	gles3FenceSyncCmd.Flags().Uint32("flags", 0, "flags")
+	gles3GetStringCmd.Flags().Uint32("name", 0, "name")
 	gles3ReadBufferCmd.Flags().Uint32("src", 0, "src")
 	gles3UnmapBufferCmd.Flags().Uint32("target", 0, "target")
 	gles3Cmd.AddCommand(gles3BeginTransformFeedbackCmd)
 	gles3Cmd.AddCommand(gles3EndQueryCmd)
 	gles3Cmd.AddCommand(gles3EndTransformFeedbackCmd)
 	gles3Cmd.AddCommand(gles3FenceSyncCmd)
+	gles3Cmd.AddCommand(gles3GlFinishCmd)
+	gles3Cmd.AddCommand(gles3GlFlushCmd)
+	gles3Cmd.AddCommand(gles3GetStringCmd)
+	gles3Cmd.AddCommand(gles3GlPauseTransformFeedbackCmd)
 	gles3Cmd.AddCommand(gles3ReadBufferCmd)
+	gles3Cmd.AddCommand(gles3GlReleaseShaderCompilerCmd)
+	gles3Cmd.AddCommand(gles3GlResumeTransformFeedbackCmd)
 	gles3Cmd.AddCommand(gles3UnmapBufferCmd)
 	rootCmd.AddCommand(gles3Cmd)
 }

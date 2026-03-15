@@ -11,6 +11,10 @@ types:
         kind: opaque_ptr
         c_type: AFontMatcher
         go_type: '*C.AFontMatcher'
+    ASystemFontIterator:
+        kind: opaque_ptr
+        c_type: ASystemFontIterator
+        go_type: '*C.ASystemFontIterator'
 enums:
     AFAMILY_VARIANT:
         - name: AFAMILY_VARIANT_DEFAULT
@@ -150,3 +154,18 @@ functions:
             - name: italic
               type: bool
         returns: ""
+    ASystemFontIterator_close:
+        c_name: ASystemFontIterator_close
+        params:
+            - name: iterator
+              type: '*ASystemFontIterator'
+        returns: ""
+    ASystemFontIterator_next:
+        c_name: ASystemFontIterator_next
+        params:
+            - name: iterator
+              type: '*ASystemFontIterator'
+        returns: '*AFont'
+    ASystemFontIterator_open:
+        c_name: ASystemFontIterator_open
+        returns: '*ASystemFontIterator'

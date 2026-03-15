@@ -6,11 +6,27 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	ndkimage "github.com/xaionaro-go/ndk/image"
 )
 
 var imageCmd = &cobra.Command{
 	Use:   "image",
 	Short: "image NDK module",
+}
+
+var imageAssetCmd = &cobra.Command{
+	Use:   "asset",
+	Short: "Asset operations",
+}
+
+var imageAssetDirCmd = &cobra.Command{
+	Use:   "asset-dir",
+	Short: "AssetDir operations",
+}
+
+var imageAssetManagerCmd = &cobra.Command{
+	Use:   "asset-manager",
+	Short: "AssetManager operations",
 }
 
 var imageDecoderCmd = &cobra.Command{
@@ -23,9 +39,179 @@ var imageErrorCmd = &cobra.Command{
 	Short: "Error operations",
 }
 
+var imageHeaderInfoCmd = &cobra.Command{
+	Use:   "header-info",
+	Short: "HeaderInfo operations",
+}
+
+var imageImageDecoderFrameInfoCmd = &cobra.Command{
+	Use:   "image-decoder-frame-info",
+	Short: "ImageDecoderFrameInfo operations",
+}
+
+var imageNewDecoderFromFdCmd = &cobra.Command{
+	Use:   "new-decoder-from-fd",
+	Short: "image.NewDecoderFromFd()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fd, _ := cmd.Flags().GetInt32("fd")
+		result, err := ndkimage.NewDecoderFromFd(fd)
+		if err != nil {
+			return err
+		}
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var imageAImageDecoder_resultToStringCmd = &cobra.Command{
+	Use:   "a-image-decoder_result-to-string",
+	Short: "image.AImageDecoder_resultToString()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		arg0, _ := cmd.Flags().GetInt32("arg0")
+		result := ndkimage.AImageDecoder_resultToString(arg0)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var imageAssetGetBufferCmd = &cobra.Command{
+	Use:   "get-buffer",
+	Short: "Asset.GetBuffer()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageAssetIsAllocatedCmd = &cobra.Command{
+	Use:   "is-allocated",
+	Short: "Asset.IsAllocated()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageAssetDirGetNextFileNameCmd = &cobra.Command{
+	Use:   "get-next-file-name",
+	Short: "AssetDir.GetNextFileName()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageAssetDirRewindCmd = &cobra.Command{
+	Use:   "rewind",
+	Short: "AssetDir.Rewind()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageAssetManagerOpenCmd = &cobra.Command{
+	Use:   "open",
+	Short: "AssetManager.Open()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageAssetManagerOpenDirCmd = &cobra.Command{
+	Use:   "open-dir",
+	Short: "AssetManager.OpenDir()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageDecoderAdvanceFrameCmd = &cobra.Command{
+	Use:   "advance-frame",
+	Short: "Decoder.AdvanceFrame()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageDecoderComputeSampledSizeCmd = &cobra.Command{
+	Use:   "compute-sampled-size",
+	Short: "Decoder.ComputeSampledSize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageDecoderHeaderInfoCmd = &cobra.Command{
+	Use:   "header-info",
+	Short: "Decoder.HeaderInfo()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var imageDecoderMinimumStrideCmd = &cobra.Command{
 	Use:   "minimum-stride",
 	Short: "Decoder.MinimumStride()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageDecoderGetRepeatCountCmd = &cobra.Command{
+	Use:   "get-repeat-count",
+	Short: "Decoder.GetRepeatCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageDecoderIsAnimatedCmd = &cobra.Command{
+	Use:   "is-animated",
+	Short: "Decoder.IsAnimated()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageDecoderRewindCmd = &cobra.Command{
+	Use:   "rewind",
+	Short: "Decoder.Rewind()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageDecoderSetAndroidBitmapFormatCmd = &cobra.Command{
+	Use:   "set-android-bitmap-format",
+	Short: "Decoder.SetAndroidBitmapFormat()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageDecoderSetDataSpaceCmd = &cobra.Command{
+	Use:   "set-data-space",
+	Short: "Decoder.SetDataSpace()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageDecoderSetInternallyHandleDisposePreviousCmd = &cobra.Command{
+	Use:   "set-internally-handle-dispose-previous",
+	Short: "Decoder.SetInternallyHandleDisposePrevious()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -41,6 +227,15 @@ var imageDecoderSetTargetSizeCmd = &cobra.Command{
 	},
 }
 
+var imageDecoderSetUnpremultipliedRequiredCmd = &cobra.Command{
+	Use:   "set-unpremultiplied-required",
+	Short: "Decoder.SetUnpremultipliedRequired()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var imageErrorErrorCmd = &cobra.Command{
 	Use:   "error",
 	Short: "Error.Error()",
@@ -50,11 +245,166 @@ var imageErrorErrorCmd = &cobra.Command{
 	},
 }
 
+var imageHeaderInfoGetAlphaFlagsCmd = &cobra.Command{
+	Use:   "get-alpha-flags",
+	Short: "HeaderInfo.GetAlphaFlags()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageHeaderInfoGetAndroidBitmapFormatCmd = &cobra.Command{
+	Use:   "get-android-bitmap-format",
+	Short: "HeaderInfo.GetAndroidBitmapFormat()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageHeaderInfoGetDataSpaceCmd = &cobra.Command{
+	Use:   "get-data-space",
+	Short: "HeaderInfo.GetDataSpace()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageHeaderInfoHeightCmd = &cobra.Command{
+	Use:   "height",
+	Short: "HeaderInfo.Height()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageHeaderInfoMimeTypeCmd = &cobra.Command{
+	Use:   "mime-type",
+	Short: "HeaderInfo.MimeType()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageHeaderInfoWidthCmd = &cobra.Command{
+	Use:   "width",
+	Short: "HeaderInfo.Width()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var imageImageDecoderFrameInfoNewCmd = &cobra.Command{
+	Use:   "new",
+	Short: "Create ImageDecoderFrameInfo",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := ndkimage.NewImageDecoderFrameInfo()
+		defer obj.Close()
+		fmt.Println("created successfully")
+		return nil
+	},
+}
+
+var imageImageDecoderFrameInfoGetBlendOpCmd = &cobra.Command{
+	Use:   "get-blend-op",
+	Short: "ImageDecoderFrameInfo.GetBlendOp()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := ndkimage.NewImageDecoderFrameInfo()
+		defer obj.Close()
+		err := obj.GetBlendOp()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var imageImageDecoderFrameInfoGetDisposeOpCmd = &cobra.Command{
+	Use:   "get-dispose-op",
+	Short: "ImageDecoderFrameInfo.GetDisposeOp()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := ndkimage.NewImageDecoderFrameInfo()
+		defer obj.Close()
+		err := obj.GetDisposeOp()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var imageImageDecoderFrameInfoGetDurationCmd = &cobra.Command{
+	Use:   "get-duration",
+	Short: "ImageDecoderFrameInfo.GetDuration()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := ndkimage.NewImageDecoderFrameInfo()
+		defer obj.Close()
+		result := obj.GetDuration()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var imageImageDecoderFrameInfoHasAlphaWithinBoundsCmd = &cobra.Command{
+	Use:   "has-alpha-within-bounds",
+	Short: "ImageDecoderFrameInfo.HasAlphaWithinBounds()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := ndkimage.NewImageDecoderFrameInfo()
+		defer obj.Close()
+		result := obj.HasAlphaWithinBounds()
+		fmt.Println(result)
+		return nil
+	},
+}
+
 func init() {
+	imageNewDecoderFromFdCmd.Flags().Int32("fd", 0, "fd")
+	imageAImageDecoder_resultToStringCmd.Flags().Int32("arg0", 0, "arg0")
+	imageCmd.AddCommand(imageAssetCmd)
+	imageCmd.AddCommand(imageAssetDirCmd)
+	imageCmd.AddCommand(imageAssetManagerCmd)
 	imageCmd.AddCommand(imageDecoderCmd)
 	imageCmd.AddCommand(imageErrorCmd)
+	imageCmd.AddCommand(imageHeaderInfoCmd)
+	imageCmd.AddCommand(imageImageDecoderFrameInfoCmd)
+	imageCmd.AddCommand(imageNewDecoderFromFdCmd)
+	imageCmd.AddCommand(imageAImageDecoder_resultToStringCmd)
+	imageAssetCmd.AddCommand(imageAssetGetBufferCmd)
+	imageAssetCmd.AddCommand(imageAssetIsAllocatedCmd)
+	imageAssetDirCmd.AddCommand(imageAssetDirGetNextFileNameCmd)
+	imageAssetDirCmd.AddCommand(imageAssetDirRewindCmd)
+	imageAssetManagerCmd.AddCommand(imageAssetManagerOpenCmd)
+	imageAssetManagerCmd.AddCommand(imageAssetManagerOpenDirCmd)
+	imageDecoderCmd.AddCommand(imageDecoderAdvanceFrameCmd)
+	imageDecoderCmd.AddCommand(imageDecoderComputeSampledSizeCmd)
+	imageDecoderCmd.AddCommand(imageDecoderHeaderInfoCmd)
 	imageDecoderCmd.AddCommand(imageDecoderMinimumStrideCmd)
+	imageDecoderCmd.AddCommand(imageDecoderGetRepeatCountCmd)
+	imageDecoderCmd.AddCommand(imageDecoderIsAnimatedCmd)
+	imageDecoderCmd.AddCommand(imageDecoderRewindCmd)
+	imageDecoderCmd.AddCommand(imageDecoderSetAndroidBitmapFormatCmd)
+	imageDecoderCmd.AddCommand(imageDecoderSetDataSpaceCmd)
+	imageDecoderCmd.AddCommand(imageDecoderSetInternallyHandleDisposePreviousCmd)
 	imageDecoderCmd.AddCommand(imageDecoderSetTargetSizeCmd)
+	imageDecoderCmd.AddCommand(imageDecoderSetUnpremultipliedRequiredCmd)
 	imageErrorCmd.AddCommand(imageErrorErrorCmd)
+	imageHeaderInfoCmd.AddCommand(imageHeaderInfoGetAlphaFlagsCmd)
+	imageHeaderInfoCmd.AddCommand(imageHeaderInfoGetAndroidBitmapFormatCmd)
+	imageHeaderInfoCmd.AddCommand(imageHeaderInfoGetDataSpaceCmd)
+	imageHeaderInfoCmd.AddCommand(imageHeaderInfoHeightCmd)
+	imageHeaderInfoCmd.AddCommand(imageHeaderInfoMimeTypeCmd)
+	imageHeaderInfoCmd.AddCommand(imageHeaderInfoWidthCmd)
+	imageImageDecoderFrameInfoCmd.AddCommand(imageImageDecoderFrameInfoNewCmd)
+	imageImageDecoderFrameInfoCmd.AddCommand(imageImageDecoderFrameInfoGetBlendOpCmd)
+	imageImageDecoderFrameInfoCmd.AddCommand(imageImageDecoderFrameInfoGetDisposeOpCmd)
+	imageImageDecoderFrameInfoCmd.AddCommand(imageImageDecoderFrameInfoGetDurationCmd)
+	imageImageDecoderFrameInfoCmd.AddCommand(imageImageDecoderFrameInfoHasAlphaWithinBoundsCmd)
 	rootCmd.AddCommand(imageCmd)
 }

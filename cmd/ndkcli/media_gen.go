@@ -19,6 +19,21 @@ var mediaCodecCmd = &cobra.Command{
 	Short: "Codec operations",
 }
 
+var mediaCodecAudioCapabilitiesCmd = &cobra.Command{
+	Use:   "codec-audio-capabilities",
+	Short: "CodecAudioCapabilities operations",
+}
+
+var mediaCodecEncoderCapabilitiesCmd = &cobra.Command{
+	Use:   "codec-encoder-capabilities",
+	Short: "CodecEncoderCapabilities operations",
+}
+
+var mediaCodecVideoCapabilitiesCmd = &cobra.Command{
+	Use:   "codec-video-capabilities",
+	Short: "CodecVideoCapabilities operations",
+}
+
 var mediaErrorCmd = &cobra.Command{
 	Use:   "error",
 	Short: "Error operations",
@@ -44,9 +59,35 @@ var mediaImageReaderCmd = &cobra.Command{
 	Short: "ImageReader operations",
 }
 
+var mediaMediaCodecCryptoInfoCmd = &cobra.Command{
+	Use:   "media-codec-crypto-info",
+	Short: "MediaCodecCryptoInfo operations",
+}
+
+var mediaMediaCodecInfoCmd = &cobra.Command{
+	Use:   "media-codec-info",
+	Short: "MediaCodecInfo operations",
+}
+
+var mediaMediaDataSourceCmd = &cobra.Command{
+	Use:   "media-data-source",
+	Short: "MediaDataSource operations",
+}
+
 var mediaMuxerCmd = &cobra.Command{
 	Use:   "muxer",
 	Short: "Muxer operations",
+}
+
+var mediaAMediaCodec_createCodecByNameCmd = &cobra.Command{
+	Use:   "a-media-codec_create-codec-by-name",
+	Short: "media.AMediaCodec_createCodecByName()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		name, _ := cmd.Flags().GetString("name")
+		result := media.AMediaCodec_createCodecByName(name)
+		fmt.Println(result)
+		return nil
+	},
 }
 
 var mediaNewDecoderCmd = &cobra.Command{
@@ -71,9 +112,105 @@ var mediaNewEncoderCmd = &cobra.Command{
 	},
 }
 
+var mediaAMediaCodecActionCode_isRecoverableCmd = &cobra.Command{
+	Use:   "a-media-codec-action-code_is-recoverable",
+	Short: "media.AMediaCodecActionCode_isRecoverable()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		actionCode, _ := cmd.Flags().GetInt32("action-code")
+		result := media.AMediaCodecActionCode_isRecoverable(actionCode)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaAMediaCodecActionCode_isTransientCmd = &cobra.Command{
+	Use:   "a-media-codec-action-code_is-transient",
+	Short: "media.AMediaCodecActionCode_isTransient()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		actionCode, _ := cmd.Flags().GetInt32("action-code")
+		result := media.AMediaCodecActionCode_isTransient(actionCode)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaAMediaCrypto_requiresSecureDecoderComponentCmd = &cobra.Command{
+	Use:   "a-media-crypto_requires-secure-decoder-component",
+	Short: "media.AMediaCrypto_requiresSecureDecoderComponent()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		mime, _ := cmd.Flags().GetString("mime")
+		result := media.AMediaCrypto_requiresSecureDecoderComponent(mime)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaNewImageReaderWithUsageCmd = &cobra.Command{
+	Use:   "new-image-reader-with-usage",
+	Short: "media.NewImageReaderWithUsage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		width, _ := cmd.Flags().GetInt32("width")
+		height, _ := cmd.Flags().GetInt32("height")
+		format, _ := cmd.Flags().GetInt32("format")
+		usage, _ := cmd.Flags().GetUint64("usage")
+		maxImages, _ := cmd.Flags().GetInt32("max-images")
+		result, err := media.NewImageReaderWithUsage(width, height, format, usage, maxImages)
+		if err != nil {
+			return err
+		}
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var mediaCodecFlushCmd = &cobra.Command{
 	Use:   "flush",
 	Short: "Codec.Flush()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecGetBufferFormatCmd = &cobra.Command{
+	Use:   "get-buffer-format",
+	Short: "Codec.GetBufferFormat()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecGetInputBufferCmd = &cobra.Command{
+	Use:   "get-input-buffer",
+	Short: "Codec.GetInputBuffer()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecGetInputFormatCmd = &cobra.Command{
+	Use:   "get-input-format",
+	Short: "Codec.GetInputFormat()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecGetOutputBufferCmd = &cobra.Command{
+	Use:   "get-output-buffer",
+	Short: "Codec.GetOutputBuffer()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecReleaseNameCmd = &cobra.Command{
+	Use:   "release-name",
+	Short: "Codec.ReleaseName()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -107,6 +244,78 @@ var mediaCodecStopCmd = &cobra.Command{
 	},
 }
 
+var mediaCodecAudioCapabilitiesGetMaxInputChannelCountCmd = &cobra.Command{
+	Use:   "get-max-input-channel-count",
+	Short: "CodecAudioCapabilities.GetMaxInputChannelCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecAudioCapabilitiesGetMinInputChannelCountCmd = &cobra.Command{
+	Use:   "get-min-input-channel-count",
+	Short: "CodecAudioCapabilities.GetMinInputChannelCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecAudioCapabilitiesIsSampleRateSupportedCmd = &cobra.Command{
+	Use:   "is-sample-rate-supported",
+	Short: "CodecAudioCapabilities.IsSampleRateSupported()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecEncoderCapabilitiesIsBitrateModeSupportedCmd = &cobra.Command{
+	Use:   "is-bitrate-mode-supported",
+	Short: "CodecEncoderCapabilities.IsBitrateModeSupported()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecVideoCapabilitiesAreSizeAndRateSupportedCmd = &cobra.Command{
+	Use:   "are-size-and-rate-supported",
+	Short: "CodecVideoCapabilities.AreSizeAndRateSupported()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecVideoCapabilitiesGetHeightAlignmentCmd = &cobra.Command{
+	Use:   "get-height-alignment",
+	Short: "CodecVideoCapabilities.GetHeightAlignment()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecVideoCapabilitiesGetWidthAlignmentCmd = &cobra.Command{
+	Use:   "get-width-alignment",
+	Short: "CodecVideoCapabilities.GetWidthAlignment()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaCodecVideoCapabilitiesIsSizeSupportedCmd = &cobra.Command{
+	Use:   "is-size-supported",
+	Short: "CodecVideoCapabilities.IsSizeSupported()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var mediaErrorErrorCmd = &cobra.Command{
 	Use:   "error",
 	Short: "Error.Error()",
@@ -127,6 +336,81 @@ var mediaExtractorNewCmd = &cobra.Command{
 	},
 }
 
+var mediaExtractorGetCachedDurationCmd = &cobra.Command{
+	Use:   "get-cached-duration",
+	Short: "Extractor.GetCachedDuration()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewExtractor()
+		defer obj.Close()
+		result := obj.GetCachedDuration()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaExtractorGetFileFormatCmd = &cobra.Command{
+	Use:   "get-file-format",
+	Short: "Extractor.GetFileFormat()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewExtractor()
+		defer obj.Close()
+		result := obj.GetFileFormat()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaExtractorGetPsshInfoCmd = &cobra.Command{
+	Use:   "get-pssh-info",
+	Short: "Extractor.GetPsshInfo()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewExtractor()
+		defer obj.Close()
+		result := obj.GetPsshInfo()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaExtractorGetSampleCryptoInfoCmd = &cobra.Command{
+	Use:   "get-sample-crypto-info",
+	Short: "Extractor.GetSampleCryptoInfo()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewExtractor()
+		defer obj.Close()
+		result := obj.GetSampleCryptoInfo()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaExtractorGetSampleFlagsCmd = &cobra.Command{
+	Use:   "get-sample-flags",
+	Short: "Extractor.GetSampleFlags()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewExtractor()
+		defer obj.Close()
+		err := obj.GetSampleFlags()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var mediaExtractorGetSampleSizeCmd = &cobra.Command{
+	Use:   "get-sample-size",
+	Short: "Extractor.GetSampleSize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewExtractor()
+		defer obj.Close()
+		result := obj.GetSampleSize()
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var mediaExtractorSampleTimeCmd = &cobra.Command{
 	Use:   "sample-time",
 	Short: "Extractor.SampleTime()",
@@ -135,6 +419,21 @@ var mediaExtractorSampleTimeCmd = &cobra.Command{
 		defer obj.Close()
 		result := obj.SampleTime()
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaExtractorGetSampleTrackIndexCmd = &cobra.Command{
+	Use:   "get-sample-track-index",
+	Short: "Extractor.GetSampleTrackIndex()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewExtractor()
+		defer obj.Close()
+		err := obj.GetSampleTrackIndex()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -178,6 +477,48 @@ var mediaFormatNewCmd = &cobra.Command{
 	},
 }
 
+var mediaFormatClearCmd = &cobra.Command{
+	Use:   "clear",
+	Short: "Format.Clear()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		obj.Clear()
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var mediaFormatGetDoubleCmd = &cobra.Command{
+	Use:   "get-double",
+	Short: "Format.GetDouble()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		var out float64
+		// output param out printed below
+		result := obj.GetDouble(name, &out)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaFormatGetFloatCmd = &cobra.Command{
+	Use:   "get-float",
+	Short: "Format.GetFloat()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		var out float32
+		// output param out printed below
+		result := obj.GetFloat(name, &out)
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var mediaFormatGetInt32Cmd = &cobra.Command{
 	Use:   "get-int32",
 	Short: "Format.GetInt32()",
@@ -189,6 +530,85 @@ var mediaFormatGetInt32Cmd = &cobra.Command{
 		// output param out printed below
 		result := obj.GetInt32(name, &out)
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaFormatGetInt64Cmd = &cobra.Command{
+	Use:   "get-int64",
+	Short: "Format.GetInt64()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		var out int64
+		// output param out printed below
+		result := obj.GetInt64(name, &out)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaFormatGetRectCmd = &cobra.Command{
+	Use:   "get-rect",
+	Short: "Format.GetRect()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		var left int32
+		var top int32
+		var right int32
+		var bottom int32
+		// output param left printed below
+		// output param top printed below
+		// output param right printed below
+		// output param bottom printed below
+		result := obj.GetRect(name, &left, &top, &right, &bottom)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaFormatGetSizeCmd = &cobra.Command{
+	Use:   "get-size",
+	Short: "Format.GetSize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		var out uint64
+		// output param out printed below
+		result := obj.GetSize(name, &out)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaFormatSetDoubleCmd = &cobra.Command{
+	Use:   "set-double",
+	Short: "Format.SetDouble()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		value, _ := cmd.Flags().GetFloat64("value")
+		obj.SetDouble(name, value)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var mediaFormatSetFloatCmd = &cobra.Command{
+	Use:   "set-float",
+	Short: "Format.SetFloat()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		value, _ := cmd.Flags().GetFloat32("value")
+		obj.SetFloat(name, value)
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -207,6 +627,51 @@ var mediaFormatSetInt32Cmd = &cobra.Command{
 	},
 }
 
+var mediaFormatSetInt64Cmd = &cobra.Command{
+	Use:   "set-int64",
+	Short: "Format.SetInt64()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		value, _ := cmd.Flags().GetInt64("value")
+		obj.SetInt64(name, value)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var mediaFormatSetRectCmd = &cobra.Command{
+	Use:   "set-rect",
+	Short: "Format.SetRect()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		left, _ := cmd.Flags().GetInt32("left")
+		top, _ := cmd.Flags().GetInt32("top")
+		right, _ := cmd.Flags().GetInt32("right")
+		bottom, _ := cmd.Flags().GetInt32("bottom")
+		obj.SetRect(name, left, top, right, bottom)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var mediaFormatSetSizeCmd = &cobra.Command{
+	Use:   "set-size",
+	Short: "Format.SetSize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		name, _ := cmd.Flags().GetString("name")
+		value, _ := cmd.Flags().GetUint64("value")
+		obj.SetSize(name, value)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 var mediaFormatSetStringCmd = &cobra.Command{
 	Use:   "set-string",
 	Short: "Format.SetString()",
@@ -217,6 +682,27 @@ var mediaFormatSetStringCmd = &cobra.Command{
 		value, _ := cmd.Flags().GetString("value")
 		result := obj.SetString(name, value)
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaFormatToStringCmd = &cobra.Command{
+	Use:   "to-string",
+	Short: "Format.ToString()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewFormat()
+		defer obj.Close()
+		result := obj.ToString()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaImageDeleteAsyncCmd = &cobra.Command{
+	Use:   "delete-async",
+	Short: "Image.DeleteAsync()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
 	},
 }
@@ -242,6 +728,15 @@ var mediaImageHeightCmd = &cobra.Command{
 var mediaImageNumberOfPlanesCmd = &cobra.Command{
 	Use:   "number-of-planes",
 	Short: "Image.NumberOfPlanes()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaImagePlaneDataCmd = &cobra.Command{
+	Use:   "plane-data",
+	Short: "Image.PlaneData()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -284,11 +779,88 @@ var mediaImageWidthCmd = &cobra.Command{
 	},
 }
 
+var mediaImageReaderNewCmd = &cobra.Command{
+	Use:   "new",
+	Short: "Create ImageReader",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		width, _ := cmd.Flags().GetInt32("width")
+		height, _ := cmd.Flags().GetInt32("height")
+		format, _ := cmd.Flags().GetInt32("format")
+		maxImages, _ := cmd.Flags().GetInt32("max-images")
+		obj, err := media.NewImageReader(width, height, format, maxImages)
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		fmt.Println("created successfully")
+		return nil
+	},
+}
+
+var mediaImageReaderAcquireLatestImageCmd = &cobra.Command{
+	Use:   "acquire-latest-image",
+	Short: "ImageReader.AcquireLatestImage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		ctorWidth, _ := cmd.Flags().GetInt32("ctor-width")
+		ctorHeight, _ := cmd.Flags().GetInt32("ctor-height")
+		ctorFormat, _ := cmd.Flags().GetInt32("ctor-format")
+		ctorMaxImages, _ := cmd.Flags().GetInt32("ctor-max-images")
+		obj, err := media.NewImageReader(ctorWidth, ctorHeight, ctorFormat, ctorMaxImages)
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		result, err := obj.AcquireLatestImage()
+		if err != nil {
+			return err
+		}
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaImageReaderAcquireNextImageCmd = &cobra.Command{
+	Use:   "acquire-next-image",
+	Short: "ImageReader.AcquireNextImage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		ctorWidth, _ := cmd.Flags().GetInt32("ctor-width")
+		ctorHeight, _ := cmd.Flags().GetInt32("ctor-height")
+		ctorFormat, _ := cmd.Flags().GetInt32("ctor-format")
+		ctorMaxImages, _ := cmd.Flags().GetInt32("ctor-max-images")
+		obj, err := media.NewImageReader(ctorWidth, ctorHeight, ctorFormat, ctorMaxImages)
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		result, err := obj.AcquireNextImage()
+		if err != nil {
+			return err
+		}
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var mediaImageReaderFormatCmd = &cobra.Command{
 	Use:   "format",
 	Short: "ImageReader.Format()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		ctorWidth, _ := cmd.Flags().GetInt32("ctor-width")
+		ctorHeight, _ := cmd.Flags().GetInt32("ctor-height")
+		ctorFormat, _ := cmd.Flags().GetInt32("ctor-format")
+		ctorMaxImages, _ := cmd.Flags().GetInt32("ctor-max-images")
+		obj, err := media.NewImageReader(ctorWidth, ctorHeight, ctorFormat, ctorMaxImages)
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		var format int32
+		// output param format printed below
+		err = obj.Format(&format)
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -297,7 +869,22 @@ var mediaImageReaderHeightCmd = &cobra.Command{
 	Use:   "height",
 	Short: "ImageReader.Height()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		ctorWidth, _ := cmd.Flags().GetInt32("ctor-width")
+		ctorHeight, _ := cmd.Flags().GetInt32("ctor-height")
+		ctorFormat, _ := cmd.Flags().GetInt32("ctor-format")
+		ctorMaxImages, _ := cmd.Flags().GetInt32("ctor-max-images")
+		obj, err := media.NewImageReader(ctorWidth, ctorHeight, ctorFormat, ctorMaxImages)
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		var height int32
+		// output param height printed below
+		err = obj.Height(&height)
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -306,7 +893,22 @@ var mediaImageReaderMaxImagesCmd = &cobra.Command{
 	Use:   "max-images",
 	Short: "ImageReader.MaxImages()",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		ctorWidth, _ := cmd.Flags().GetInt32("ctor-width")
+		ctorHeight, _ := cmd.Flags().GetInt32("ctor-height")
+		ctorFormat, _ := cmd.Flags().GetInt32("ctor-format")
+		ctorMaxImages, _ := cmd.Flags().GetInt32("ctor-max-images")
+		obj, err := media.NewImageReader(ctorWidth, ctorHeight, ctorFormat, ctorMaxImages)
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		var maxImages int32
+		// output param maxImages printed below
+		err = obj.MaxImages(&maxImages)
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -314,6 +916,135 @@ var mediaImageReaderMaxImagesCmd = &cobra.Command{
 var mediaImageReaderWidthCmd = &cobra.Command{
 	Use:   "width",
 	Short: "ImageReader.Width()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		ctorWidth, _ := cmd.Flags().GetInt32("ctor-width")
+		ctorHeight, _ := cmd.Flags().GetInt32("ctor-height")
+		ctorFormat, _ := cmd.Flags().GetInt32("ctor-format")
+		ctorMaxImages, _ := cmd.Flags().GetInt32("ctor-max-images")
+		obj, err := media.NewImageReader(ctorWidth, ctorHeight, ctorFormat, ctorMaxImages)
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		var width int32
+		// output param width printed below
+		err = obj.Width(&width)
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var mediaImageReaderWindowCmd = &cobra.Command{
+	Use:   "window",
+	Short: "ImageReader.Window()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		ctorWidth, _ := cmd.Flags().GetInt32("ctor-width")
+		ctorHeight, _ := cmd.Flags().GetInt32("ctor-height")
+		ctorFormat, _ := cmd.Flags().GetInt32("ctor-format")
+		ctorMaxImages, _ := cmd.Flags().GetInt32("ctor-max-images")
+		obj, err := media.NewImageReader(ctorWidth, ctorHeight, ctorFormat, ctorMaxImages)
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		result, err := obj.Window()
+		if err != nil {
+			return err
+		}
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var mediaMediaCodecCryptoInfoGetNumSubSamplesCmd = &cobra.Command{
+	Use:   "get-num-sub-samples",
+	Short: "MediaCodecCryptoInfo.GetNumSubSamples()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaMediaCodecInfoGetCanonicalNameCmd = &cobra.Command{
+	Use:   "get-canonical-name",
+	Short: "MediaCodecInfo.GetCanonicalName()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaMediaCodecInfoGetMaxSupportedInstancesCmd = &cobra.Command{
+	Use:   "get-max-supported-instances",
+	Short: "MediaCodecInfo.GetMaxSupportedInstances()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaMediaCodecInfoGetMediaTypeCmd = &cobra.Command{
+	Use:   "get-media-type",
+	Short: "MediaCodecInfo.GetMediaType()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaMediaCodecInfoIsFeatureRequiredCmd = &cobra.Command{
+	Use:   "is-feature-required",
+	Short: "MediaCodecInfo.IsFeatureRequired()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaMediaCodecInfoIsFeatureSupportedCmd = &cobra.Command{
+	Use:   "is-feature-supported",
+	Short: "MediaCodecInfo.IsFeatureSupported()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaMediaCodecInfoIsVendorCmd = &cobra.Command{
+	Use:   "is-vendor",
+	Short: "MediaCodecInfo.IsVendor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaMediaDataSourceNewCmd = &cobra.Command{
+	Use:   "new",
+	Short: "Create MediaDataSource",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := media.NewMediaDataSource()
+		defer obj.Close()
+		fmt.Println("created successfully")
+		return nil
+	},
+}
+
+var mediaMuxerGetTrackCountCmd = &cobra.Command{
+	Use:   "get-track-count",
+	Short: "Muxer.GetTrackCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var mediaMuxerGetTrackFormatCmd = &cobra.Command{
+	Use:   "get-track-format",
+	Short: "Muxer.GetTrackFormat()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -339,47 +1070,165 @@ var mediaMuxerStopCmd = &cobra.Command{
 }
 
 func init() {
+	mediaAMediaCodec_createCodecByNameCmd.Flags().String("name", "", "name")
 	mediaNewDecoderCmd.Flags().String("mime_type", "", "mime_type")
 	mediaNewEncoderCmd.Flags().String("mime_type", "", "mime_type")
+	mediaAMediaCodecActionCode_isRecoverableCmd.Flags().Int32("action-code", 0, "actionCode")
+	mediaAMediaCodecActionCode_isTransientCmd.Flags().Int32("action-code", 0, "actionCode")
+	mediaAMediaCrypto_requiresSecureDecoderComponentCmd.Flags().String("mime", "", "mime")
+	mediaNewImageReaderWithUsageCmd.Flags().Int32("width", 0, "width")
+	mediaNewImageReaderWithUsageCmd.Flags().Int32("height", 0, "height")
+	mediaNewImageReaderWithUsageCmd.Flags().Int32("format", 0, "format")
+	mediaNewImageReaderWithUsageCmd.Flags().Uint64("usage", 0, "usage")
+	mediaNewImageReaderWithUsageCmd.Flags().Int32("max-images", 0, "maxImages")
 	mediaExtractorSelectTrackCmd.Flags().Uint64("idx", 0, "idx")
+	mediaFormatGetDoubleCmd.Flags().String("name", "", "name")
+	mediaFormatGetFloatCmd.Flags().String("name", "", "name")
 	mediaFormatGetInt32Cmd.Flags().String("name", "", "name")
+	mediaFormatGetInt64Cmd.Flags().String("name", "", "name")
+	mediaFormatGetRectCmd.Flags().String("name", "", "name")
+	mediaFormatGetSizeCmd.Flags().String("name", "", "name")
+	mediaFormatSetDoubleCmd.Flags().String("name", "", "name")
+	mediaFormatSetDoubleCmd.Flags().Float64("value", 0, "value")
+	mediaFormatSetFloatCmd.Flags().String("name", "", "name")
+	mediaFormatSetFloatCmd.Flags().Float32("value", 0, "value")
 	mediaFormatSetInt32Cmd.Flags().String("name", "", "name")
 	mediaFormatSetInt32Cmd.Flags().Int32("value", 0, "value")
+	mediaFormatSetInt64Cmd.Flags().String("name", "", "name")
+	mediaFormatSetInt64Cmd.Flags().Int64("value", 0, "value")
+	mediaFormatSetRectCmd.Flags().String("name", "", "name")
+	mediaFormatSetRectCmd.Flags().Int32("left", 0, "left")
+	mediaFormatSetRectCmd.Flags().Int32("top", 0, "top")
+	mediaFormatSetRectCmd.Flags().Int32("right", 0, "right")
+	mediaFormatSetRectCmd.Flags().Int32("bottom", 0, "bottom")
+	mediaFormatSetSizeCmd.Flags().String("name", "", "name")
+	mediaFormatSetSizeCmd.Flags().Uint64("value", 0, "value")
 	mediaFormatSetStringCmd.Flags().String("name", "", "name")
 	mediaFormatSetStringCmd.Flags().String("value", "", "value")
+	mediaImageReaderNewCmd.Flags().Int32("width", 0, "width")
+	mediaImageReaderNewCmd.Flags().Int32("height", 0, "height")
+	mediaImageReaderNewCmd.Flags().Int32("format", 0, "format")
+	mediaImageReaderNewCmd.Flags().Int32("max-images", 0, "maxImages")
+	mediaImageReaderAcquireLatestImageCmd.Flags().Int32("ctor-width", 0, "width")
+	mediaImageReaderAcquireLatestImageCmd.Flags().Int32("ctor-height", 0, "height")
+	mediaImageReaderAcquireLatestImageCmd.Flags().Int32("ctor-format", 0, "format")
+	mediaImageReaderAcquireLatestImageCmd.Flags().Int32("ctor-max-images", 0, "maxImages")
+	mediaImageReaderAcquireNextImageCmd.Flags().Int32("ctor-width", 0, "width")
+	mediaImageReaderAcquireNextImageCmd.Flags().Int32("ctor-height", 0, "height")
+	mediaImageReaderAcquireNextImageCmd.Flags().Int32("ctor-format", 0, "format")
+	mediaImageReaderAcquireNextImageCmd.Flags().Int32("ctor-max-images", 0, "maxImages")
+	mediaImageReaderFormatCmd.Flags().Int32("ctor-width", 0, "width")
+	mediaImageReaderFormatCmd.Flags().Int32("ctor-height", 0, "height")
+	mediaImageReaderFormatCmd.Flags().Int32("ctor-format", 0, "format")
+	mediaImageReaderFormatCmd.Flags().Int32("ctor-max-images", 0, "maxImages")
+	mediaImageReaderHeightCmd.Flags().Int32("ctor-width", 0, "width")
+	mediaImageReaderHeightCmd.Flags().Int32("ctor-height", 0, "height")
+	mediaImageReaderHeightCmd.Flags().Int32("ctor-format", 0, "format")
+	mediaImageReaderHeightCmd.Flags().Int32("ctor-max-images", 0, "maxImages")
+	mediaImageReaderMaxImagesCmd.Flags().Int32("ctor-width", 0, "width")
+	mediaImageReaderMaxImagesCmd.Flags().Int32("ctor-height", 0, "height")
+	mediaImageReaderMaxImagesCmd.Flags().Int32("ctor-format", 0, "format")
+	mediaImageReaderMaxImagesCmd.Flags().Int32("ctor-max-images", 0, "maxImages")
+	mediaImageReaderWidthCmd.Flags().Int32("ctor-width", 0, "width")
+	mediaImageReaderWidthCmd.Flags().Int32("ctor-height", 0, "height")
+	mediaImageReaderWidthCmd.Flags().Int32("ctor-format", 0, "format")
+	mediaImageReaderWidthCmd.Flags().Int32("ctor-max-images", 0, "maxImages")
+	mediaImageReaderWindowCmd.Flags().Int32("ctor-width", 0, "width")
+	mediaImageReaderWindowCmd.Flags().Int32("ctor-height", 0, "height")
+	mediaImageReaderWindowCmd.Flags().Int32("ctor-format", 0, "format")
+	mediaImageReaderWindowCmd.Flags().Int32("ctor-max-images", 0, "maxImages")
 	mediaCmd.AddCommand(mediaCodecCmd)
+	mediaCmd.AddCommand(mediaCodecAudioCapabilitiesCmd)
+	mediaCmd.AddCommand(mediaCodecEncoderCapabilitiesCmd)
+	mediaCmd.AddCommand(mediaCodecVideoCapabilitiesCmd)
 	mediaCmd.AddCommand(mediaErrorCmd)
 	mediaCmd.AddCommand(mediaExtractorCmd)
 	mediaCmd.AddCommand(mediaFormatCmd)
 	mediaCmd.AddCommand(mediaImageCmd)
 	mediaCmd.AddCommand(mediaImageReaderCmd)
+	mediaCmd.AddCommand(mediaMediaCodecCryptoInfoCmd)
+	mediaCmd.AddCommand(mediaMediaCodecInfoCmd)
+	mediaCmd.AddCommand(mediaMediaDataSourceCmd)
 	mediaCmd.AddCommand(mediaMuxerCmd)
+	mediaCmd.AddCommand(mediaAMediaCodec_createCodecByNameCmd)
 	mediaCmd.AddCommand(mediaNewDecoderCmd)
 	mediaCmd.AddCommand(mediaNewEncoderCmd)
+	mediaCmd.AddCommand(mediaAMediaCodecActionCode_isRecoverableCmd)
+	mediaCmd.AddCommand(mediaAMediaCodecActionCode_isTransientCmd)
+	mediaCmd.AddCommand(mediaAMediaCrypto_requiresSecureDecoderComponentCmd)
+	mediaCmd.AddCommand(mediaNewImageReaderWithUsageCmd)
 	mediaCodecCmd.AddCommand(mediaCodecFlushCmd)
+	mediaCodecCmd.AddCommand(mediaCodecGetBufferFormatCmd)
+	mediaCodecCmd.AddCommand(mediaCodecGetInputBufferCmd)
+	mediaCodecCmd.AddCommand(mediaCodecGetInputFormatCmd)
+	mediaCodecCmd.AddCommand(mediaCodecGetOutputBufferCmd)
+	mediaCodecCmd.AddCommand(mediaCodecReleaseNameCmd)
 	mediaCodecCmd.AddCommand(mediaCodecReleaseOutputBufferCmd)
 	mediaCodecCmd.AddCommand(mediaCodecStartCmd)
 	mediaCodecCmd.AddCommand(mediaCodecStopCmd)
+	mediaCodecAudioCapabilitiesCmd.AddCommand(mediaCodecAudioCapabilitiesGetMaxInputChannelCountCmd)
+	mediaCodecAudioCapabilitiesCmd.AddCommand(mediaCodecAudioCapabilitiesGetMinInputChannelCountCmd)
+	mediaCodecAudioCapabilitiesCmd.AddCommand(mediaCodecAudioCapabilitiesIsSampleRateSupportedCmd)
+	mediaCodecEncoderCapabilitiesCmd.AddCommand(mediaCodecEncoderCapabilitiesIsBitrateModeSupportedCmd)
+	mediaCodecVideoCapabilitiesCmd.AddCommand(mediaCodecVideoCapabilitiesAreSizeAndRateSupportedCmd)
+	mediaCodecVideoCapabilitiesCmd.AddCommand(mediaCodecVideoCapabilitiesGetHeightAlignmentCmd)
+	mediaCodecVideoCapabilitiesCmd.AddCommand(mediaCodecVideoCapabilitiesGetWidthAlignmentCmd)
+	mediaCodecVideoCapabilitiesCmd.AddCommand(mediaCodecVideoCapabilitiesIsSizeSupportedCmd)
 	mediaErrorCmd.AddCommand(mediaErrorErrorCmd)
 	mediaExtractorCmd.AddCommand(mediaExtractorNewCmd)
+	mediaExtractorCmd.AddCommand(mediaExtractorGetCachedDurationCmd)
+	mediaExtractorCmd.AddCommand(mediaExtractorGetFileFormatCmd)
+	mediaExtractorCmd.AddCommand(mediaExtractorGetPsshInfoCmd)
+	mediaExtractorCmd.AddCommand(mediaExtractorGetSampleCryptoInfoCmd)
+	mediaExtractorCmd.AddCommand(mediaExtractorGetSampleFlagsCmd)
+	mediaExtractorCmd.AddCommand(mediaExtractorGetSampleSizeCmd)
 	mediaExtractorCmd.AddCommand(mediaExtractorSampleTimeCmd)
+	mediaExtractorCmd.AddCommand(mediaExtractorGetSampleTrackIndexCmd)
 	mediaExtractorCmd.AddCommand(mediaExtractorTrackCountCmd)
 	mediaExtractorCmd.AddCommand(mediaExtractorSelectTrackCmd)
 	mediaFormatCmd.AddCommand(mediaFormatNewCmd)
+	mediaFormatCmd.AddCommand(mediaFormatClearCmd)
+	mediaFormatCmd.AddCommand(mediaFormatGetDoubleCmd)
+	mediaFormatCmd.AddCommand(mediaFormatGetFloatCmd)
 	mediaFormatCmd.AddCommand(mediaFormatGetInt32Cmd)
+	mediaFormatCmd.AddCommand(mediaFormatGetInt64Cmd)
+	mediaFormatCmd.AddCommand(mediaFormatGetRectCmd)
+	mediaFormatCmd.AddCommand(mediaFormatGetSizeCmd)
+	mediaFormatCmd.AddCommand(mediaFormatSetDoubleCmd)
+	mediaFormatCmd.AddCommand(mediaFormatSetFloatCmd)
 	mediaFormatCmd.AddCommand(mediaFormatSetInt32Cmd)
+	mediaFormatCmd.AddCommand(mediaFormatSetInt64Cmd)
+	mediaFormatCmd.AddCommand(mediaFormatSetRectCmd)
+	mediaFormatCmd.AddCommand(mediaFormatSetSizeCmd)
 	mediaFormatCmd.AddCommand(mediaFormatSetStringCmd)
+	mediaFormatCmd.AddCommand(mediaFormatToStringCmd)
+	mediaImageCmd.AddCommand(mediaImageDeleteAsyncCmd)
 	mediaImageCmd.AddCommand(mediaImageFormatCmd)
 	mediaImageCmd.AddCommand(mediaImageHeightCmd)
 	mediaImageCmd.AddCommand(mediaImageNumberOfPlanesCmd)
+	mediaImageCmd.AddCommand(mediaImagePlaneDataCmd)
 	mediaImageCmd.AddCommand(mediaImagePlanePixelStrideCmd)
 	mediaImageCmd.AddCommand(mediaImagePlaneRowStrideCmd)
 	mediaImageCmd.AddCommand(mediaImageTimestampCmd)
 	mediaImageCmd.AddCommand(mediaImageWidthCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderNewCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderAcquireLatestImageCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderAcquireNextImageCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderFormatCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderHeightCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderMaxImagesCmd)
 	mediaImageReaderCmd.AddCommand(mediaImageReaderWidthCmd)
+	mediaImageReaderCmd.AddCommand(mediaImageReaderWindowCmd)
+	mediaMediaCodecCryptoInfoCmd.AddCommand(mediaMediaCodecCryptoInfoGetNumSubSamplesCmd)
+	mediaMediaCodecInfoCmd.AddCommand(mediaMediaCodecInfoGetCanonicalNameCmd)
+	mediaMediaCodecInfoCmd.AddCommand(mediaMediaCodecInfoGetMaxSupportedInstancesCmd)
+	mediaMediaCodecInfoCmd.AddCommand(mediaMediaCodecInfoGetMediaTypeCmd)
+	mediaMediaCodecInfoCmd.AddCommand(mediaMediaCodecInfoIsFeatureRequiredCmd)
+	mediaMediaCodecInfoCmd.AddCommand(mediaMediaCodecInfoIsFeatureSupportedCmd)
+	mediaMediaCodecInfoCmd.AddCommand(mediaMediaCodecInfoIsVendorCmd)
+	mediaMediaDataSourceCmd.AddCommand(mediaMediaDataSourceNewCmd)
+	mediaMuxerCmd.AddCommand(mediaMuxerGetTrackCountCmd)
+	mediaMuxerCmd.AddCommand(mediaMuxerGetTrackFormatCmd)
 	mediaMuxerCmd.AddCommand(mediaMuxerStartCmd)
 	mediaMuxerCmd.AddCommand(mediaMuxerStopCmd)
 	rootCmd.AddCommand(mediaCmd)

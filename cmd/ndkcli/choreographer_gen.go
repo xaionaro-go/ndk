@@ -19,6 +19,16 @@ var choreographerChoreographerCmd = &cobra.Command{
 	Short: "Choreographer operations",
 }
 
+var choreographerChoreographerFrameCallbackDataCmd = &cobra.Command{
+	Use:   "choreographer-frame-callback-data",
+	Short: "ChoreographerFrameCallbackData operations",
+}
+
+var choreographerErrorCmd = &cobra.Command{
+	Use:   "error",
+	Short: "Error operations",
+}
+
 var choreographerChoreographerNewCmd = &cobra.Command{
 	Use:   "new",
 	Short: "Create Choreographer",
@@ -29,8 +39,70 @@ var choreographerChoreographerNewCmd = &cobra.Command{
 	},
 }
 
+var choreographerChoreographerFrameCallbackDataGetFrameTimeNanosCmd = &cobra.Command{
+	Use:   "get-frame-time-nanos",
+	Short: "ChoreographerFrameCallbackData.GetFrameTimeNanos()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var choreographerChoreographerFrameCallbackDataGetFrameTimelineDeadlineNanosCmd = &cobra.Command{
+	Use:   "get-frame-timeline-deadline-nanos",
+	Short: "ChoreographerFrameCallbackData.GetFrameTimelineDeadlineNanos()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var choreographerChoreographerFrameCallbackDataGetFrameTimelineExpectedPresentationTimeNanosCmd = &cobra.Command{
+	Use:   "get-frame-timeline-expected-presentation-time-nanos",
+	Short: "ChoreographerFrameCallbackData.GetFrameTimelineExpectedPresentationTimeNanos()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var choreographerChoreographerFrameCallbackDataGetFrameTimelinesLengthCmd = &cobra.Command{
+	Use:   "get-frame-timelines-length",
+	Short: "ChoreographerFrameCallbackData.GetFrameTimelinesLength()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var choreographerChoreographerFrameCallbackDataGetPreferredFrameTimelineIndexCmd = &cobra.Command{
+	Use:   "get-preferred-frame-timeline-index",
+	Short: "ChoreographerFrameCallbackData.GetPreferredFrameTimelineIndex()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var choreographerErrorErrorCmd = &cobra.Command{
+	Use:   "error",
+	Short: "Error.Error()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 func init() {
 	choreographerCmd.AddCommand(choreographerChoreographerCmd)
+	choreographerCmd.AddCommand(choreographerChoreographerFrameCallbackDataCmd)
+	choreographerCmd.AddCommand(choreographerErrorCmd)
 	choreographerChoreographerCmd.AddCommand(choreographerChoreographerNewCmd)
+	choreographerChoreographerFrameCallbackDataCmd.AddCommand(choreographerChoreographerFrameCallbackDataGetFrameTimeNanosCmd)
+	choreographerChoreographerFrameCallbackDataCmd.AddCommand(choreographerChoreographerFrameCallbackDataGetFrameTimelineDeadlineNanosCmd)
+	choreographerChoreographerFrameCallbackDataCmd.AddCommand(choreographerChoreographerFrameCallbackDataGetFrameTimelineExpectedPresentationTimeNanosCmd)
+	choreographerChoreographerFrameCallbackDataCmd.AddCommand(choreographerChoreographerFrameCallbackDataGetFrameTimelinesLengthCmd)
+	choreographerChoreographerFrameCallbackDataCmd.AddCommand(choreographerChoreographerFrameCallbackDataGetPreferredFrameTimelineIndexCmd)
+	choreographerErrorCmd.AddCommand(choreographerErrorErrorCmd)
 	rootCmd.AddCommand(choreographerCmd)
 }

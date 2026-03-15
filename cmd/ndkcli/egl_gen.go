@@ -14,6 +14,16 @@ var eglCmd = &cobra.Command{
 	Short: "egl NDK module",
 }
 
+var eglANativeWindowCmd = &cobra.Command{
+	Use:   "a-native-window",
+	Short: "ANativeWindow operations",
+}
+
+var eglErrorCmd = &cobra.Command{
+	Use:   "error",
+	Short: "Error operations",
+}
+
 var eglGetCurrentContextCmd = &cobra.Command{
 	Use:   "get-current-context",
 	Short: "egl.GetCurrentContext()",
@@ -96,9 +106,128 @@ var eglWaitNativeCmd = &cobra.Command{
 	},
 }
 
+var eglANativeWindowAcquireCmd = &cobra.Command{
+	Use:   "acquire",
+	Short: "ANativeWindow.Acquire()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowClearFrameRateCmd = &cobra.Command{
+	Use:   "clear-frame-rate",
+	Short: "ANativeWindow.ClearFrameRate()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowGetBuffersDataSpaceCmd = &cobra.Command{
+	Use:   "get-buffers-data-space",
+	Short: "ANativeWindow.GetBuffersDataSpace()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowGetBuffersDefaultDataSpaceCmd = &cobra.Command{
+	Use:   "get-buffers-default-data-space",
+	Short: "ANativeWindow.GetBuffersDefaultDataSpace()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowGetFormatCmd = &cobra.Command{
+	Use:   "get-format",
+	Short: "ANativeWindow.GetFormat()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowGetHeightCmd = &cobra.Command{
+	Use:   "get-height",
+	Short: "ANativeWindow.GetHeight()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowGetWidthCmd = &cobra.Command{
+	Use:   "get-width",
+	Short: "ANativeWindow.GetWidth()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowSetBuffersDataSpaceCmd = &cobra.Command{
+	Use:   "set-buffers-data-space",
+	Short: "ANativeWindow.SetBuffersDataSpace()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowSetBuffersGeometryCmd = &cobra.Command{
+	Use:   "set-buffers-geometry",
+	Short: "ANativeWindow.SetBuffersGeometry()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowSetBuffersTransformCmd = &cobra.Command{
+	Use:   "set-buffers-transform",
+	Short: "ANativeWindow.SetBuffersTransform()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowTryAllocateBuffersCmd = &cobra.Command{
+	Use:   "try-allocate-buffers",
+	Short: "ANativeWindow.TryAllocateBuffers()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglANativeWindowUnlockAndPostCmd = &cobra.Command{
+	Use:   "unlock-and-post",
+	Short: "ANativeWindow.UnlockAndPost()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var eglErrorErrorCmd = &cobra.Command{
+	Use:   "error",
+	Short: "Error.Error()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 func init() {
 	eglGetCurrentSurfaceCmd.Flags().Int32("readdraw", 0, "readdraw")
 	eglWaitNativeCmd.Flags().Int32("engine", 0, "engine")
+	eglCmd.AddCommand(eglANativeWindowCmd)
+	eglCmd.AddCommand(eglErrorCmd)
 	eglCmd.AddCommand(eglGetCurrentContextCmd)
 	eglCmd.AddCommand(eglGetCurrentDisplayCmd)
 	eglCmd.AddCommand(eglGetCurrentSurfaceCmd)
@@ -107,5 +236,18 @@ func init() {
 	eglCmd.AddCommand(eglReleaseThreadCmd)
 	eglCmd.AddCommand(eglWaitGLCmd)
 	eglCmd.AddCommand(eglWaitNativeCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowAcquireCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowClearFrameRateCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowGetBuffersDataSpaceCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowGetBuffersDefaultDataSpaceCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowGetFormatCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowGetHeightCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowGetWidthCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowSetBuffersDataSpaceCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowSetBuffersGeometryCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowSetBuffersTransformCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowTryAllocateBuffersCmd)
+	eglANativeWindowCmd.AddCommand(eglANativeWindowUnlockAndPostCmd)
+	eglErrorCmd.AddCommand(eglErrorErrorCmd)
 	rootCmd.AddCommand(eglCmd)
 }

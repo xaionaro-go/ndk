@@ -57,6 +57,15 @@ var inputErrorErrorCmd = &cobra.Command{
 	},
 }
 
+var inputEventGetDeviceIDCmd = &cobra.Command{
+	Use:   "get-device-id",
+	Short: "Event.GetDeviceID()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var inputEventSourceCmd = &cobra.Command{
 	Use:   "source",
 	Short: "Event.Source()",
@@ -84,9 +93,45 @@ var inputEventKeyActionCmd = &cobra.Command{
 	},
 }
 
+var inputEventAKeyEvent_getDownTimeCmd = &cobra.Command{
+	Use:   "a-key-event_get-down-time",
+	Short: "Event.AKeyEvent_getDownTime()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAKeyEvent_getEventTimeCmd = &cobra.Command{
+	Use:   "a-key-event_get-event-time",
+	Short: "Event.AKeyEvent_getEventTime()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAKeyEvent_getFlagsCmd = &cobra.Command{
+	Use:   "a-key-event_get-flags",
+	Short: "Event.AKeyEvent_getFlags()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var inputEventKeyCodeCmd = &cobra.Command{
 	Use:   "key-code",
 	Short: "Event.KeyCode()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAKeyEvent_getMetaStateCmd = &cobra.Command{
+	Use:   "a-key-event_get-meta-state",
+	Short: "Event.AKeyEvent_getMetaState()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -102,9 +147,234 @@ var inputEventRepeatCountCmd = &cobra.Command{
 	},
 }
 
+var inputEventAKeyEvent_getScanCodeCmd = &cobra.Command{
+	Use:   "a-key-event_get-scan-code",
+	Short: "Event.AKeyEvent_getScanCode()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var inputEventMotionActionCmd = &cobra.Command{
 	Use:   "motion-action",
 	Short: "Event.MotionAction()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getActionButtonCmd = &cobra.Command{
+	Use:   "a-motion-event_get-action-button",
+	Short: "Event.AMotionEvent_getActionButton()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getAxisValueCmd = &cobra.Command{
+	Use:   "a-motion-event_get-axis-value",
+	Short: "Event.AMotionEvent_getAxisValue()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getButtonStateCmd = &cobra.Command{
+	Use:   "a-motion-event_get-button-state",
+	Short: "Event.AMotionEvent_getButtonState()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getClassificationCmd = &cobra.Command{
+	Use:   "a-motion-event_get-classification",
+	Short: "Event.AMotionEvent_getClassification()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getDownTimeCmd = &cobra.Command{
+	Use:   "a-motion-event_get-down-time",
+	Short: "Event.AMotionEvent_getDownTime()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getEdgeFlagsCmd = &cobra.Command{
+	Use:   "a-motion-event_get-edge-flags",
+	Short: "Event.AMotionEvent_getEdgeFlags()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getEventTimeCmd = &cobra.Command{
+	Use:   "a-motion-event_get-event-time",
+	Short: "Event.AMotionEvent_getEventTime()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getFlagsCmd = &cobra.Command{
+	Use:   "a-motion-event_get-flags",
+	Short: "Event.AMotionEvent_getFlags()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalAxisValueCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-axis-value",
+	Short: "Event.AMotionEvent_getHistoricalAxisValue()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalEventTimeCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-event-time",
+	Short: "Event.AMotionEvent_getHistoricalEventTime()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalOrientationCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-orientation",
+	Short: "Event.AMotionEvent_getHistoricalOrientation()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalPressureCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-pressure",
+	Short: "Event.AMotionEvent_getHistoricalPressure()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalRawXCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-raw-x",
+	Short: "Event.AMotionEvent_getHistoricalRawX()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalRawYCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-raw-y",
+	Short: "Event.AMotionEvent_getHistoricalRawY()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalSizeCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-size",
+	Short: "Event.AMotionEvent_getHistoricalSize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalToolMajorCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-tool-major",
+	Short: "Event.AMotionEvent_getHistoricalToolMajor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalToolMinorCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-tool-minor",
+	Short: "Event.AMotionEvent_getHistoricalToolMinor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalTouchMajorCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-touch-major",
+	Short: "Event.AMotionEvent_getHistoricalTouchMajor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalTouchMinorCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-touch-minor",
+	Short: "Event.AMotionEvent_getHistoricalTouchMinor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalXCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-x",
+	Short: "Event.AMotionEvent_getHistoricalX()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistoricalYCmd = &cobra.Command{
+	Use:   "a-motion-event_get-historical-y",
+	Short: "Event.AMotionEvent_getHistoricalY()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getHistorySizeCmd = &cobra.Command{
+	Use:   "a-motion-event_get-history-size",
+	Short: "Event.AMotionEvent_getHistorySize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getMetaStateCmd = &cobra.Command{
+	Use:   "a-motion-event_get-meta-state",
+	Short: "Event.AMotionEvent_getMetaState()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getOrientationCmd = &cobra.Command{
+	Use:   "a-motion-event_get-orientation",
+	Short: "Event.AMotionEvent_getOrientation()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -120,9 +390,90 @@ var inputEventPointerCountCmd = &cobra.Command{
 	},
 }
 
+var inputEventAMotionEvent_getPointerIDCmd = &cobra.Command{
+	Use:   "a-motion-event_get-pointer-id",
+	Short: "Event.AMotionEvent_getPointerID()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var inputEventPressureCmd = &cobra.Command{
 	Use:   "pressure",
 	Short: "Event.Pressure()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getRawXCmd = &cobra.Command{
+	Use:   "a-motion-event_get-raw-x",
+	Short: "Event.AMotionEvent_getRawX()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getRawYCmd = &cobra.Command{
+	Use:   "a-motion-event_get-raw-y",
+	Short: "Event.AMotionEvent_getRawY()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getSizeCmd = &cobra.Command{
+	Use:   "a-motion-event_get-size",
+	Short: "Event.AMotionEvent_getSize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getToolMajorCmd = &cobra.Command{
+	Use:   "a-motion-event_get-tool-major",
+	Short: "Event.AMotionEvent_getToolMajor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getToolMinorCmd = &cobra.Command{
+	Use:   "a-motion-event_get-tool-minor",
+	Short: "Event.AMotionEvent_getToolMinor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getToolTypeCmd = &cobra.Command{
+	Use:   "a-motion-event_get-tool-type",
+	Short: "Event.AMotionEvent_getToolType()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getTouchMajorCmd = &cobra.Command{
+	Use:   "a-motion-event_get-touch-major",
+	Short: "Event.AMotionEvent_getTouchMajor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getTouchMinorCmd = &cobra.Command{
+	Use:   "a-motion-event_get-touch-minor",
+	Short: "Event.AMotionEvent_getTouchMinor()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -138,9 +489,45 @@ var inputEventXCmd = &cobra.Command{
 	},
 }
 
+var inputEventAMotionEvent_getXOffsetCmd = &cobra.Command{
+	Use:   "a-motion-event_get-x-offset",
+	Short: "Event.AMotionEvent_getXOffset()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getXPrecisionCmd = &cobra.Command{
+	Use:   "a-motion-event_get-x-precision",
+	Short: "Event.AMotionEvent_getXPrecision()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var inputEventYCmd = &cobra.Command{
 	Use:   "y",
 	Short: "Event.Y()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getYOffsetCmd = &cobra.Command{
+	Use:   "a-motion-event_get-y-offset",
+	Short: "Event.AMotionEvent_getYOffset()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var inputEventAMotionEvent_getYPrecisionCmd = &cobra.Command{
+	Use:   "a-motion-event_get-y-precision",
+	Short: "Event.AMotionEvent_getYPrecision()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -219,16 +606,59 @@ func init() {
 	inputCmd.AddCommand(inputQueueCmd)
 	inputCmd.AddCommand(inputSourceCmd)
 	inputErrorCmd.AddCommand(inputErrorErrorCmd)
+	inputEventCmd.AddCommand(inputEventGetDeviceIDCmd)
 	inputEventCmd.AddCommand(inputEventSourceCmd)
 	inputEventCmd.AddCommand(inputEventTypeCmd)
 	inputEventCmd.AddCommand(inputEventKeyActionCmd)
+	inputEventCmd.AddCommand(inputEventAKeyEvent_getDownTimeCmd)
+	inputEventCmd.AddCommand(inputEventAKeyEvent_getEventTimeCmd)
+	inputEventCmd.AddCommand(inputEventAKeyEvent_getFlagsCmd)
 	inputEventCmd.AddCommand(inputEventKeyCodeCmd)
+	inputEventCmd.AddCommand(inputEventAKeyEvent_getMetaStateCmd)
 	inputEventCmd.AddCommand(inputEventRepeatCountCmd)
+	inputEventCmd.AddCommand(inputEventAKeyEvent_getScanCodeCmd)
 	inputEventCmd.AddCommand(inputEventMotionActionCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getActionButtonCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getAxisValueCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getButtonStateCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getClassificationCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getDownTimeCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getEdgeFlagsCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getEventTimeCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getFlagsCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalAxisValueCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalEventTimeCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalOrientationCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalPressureCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalRawXCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalRawYCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalSizeCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalToolMajorCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalToolMinorCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalTouchMajorCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalTouchMinorCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalXCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistoricalYCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getHistorySizeCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getMetaStateCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getOrientationCmd)
 	inputEventCmd.AddCommand(inputEventPointerCountCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getPointerIDCmd)
 	inputEventCmd.AddCommand(inputEventPressureCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getRawXCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getRawYCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getSizeCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getToolMajorCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getToolMinorCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getToolTypeCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getTouchMajorCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getTouchMinorCmd)
 	inputEventCmd.AddCommand(inputEventXCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getXOffsetCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getXPrecisionCmd)
 	inputEventCmd.AddCommand(inputEventYCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getYOffsetCmd)
+	inputEventCmd.AddCommand(inputEventAMotionEvent_getYPrecisionCmd)
 	inputEventTypeCmd2.AddCommand(inputEventTypeStringCmd)
 	inputKeyActionCmd.AddCommand(inputKeyActionStringCmd)
 	inputMotionActionCmd.AddCommand(inputMotionActionStringCmd)

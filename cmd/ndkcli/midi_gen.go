@@ -41,6 +41,15 @@ var midiDeviceNumOutputPortsCmd = &cobra.Command{
 	},
 }
 
+var midiDeviceGetTypeCmd = &cobra.Command{
+	Use:   "get-type",
+	Short: "Device.GetType()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var midiDeviceOpenInputPortCmd = &cobra.Command{
 	Use:   "open-input-port",
 	Short: "Device.OpenInputPort()",
@@ -73,6 +82,7 @@ func init() {
 	midiCmd.AddCommand(midiErrorCmd)
 	midiDeviceCmd.AddCommand(midiDeviceNumInputPortsCmd)
 	midiDeviceCmd.AddCommand(midiDeviceNumOutputPortsCmd)
+	midiDeviceCmd.AddCommand(midiDeviceGetTypeCmd)
 	midiDeviceCmd.AddCommand(midiDeviceOpenInputPortCmd)
 	midiDeviceCmd.AddCommand(midiDeviceOpenOutputPortCmd)
 	midiErrorCmd.AddCommand(midiErrorErrorCmd)

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/xaionaro-go/ndk/binder"
 )
 
 var binderCmd = &cobra.Command{
@@ -13,9 +14,160 @@ var binderCmd = &cobra.Command{
 	Short: "binder NDK module",
 }
 
+var binderBinderCmd = &cobra.Command{
+	Use:   "binder",
+	Short: "Binder operations",
+}
+
+var binderClassCmd = &cobra.Command{
+	Use:   "class",
+	Short: "Class operations",
+}
+
 var binderErrorCmd = &cobra.Command{
 	Use:   "error",
 	Short: "Error operations",
+}
+
+var binderIBinder_WeakCmd = &cobra.Command{
+	Use:   "i-binder_-weak",
+	Short: "IBinder_Weak operations",
+}
+
+var binderParcelCmd = &cobra.Command{
+	Use:   "parcel",
+	Short: "Parcel operations",
+}
+
+var binderStatusCmd = &cobra.Command{
+	Use:   "status",
+	Short: "Status operations",
+}
+
+var binderAIBinder_isHandlingTransactionCmd = &cobra.Command{
+	Use:   "ai-binder_is-handling-transaction",
+	Short: "binder.AIBinder_isHandlingTransaction()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		result := binder.AIBinder_isHandlingTransaction()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var binderAStatus_deleteDescriptionCmd = &cobra.Command{
+	Use:   "a-status_delete-description",
+	Short: "binder.AStatus_deleteDescription()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		description, _ := cmd.Flags().GetString("description")
+		binder.AStatus_deleteDescription(description)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var binderAStatus_fromServiceSpecificErrorCmd = &cobra.Command{
+	Use:   "a-status_from-service-specific-error",
+	Short: "binder.AStatus_fromServiceSpecificError()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		serviceSpecific, _ := cmd.Flags().GetInt32("service-specific")
+		result := binder.AStatus_fromServiceSpecificError(serviceSpecific)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var binderAStatus_fromServiceSpecificErrorWithMessageCmd = &cobra.Command{
+	Use:   "a-status_from-service-specific-error-with-message",
+	Short: "binder.AStatus_fromServiceSpecificErrorWithMessage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		serviceSpecific, _ := cmd.Flags().GetInt32("service-specific")
+		message, _ := cmd.Flags().GetString("message")
+		result := binder.AStatus_fromServiceSpecificErrorWithMessage(serviceSpecific, message)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var binderAStatus_newOkCmd = &cobra.Command{
+	Use:   "a-status_new-ok",
+	Short: "binder.AStatus_newOk()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		result := binder.AStatus_newOk()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var binderBinderDebugGetRefCountCmd = &cobra.Command{
+	Use:   "debug-get-ref-count",
+	Short: "Binder.DebugGetRefCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderBinderGetClassCmd = &cobra.Command{
+	Use:   "get-class",
+	Short: "Binder.GetClass()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderBinderGetUserDataCmd = &cobra.Command{
+	Use:   "get-user-data",
+	Short: "Binder.GetUserData()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderBinderIncStrongCmd = &cobra.Command{
+	Use:   "inc-strong",
+	Short: "Binder.IncStrong()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderBinderIsAliveCmd = &cobra.Command{
+	Use:   "is-alive",
+	Short: "Binder.IsAlive()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderBinderIsRemoteCmd = &cobra.Command{
+	Use:   "is-remote",
+	Short: "Binder.IsRemote()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderClassDisableInterfaceTokenHeaderCmd = &cobra.Command{
+	Use:   "disable-interface-token-header",
+	Short: "Class.DisableInterfaceTokenHeader()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderClassGetDescriptorCmd = &cobra.Command{
+	Use:   "get-descriptor",
+	Short: "Class.GetDescriptor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
 }
 
 var binderErrorErrorCmd = &cobra.Command{
@@ -27,8 +179,134 @@ var binderErrorErrorCmd = &cobra.Command{
 	},
 }
 
+var binderIBinder_WeakCloneCmd = &cobra.Command{
+	Use:   "clone",
+	Short: "IBinder_Weak.Clone()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderIBinder_WeakPromoteCmd = &cobra.Command{
+	Use:   "promote",
+	Short: "IBinder_Weak.Promote()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderParcelNewCmd = &cobra.Command{
+	Use:   "new",
+	Short: "Create Parcel",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := binder.NewParcel()
+		defer obj.Close()
+		fmt.Println("created successfully")
+		return nil
+	},
+}
+
+var binderParcelGetDataPositionCmd = &cobra.Command{
+	Use:   "get-data-position",
+	Short: "Parcel.GetDataPosition()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := binder.NewParcel()
+		defer obj.Close()
+		err := obj.GetDataPosition()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var binderParcelGetDataSizeCmd = &cobra.Command{
+	Use:   "get-data-size",
+	Short: "Parcel.GetDataSize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := binder.NewParcel()
+		defer obj.Close()
+		err := obj.GetDataSize()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var binderStatusGetDescriptionCmd = &cobra.Command{
+	Use:   "get-description",
+	Short: "Status.GetDescription()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderStatusGetMessageCmd = &cobra.Command{
+	Use:   "get-message",
+	Short: "Status.GetMessage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderStatusGetServiceSpecificErrorCmd = &cobra.Command{
+	Use:   "get-service-specific-error",
+	Short: "Status.GetServiceSpecificError()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var binderStatusIsOkCmd = &cobra.Command{
+	Use:   "is-ok",
+	Short: "Status.IsOk()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 func init() {
+	binderAStatus_deleteDescriptionCmd.Flags().String("description", "", "description")
+	binderAStatus_fromServiceSpecificErrorCmd.Flags().Int32("service-specific", 0, "serviceSpecific")
+	binderAStatus_fromServiceSpecificErrorWithMessageCmd.Flags().Int32("service-specific", 0, "serviceSpecific")
+	binderAStatus_fromServiceSpecificErrorWithMessageCmd.Flags().String("message", "", "message")
+	binderCmd.AddCommand(binderBinderCmd)
+	binderCmd.AddCommand(binderClassCmd)
 	binderCmd.AddCommand(binderErrorCmd)
+	binderCmd.AddCommand(binderIBinder_WeakCmd)
+	binderCmd.AddCommand(binderParcelCmd)
+	binderCmd.AddCommand(binderStatusCmd)
+	binderCmd.AddCommand(binderAIBinder_isHandlingTransactionCmd)
+	binderCmd.AddCommand(binderAStatus_deleteDescriptionCmd)
+	binderCmd.AddCommand(binderAStatus_fromServiceSpecificErrorCmd)
+	binderCmd.AddCommand(binderAStatus_fromServiceSpecificErrorWithMessageCmd)
+	binderCmd.AddCommand(binderAStatus_newOkCmd)
+	binderBinderCmd.AddCommand(binderBinderDebugGetRefCountCmd)
+	binderBinderCmd.AddCommand(binderBinderGetClassCmd)
+	binderBinderCmd.AddCommand(binderBinderGetUserDataCmd)
+	binderBinderCmd.AddCommand(binderBinderIncStrongCmd)
+	binderBinderCmd.AddCommand(binderBinderIsAliveCmd)
+	binderBinderCmd.AddCommand(binderBinderIsRemoteCmd)
+	binderClassCmd.AddCommand(binderClassDisableInterfaceTokenHeaderCmd)
+	binderClassCmd.AddCommand(binderClassGetDescriptorCmd)
 	binderErrorCmd.AddCommand(binderErrorErrorCmd)
+	binderIBinder_WeakCmd.AddCommand(binderIBinder_WeakCloneCmd)
+	binderIBinder_WeakCmd.AddCommand(binderIBinder_WeakPromoteCmd)
+	binderParcelCmd.AddCommand(binderParcelNewCmd)
+	binderParcelCmd.AddCommand(binderParcelGetDataPositionCmd)
+	binderParcelCmd.AddCommand(binderParcelGetDataSizeCmd)
+	binderStatusCmd.AddCommand(binderStatusGetDescriptionCmd)
+	binderStatusCmd.AddCommand(binderStatusGetMessageCmd)
+	binderStatusCmd.AddCommand(binderStatusGetServiceSpecificErrorCmd)
+	binderStatusCmd.AddCommand(binderStatusIsOkCmd)
 	rootCmd.AddCommand(binderCmd)
 }

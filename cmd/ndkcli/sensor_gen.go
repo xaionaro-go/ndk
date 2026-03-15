@@ -19,6 +19,11 @@ var sensorErrorCmd = &cobra.Command{
 	Short: "Error operations",
 }
 
+var sensorEventQueueCmd = &cobra.Command{
+	Use:   "event-queue",
+	Short: "EventQueue operations",
+}
+
 var sensorManagerCmd = &cobra.Command{
 	Use:   "manager",
 	Short: "Manager operations",
@@ -39,9 +44,29 @@ var sensorTypeCmd = &cobra.Command{
 	Short: "Type operations",
 }
 
+var sensorASensorManager_getInstanceForPackageCmd = &cobra.Command{
+	Use:   "a-sensor-manager_get-instance-for-package",
+	Short: "sensor.ASensorManager_getInstanceForPackage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		packageName, _ := cmd.Flags().GetString("package-name")
+		result := sensor.ASensorManager_getInstanceForPackage(packageName)
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var sensorErrorErrorCmd = &cobra.Command{
 	Use:   "error",
 	Short: "Error.Error()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var sensorEventQueueRequestAdditionalInfoEventsCmd = &cobra.Command{
+	Use:   "request-additional-info-events",
+	Short: "EventQueue.RequestAdditionalInfoEvents()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -58,6 +83,34 @@ var sensorManagerNewCmd = &cobra.Command{
 	},
 }
 
+var sensorManagerCreateSharedMemoryDirectChannelCmd = &cobra.Command{
+	Use:   "create-shared-memory-direct-channel",
+	Short: "Manager.CreateSharedMemoryDirectChannel()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := sensor.GetInstance()
+		fd, _ := cmd.Flags().GetInt32("fd")
+		size, _ := cmd.Flags().GetUint64("size")
+		err := obj.CreateSharedMemoryDirectChannel(fd, size)
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var sensorManagerDestroyDirectChannelCmd = &cobra.Command{
+	Use:   "destroy-direct-channel",
+	Short: "Manager.DestroyDirectChannel()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := sensor.GetInstance()
+		channelID, _ := cmd.Flags().GetInt32("channel-id")
+		obj.DestroyDirectChannel(channelID)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 var sensorManagerDefaultSensorCmd = &cobra.Command{
 	Use:   "default-sensor",
 	Short: "Manager.DefaultSensor()",
@@ -66,6 +119,55 @@ var sensorManagerDefaultSensorCmd = &cobra.Command{
 		_type, _ := cmd.Flags().GetInt32("_type")
 		result := obj.DefaultSensor(_type)
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var sensorManagerGetDefaultSensorExCmd = &cobra.Command{
+	Use:   "get-default-sensor-ex",
+	Short: "Manager.GetDefaultSensorEx()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := sensor.GetInstance()
+		_type, _ := cmd.Flags().GetInt32("_type")
+		wakeUp, _ := cmd.Flags().GetBool("wake-up")
+		result := obj.GetDefaultSensorEx(_type, wakeUp)
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var sensorSensorGetFifoMaxEventCountCmd = &cobra.Command{
+	Use:   "get-fifo-max-event-count",
+	Short: "Sensor.GetFifoMaxEventCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var sensorSensorGetFifoReservedEventCountCmd = &cobra.Command{
+	Use:   "get-fifo-reserved-event-count",
+	Short: "Sensor.GetFifoReservedEventCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var sensorSensorGetHandleCmd = &cobra.Command{
+	Use:   "get-handle",
+	Short: "Sensor.GetHandle()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var sensorSensorGetHighestDirectReportRateLevelCmd = &cobra.Command{
+	Use:   "get-highest-direct-report-rate-level",
+	Short: "Sensor.GetHighestDirectReportRateLevel()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
 	},
 }
@@ -88,9 +190,27 @@ var sensorSensorNameCmd = &cobra.Command{
 	},
 }
 
+var sensorSensorGetReportingModeCmd = &cobra.Command{
+	Use:   "get-reporting-mode",
+	Short: "Sensor.GetReportingMode()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var sensorSensorResolutionCmd = &cobra.Command{
 	Use:   "resolution",
 	Short: "Sensor.Resolution()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var sensorSensorGetStringTypeCmd = &cobra.Command{
+	Use:   "get-string-type",
+	Short: "Sensor.GetStringType()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -109,6 +229,24 @@ var sensorSensorTypeCmd = &cobra.Command{
 var sensorSensorVendorCmd = &cobra.Command{
 	Use:   "vendor",
 	Short: "Sensor.Vendor()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var sensorSensorIsDirectChannelTypeSupportedCmd = &cobra.Command{
+	Use:   "is-direct-channel-type-supported",
+	Short: "Sensor.IsDirectChannelTypeSupported()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var sensorSensorIsWakeUpSensorCmd = &cobra.Command{
+	Use:   "is-wake-up-sensor",
+	Short: "Sensor.IsWakeUpSensor()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -134,20 +272,40 @@ var sensorTypeStringCmd = &cobra.Command{
 }
 
 func init() {
+	sensorASensorManager_getInstanceForPackageCmd.Flags().String("package-name", "", "packageName")
+	sensorManagerCreateSharedMemoryDirectChannelCmd.Flags().Int32("fd", 0, "fd")
+	sensorManagerCreateSharedMemoryDirectChannelCmd.Flags().Uint64("size", 0, "size")
+	sensorManagerDestroyDirectChannelCmd.Flags().Int32("channel-id", 0, "channelID")
 	sensorManagerDefaultSensorCmd.Flags().Int32("_type", 0, "_type")
+	sensorManagerGetDefaultSensorExCmd.Flags().Int32("_type", 0, "_type")
+	sensorManagerGetDefaultSensorExCmd.Flags().Bool("wake-up", false, "wakeUp")
 	sensorCmd.AddCommand(sensorErrorCmd)
+	sensorCmd.AddCommand(sensorEventQueueCmd)
 	sensorCmd.AddCommand(sensorManagerCmd)
 	sensorCmd.AddCommand(sensorSensorCmd)
 	sensorCmd.AddCommand(sensorStatusCmd)
 	sensorCmd.AddCommand(sensorTypeCmd)
+	sensorCmd.AddCommand(sensorASensorManager_getInstanceForPackageCmd)
 	sensorErrorCmd.AddCommand(sensorErrorErrorCmd)
+	sensorEventQueueCmd.AddCommand(sensorEventQueueRequestAdditionalInfoEventsCmd)
 	sensorManagerCmd.AddCommand(sensorManagerNewCmd)
+	sensorManagerCmd.AddCommand(sensorManagerCreateSharedMemoryDirectChannelCmd)
+	sensorManagerCmd.AddCommand(sensorManagerDestroyDirectChannelCmd)
 	sensorManagerCmd.AddCommand(sensorManagerDefaultSensorCmd)
+	sensorManagerCmd.AddCommand(sensorManagerGetDefaultSensorExCmd)
+	sensorSensorCmd.AddCommand(sensorSensorGetFifoMaxEventCountCmd)
+	sensorSensorCmd.AddCommand(sensorSensorGetFifoReservedEventCountCmd)
+	sensorSensorCmd.AddCommand(sensorSensorGetHandleCmd)
+	sensorSensorCmd.AddCommand(sensorSensorGetHighestDirectReportRateLevelCmd)
 	sensorSensorCmd.AddCommand(sensorSensorMinDelayCmd)
 	sensorSensorCmd.AddCommand(sensorSensorNameCmd)
+	sensorSensorCmd.AddCommand(sensorSensorGetReportingModeCmd)
 	sensorSensorCmd.AddCommand(sensorSensorResolutionCmd)
+	sensorSensorCmd.AddCommand(sensorSensorGetStringTypeCmd)
 	sensorSensorCmd.AddCommand(sensorSensorTypeCmd)
 	sensorSensorCmd.AddCommand(sensorSensorVendorCmd)
+	sensorSensorCmd.AddCommand(sensorSensorIsDirectChannelTypeSupportedCmd)
+	sensorSensorCmd.AddCommand(sensorSensorIsWakeUpSensorCmd)
 	sensorStatusCmd.AddCommand(sensorStatusStringCmd)
 	sensorTypeCmd.AddCommand(sensorTypeStringCmd)
 	rootCmd.AddCommand(sensorCmd)

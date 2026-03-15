@@ -37,6 +37,24 @@ var hwbufBufferAcquireCmd = &cobra.Command{
 	},
 }
 
+var hwbufBufferGetIDCmd = &cobra.Command{
+	Use:   "get-id",
+	Short: "Buffer.GetID()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var hwbufBufferSendHandleToUnixSocketCmd = &cobra.Command{
+	Use:   "send-handle-to-unix-socket",
+	Short: "Buffer.SendHandleToUnixSocket()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var hwbufBufferUnlockCmd = &cobra.Command{
 	Use:   "unlock",
 	Short: "Buffer.Unlock()",
@@ -69,6 +87,8 @@ func init() {
 	hwbufCmd.AddCommand(hwbufErrorCmd)
 	hwbufCmd.AddCommand(hwbufFormatCmd)
 	hwbufBufferCmd.AddCommand(hwbufBufferAcquireCmd)
+	hwbufBufferCmd.AddCommand(hwbufBufferGetIDCmd)
+	hwbufBufferCmd.AddCommand(hwbufBufferSendHandleToUnixSocketCmd)
 	hwbufBufferCmd.AddCommand(hwbufBufferUnlockCmd)
 	hwbufErrorCmd.AddCommand(hwbufErrorErrorCmd)
 	hwbufFormatCmd.AddCommand(hwbufFormatStringCmd)

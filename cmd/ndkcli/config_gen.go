@@ -60,6 +60,51 @@ var configConfigDensityCmd = &cobra.Command{
 	},
 }
 
+var configConfigGetGrammaticalGenderCmd = &cobra.Command{
+	Use:   "get-grammatical-gender",
+	Short: "Config.GetGrammaticalGender()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetGrammaticalGender()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetKeyboardCmd = &cobra.Command{
+	Use:   "get-keyboard",
+	Short: "Config.GetKeyboard()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetKeyboard()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetKeysHiddenCmd = &cobra.Command{
+	Use:   "get-keys-hidden",
+	Short: "Config.GetKeysHidden()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetKeysHidden()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 var configConfigLanguageCmd = &cobra.Command{
 	Use:   "language",
 	Short: "Config.Language()",
@@ -68,6 +113,81 @@ var configConfigLanguageCmd = &cobra.Command{
 		defer obj.Close()
 		outLanguage, _ := cmd.Flags().GetString("out-language")
 		obj.Language(outLanguage)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetLayoutDirectionCmd = &cobra.Command{
+	Use:   "get-layout-direction",
+	Short: "Config.GetLayoutDirection()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetLayoutDirection()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetMccCmd = &cobra.Command{
+	Use:   "get-mcc",
+	Short: "Config.GetMcc()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetMcc()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetMncCmd = &cobra.Command{
+	Use:   "get-mnc",
+	Short: "Config.GetMnc()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetMnc()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetNavHiddenCmd = &cobra.Command{
+	Use:   "get-nav-hidden",
+	Short: "Config.GetNavHidden()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetNavHidden()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetNavigationCmd = &cobra.Command{
+	Use:   "get-navigation",
+	Short: "Config.GetNavigation()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetNavigation()
+		if err != nil {
+			return err
+		}
 		fmt.Println("ok")
 		return nil
 	},
@@ -93,6 +213,36 @@ var configConfigScreenHeightDpCmd = &cobra.Command{
 		defer obj.Close()
 		result := obj.ScreenHeightDp()
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var configConfigGetScreenLongCmd = &cobra.Command{
+	Use:   "get-screen-long",
+	Short: "Config.GetScreenLong()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetScreenLong()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetScreenRoundCmd = &cobra.Command{
+	Use:   "get-screen-round",
+	Short: "Config.GetScreenRound()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetScreenRound()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -133,6 +283,339 @@ var configConfigSdkVersionCmd = &cobra.Command{
 	},
 }
 
+var configConfigGetSmallestScreenWidthDpCmd = &cobra.Command{
+	Use:   "get-smallest-screen-width-dp",
+	Short: "Config.GetSmallestScreenWidthDp()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetSmallestScreenWidthDp()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetTouchscreenCmd = &cobra.Command{
+	Use:   "get-touchscreen",
+	Short: "Config.GetTouchscreen()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetTouchscreen()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetUiModeNightCmd = &cobra.Command{
+	Use:   "get-ui-mode-night",
+	Short: "Config.GetUiModeNight()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetUiModeNight()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigGetUiModeTypeCmd = &cobra.Command{
+	Use:   "get-ui-mode-type",
+	Short: "Config.GetUiModeType()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		err := obj.GetUiModeType()
+		if err != nil {
+			return err
+		}
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetCountryCmd = &cobra.Command{
+	Use:   "set-country",
+	Short: "Config.SetCountry()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		country, _ := cmd.Flags().GetString("country")
+		obj.SetCountry(country)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetDensityCmd = &cobra.Command{
+	Use:   "set-density",
+	Short: "Config.SetDensity()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		density, _ := cmd.Flags().GetInt32("density")
+		obj.SetDensity(density)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetGrammaticalGenderCmd = &cobra.Command{
+	Use:   "set-grammatical-gender",
+	Short: "Config.SetGrammaticalGender()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		value, _ := cmd.Flags().GetInt32("value")
+		obj.SetGrammaticalGender(value)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetKeyboardCmd = &cobra.Command{
+	Use:   "set-keyboard",
+	Short: "Config.SetKeyboard()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		keyboard, _ := cmd.Flags().GetInt32("keyboard")
+		obj.SetKeyboard(keyboard)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetKeysHiddenCmd = &cobra.Command{
+	Use:   "set-keys-hidden",
+	Short: "Config.SetKeysHidden()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		keysHidden, _ := cmd.Flags().GetInt32("keys-hidden")
+		obj.SetKeysHidden(keysHidden)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetLanguageCmd = &cobra.Command{
+	Use:   "set-language",
+	Short: "Config.SetLanguage()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		language, _ := cmd.Flags().GetString("language")
+		obj.SetLanguage(language)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetLayoutDirectionCmd = &cobra.Command{
+	Use:   "set-layout-direction",
+	Short: "Config.SetLayoutDirection()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		value, _ := cmd.Flags().GetInt32("value")
+		obj.SetLayoutDirection(value)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetMccCmd = &cobra.Command{
+	Use:   "set-mcc",
+	Short: "Config.SetMcc()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		mcc, _ := cmd.Flags().GetInt32("mcc")
+		obj.SetMcc(mcc)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetMncCmd = &cobra.Command{
+	Use:   "set-mnc",
+	Short: "Config.SetMnc()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		mnc, _ := cmd.Flags().GetInt32("mnc")
+		obj.SetMnc(mnc)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetNavHiddenCmd = &cobra.Command{
+	Use:   "set-nav-hidden",
+	Short: "Config.SetNavHidden()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		navHidden, _ := cmd.Flags().GetInt32("nav-hidden")
+		obj.SetNavHidden(navHidden)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetNavigationCmd = &cobra.Command{
+	Use:   "set-navigation",
+	Short: "Config.SetNavigation()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		navigation, _ := cmd.Flags().GetInt32("navigation")
+		obj.SetNavigation(navigation)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetOrientationCmd = &cobra.Command{
+	Use:   "set-orientation",
+	Short: "Config.SetOrientation()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		orientation, _ := cmd.Flags().GetInt32("orientation")
+		obj.SetOrientation(orientation)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetScreenHeightDpCmd = &cobra.Command{
+	Use:   "set-screen-height-dp",
+	Short: "Config.SetScreenHeightDp()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		value, _ := cmd.Flags().GetInt32("value")
+		obj.SetScreenHeightDp(value)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetScreenLongCmd = &cobra.Command{
+	Use:   "set-screen-long",
+	Short: "Config.SetScreenLong()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		screenLong, _ := cmd.Flags().GetInt32("screen-long")
+		obj.SetScreenLong(screenLong)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetScreenSizeCmd = &cobra.Command{
+	Use:   "set-screen-size",
+	Short: "Config.SetScreenSize()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		screenSize, _ := cmd.Flags().GetInt32("screen-size")
+		obj.SetScreenSize(screenSize)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetScreenWidthDpCmd = &cobra.Command{
+	Use:   "set-screen-width-dp",
+	Short: "Config.SetScreenWidthDp()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		value, _ := cmd.Flags().GetInt32("value")
+		obj.SetScreenWidthDp(value)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetSdkVersionCmd = &cobra.Command{
+	Use:   "set-sdk-version",
+	Short: "Config.SetSdkVersion()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		sdkVersion, _ := cmd.Flags().GetInt32("sdk-version")
+		obj.SetSdkVersion(sdkVersion)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetSmallestScreenWidthDpCmd = &cobra.Command{
+	Use:   "set-smallest-screen-width-dp",
+	Short: "Config.SetSmallestScreenWidthDp()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		value, _ := cmd.Flags().GetInt32("value")
+		obj.SetSmallestScreenWidthDp(value)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetTouchscreenCmd = &cobra.Command{
+	Use:   "set-touchscreen",
+	Short: "Config.SetTouchscreen()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		touchscreen, _ := cmd.Flags().GetInt32("touchscreen")
+		obj.SetTouchscreen(touchscreen)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetUiModeNightCmd = &cobra.Command{
+	Use:   "set-ui-mode-night",
+	Short: "Config.SetUiModeNight()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		uiModeNight, _ := cmd.Flags().GetInt32("ui-mode-night")
+		obj.SetUiModeNight(uiModeNight)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var configConfigSetUiModeTypeCmd = &cobra.Command{
+	Use:   "set-ui-mode-type",
+	Short: "Config.SetUiModeType()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := config.NewConfig()
+		defer obj.Close()
+		uiModeType, _ := cmd.Flags().GetInt32("ui-mode-type")
+		obj.SetUiModeType(uiModeType)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 var configErrorErrorCmd = &cobra.Command{
 	Use:   "error",
 	Short: "Error.Error()",
@@ -145,17 +628,73 @@ var configErrorErrorCmd = &cobra.Command{
 func init() {
 	configConfigCountryCmd.Flags().String("out-country", "", "outCountry")
 	configConfigLanguageCmd.Flags().String("out-language", "", "outLanguage")
+	configConfigSetCountryCmd.Flags().String("country", "", "country")
+	configConfigSetDensityCmd.Flags().Int32("density", 0, "density")
+	configConfigSetGrammaticalGenderCmd.Flags().Int32("value", 0, "value")
+	configConfigSetKeyboardCmd.Flags().Int32("keyboard", 0, "keyboard")
+	configConfigSetKeysHiddenCmd.Flags().Int32("keys-hidden", 0, "keysHidden")
+	configConfigSetLanguageCmd.Flags().String("language", "", "language")
+	configConfigSetLayoutDirectionCmd.Flags().Int32("value", 0, "value")
+	configConfigSetMccCmd.Flags().Int32("mcc", 0, "mcc")
+	configConfigSetMncCmd.Flags().Int32("mnc", 0, "mnc")
+	configConfigSetNavHiddenCmd.Flags().Int32("nav-hidden", 0, "navHidden")
+	configConfigSetNavigationCmd.Flags().Int32("navigation", 0, "navigation")
+	configConfigSetOrientationCmd.Flags().Int32("orientation", 0, "orientation")
+	configConfigSetScreenHeightDpCmd.Flags().Int32("value", 0, "value")
+	configConfigSetScreenLongCmd.Flags().Int32("screen-long", 0, "screenLong")
+	configConfigSetScreenSizeCmd.Flags().Int32("screen-size", 0, "screenSize")
+	configConfigSetScreenWidthDpCmd.Flags().Int32("value", 0, "value")
+	configConfigSetSdkVersionCmd.Flags().Int32("sdk-version", 0, "sdkVersion")
+	configConfigSetSmallestScreenWidthDpCmd.Flags().Int32("value", 0, "value")
+	configConfigSetTouchscreenCmd.Flags().Int32("touchscreen", 0, "touchscreen")
+	configConfigSetUiModeNightCmd.Flags().Int32("ui-mode-night", 0, "uiModeNight")
+	configConfigSetUiModeTypeCmd.Flags().Int32("ui-mode-type", 0, "uiModeType")
 	configCmd.AddCommand(configConfigCmd)
 	configCmd.AddCommand(configErrorCmd)
 	configConfigCmd.AddCommand(configConfigNewCmd)
 	configConfigCmd.AddCommand(configConfigCountryCmd)
 	configConfigCmd.AddCommand(configConfigDensityCmd)
+	configConfigCmd.AddCommand(configConfigGetGrammaticalGenderCmd)
+	configConfigCmd.AddCommand(configConfigGetKeyboardCmd)
+	configConfigCmd.AddCommand(configConfigGetKeysHiddenCmd)
 	configConfigCmd.AddCommand(configConfigLanguageCmd)
+	configConfigCmd.AddCommand(configConfigGetLayoutDirectionCmd)
+	configConfigCmd.AddCommand(configConfigGetMccCmd)
+	configConfigCmd.AddCommand(configConfigGetMncCmd)
+	configConfigCmd.AddCommand(configConfigGetNavHiddenCmd)
+	configConfigCmd.AddCommand(configConfigGetNavigationCmd)
 	configConfigCmd.AddCommand(configConfigOrientationCmd)
 	configConfigCmd.AddCommand(configConfigScreenHeightDpCmd)
+	configConfigCmd.AddCommand(configConfigGetScreenLongCmd)
+	configConfigCmd.AddCommand(configConfigGetScreenRoundCmd)
 	configConfigCmd.AddCommand(configConfigScreenSizeCmd)
 	configConfigCmd.AddCommand(configConfigScreenWidthDpCmd)
 	configConfigCmd.AddCommand(configConfigSdkVersionCmd)
+	configConfigCmd.AddCommand(configConfigGetSmallestScreenWidthDpCmd)
+	configConfigCmd.AddCommand(configConfigGetTouchscreenCmd)
+	configConfigCmd.AddCommand(configConfigGetUiModeNightCmd)
+	configConfigCmd.AddCommand(configConfigGetUiModeTypeCmd)
+	configConfigCmd.AddCommand(configConfigSetCountryCmd)
+	configConfigCmd.AddCommand(configConfigSetDensityCmd)
+	configConfigCmd.AddCommand(configConfigSetGrammaticalGenderCmd)
+	configConfigCmd.AddCommand(configConfigSetKeyboardCmd)
+	configConfigCmd.AddCommand(configConfigSetKeysHiddenCmd)
+	configConfigCmd.AddCommand(configConfigSetLanguageCmd)
+	configConfigCmd.AddCommand(configConfigSetLayoutDirectionCmd)
+	configConfigCmd.AddCommand(configConfigSetMccCmd)
+	configConfigCmd.AddCommand(configConfigSetMncCmd)
+	configConfigCmd.AddCommand(configConfigSetNavHiddenCmd)
+	configConfigCmd.AddCommand(configConfigSetNavigationCmd)
+	configConfigCmd.AddCommand(configConfigSetOrientationCmd)
+	configConfigCmd.AddCommand(configConfigSetScreenHeightDpCmd)
+	configConfigCmd.AddCommand(configConfigSetScreenLongCmd)
+	configConfigCmd.AddCommand(configConfigSetScreenSizeCmd)
+	configConfigCmd.AddCommand(configConfigSetScreenWidthDpCmd)
+	configConfigCmd.AddCommand(configConfigSetSdkVersionCmd)
+	configConfigCmd.AddCommand(configConfigSetSmallestScreenWidthDpCmd)
+	configConfigCmd.AddCommand(configConfigSetTouchscreenCmd)
+	configConfigCmd.AddCommand(configConfigSetUiModeNightCmd)
+	configConfigCmd.AddCommand(configConfigSetUiModeTypeCmd)
 	configErrorCmd.AddCommand(configErrorErrorCmd)
 	rootCmd.AddCommand(configCmd)
 }

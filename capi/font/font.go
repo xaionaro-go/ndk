@@ -6,6 +6,7 @@ package font
 #cgo LDFLAGS: -landroid
 #include "android/font.h"
 #include "android/font_matcher.h"
+#include "android/system_fonts.h"
 #include <stdlib.h>
 #include "cgo_helpers.h"
 */
@@ -143,5 +144,25 @@ func AFont_isItalic(font *AFont) bool {
 	__ret := C.AFont_isItalic(cfont)
 	runtime.KeepAlive(cfontAllocMap)
 	__v := (bool)(__ret)
+	return __v
+}
+
+func ASystemFontIterator_close(iterator *ASystemFontIterator) {
+	citerator, citeratorAllocMap := (*C.ASystemFontIterator)(unsafe.Pointer(iterator)), cgoAllocsUnknown
+	C.ASystemFontIterator_close(citerator)
+	runtime.KeepAlive(citeratorAllocMap)
+}
+
+func ASystemFontIterator_next(iterator *ASystemFontIterator) *AFont {
+	citerator, citeratorAllocMap := (*C.ASystemFontIterator)(unsafe.Pointer(iterator)), cgoAllocsUnknown
+	__ret := C.ASystemFontIterator_next(citerator)
+	runtime.KeepAlive(citeratorAllocMap)
+	__v := (*AFont)(unsafe.Pointer(__ret))
+	return __v
+}
+
+func ASystemFontIterator_open() *ASystemFontIterator {
+	__ret := C.ASystemFontIterator_open()
+	__v := (*ASystemFontIterator)(unsafe.Pointer(__ret))
 	return __v
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/xaionaro-go/ndk/hint"
 )
 
 var hintCmd = &cobra.Command{
@@ -21,6 +22,26 @@ var hintErrorCmd = &cobra.Command{
 var hintManagerCmd = &cobra.Command{
 	Use:   "manager",
 	Short: "Manager operations",
+}
+
+var hintSessionCmd = &cobra.Command{
+	Use:   "session",
+	Short: "Session operations",
+}
+
+var hintWorkDurationCmd = &cobra.Command{
+	Use:   "work-duration",
+	Short: "WorkDuration operations",
+}
+
+var hintAPerformanceHint_getManagerCmd = &cobra.Command{
+	Use:   "a-performance-hint_get-manager",
+	Short: "hint.APerformanceHint_getManager()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		result := hint.APerformanceHint_getManager()
+		fmt.Println(result)
+		return nil
+	},
 }
 
 var hintErrorErrorCmd = &cobra.Command{
@@ -41,10 +62,95 @@ var hintManagerPreferredUpdateRateNanosCmd = &cobra.Command{
 	},
 }
 
+var hintSessionAPerformanceHint_setPreferPowerEfficiencyCmd = &cobra.Command{
+	Use:   "a-performance-hint_set-prefer-power-efficiency",
+	Short: "Session.APerformanceHint_setPreferPowerEfficiency()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var hintWorkDurationNewCmd = &cobra.Command{
+	Use:   "new",
+	Short: "Create WorkDuration",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := hint.NewWorkDuration()
+		defer obj.Close()
+		fmt.Println("created successfully")
+		return nil
+	},
+}
+
+var hintWorkDurationSetActualCpuDurationNanosCmd = &cobra.Command{
+	Use:   "set-actual-cpu-duration-nanos",
+	Short: "WorkDuration.SetActualCpuDurationNanos()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := hint.NewWorkDuration()
+		defer obj.Close()
+		actualCpuDurationNanos, _ := cmd.Flags().GetInt64("actual-cpu-duration-nanos")
+		obj.SetActualCpuDurationNanos(actualCpuDurationNanos)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var hintWorkDurationSetActualGpuDurationNanosCmd = &cobra.Command{
+	Use:   "set-actual-gpu-duration-nanos",
+	Short: "WorkDuration.SetActualGpuDurationNanos()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := hint.NewWorkDuration()
+		defer obj.Close()
+		actualGpuDurationNanos, _ := cmd.Flags().GetInt64("actual-gpu-duration-nanos")
+		obj.SetActualGpuDurationNanos(actualGpuDurationNanos)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var hintWorkDurationSetActualTotalDurationNanosCmd = &cobra.Command{
+	Use:   "set-actual-total-duration-nanos",
+	Short: "WorkDuration.SetActualTotalDurationNanos()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := hint.NewWorkDuration()
+		defer obj.Close()
+		actualTotalDurationNanos, _ := cmd.Flags().GetInt64("actual-total-duration-nanos")
+		obj.SetActualTotalDurationNanos(actualTotalDurationNanos)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var hintWorkDurationSetWorkPeriodStartTimestampNanosCmd = &cobra.Command{
+	Use:   "set-work-period-start-timestamp-nanos",
+	Short: "WorkDuration.SetWorkPeriodStartTimestampNanos()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := hint.NewWorkDuration()
+		defer obj.Close()
+		workPeriodStartTimestampNanos, _ := cmd.Flags().GetInt64("work-period-start-timestamp-nanos")
+		obj.SetWorkPeriodStartTimestampNanos(workPeriodStartTimestampNanos)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 func init() {
+	hintWorkDurationSetActualCpuDurationNanosCmd.Flags().Int64("actual-cpu-duration-nanos", 0, "actualCpuDurationNanos")
+	hintWorkDurationSetActualGpuDurationNanosCmd.Flags().Int64("actual-gpu-duration-nanos", 0, "actualGpuDurationNanos")
+	hintWorkDurationSetActualTotalDurationNanosCmd.Flags().Int64("actual-total-duration-nanos", 0, "actualTotalDurationNanos")
+	hintWorkDurationSetWorkPeriodStartTimestampNanosCmd.Flags().Int64("work-period-start-timestamp-nanos", 0, "workPeriodStartTimestampNanos")
 	hintCmd.AddCommand(hintErrorCmd)
 	hintCmd.AddCommand(hintManagerCmd)
+	hintCmd.AddCommand(hintSessionCmd)
+	hintCmd.AddCommand(hintWorkDurationCmd)
+	hintCmd.AddCommand(hintAPerformanceHint_getManagerCmd)
 	hintErrorCmd.AddCommand(hintErrorErrorCmd)
 	hintManagerCmd.AddCommand(hintManagerPreferredUpdateRateNanosCmd)
+	hintSessionCmd.AddCommand(hintSessionAPerformanceHint_setPreferPowerEfficiencyCmd)
+	hintWorkDurationCmd.AddCommand(hintWorkDurationNewCmd)
+	hintWorkDurationCmd.AddCommand(hintWorkDurationSetActualCpuDurationNanosCmd)
+	hintWorkDurationCmd.AddCommand(hintWorkDurationSetActualGpuDurationNanosCmd)
+	hintWorkDurationCmd.AddCommand(hintWorkDurationSetActualTotalDurationNanosCmd)
+	hintWorkDurationCmd.AddCommand(hintWorkDurationSetWorkPeriodStartTimestampNanosCmd)
 	rootCmd.AddCommand(hintCmd)
 }

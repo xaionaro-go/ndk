@@ -50,10 +50,41 @@ var fontMatchCmd = &cobra.Command{
 	},
 }
 
+var fontListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List system fonts using ASystemFontIterator",
+	RunE: func(cmd *cobra.Command, args []string) (_err error) {
+		iter := font.ASystemFontIterator_open()
+		if iter == nil || iter.Pointer() == nil {
+			return fmt.Errorf("ASystemFontIterator_open returned nil")
+		}
+		defer iter.Close()
+
+		count := 0
+		for {
+			f := iter.Next()
+			if f == nil || f.Pointer() == nil {
+				break
+			}
+			fmt.Printf("  [%d] weight=%d italic=%v path=%s\n",
+				count, f.Weight(), f.IsItalic(), f.GetFontFilePath())
+			f.Close()
+			count++
+			if count >= 20 {
+				fmt.Println("  ... (truncated)")
+				break
+			}
+		}
+		fmt.Printf("listed %d fonts\n", count)
+		return nil
+	},
+}
+
 func init() {
 	fontMatchCmd.Flags().String("family", "sans-serif", "font family name")
 	fontMatchCmd.Flags().Uint16("weight", uint16(font.Normal), "font weight (100-900)")
 	fontMatchCmd.Flags().Bool("italic", false, "request italic style")
 
 	fontCmd.AddCommand(fontMatchCmd)
+	fontCmd.AddCommand(fontListCmd)
 }

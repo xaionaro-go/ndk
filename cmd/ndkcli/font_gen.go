@@ -29,9 +29,78 @@ var fontMatcherCmd = &cobra.Command{
 	Short: "Matcher operations",
 }
 
+var fontSystemFontIteratorCmd = &cobra.Command{
+	Use:   "system-font-iterator",
+	Short: "SystemFontIterator operations",
+}
+
+var fontASystemFontIterator_openCmd = &cobra.Command{
+	Use:   "a-system-font-iterator_open",
+	Short: "font.ASystemFontIterator_open()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		result := font.ASystemFontIterator_open()
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var fontErrorErrorCmd = &cobra.Command{
 	Use:   "error",
 	Short: "Error.Error()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var fontFontGetAxisCountCmd = &cobra.Command{
+	Use:   "get-axis-count",
+	Short: "Font.GetAxisCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var fontFontGetAxisTagCmd = &cobra.Command{
+	Use:   "get-axis-tag",
+	Short: "Font.GetAxisTag()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var fontFontGetAxisValueCmd = &cobra.Command{
+	Use:   "get-axis-value",
+	Short: "Font.GetAxisValue()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var fontFontGetCollectionIndexCmd = &cobra.Command{
+	Use:   "get-collection-index",
+	Short: "Font.GetCollectionIndex()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var fontFontGetFontFilePathCmd = &cobra.Command{
+	Use:   "get-font-file-path",
+	Short: "Font.GetFontFilePath()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var fontFontGetLocaleCmd = &cobra.Command{
+	Use:   "get-locale",
+	Short: "Font.GetLocale()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -67,6 +136,32 @@ var fontMatcherNewCmd = &cobra.Command{
 	},
 }
 
+var fontMatcherSetFamilyVariantCmd = &cobra.Command{
+	Use:   "set-family-variant",
+	Short: "Matcher.SetFamilyVariant()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := font.NewMatcher()
+		defer obj.Close()
+		familyVariant, _ := cmd.Flags().GetUint32("family-variant")
+		obj.SetFamilyVariant(familyVariant)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var fontMatcherSetLocalesCmd = &cobra.Command{
+	Use:   "set-locales",
+	Short: "Matcher.SetLocales()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := font.NewMatcher()
+		defer obj.Close()
+		languageTags, _ := cmd.Flags().GetString("language-tags")
+		obj.SetLocales(languageTags)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 var fontMatcherSetStyleCmd = &cobra.Command{
 	Use:   "set-style",
 	Short: "Matcher.SetStyle()",
@@ -81,16 +176,38 @@ var fontMatcherSetStyleCmd = &cobra.Command{
 	},
 }
 
+var fontSystemFontIteratorNextCmd = &cobra.Command{
+	Use:   "next",
+	Short: "SystemFontIterator.Next()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 func init() {
+	fontMatcherSetFamilyVariantCmd.Flags().Uint32("family-variant", 0, "familyVariant")
+	fontMatcherSetLocalesCmd.Flags().String("language-tags", "", "languageTags")
 	fontMatcherSetStyleCmd.Flags().Int32("weight", 0, "weight")
 	fontMatcherSetStyleCmd.Flags().Bool("italic", false, "italic")
 	fontCmd.AddCommand(fontErrorCmd)
 	fontCmd.AddCommand(fontFontCmd)
 	fontCmd.AddCommand(fontMatcherCmd)
+	fontCmd.AddCommand(fontSystemFontIteratorCmd)
+	fontCmd.AddCommand(fontASystemFontIterator_openCmd)
 	fontErrorCmd.AddCommand(fontErrorErrorCmd)
+	fontFontCmd.AddCommand(fontFontGetAxisCountCmd)
+	fontFontCmd.AddCommand(fontFontGetAxisTagCmd)
+	fontFontCmd.AddCommand(fontFontGetAxisValueCmd)
+	fontFontCmd.AddCommand(fontFontGetCollectionIndexCmd)
+	fontFontCmd.AddCommand(fontFontGetFontFilePathCmd)
+	fontFontCmd.AddCommand(fontFontGetLocaleCmd)
 	fontFontCmd.AddCommand(fontFontWeightCmd)
 	fontFontCmd.AddCommand(fontFontIsItalicCmd)
 	fontMatcherCmd.AddCommand(fontMatcherNewCmd)
+	fontMatcherCmd.AddCommand(fontMatcherSetFamilyVariantCmd)
+	fontMatcherCmd.AddCommand(fontMatcherSetLocalesCmd)
 	fontMatcherCmd.AddCommand(fontMatcherSetStyleCmd)
+	fontSystemFontIteratorCmd.AddCommand(fontSystemFontIteratorNextCmd)
 	rootCmd.AddCommand(fontCmd)
 }

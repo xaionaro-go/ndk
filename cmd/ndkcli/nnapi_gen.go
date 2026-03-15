@@ -39,6 +39,36 @@ var nnapiModelCmd = &cobra.Command{
 	Short: "Model operations",
 }
 
+var nnapiANeuralNetworks_getDefaultLoopTimeoutCmd = &cobra.Command{
+	Use:   "a-neural-networks_get-default-loop-timeout",
+	Short: "nnapi.ANeuralNetworks_getDefaultLoopTimeout()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		result := nnapi.ANeuralNetworks_getDefaultLoopTimeout()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var nnapiANeuralNetworks_getMaximumLoopTimeoutCmd = &cobra.Command{
+	Use:   "a-neural-networks_get-maximum-loop-timeout",
+	Short: "nnapi.ANeuralNetworks_getMaximumLoopTimeout()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		result := nnapi.ANeuralNetworks_getMaximumLoopTimeout()
+		fmt.Println(result)
+		return nil
+	},
+}
+
+var nnapiANeuralNetworks_getRuntimeFeatureLevelCmd = &cobra.Command{
+	Use:   "a-neural-networks_get-runtime-feature-level",
+	Short: "nnapi.ANeuralNetworks_getRuntimeFeatureLevel()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		result := nnapi.ANeuralNetworks_getRuntimeFeatureLevel()
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var nnapiCompilationNewBurstCmd = &cobra.Command{
 	Use:   "new-burst",
 	Short: "Compilation.NewBurst()",
@@ -258,6 +288,9 @@ func init() {
 	nnapiCmd.AddCommand(nnapiEventCmd)
 	nnapiCmd.AddCommand(nnapiExecutionCmd)
 	nnapiCmd.AddCommand(nnapiModelCmd)
+	nnapiCmd.AddCommand(nnapiANeuralNetworks_getDefaultLoopTimeoutCmd)
+	nnapiCmd.AddCommand(nnapiANeuralNetworks_getMaximumLoopTimeoutCmd)
+	nnapiCmd.AddCommand(nnapiANeuralNetworks_getRuntimeFeatureLevelCmd)
 	nnapiCompilationCmd.AddCommand(nnapiCompilationNewBurstCmd)
 	nnapiCompilationCmd.AddCommand(nnapiCompilationFinishCmd)
 	nnapiCompilationCmd.AddCommand(nnapiCompilationSetPreferenceCmd)

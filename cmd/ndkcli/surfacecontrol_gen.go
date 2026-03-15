@@ -24,6 +24,11 @@ var surfacecontrolSurfaceControlCmd = &cobra.Command{
 	Short: "SurfaceControl operations",
 }
 
+var surfacecontrolSurfaceTransactionStatsCmd = &cobra.Command{
+	Use:   "surface-transaction-stats",
+	Short: "SurfaceTransactionStats operations",
+}
+
 var surfacecontrolTransactionCmd = &cobra.Command{
 	Use:   "transaction",
 	Short: "Transaction operations",
@@ -56,6 +61,24 @@ var surfacecontrolSurfaceControlCreateChildCmd = &cobra.Command{
 	},
 }
 
+var surfacecontrolSurfaceTransactionStatsGetLatchTimeCmd = &cobra.Command{
+	Use:   "get-latch-time",
+	Short: "SurfaceTransactionStats.GetLatchTime()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var surfacecontrolSurfaceTransactionStatsGetPresentFenceFdCmd = &cobra.Command{
+	Use:   "get-present-fence-fd",
+	Short: "SurfaceTransactionStats.GetPresentFenceFd()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var surfacecontrolTransactionNewCmd = &cobra.Command{
 	Use:   "new",
 	Short: "Create Transaction",
@@ -79,14 +102,32 @@ var surfacecontrolTransactionApplyCmd = &cobra.Command{
 	},
 }
 
+var surfacecontrolTransactionSetDesiredPresentTimeCmd = &cobra.Command{
+	Use:   "set-desired-present-time",
+	Short: "Transaction.SetDesiredPresentTime()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := surfacecontrol.NewTransaction()
+		defer obj.Close()
+		desiredPresentTime, _ := cmd.Flags().GetInt64("desired-present-time")
+		obj.SetDesiredPresentTime(desiredPresentTime)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 func init() {
+	surfacecontrolTransactionSetDesiredPresentTimeCmd.Flags().Int64("desired-present-time", 0, "desiredPresentTime")
 	surfacecontrolCmd.AddCommand(surfacecontrolErrorCmd)
 	surfacecontrolCmd.AddCommand(surfacecontrolSurfaceControlCmd)
+	surfacecontrolCmd.AddCommand(surfacecontrolSurfaceTransactionStatsCmd)
 	surfacecontrolCmd.AddCommand(surfacecontrolTransactionCmd)
 	surfacecontrolErrorCmd.AddCommand(surfacecontrolErrorErrorCmd)
 	surfacecontrolSurfaceControlCmd.AddCommand(surfacecontrolSurfaceControlAcquireCmd)
 	surfacecontrolSurfaceControlCmd.AddCommand(surfacecontrolSurfaceControlCreateChildCmd)
+	surfacecontrolSurfaceTransactionStatsCmd.AddCommand(surfacecontrolSurfaceTransactionStatsGetLatchTimeCmd)
+	surfacecontrolSurfaceTransactionStatsCmd.AddCommand(surfacecontrolSurfaceTransactionStatsGetPresentFenceFdCmd)
 	surfacecontrolTransactionCmd.AddCommand(surfacecontrolTransactionNewCmd)
 	surfacecontrolTransactionCmd.AddCommand(surfacecontrolTransactionApplyCmd)
+	surfacecontrolTransactionCmd.AddCommand(surfacecontrolTransactionSetDesiredPresentTimeCmd)
 	rootCmd.AddCommand(surfacecontrolCmd)
 }

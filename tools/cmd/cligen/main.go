@@ -694,10 +694,13 @@ func genParamCode(
 		regMethod := flagRegister(resolved)
 		defVal := flagDefault(resolved)
 
-		if regMethod != "" {
-			flagRegs = append(flagRegs, fmt.Sprintf("\t%s.Flags().%s(%q, %s, %q)\n",
-				cmdVar, regMethod, flagName, defVal, p.name))
+		// Skip params with unsupported types (no CLI flag possible).
+		if getter == "" || regMethod == "" {
+			continue
 		}
+
+		flagRegs = append(flagRegs, fmt.Sprintf("\t%s.Flags().%s(%q, %s, %q)\n",
+			cmdVar, regMethod, flagName, defVal, p.name))
 
 		// The flag getter may return a different type than the param
 		// (e.g., uint16 → GetInt32 returns int32). Determine if we
@@ -792,7 +795,11 @@ func genMethodBody(
 	var body bytes.Buffer
 	var allFlagRegs []string
 
-	// Constructor params.
+	// Constructor params. If constructor has non-CLI-compatible params,
+	// treat the type as requiring external context.
+	if ti.constructor != nil && !isCLICompatible(*ti.constructor, aliases) {
+		ti = &typeInfo{name: ti.name} // no usable constructor
+	}
 	if ti.constructor != nil {
 		ctorFlagRegs, ctorBody, ctorCallArgs := genParamCode(ti.constructor.params, cmdVar, "ctor", aliases, pkgRef)
 		allFlagRegs = append(allFlagRegs, ctorFlagRegs...)

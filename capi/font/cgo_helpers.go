@@ -6,6 +6,7 @@ package font
 #cgo LDFLAGS: -landroid
 #include "android/font.h"
 #include "android/font_matcher.h"
+#include "android/system_fonts.h"
 #include <stdlib.h>
 #include "cgo_helpers.h"
 */

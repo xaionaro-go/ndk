@@ -61,6 +61,19 @@ var thermalManagerCurrentStatusCmd = &cobra.Command{
 	},
 }
 
+var thermalManagerAThermal_getThermalHeadroomCmd = &cobra.Command{
+	Use:   "a-thermal_get-thermal-headroom",
+	Short: "Manager.AThermal_getThermalHeadroom()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj := thermal.NewManager()
+		defer obj.Close()
+		forecastSeconds, _ := cmd.Flags().GetInt32("forecast-seconds")
+		result := obj.AThermal_getThermalHeadroom(forecastSeconds)
+		fmt.Println(result)
+		return nil
+	},
+}
+
 var thermalThermalStatusStringCmd = &cobra.Command{
 	Use:   "string",
 	Short: "ThermalStatus.String()",
@@ -71,12 +84,14 @@ var thermalThermalStatusStringCmd = &cobra.Command{
 }
 
 func init() {
+	thermalManagerAThermal_getThermalHeadroomCmd.Flags().Int32("forecast-seconds", 0, "forecastSeconds")
 	thermalCmd.AddCommand(thermalErrorCmd)
 	thermalCmd.AddCommand(thermalManagerCmd)
 	thermalCmd.AddCommand(thermalThermalStatusCmd)
 	thermalErrorCmd.AddCommand(thermalErrorErrorCmd)
 	thermalManagerCmd.AddCommand(thermalManagerNewCmd)
 	thermalManagerCmd.AddCommand(thermalManagerCurrentStatusCmd)
+	thermalManagerCmd.AddCommand(thermalManagerAThermal_getThermalHeadroomCmd)
 	thermalThermalStatusCmd.AddCommand(thermalThermalStatusStringCmd)
 	rootCmd.AddCommand(thermalCmd)
 }

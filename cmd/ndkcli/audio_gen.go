@@ -57,9 +57,36 @@ var audioErrorErrorCmd = &cobra.Command{
 	},
 }
 
+var audioStreamGetBufferCapacityInFramesCmd = &cobra.Command{
+	Use:   "get-buffer-capacity-in-frames",
+	Short: "Stream.GetBufferCapacityInFrames()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var audioStreamGetBufferSizeInFramesCmd = &cobra.Command{
+	Use:   "get-buffer-size-in-frames",
+	Short: "Stream.GetBufferSizeInFrames()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var audioStreamChannelCountCmd = &cobra.Command{
 	Use:   "channel-count",
 	Short: "Stream.ChannelCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var audioStreamGetDeviceIDCmd = &cobra.Command{
+	Use:   "get-device-id",
+	Short: "Stream.GetDeviceID()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -75,9 +102,63 @@ var audioStreamFramesPerBurstCmd = &cobra.Command{
 	},
 }
 
+var audioStreamGetFramesPerDataCallbackCmd = &cobra.Command{
+	Use:   "get-frames-per-data-callback",
+	Short: "Stream.GetFramesPerDataCallback()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var audioStreamGetFramesReadCmd = &cobra.Command{
+	Use:   "get-frames-read",
+	Short: "Stream.GetFramesRead()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var audioStreamGetFramesWrittenCmd = &cobra.Command{
+	Use:   "get-frames-written",
+	Short: "Stream.GetFramesWritten()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var audioStreamGetHardwareChannelCountCmd = &cobra.Command{
+	Use:   "get-hardware-channel-count",
+	Short: "Stream.GetHardwareChannelCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var audioStreamGetHardwareSampleRateCmd = &cobra.Command{
+	Use:   "get-hardware-sample-rate",
+	Short: "Stream.GetHardwareSampleRate()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var audioStreamSampleRateCmd = &cobra.Command{
 	Use:   "sample-rate",
 	Short: "Stream.SampleRate()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var audioStreamGetSamplesPerFrameCmd = &cobra.Command{
+	Use:   "get-samples-per-frame",
+	Short: "Stream.GetSamplesPerFrame()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -96,6 +177,24 @@ var audioStreamStateCmd = &cobra.Command{
 var audioStreamXRunCountCmd = &cobra.Command{
 	Use:   "x-run-count",
 	Short: "Stream.XRunCount()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var audioStreamIsContentSpatializedCmd = &cobra.Command{
+	Use:   "is-content-spatialized",
+	Short: "Stream.IsContentSpatialized()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var audioStreamIsPrivacySensitiveCmd = &cobra.Command{
+	Use:   "is-privacy-sensitive",
+	Short: "Stream.IsPrivacySensitive()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -166,6 +265,22 @@ var audioStreamBuilderOpenCmd = &cobra.Command{
 			return err
 		}
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var audioStreamBuilderSetAttributionTagCmd = &cobra.Command{
+	Use:   "set-attribution-tag",
+	Short: "StreamBuilder.SetAttributionTag()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		attributionTag, _ := cmd.Flags().GetString("attribution-tag")
+		obj.SetAttributionTag(attributionTag)
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -250,6 +365,54 @@ var audioStreamBuilderSetFormatCmd = &cobra.Command{
 	},
 }
 
+var audioStreamBuilderSetFramesPerDataCallbackCmd = &cobra.Command{
+	Use:   "set-frames-per-data-callback",
+	Short: "StreamBuilder.SetFramesPerDataCallback()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		numFrames, _ := cmd.Flags().GetInt32("num-frames")
+		obj.SetFramesPerDataCallback(numFrames)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var audioStreamBuilderSetIsContentSpatializedCmd = &cobra.Command{
+	Use:   "set-is-content-spatialized",
+	Short: "StreamBuilder.SetIsContentSpatialized()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		isSpatialized, _ := cmd.Flags().GetBool("is-spatialized")
+		obj.SetIsContentSpatialized(isSpatialized)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
+var audioStreamBuilderSetPackageNameCmd = &cobra.Command{
+	Use:   "set-package-name",
+	Short: "StreamBuilder.SetPackageName()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		packageName, _ := cmd.Flags().GetString("package-name")
+		obj.SetPackageName(packageName)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 var audioStreamBuilderSetPerformanceModeCmd = &cobra.Command{
 	Use:   "set-performance-mode",
 	Short: "StreamBuilder.SetPerformanceMode()",
@@ -266,6 +429,22 @@ var audioStreamBuilderSetPerformanceModeCmd = &cobra.Command{
 	},
 }
 
+var audioStreamBuilderSetPrivacySensitiveCmd = &cobra.Command{
+	Use:   "set-privacy-sensitive",
+	Short: "StreamBuilder.SetPrivacySensitive()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		privacySensitive, _ := cmd.Flags().GetBool("privacy-sensitive")
+		obj.SetPrivacySensitive(privacySensitive)
+		fmt.Println("ok")
+		return nil
+	},
+}
+
 var audioStreamBuilderSetSampleRateCmd = &cobra.Command{
 	Use:   "set-sample-rate",
 	Short: "StreamBuilder.SetSampleRate()",
@@ -278,6 +457,22 @@ var audioStreamBuilderSetSampleRateCmd = &cobra.Command{
 		sampleRate, _ := cmd.Flags().GetInt32("sample-rate")
 		result := obj.SetSampleRate(sampleRate)
 		fmt.Println(result)
+		return nil
+	},
+}
+
+var audioStreamBuilderSetSamplesPerFrameCmd = &cobra.Command{
+	Use:   "set-samples-per-frame",
+	Short: "StreamBuilder.SetSamplesPerFrame()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		obj, err := audio.NewStreamBuilder()
+		if err != nil {
+			return err
+		}
+		defer obj.Close()
+		samplesPerFrame, _ := cmd.Flags().GetInt32("samples-per-frame")
+		obj.SetSamplesPerFrame(samplesPerFrame)
+		fmt.Println("ok")
 		return nil
 	},
 }
@@ -308,13 +503,19 @@ var audioStreamStateStringCmd = &cobra.Command{
 }
 
 func init() {
+	audioStreamBuilderSetAttributionTagCmd.Flags().String("attribution-tag", "", "attributionTag")
 	audioStreamBuilderSetBufferCapacityInFramesCmd.Flags().Int32("num-frames", 0, "numFrames")
 	audioStreamBuilderSetChannelCountCmd.Flags().Int32("channel-count", 0, "channelCount")
 	audioStreamBuilderSetDeviceIDCmd.Flags().Int32("device-id", 0, "deviceID")
 	audioStreamBuilderSetDirectionCmd.Flags().Int32("direction", 0, "direction")
 	audioStreamBuilderSetFormatCmd.Flags().Int32("format", 0, "format")
+	audioStreamBuilderSetFramesPerDataCallbackCmd.Flags().Int32("num-frames", 0, "numFrames")
+	audioStreamBuilderSetIsContentSpatializedCmd.Flags().Bool("is-spatialized", false, "isSpatialized")
+	audioStreamBuilderSetPackageNameCmd.Flags().String("package-name", "", "packageName")
 	audioStreamBuilderSetPerformanceModeCmd.Flags().Int32("mode", 0, "mode")
+	audioStreamBuilderSetPrivacySensitiveCmd.Flags().Bool("privacy-sensitive", false, "privacySensitive")
 	audioStreamBuilderSetSampleRateCmd.Flags().Int32("sample-rate", 0, "sampleRate")
+	audioStreamBuilderSetSamplesPerFrameCmd.Flags().Int32("samples-per-frame", 0, "samplesPerFrame")
 	audioStreamBuilderSetSharingModeCmd.Flags().Int32("sharing-mode", 0, "sharingMode")
 	audioCmd.AddCommand(audioDirectionCmd)
 	audioCmd.AddCommand(audioErrorCmd)
@@ -323,24 +524,41 @@ func init() {
 	audioCmd.AddCommand(audioStreamStateCmd2)
 	audioDirectionCmd.AddCommand(audioDirectionStringCmd)
 	audioErrorCmd.AddCommand(audioErrorErrorCmd)
+	audioStreamCmd.AddCommand(audioStreamGetBufferCapacityInFramesCmd)
+	audioStreamCmd.AddCommand(audioStreamGetBufferSizeInFramesCmd)
 	audioStreamCmd.AddCommand(audioStreamChannelCountCmd)
+	audioStreamCmd.AddCommand(audioStreamGetDeviceIDCmd)
 	audioStreamCmd.AddCommand(audioStreamFramesPerBurstCmd)
+	audioStreamCmd.AddCommand(audioStreamGetFramesPerDataCallbackCmd)
+	audioStreamCmd.AddCommand(audioStreamGetFramesReadCmd)
+	audioStreamCmd.AddCommand(audioStreamGetFramesWrittenCmd)
+	audioStreamCmd.AddCommand(audioStreamGetHardwareChannelCountCmd)
+	audioStreamCmd.AddCommand(audioStreamGetHardwareSampleRateCmd)
 	audioStreamCmd.AddCommand(audioStreamSampleRateCmd)
+	audioStreamCmd.AddCommand(audioStreamGetSamplesPerFrameCmd)
 	audioStreamCmd.AddCommand(audioStreamStateCmd)
 	audioStreamCmd.AddCommand(audioStreamXRunCountCmd)
+	audioStreamCmd.AddCommand(audioStreamIsContentSpatializedCmd)
+	audioStreamCmd.AddCommand(audioStreamIsPrivacySensitiveCmd)
 	audioStreamCmd.AddCommand(audioStreamFlushCmd)
 	audioStreamCmd.AddCommand(audioStreamPauseCmd)
 	audioStreamCmd.AddCommand(audioStreamStartCmd)
 	audioStreamCmd.AddCommand(audioStreamStopCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderNewCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderOpenCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetAttributionTagCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetBufferCapacityInFramesCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetChannelCountCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetDeviceIDCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetDirectionCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetFormatCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetFramesPerDataCallbackCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetIsContentSpatializedCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetPackageNameCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetPerformanceModeCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetPrivacySensitiveCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetSampleRateCmd)
+	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetSamplesPerFrameCmd)
 	audioStreamBuilderCmd.AddCommand(audioStreamBuilderSetSharingModeCmd)
 	audioStreamStateCmd2.AddCommand(audioStreamStateStringCmd)
 	rootCmd.AddCommand(audioCmd)

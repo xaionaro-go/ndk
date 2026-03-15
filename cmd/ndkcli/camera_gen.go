@@ -14,6 +14,11 @@ var cameraCmd = &cobra.Command{
 	Short: "camera NDK module",
 }
 
+var cameraCaptureRequestCmd = &cobra.Command{
+	Use:   "capture-request",
+	Short: "CaptureRequest operations",
+}
+
 var cameraCaptureSessionCmd = &cobra.Command{
 	Use:   "capture-session",
 	Short: "CaptureSession operations",
@@ -44,6 +49,15 @@ var cameraSessionOutputContainerCmd = &cobra.Command{
 	Short: "SessionOutputContainer operations",
 }
 
+var cameraCaptureRequestCopyCmd = &cobra.Command{
+	Use:   "copy",
+	Short: "CaptureRequest.Copy()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var cameraCaptureSessionStopRepeatingCmd = &cobra.Command{
 	Use:   "stop-repeating",
 	Short: "CaptureSession.StopRepeating()",
@@ -56,6 +70,15 @@ var cameraCaptureSessionStopRepeatingCmd = &cobra.Command{
 var cameraDeviceCreateCaptureRequestCmd = &cobra.Command{
 	Use:   "create-capture-request",
 	Short: "Device.CreateCaptureRequest()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
+var cameraDeviceGetIDCmd = &cobra.Command{
+	Use:   "get-id",
+	Short: "Device.GetID()",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
 		return nil
@@ -113,6 +136,15 @@ var cameraManagerCameraIDListCmd = &cobra.Command{
 	},
 }
 
+var cameraMetadataCopyCmd = &cobra.Command{
+	Use:   "copy",
+	Short: "Metadata.Copy()",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println("requires external context (NativeActivity, JNI, etc.)")
+		return nil
+	},
+}
+
 var cameraMetadataI32AtCmd = &cobra.Command{
 	Use:   "i32-at",
 	Short: "Metadata.I32At()",
@@ -147,18 +179,22 @@ var cameraSessionOutputContainerNewCmd = &cobra.Command{
 
 func init() {
 	cameraManagerGetCameraCharacteristicsCmd.Flags().String("camera-id", "", "cameraID")
+	cameraCmd.AddCommand(cameraCaptureRequestCmd)
 	cameraCmd.AddCommand(cameraCaptureSessionCmd)
 	cameraCmd.AddCommand(cameraDeviceCmd)
 	cameraCmd.AddCommand(cameraErrorCmd)
 	cameraCmd.AddCommand(cameraManagerCmd)
 	cameraCmd.AddCommand(cameraMetadataCmd)
 	cameraCmd.AddCommand(cameraSessionOutputContainerCmd)
+	cameraCaptureRequestCmd.AddCommand(cameraCaptureRequestCopyCmd)
 	cameraCaptureSessionCmd.AddCommand(cameraCaptureSessionStopRepeatingCmd)
 	cameraDeviceCmd.AddCommand(cameraDeviceCreateCaptureRequestCmd)
+	cameraDeviceCmd.AddCommand(cameraDeviceGetIDCmd)
 	cameraErrorCmd.AddCommand(cameraErrorErrorCmd)
 	cameraManagerCmd.AddCommand(cameraManagerNewCmd)
 	cameraManagerCmd.AddCommand(cameraManagerGetCameraCharacteristicsCmd)
 	cameraManagerCmd.AddCommand(cameraManagerCameraIDListCmd)
+	cameraMetadataCmd.AddCommand(cameraMetadataCopyCmd)
 	cameraMetadataCmd.AddCommand(cameraMetadataI32AtCmd)
 	cameraMetadataCmd.AddCommand(cameraMetadataI32CountCmd)
 	cameraSessionOutputContainerCmd.AddCommand(cameraSessionOutputContainerNewCmd)
