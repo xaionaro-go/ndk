@@ -10,6 +10,7 @@ type Spec struct {
 	Functions     map[string]FuncDef     `yaml:"functions,omitempty"`
 	Callbacks     map[string]CallbackDef `yaml:"callbacks,omitempty"`
 	Structs       map[string]StructDef   `yaml:"structs,omitempty"`
+	Macros        map[string]int64       `yaml:"macros,omitempty"`
 }
 
 // TypeDef describes an extracted Go type.

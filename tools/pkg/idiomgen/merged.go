@@ -23,6 +23,7 @@ type MergedSpec struct {
 	Lifecycle             *MergedLifecycle
 	ExtraBridgeC          string
 	ExtraBridgeGo         string
+	UntypedMacros         map[string]int64 // #define constants not assigned to any typed enum
 }
 
 // MergedOpaqueType is an opaque C handle with Go lifecycle.

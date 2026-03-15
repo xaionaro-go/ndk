@@ -45,6 +45,10 @@ type ConvertOptions struct {
 	// NDKHeaderDirs are directories to scan for callback typedef params
 	// (c2ffi doesn't provide function pointer typedef parameters).
 	NDKHeaderDirs []string
+
+	// NDKSysroot is the NDK sysroot include directory for extracting
+	// #define macro constants from original (pre-preprocessed) headers.
+	NDKSysroot string
 }
 
 // ConvertFile reads a c2ffi JSON file and converts it to a specmodel.Spec.
@@ -126,6 +130,17 @@ func Convert(
 	// Supplement callback params from C headers.
 	if len(opts.NDKHeaderDirs) > 0 {
 		supplementCallbacks(spec, opts.NDKHeaderDirs)
+	}
+
+	// Extract #define macro constants from original headers.
+	if opts.NDKSysroot != "" && len(opts.TargetHeaders) > 0 {
+		macros, err := ExtractMacros(opts.NDKSysroot, opts.TargetHeaders)
+		if err != nil {
+			return nil, fmt.Errorf("extracting macros: %w", err)
+		}
+		if len(macros) > 0 {
+			spec.Macros = macros
+		}
 	}
 
 	// Remove empty maps.

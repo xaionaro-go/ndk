@@ -23,11 +23,6 @@ import (
 	"github.com/xaionaro-go/ndk/gles3"
 )
 
-// GL constants for rasterizer discard and map read.
-const (
-	glRasterizerDiscard gles2.Enum       = 0x8C89
-	glMapReadBit        gles3.GLbitfield = 0x0001
-)
 
 // Input positions: three 2D points.
 var inputPositions = [...]float32{
@@ -109,13 +104,13 @@ func main() {
 	gles2.UseProgram(program)
 
 	// Disable rasterization: we only care about the vertex shader output.
-	gles2.Enable(glRasterizerDiscard)
+	gles2.Enable(gles3.GL_RASTERIZER_DISCARD)
 
 	gles3.BeginTransformFeedback(gles3.GLenum(gles2.Points))
 	gles2.DrawArrays(gles2.Points, 0, gles2.GLsizei(vertexCount))
 	gles3.EndTransformFeedback()
 
-	gles2.Disable(glRasterizerDiscard)
+	gles2.Disable(gles3.GL_RASTERIZER_DISCARD)
 	checkGLError("after transform feedback")
 
 	// --- Read back captured data ---
@@ -130,7 +125,7 @@ func main() {
 		gles3.TransformFeedbackBuffer,
 		0,
 		gles3.GLsizeiptr(feedbackBufSize),
-		glMapReadBit,
+		gles3.GL_MAP_READ_BIT,
 	)
 	if ptr == nil {
 		log.Fatal("MapBufferRange returned nil")

@@ -19,14 +19,6 @@ import (
 	"github.com/xaionaro-go/ndk/gles2"
 )
 
-// EGL query-string name constants (not exported by the idiomatic bindings).
-const (
-	eglVendor     egl.Int = 0x3053
-	eglVersion    egl.Int = 0x3054
-	eglExtensions egl.Int = 0x3055
-	eglClientAPIs egl.Int = 0x308D
-)
-
 // Pbuffer dimensions.
 const (
 	pbufWidth  = 64
@@ -121,10 +113,10 @@ func main() {
 		label string
 		name  egl.Int
 	}{
-		{"Vendor", eglVendor},
-		{"Version", eglVersion},
-		{"Client APIs", eglClientAPIs},
-		{"Extensions", eglExtensions},
+		{"Vendor", egl.EGL_VENDOR},
+		{"Version", egl.EGL_VERSION},
+		{"Client APIs", egl.EGL_CLIENT_APIS},
+		{"Extensions", egl.EGL_EXTENSIONS},
 	}
 	fmt.Println("\nEGL display info:")
 	for _, q := range queries {

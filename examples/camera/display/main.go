@@ -491,13 +491,13 @@ func initEGL(win unsafe.Pointer) error {
 		egl.None,
 	}
 	eglCtx = egl.CreateContext(eglDisp, config, nil, &ctxAttribs[0])
-	if errCode := egl.GetError(); errCode != 0x3000 { // EGL_SUCCESS
+	if errCode := egl.GetError(); errCode != egl.EGL_SUCCESS {
 		return fmt.Errorf("eglCreateContext failed: 0x%x", errCode)
 	}
 	eglHasCtx = true
 
 	eglSurf = egl.CreateWindowSurface(eglDisp, config, egl.EGLNativeWindowType(win), nil)
-	if errCode := egl.GetError(); errCode != 0x3000 { // EGL_SUCCESS
+	if errCode := egl.GetError(); errCode != egl.EGL_SUCCESS {
 		return fmt.Errorf("eglCreateWindowSurface failed: 0x%x", errCode)
 	}
 	eglHasSurf = true

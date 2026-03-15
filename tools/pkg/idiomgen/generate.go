@@ -360,12 +360,43 @@ func Generate(
 		}
 	}
 
+	// Generate untyped macro constants (macros not assigned to any typed enum).
+	if len(merged.UntypedMacros) > 0 {
+		content := generateUntypedMacros(merged.PackageName, merged.UntypedMacros)
+		fileName := "constants.go"
+		outPath := filepath.Join(outDir, fileName)
+		if err := os.WriteFile(outPath, []byte(content), 0o644); err != nil {
+			return fmt.Errorf("write %s: %w", fileName, err)
+		}
+		written[fileName] = true
+	}
+
 	// Format all generated Go files.
 	if err := formatGoFilesInDir(outDir); err != nil {
 		return fmt.Errorf("format: %w", err)
 	}
 
 	return nil
+}
+
+// generateUntypedMacros renders #define macro constants as untyped Go constants.
+func generateUntypedMacros(
+	packageName string,
+	macros map[string]int64,
+) string {
+	names := make([]string, 0, len(macros))
+	for name := range macros {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+
+	var b strings.Builder
+	b.WriteString(generatedHeader + "\n\npackage " + packageName + "\n\nconst (\n")
+	for _, name := range names {
+		fmt.Fprintf(&b, "\t%s = %d\n", name, macros[name])
+	}
+	b.WriteString(")\n")
+	return b.String()
 }
 
 // collectHigherAPILevels returns sorted unique API levels from the higher-level maps.

@@ -2,3 +2,5 @@
 
 module: vulkan
 source_package: github.com/xaionaro-go/ndk/capi/vulkan
+macros:
+    VULKAN_H_: 1

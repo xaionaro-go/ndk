@@ -860,3 +860,5 @@ functions:
             - name: motion_event
               type: '*AInputEvent'
         returns: float32
+macros:
+    AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT: 8

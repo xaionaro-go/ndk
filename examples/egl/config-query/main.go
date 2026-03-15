@@ -13,20 +13,6 @@ import (
 	"github.com/xaionaro-go/ndk/egl"
 )
 
-// EGL attribute constants not exported by the idiomatic bindings.
-const (
-	eglSamples          egl.Int = 12337
-	eglSampleBuffers    egl.Int = 12338
-	eglMaxPbufferWidth  egl.Int = 12330
-	eglMaxPbufferHeight egl.Int = 12329
-	eglMaxPbufferPixels egl.Int = 12331
-	eglNativeRenderable egl.Int = 12346
-	eglNativeVisualId   egl.Int = 12349
-	eglConformant       egl.Int = 12354
-	eglConfigCaveat     egl.Int = 12327
-	eglPixmapBit        egl.Int = 2
-)
-
 func fatal(msg string) {
 	fmt.Fprintf(os.Stderr, "error: %s (EGL error 0x%04X)\n", msg, egl.GetError())
 	os.Exit(1)
@@ -88,17 +74,17 @@ func main() {
 		{"Alpha Size", egl.AlphaSize},
 		{"Depth Size", egl.DepthSize},
 		{"Stencil Size", egl.StencilSize},
-		{"Samples", eglSamples},
-		{"Sample Buffers", eglSampleBuffers},
-		{"Max Pbuffer Width", eglMaxPbufferWidth},
-		{"Max Pbuffer Height", eglMaxPbufferHeight},
-		{"Max Pbuffer Pixels", eglMaxPbufferPixels},
-		{"Native Renderable", eglNativeRenderable},
-		{"Native Visual ID", eglNativeVisualId},
+		{"Samples", egl.EGL_SAMPLES},
+		{"Sample Buffers", egl.EGL_SAMPLE_BUFFERS},
+		{"Max Pbuffer Width", egl.EGL_MAX_PBUFFER_WIDTH},
+		{"Max Pbuffer Height", egl.EGL_MAX_PBUFFER_HEIGHT},
+		{"Max Pbuffer Pixels", egl.EGL_MAX_PBUFFER_PIXELS},
+		{"Native Renderable", egl.EGL_NATIVE_RENDERABLE},
+		{"Native Visual ID", egl.EGL_NATIVE_VISUAL_ID},
 		{"Surface Type (bitmask)", egl.SurfaceType},
 		{"Renderable Type (bitmask)", egl.RenderableType},
-		{"Conformant (bitmask)", eglConformant},
-		{"Config Caveat", eglConfigCaveat},
+		{"Conformant (bitmask)", egl.EGL_CONFORMANT},
+		{"Config Caveat", egl.EGL_CONFIG_CAVEAT},
 	}
 
 	fmt.Println("Config attributes:")
@@ -112,7 +98,7 @@ func main() {
 	surfType := getAttrib(display, config, egl.SurfaceType)
 	printFlag("  Window", surfType, egl.WindowBit)
 	printFlag("  Pbuffer", surfType, egl.PbufferBit)
-	printFlag("  Pixmap", surfType, eglPixmapBit)
+	printFlag("  Pixmap", surfType, egl.EGL_PIXMAP_BIT)
 
 	fmt.Println("Renderable type flags:")
 	rendType := getAttrib(display, config, egl.RenderableType)

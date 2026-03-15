@@ -531,14 +531,37 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 	}
 
 	// Merge extra enum values from the overlay into the spec enums.
+	// When the spec has macros, auto-resolve values from headers instead
+	// of relying on manually specified values in the overlay.
 	// This must happen before the type alias loop so that extra_enums-only
 	// types (like MetadataTag) are recognized as enums, not type aliases.
+	consumedMacros := make(map[string]bool)
 	for enumName, extras := range overlay.ExtraEnums {
 		for _, ev := range extras {
+			value := ev.Value
+			if macroVal, ok := spec.Macros[ev.Name]; ok {
+				value = macroVal
+				consumedMacros[ev.Name] = true
+			}
 			spec.Enums[enumName] = append(spec.Enums[enumName], specmodel.EnumValue{
 				Name:  ev.Name,
-				Value: ev.Value,
+				Value: value,
 			})
+		}
+	}
+
+	// Also consume macros that already appear in spec enums (from real C enums).
+	for _, vals := range spec.Enums {
+		for _, v := range vals {
+			consumedMacros[v.Name] = true
+		}
+	}
+
+	// Store unconsumed macros for generation as untyped constants.
+	m.UntypedMacros = make(map[string]int64)
+	for name, value := range spec.Macros {
+		if !consumedMacros[name] {
+			m.UntypedMacros[name] = value
 		}
 	}
 

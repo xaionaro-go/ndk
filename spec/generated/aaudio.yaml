@@ -819,3 +819,6 @@ callbacks:
             - name: _error
               type: aaudio_result_t
         returns: ""
+macros:
+    AAUDIO_SYSTEM_USAGE_OFFSET: 1000
+    AAUDIO_UNSPECIFIED: 0

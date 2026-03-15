@@ -161,6 +161,7 @@ func convertAndWrite(
 		TargetHeaders: mf.Generator.Includes,
 		Rules:         mf.Translator.Rules.Global,
 		NDKHeaderDirs: headerDirs,
+		NDKSysroot:    ndkIncDir,
 	}
 
 	spec, err := c2ffi.Convert(jsonData, opts)

@@ -22,8 +22,6 @@ import (
 	"github.com/xaionaro-go/ndk/gles3"
 )
 
-// GL_TIMEOUT_IGNORED is defined as 0xFFFFFFFFFFFFFFFF in the spec.
-const glTimeoutIgnored = uint64(0xFFFFFFFFFFFFFFFF)
 
 var triVertices = [...]float32{
 	0.0, 0.5,
@@ -85,7 +83,7 @@ func main() {
 	// SYNC_FLUSH_COMMANDS_BIT tells the driver to flush if the sync is not
 	// already signalled, which avoids a potential deadlock when the command
 	// queue has not been flushed yet.
-	result := gles3.ClientWaitSync(sync, gles3.SyncFlushCommandsBit, gles3.GLuint64(glTimeoutIgnored))
+	result := gles3.ClientWaitSync(sync, gles3.SyncFlushCommandsBit, gles3.GLuint64(gles3.GL_TIMEOUT_IGNORED))
 	switch result {
 	case gles3.AlreadySignaled:
 		log.Println("ClientWaitSync: already signalled (GPU was fast)")

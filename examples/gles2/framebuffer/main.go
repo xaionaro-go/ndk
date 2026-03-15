@@ -25,8 +25,6 @@ import (
 	"github.com/xaionaro-go/ndk/gles2"
 )
 
-// GL_UNSIGNED_SHORT is not in the generated enum set.
-const glUnsignedShort gles2.Enum = 0x1403
 
 func fatal(msg string) {
 	fmt.Fprintf(os.Stderr, "fatal: %s (EGL error 0x%04X)\n", msg, egl.GetError())
@@ -361,7 +359,7 @@ func main() {
 	gles2.EnableVertexAttribArray(gles2.GLuint(texLoc2))
 	gles2.VertexAttribPointer(gles2.GLuint(texLoc2), 2, gles2.Float, gles2.Boolean(gles2.False), stride, texOffset)
 
-	gles2.DrawElements(gles2.Triangles, 6, glUnsignedShort, nil)
+	gles2.DrawElements(gles2.Triangles, 6, gles2.GL_UNSIGNED_SHORT, nil)
 	checkGL("pass 2 render")
 
 	gles2.DisableVertexAttribArray(gles2.GLuint(posLoc2))
