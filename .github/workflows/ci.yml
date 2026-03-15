@@ -29,6 +29,9 @@ jobs:
       - name: Run unit tests
         run: make test
 
+      - name: Verify no capi imports in cmd/ and examples/
+        run: make check-no-capi
+
       - name: Lint
         uses: golangci/golangci-lint-action@v9
         with:

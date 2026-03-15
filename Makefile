@@ -89,6 +89,14 @@ regen: clean specs capi idiomatic
 test:
 	go test $$(go list ./... | grep -v -E '/(capi|cmd|tests|examples)/|/ndk/[a-z][a-z0-9]*$$') -count=1
 
+# Verify cmd/ and examples/ do not import capi packages.
+check-no-capi:
+	@if grep -rl '"github.com/xaionaro-go/ndk/capi' cmd/ examples/ 2>/dev/null; then \
+		echo "ERROR: cmd/ and examples/ must not import capi packages"; \
+		exit 1; \
+	fi
+	@echo "OK: no capi imports in cmd/ or examples/"
+
 lint:
 	golangci-lint run ./tools/...
 

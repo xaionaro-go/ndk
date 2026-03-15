@@ -187,7 +187,7 @@ var aSurfaceTransaction_OnComplete695B4546Func ASurfaceTransaction_OnComplete
 func UnpackPCharString(str string) (*C.char, *CgoAllocMap) {
 	allocs := new(CgoAllocMap)
 	defer runtime.SetFinalizer(allocs, func(a *CgoAllocMap) {
-		go a.Free()
+		a.Free()
 	})
 
 	mem0 := unsafe.Pointer(C.CString(str))

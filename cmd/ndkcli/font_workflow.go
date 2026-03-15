@@ -20,21 +20,21 @@ var fontMatchCmd = &cobra.Command{
 
 		fmt.Println("setting style...")
 		matcher.SetStyle(weight, italic)
+		matcher.SetLocales("en-US")
+		fmt.Println("style set OK")
 
-		// AFontMatcher_match requires non-nil text for script detection.
+		// AFontMatcher_match requires the Android font system (libminikin).
+		// On headless CLI binaries (no app/Activity), the internal
+		// FontCollection is null, causing SIGSEGV in getFamilyForChar.
+		// This command only works within an Android app context.
+		fmt.Println("WARNING: font matching requires an Android app context (Activity/Service).")
+		fmt.Println("On headless CLI binaries, AFontMatcher_match will crash with SIGSEGV")
+		fmt.Println("because the system FontCollection is not initialized.")
 		text := []uint16{'A'}
 		var runLength uint32
 		fmt.Printf("matching family=%q weight=%d italic=%v...\n", family, weight, italic)
 
-		var matched *font.Font
-		func() {
-			defer func() {
-				if r := recover(); r != nil {
-					fmt.Printf("font matching crashed (recovered): %v\n", r)
-				}
-			}()
-			matched = matcher.Match(family, &text[0], uint32(len(text)), &runLength)
-		}()
+		matched := matcher.Match(family, &text[0], uint32(len(text)), &runLength)
 		fmt.Printf("match returned, runLength=%d\n", runLength)
 		if matched == nil || matched.Pointer() == nil {
 			fmt.Println("no matching font found")

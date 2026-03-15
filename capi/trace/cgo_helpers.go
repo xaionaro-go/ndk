@@ -75,7 +75,7 @@ type SliceHeader struct {
 func UnpackPCharString(str string) (*C.char, *CgoAllocMap) {
 	allocs := new(CgoAllocMap)
 	defer runtime.SetFinalizer(allocs, func(a *CgoAllocMap) {
-		go a.Free()
+		a.Free()
 	})
 
 	mem0 := unsafe.Pointer(C.CString(str))
