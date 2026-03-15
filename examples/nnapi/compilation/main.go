@@ -116,7 +116,7 @@ func main() {
 	// latency of a single inference. Other options:
 	//   nnapi.LowPower       - minimize battery usage
 	//   nnapi.SustainedSpeed - optimize for repeated inferences
-	if err := compilation.SetPreference(int32(nnapi.FastSingleAnswer)); err != nil {
+	if err := compilation.SetPreference(nnapi.FastSingleAnswer); err != nil {
 		log.Fatalf("SetPreference: %v", err)
 	}
 	fmt.Println("preference set to FastSingleAnswer")
