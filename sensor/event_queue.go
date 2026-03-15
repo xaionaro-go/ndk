@@ -23,9 +23,24 @@ func (h *EventQueue) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// DisableSensor calls the underlying NDK function.
+func (h *EventQueue) DisableSensor(sensor *Sensor) error {
+	return result(int32(capi.ASensorEventQueue_disableSensor(h.ptr, sensor.ptr)))
+}
+
+// EnableSensor calls the underlying NDK function.
+func (h *EventQueue) EnableSensor(sensor *Sensor) error {
+	return result(int32(capi.ASensorEventQueue_enableSensor(h.ptr, sensor.ptr)))
+}
+
 // GetEvents returns the value directly.
 func (h *EventQueue) GetEvents(events *SensorEvent, count uint64) int64 {
 	return (int64)(capi.ASensorEventQueue_getEvents(h.ptr, events.ptr, count))
+}
+
+// HasEvents returns the value directly.
+func (h *EventQueue) HasEvents() int32 {
+	return (int32)(capi.ASensorEventQueue_hasEvents(h.ptr))
 }
 
 // RegisterSensor calls the underlying NDK function.
@@ -36,4 +51,9 @@ func (h *EventQueue) RegisterSensor(sensor *Sensor, samplingPeriodUs int32, maxB
 // RequestAdditionalInfoEvents calls the underlying NDK function.
 func (h *EventQueue) RequestAdditionalInfoEvents(enable bool) error {
 	return result(int32(capi.ASensorEventQueue_requestAdditionalInfoEvents(h.ptr, enable)))
+}
+
+// SetEventRate calls the underlying NDK function.
+func (h *EventQueue) SetEventRate(sensor *Sensor, usec int32) error {
+	return result(int32(capi.ASensorEventQueue_setEventRate(h.ptr, sensor.ptr, usec)))
 }

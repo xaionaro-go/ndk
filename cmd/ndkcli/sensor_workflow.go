@@ -3,65 +3,121 @@ package main
 import (
 	"fmt"
 	"time"
+	"unsafe"
 
 	"github.com/spf13/cobra"
+	"github.com/xaionaro-go/ndk/looper"
 	"github.com/xaionaro-go/ndk/sensor"
 )
 
+// sensorEventData extracts x, y, z from an ASensorEvent.
+// ASensorEvent layout: version(4) + sensor(4) + type(4) + reserved(4) + timestamp(8) + data[16]float32
+// data offset = 24 bytes from the start.
+func sensorEventData(event *sensor.SensorEvent) (x, y, z float32, timestamp int64) {
+	base := (*byte)(event.Pointer())
+	// timestamp at offset 16 (after version+sensor+type+reserved = 4*4 = 16)
+	timestamp = *(*int64)(unsafe.Pointer(uintptr(unsafe.Pointer(base)) + 16))
+	// data[0..2] at offset 24
+	dataPtr := uintptr(unsafe.Pointer(base)) + 24
+	x = *(*float32)(unsafe.Pointer(dataPtr))
+	y = *(*float32)(unsafe.Pointer(dataPtr + 4))
+	z = *(*float32)(unsafe.Pointer(dataPtr + 8))
+	return
+}
+
 var sensorReadCmd = &cobra.Command{
 	Use:   "read",
-	Short: "Read sensor information and poll default sensor",
-	Long: `Queries the sensor manager for the default sensor of the given type,
-prints its static properties, and optionally polls for the specified duration.
-
-Note: Real-time sensor data streaming requires looper and event queue
-integration, which is beyond what a simple CLI poll can provide.
-This command demonstrates the sensor query API.`,
+	Short: "Read real-time sensor data",
+	Long: `Reads real-time sensor events using a looper and event queue.
+Prints x, y, z values for each event at the configured sample rate.`,
 	RunE: func(cmd *cobra.Command, args []string) (_err error) {
 		sensorType, _ := cmd.Flags().GetInt32("type")
 		duration, _ := cmd.Flags().GetDuration("duration")
+		rate, _ := cmd.Flags().GetInt32("rate")
 
-		mgr := sensor.GetInstance()
-
-		s := mgr.DefaultSensor(sensorType)
-		if s.Pointer() == nil {
-			return fmt.Errorf("no default sensor found for type %d", sensorType)
+		if duration == 0 {
+			duration = 5 * time.Second
 		}
 
-		fmt.Printf("sensor info:\n")
-		fmt.Printf("  name:       %s\n", s.Name())
-		fmt.Printf("  vendor:     %s\n", s.Vendor())
-		fmt.Printf("  type:       %d (%s)\n", s.Type(), sensor.Type(s.Type()))
-		fmt.Printf("  resolution: %g\n", s.Resolution())
-		fmt.Printf("  min delay:  %d us\n", s.MinDelay())
-
-		fmt.Println("\nnote: real-time sensor data streaming requires looper + event queue integration")
-
-		if duration > 0 {
-			fmt.Printf("\npolling sensor info for %v...\n", duration)
-			deadline := time.Now().Add(duration)
-			tick := 0
-			for time.Now().Before(deadline) {
-				polled := mgr.DefaultSensor(sensorType)
-				if polled.Pointer() == nil {
-					fmt.Printf("  [%d] sensor no longer available\n", tick)
-				} else {
-					fmt.Printf("  [%d] %s (type=%d, min_delay=%d us)\n",
-						tick, polled.Name(), polled.Type(), polled.MinDelay())
-				}
-				tick++
-				time.Sleep(time.Second)
-			}
-			fmt.Printf("polling complete (%d samples)\n", tick)
-		}
-
-		return nil
+		looper.Run(func(lp *looper.Looper) {
+			_err = readSensorEvents(lp, sensorType, duration, rate)
+		})
+		return
 	},
 }
 
+func readSensorEvents(
+	lp *looper.Looper,
+	sensorType int32,
+	duration time.Duration,
+	rateUs int32,
+) error {
+	mgr := sensor.GetInstance()
+
+	s := mgr.DefaultSensor(sensorType)
+	if s.Pointer() == nil {
+		return fmt.Errorf("no default sensor found for type %d", sensorType)
+	}
+
+	fmt.Printf("sensor: %s (%s)\n", s.Name(), sensor.Type(s.Type()))
+	fmt.Printf("vendor: %s\n", s.Vendor())
+	fmt.Printf("resolution: %g, min delay: %d us\n", s.Resolution(), s.MinDelay())
+
+	// Create event queue on the current looper thread.
+	const looperIdent = 1
+	queue := mgr.CreateEventQueue(
+		(*sensor.ALooper)(lp.Pointer()),
+		looperIdent,
+		sensor.ALooper_callbackFunc(nil), // no callback — we poll manually
+		nil,
+	)
+	if queue == nil || queue.Pointer() == nil {
+		return fmt.Errorf("failed to create sensor event queue")
+	}
+	defer mgr.DestroyEventQueue(queue)
+
+	// Enable the sensor on the queue and set the sample rate.
+	if err := queue.EnableSensor(s); err != nil {
+		return fmt.Errorf("enabling sensor: %w", err)
+	}
+	if err := queue.SetEventRate(s, rateUs); err != nil {
+		return fmt.Errorf("setting event rate: %w", err)
+	}
+
+	fmt.Printf("\nstreaming for %v (rate=%d us)...\n", duration, rateUs)
+
+	deadline := time.Now().Add(duration)
+	count := 0
+	// Allocate a raw ASensorEvent buffer (104 bytes per event on arm64).
+	// SensorEvent.ptr must point to valid C memory for GetEvents to write into.
+	const eventSize = 104 // sizeof(ASensorEvent)
+	eventBuf := make([]byte, eventSize)
+	event := sensor.NewSensorEventFromPointer(unsafe.Pointer(&eventBuf[0]))
+
+	for time.Now().Before(deadline) {
+		// Poll the looper for events (100ms timeout).
+		looper.PollOnce(100*time.Millisecond, nil, nil, nil)
+
+		// Drain all available events.
+		for {
+			n := queue.GetEvents(event, 1)
+			if n <= 0 {
+				break
+			}
+			x, y, z, ts := sensorEventData(event)
+			fmt.Printf("  [%d] t=%d  x=%.6f  y=%.6f  z=%.6f\n", count, ts, x, y, z)
+			count++
+		}
+	}
+
+	fmt.Printf("received %d events\n", count)
+	return nil
+}
+
 func init() {
-	sensorReadCmd.Flags().Int32("type", int32(sensor.Accelerometer), "sensor type ID (1=accelerometer, 2=magnetic, 4=gyroscope, 5=light, ...)")
-	sensorReadCmd.Flags().Duration("duration", 0, "how long to poll (0 = just print info)")
+	sensorReadCmd.Flags().Int32("type", int32(sensor.Accelerometer), "sensor type ID (1=accelerometer, 2=magnetic, 3=orientation, 4=gyroscope, 5=light, 8=proximity)")
+	sensorReadCmd.Flags().Duration("duration", 5*time.Second, "how long to stream")
+	sensorReadCmd.Flags().Int32("rate", 100000, "sample period in microseconds (default 100ms)")
 
 	sensorCmd.AddCommand(sensorReadCmd)
 }

@@ -44,20 +44,30 @@ functions:
 
   # Manager — event queue lifecycle
   ASensorManager_createEventQueue:
-    skip: true  # needs unsafe.Pointer params (looper, callback, data)
+    receiver: Manager
+    go_name: CreateEventQueue
+    returns_new: EventQueue
 
   ASensorManager_destroyEventQueue:
-    skip: true  # needs manager+queue params, can't be a simple method
+    receiver: Manager
+    go_name: DestroyEventQueue
 
-  # EventQueue operations (skipped: no way to create EventQueue in idiomatic API)
   ASensorEventQueue_enableSensor:
-    skip: true
+    receiver: EventQueue
+    go_name: EnableSensor
+
   ASensorEventQueue_disableSensor:
-    skip: true
+    receiver: EventQueue
+    go_name: DisableSensor
+
   ASensorEventQueue_setEventRate:
-    skip: true
+    receiver: EventQueue
+    go_name: SetEventRate
+
   ASensorEventQueue_hasEvents:
-    skip: true
+    receiver: EventQueue
+    go_name: HasEvents
+    pure: true
 
   # Sensor info getters
   ASensor_getName:

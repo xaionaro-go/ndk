@@ -28,6 +28,11 @@ func (h *Manager) ConfigureDirectReport(sensor *Sensor, channelID int32, rate in
 	return result(int32(capi.ASensorManager_configureDirectReport(h.ptr, sensor.ptr, channelID, rate)))
 }
 
+// CreateEventQueue creates a new EventQueue from this Manager.
+func (h *Manager) CreateEventQueue(looper *ALooper, ident int32, callback ALooper_callbackFunc, data unsafe.Pointer) *EventQueue {
+	return &EventQueue{ptr: capi.ASensorManager_createEventQueue(h.ptr, (*capi.ALooper)(looper), ident, capi.ALooper_callbackFunc(callback), data)}
+}
+
 // CreateHardwareBufferDirectChannel calls the underlying NDK function.
 func (h *Manager) CreateHardwareBufferDirectChannel(buffer *HardwareBuffer, size uint64) error {
 	return result(int32(capi.ASensorManager_createHardwareBufferDirectChannel(h.ptr, buffer.ptr, size)))
@@ -41,6 +46,11 @@ func (h *Manager) CreateSharedMemoryDirectChannel(fd int32, size uint64) error {
 // DestroyDirectChannel calls the underlying NDK function.
 func (h *Manager) DestroyDirectChannel(channelID int32) {
 	capi.ASensorManager_destroyDirectChannel(h.ptr, channelID)
+}
+
+// DestroyEventQueue calls the underlying NDK function.
+func (h *Manager) DestroyEventQueue(queue *EventQueue) error {
+	return result(int32(capi.ASensorManager_destroyEventQueue(h.ptr, queue.ptr)))
 }
 
 // DefaultSensor creates a new Sensor from this Manager.
