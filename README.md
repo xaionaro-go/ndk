@@ -140,7 +140,7 @@ Discover device sensors through the singleton sensor manager:
 import "github.com/xaionaro-go/ndk/sensor"
 
     mgr := sensor.GetInstance()
-    accel := mgr.DefaultSensor(int32(sensor.Accelerometer))
+    accel := mgr.DefaultSensor(sensor.Accelerometer)
 
     fmt.Printf("Sensor: %s (%s)\n", accel.Name(), accel.Vendor())
     fmt.Printf("Resolution: %g, min delay: %d µs\n",
@@ -517,7 +517,7 @@ func printSensor(mgr *sensor.Manager, label string, sensorType sensor.Type) (ok 
 		}
 	}()
 
-	s := mgr.DefaultSensor(int32(sensorType))
+	s := mgr.DefaultSensor(sensorType)
 
 	// Trigger a method call; if the internal pointer is NULL the NDK
 	// dereferences a null pointer and Go's signal handler turns it
@@ -643,22 +643,6 @@ func goString(p *gles2.GLubyte) string {
 }
 
 func main() {
-	// EGL constants not in the generated package.
-	const (
-		eglVendor     egl.Int = 0x3053
-		eglVersion    egl.Int = 0x3054
-		eglExtensions egl.Int = 0x3055
-		eglClientAPIs egl.Int = 0x308D
-	)
-
-	// GL constants not in the generated package.
-	const (
-		glVendor     gles2.Enum = 0x1F00
-		glRenderer   gles2.Enum = 0x1F01
-		glVersion    gles2.Enum = 0x1F02
-		glExtensions gles2.Enum = 0x1F03
-	)
-
 	// 1. Get the default EGL display and initialize it.
 	dpy := egl.GetDisplay(egl.EGLNativeDisplayType(0))
 	if dpy == nil {
@@ -672,10 +656,10 @@ func main() {
 	defer egl.Terminate(dpy)
 
 	fmt.Printf("EGL %d.%d\n", major, minor)
-	fmt.Printf("  Vendor:     %s\n", egl.QueryString(dpy, eglVendor))
-	fmt.Printf("  Version:    %s\n", egl.QueryString(dpy, eglVersion))
-	fmt.Printf("  Client APIs: %s\n", egl.QueryString(dpy, eglClientAPIs))
-	fmt.Printf("  Extensions: %s\n", egl.QueryString(dpy, eglExtensions))
+	fmt.Printf("  Vendor:     %s\n", egl.QueryString(dpy, egl.EGL_VENDOR))
+	fmt.Printf("  Version:    %s\n", egl.QueryString(dpy, egl.EGL_VERSION))
+	fmt.Printf("  Client APIs: %s\n", egl.QueryString(dpy, egl.EGL_CLIENT_APIS))
+	fmt.Printf("  Extensions: %s\n", egl.QueryString(dpy, egl.EGL_EXTENSIONS))
 
 	// 2. Choose a config with ES2 support and pbuffer surface type.
 	attribs := []egl.Int{
@@ -708,10 +692,10 @@ func main() {
 
 	// 4. Query OpenGL ES strings.
 	fmt.Println()
-	fmt.Printf("GL Vendor:     %s\n", goString(gles2.GetString(glVendor)))
-	fmt.Printf("GL Renderer:   %s\n", goString(gles2.GetString(glRenderer)))
-	fmt.Printf("GL Version:    %s\n", goString(gles2.GetString(glVersion)))
-	fmt.Printf("GL Extensions: %s\n", goString(gles2.GetString(glExtensions)))
+	fmt.Printf("GL Vendor:     %s\n", goString(gles2.GetString(gles2.GL_VENDOR)))
+	fmt.Printf("GL Renderer:   %s\n", goString(gles2.GetString(gles2.GL_RENDERER)))
+	fmt.Printf("GL Version:    %s\n", goString(gles2.GetString(gles2.GL_VERSION)))
+	fmt.Printf("GL Extensions: %s\n", goString(gles2.GetString(gles2.GL_EXTENSIONS)))
 
 	egl.MakeCurrent(dpy, nil, nil, nil)
 }
