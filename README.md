@@ -249,6 +249,306 @@ All types implement idempotent, nil-safe `Close() error`. Error types wrap NDK s
 
 More examples: [`examples/`](examples/)
 
+## ndkcli
+
+`ndkcli` is a CLI tool that exposes the full Android NDK surface from the command line. Supports 273 commands across 33 modules — query cameras, record audio, probe GPU capabilities, check sensors, and more.
+
+### Install
+
+**Option A: Download pre-built binary** from [GitHub Releases](https://github.com/xaionaro-go/ndk/releases):
+
+```bash
+# Download for your device architecture
+wget https://github.com/xaionaro-go/ndk/releases/latest/download/ndkcli-android-arm64
+adb push ndkcli-android-arm64 /data/local/tmp/ndkcli
+adb shell chmod 755 /data/local/tmp/ndkcli
+```
+
+**Option B: Build from source** (requires Android NDK):
+
+```bash
+make ndkcli                                # → build/ndkcli (arm64)
+adb push build/ndkcli /data/local/tmp/
+adb shell chmod 755 /data/local/tmp/ndkcli
+```
+
+### Quick start
+
+```bash
+# List cameras
+adb shell /data/local/tmp/ndkcli camera list-details
+
+# Record 5 seconds of audio
+adb shell /data/local/tmp/ndkcli audio record --output /data/local/tmp/rec.pcm --duration 5s
+
+# Check thermal status
+adb shell /data/local/tmp/ndkcli thermal manager current-status
+
+# Query GPU
+adb shell /data/local/tmp/ndkcli gles2 info
+
+# List sensors
+adb shell /data/local/tmp/ndkcli sensor read --type 1
+```
+
+### List all commands
+
+```bash
+# From source (no Android needed):
+make ndkcli-commands
+
+# On device:
+adb shell /data/local/tmp/ndkcli --help
+adb shell /data/local/tmp/ndkcli camera --help
+```
+
+### Examples
+
+<details>
+<summary>List available cameras and their characteristics</summary>
+
+```bash
+# List camera IDs
+adb shell /data/local/tmp/ndkcli camera manager camera-id-list
+
+# Show full details (lens facing, orientation, hardware level) for all cameras
+adb shell /data/local/tmp/ndkcli camera list-details
+
+# Query characteristics for a specific camera
+adb shell /data/local/tmp/ndkcli camera manager get-camera-characteristics --camera-id 0
+```
+
+</details>
+
+<details>
+<summary>Capture raw frames from the camera</summary>
+
+```bash
+# Capture 10 frames from camera 0 at 640x480 in RGBA format, save to file
+adb shell /data/local/tmp/ndkcli camera capture \
+    --id 0 --width 640 --height 480 --format 1 --count 10 \
+    --output /data/local/tmp/frames.raw
+```
+
+</details>
+
+<details>
+<summary>Record audio from the microphone</summary>
+
+```bash
+# Record 5 seconds of mono 44.1kHz PCM16 audio
+adb shell /data/local/tmp/ndkcli audio record \
+    --output /data/local/tmp/recording.pcm \
+    --duration 5s --sample-rate 44100 --channels 1
+
+# Record 10 seconds of stereo 48kHz audio
+adb shell /data/local/tmp/ndkcli audio record \
+    --output /data/local/tmp/stereo.pcm \
+    --duration 10s --sample-rate 48000 --channels 2
+```
+
+</details>
+
+<details>
+<summary>Play back recorded audio</summary>
+
+```bash
+# Play a previously recorded PCM file
+adb shell /data/local/tmp/ndkcli audio play \
+    --input /data/local/tmp/recording.pcm \
+    --sample-rate 44100 --channels 1
+```
+
+</details>
+
+<details>
+<summary>Query audio system capabilities</summary>
+
+```bash
+# Open a probe stream and print audio properties
+adb shell /data/local/tmp/ndkcli audio stream-builder new
+adb shell /data/local/tmp/ndkcli audio stream channel-count
+adb shell /data/local/tmp/ndkcli audio stream sample-rate
+adb shell /data/local/tmp/ndkcli audio stream frames-per-burst
+```
+
+</details>
+
+<details>
+<summary>List sensors and read sensor data</summary>
+
+```bash
+# List all available sensors (probes known types)
+adb shell /data/local/tmp/ndkcli sensor read --type 1   # Accelerometer
+adb shell /data/local/tmp/ndkcli sensor read --type 4   # Gyroscope
+adb shell /data/local/tmp/ndkcli sensor read --type 5   # Light
+
+# Query a specific sensor by type number
+adb shell /data/local/tmp/ndkcli sensor manager default-sensor --value 1
+adb shell /data/local/tmp/ndkcli sensor sensor name
+adb shell /data/local/tmp/ndkcli sensor sensor vendor
+adb shell /data/local/tmp/ndkcli sensor sensor resolution
+```
+
+</details>
+
+<details>
+<summary>Check thermal status</summary>
+
+```bash
+# One-shot thermal status
+adb shell /data/local/tmp/ndkcli thermal manager current-status
+
+# Monitor thermal status every 2 seconds for 30 seconds
+adb shell /data/local/tmp/ndkcli thermal monitor --interval 2s --duration 30s
+```
+
+</details>
+
+<details>
+<summary>Query EGL and GPU capabilities</summary>
+
+```bash
+# EGL display information (vendor, version, extensions)
+adb shell /data/local/tmp/ndkcli egl info
+
+# List EGL configurations
+adb shell /data/local/tmp/ndkcli egl configs
+
+# OpenGL ES 2.0 info (creates pbuffer context, queries GL strings)
+adb shell /data/local/tmp/ndkcli gles2 info
+
+# OpenGL ES 3.0 info
+adb shell /data/local/tmp/ndkcli gles3 info
+```
+
+</details>
+
+<details>
+<summary>Probe available media codecs</summary>
+
+```bash
+# Check which codecs are available (H.264, H.265, VP8/9, AV1, AAC, etc.)
+adb shell /data/local/tmp/ndkcli media codecs
+
+# Create specific encoder/decoder
+adb shell /data/local/tmp/ndkcli media new-encoder --mime_type video/avc
+adb shell /data/local/tmp/ndkcli media new-decoder --mime_type audio/mp4a-latm
+
+# Probe a media file
+adb shell /data/local/tmp/ndkcli media probe --file /sdcard/video.mp4
+```
+
+</details>
+
+<details>
+<summary>Read device configuration</summary>
+
+```bash
+# Show all configuration values (density, orientation, screen, SDK version)
+adb shell /data/local/tmp/ndkcli config show
+
+# Individual queries
+adb shell /data/local/tmp/ndkcli config config density
+adb shell /data/local/tmp/ndkcli config config sdk-version
+adb shell /data/local/tmp/ndkcli config config screen-width-dp
+adb shell /data/local/tmp/ndkcli config config orientation
+```
+
+</details>
+
+<details>
+<summary>Decode an image file</summary>
+
+```bash
+# Decode a JPEG/PNG and print dimensions, stride, format
+adb shell /data/local/tmp/ndkcli image decode --file /sdcard/photo.jpg
+
+# Decode with target size (downscale)
+adb shell /data/local/tmp/ndkcli image decode --file /sdcard/photo.jpg --width 320 --height 240
+```
+
+</details>
+
+<details>
+<summary>Match system fonts</summary>
+
+```bash
+# Find a matching font by family name and weight
+adb shell /data/local/tmp/ndkcli font match --family sans-serif --weight 400
+adb shell /data/local/tmp/ndkcli font match --family serif --weight 700 --italic
+```
+
+</details>
+
+<details>
+<summary>Check permissions</summary>
+
+```bash
+# Check if a permission is granted for a PID/UID
+adb shell /data/local/tmp/ndkcli permission check \
+    --name android.permission.CAMERA --pid 1000 --uid 1000
+```
+
+</details>
+
+<details>
+<summary>Trace and logging</summary>
+
+```bash
+# Check if tracing is enabled
+adb shell /data/local/tmp/ndkcli trace is-enabled
+
+# Add a trace marker
+adb shell /data/local/tmp/ndkcli trace begin-section --section-name "my_operation"
+adb shell /data/local/tmp/ndkcli trace end-section
+
+# Set a trace counter
+adb shell /data/local/tmp/ndkcli trace set-counter --counter-name "frames" --counter-value 42
+
+# Write to Android log
+adb shell /data/local/tmp/ndkcli log write --tag myapp --text "hello from ndkcli" --prio 4
+```
+
+</details>
+
+<details>
+<summary>NNAPI (Neural Networks) probe</summary>
+
+```bash
+# Check if NNAPI is available
+adb shell /data/local/tmp/ndkcli nnapi probe
+
+# Create and inspect a model
+adb shell /data/local/tmp/ndkcli nnapi model new
+```
+
+</details>
+
+<details>
+<summary>Storage and OBB</summary>
+
+```bash
+# Check OBB mount status
+adb shell /data/local/tmp/ndkcli storage obb --file /sdcard/main.obb
+adb shell /data/local/tmp/ndkcli storage manager is-obb-mounted --filename /sdcard/main.obb
+```
+
+</details>
+
+<details>
+<summary>Looper and window utilities</summary>
+
+```bash
+# Test looper functionality (prepare, wake, poll)
+adb shell /data/local/tmp/ndkcli looper test
+
+# Query window properties via ImageReader-backed window
+adb shell /data/local/tmp/ndkcli window query
+```
+
+</details>
+
 ## Examples
 
 <details>
@@ -1015,279 +1315,6 @@ func main() {
 		fmt.Printf("Status: %d\n", status)
 	}
 }
-```
-
-</details>
-
-## ndkcli
-
-`ndkcli` is a cobra-based CLI tool that exposes the full NDK surface from the command line. It is auto-generated by `tools/cmd/cligen/` and includes hand-written workflow commands for end-to-end operations.
-
-### Build & deploy
-
-```bash
-# Build for Android (requires NDK)
-make ndkcli
-
-# Push to device
-adb push ndkcli /data/local/tmp/
-adb shell chmod +x /data/local/tmp/ndkcli
-```
-
-### List all commands
-
-```bash
-# From source (no Android needed):
-make ndkcli-commands
-
-# On device:
-adb shell /data/local/tmp/ndkcli --help
-adb shell /data/local/tmp/ndkcli camera --help
-```
-
-### Examples
-
-<details>
-<summary>List available cameras and their characteristics</summary>
-
-```bash
-# List camera IDs
-adb shell /data/local/tmp/ndkcli camera manager camera-id-list
-
-# Show full details (lens facing, orientation, hardware level) for all cameras
-adb shell /data/local/tmp/ndkcli camera list-details
-
-# Query characteristics for a specific camera
-adb shell /data/local/tmp/ndkcli camera manager get-camera-characteristics --camera-id 0
-```
-
-</details>
-
-<details>
-<summary>Capture raw frames from the camera</summary>
-
-```bash
-# Capture 10 frames from camera 0 at 640x480 in RGBA format, save to file
-adb shell /data/local/tmp/ndkcli camera capture \
-    --id 0 --width 640 --height 480 --format 1 --count 10 \
-    --output /data/local/tmp/frames.raw
-```
-
-</details>
-
-<details>
-<summary>Record audio from the microphone</summary>
-
-```bash
-# Record 5 seconds of mono 44.1kHz PCM16 audio
-adb shell /data/local/tmp/ndkcli audio record \
-    --output /data/local/tmp/recording.pcm \
-    --duration 5s --sample-rate 44100 --channels 1
-
-# Record 10 seconds of stereo 48kHz audio
-adb shell /data/local/tmp/ndkcli audio record \
-    --output /data/local/tmp/stereo.pcm \
-    --duration 10s --sample-rate 48000 --channels 2
-```
-
-</details>
-
-<details>
-<summary>Play back recorded audio</summary>
-
-```bash
-# Play a previously recorded PCM file
-adb shell /data/local/tmp/ndkcli audio play \
-    --input /data/local/tmp/recording.pcm \
-    --sample-rate 44100 --channels 1
-```
-
-</details>
-
-<details>
-<summary>Query audio system capabilities</summary>
-
-```bash
-# Open a probe stream and print audio properties
-adb shell /data/local/tmp/ndkcli audio stream-builder new
-adb shell /data/local/tmp/ndkcli audio stream channel-count
-adb shell /data/local/tmp/ndkcli audio stream sample-rate
-adb shell /data/local/tmp/ndkcli audio stream frames-per-burst
-```
-
-</details>
-
-<details>
-<summary>List sensors and read sensor data</summary>
-
-```bash
-# List all available sensors (probes known types)
-adb shell /data/local/tmp/ndkcli sensor read --type 1   # Accelerometer
-adb shell /data/local/tmp/ndkcli sensor read --type 4   # Gyroscope
-adb shell /data/local/tmp/ndkcli sensor read --type 5   # Light
-
-# Query a specific sensor by type number
-adb shell /data/local/tmp/ndkcli sensor manager default-sensor --value 1
-adb shell /data/local/tmp/ndkcli sensor sensor name
-adb shell /data/local/tmp/ndkcli sensor sensor vendor
-adb shell /data/local/tmp/ndkcli sensor sensor resolution
-```
-
-</details>
-
-<details>
-<summary>Check thermal status</summary>
-
-```bash
-# One-shot thermal status
-adb shell /data/local/tmp/ndkcli thermal manager current-status
-
-# Monitor thermal status every 2 seconds for 30 seconds
-adb shell /data/local/tmp/ndkcli thermal monitor --interval 2s --duration 30s
-```
-
-</details>
-
-<details>
-<summary>Query EGL and GPU capabilities</summary>
-
-```bash
-# EGL display information (vendor, version, extensions)
-adb shell /data/local/tmp/ndkcli egl info
-
-# List EGL configurations
-adb shell /data/local/tmp/ndkcli egl configs
-
-# OpenGL ES 2.0 info (creates pbuffer context, queries GL strings)
-adb shell /data/local/tmp/ndkcli gles2 info
-
-# OpenGL ES 3.0 info
-adb shell /data/local/tmp/ndkcli gles3 info
-```
-
-</details>
-
-<details>
-<summary>Probe available media codecs</summary>
-
-```bash
-# Check which codecs are available (H.264, H.265, VP8/9, AV1, AAC, etc.)
-adb shell /data/local/tmp/ndkcli media codecs
-
-# Create specific encoder/decoder
-adb shell /data/local/tmp/ndkcli media new-encoder --mime_type video/avc
-adb shell /data/local/tmp/ndkcli media new-decoder --mime_type audio/mp4a-latm
-
-# Probe a media file
-adb shell /data/local/tmp/ndkcli media probe --file /sdcard/video.mp4
-```
-
-</details>
-
-<details>
-<summary>Read device configuration</summary>
-
-```bash
-# Show all configuration values (density, orientation, screen, SDK version)
-adb shell /data/local/tmp/ndkcli config show
-
-# Individual queries
-adb shell /data/local/tmp/ndkcli config config density
-adb shell /data/local/tmp/ndkcli config config sdk-version
-adb shell /data/local/tmp/ndkcli config config screen-width-dp
-adb shell /data/local/tmp/ndkcli config config orientation
-```
-
-</details>
-
-<details>
-<summary>Decode an image file</summary>
-
-```bash
-# Decode a JPEG/PNG and print dimensions, stride, format
-adb shell /data/local/tmp/ndkcli image decode --file /sdcard/photo.jpg
-
-# Decode with target size (downscale)
-adb shell /data/local/tmp/ndkcli image decode --file /sdcard/photo.jpg --width 320 --height 240
-```
-
-</details>
-
-<details>
-<summary>Match system fonts</summary>
-
-```bash
-# Find a matching font by family name and weight
-adb shell /data/local/tmp/ndkcli font match --family sans-serif --weight 400
-adb shell /data/local/tmp/ndkcli font match --family serif --weight 700 --italic
-```
-
-</details>
-
-<details>
-<summary>Check permissions</summary>
-
-```bash
-# Check if a permission is granted for a PID/UID
-adb shell /data/local/tmp/ndkcli permission check \
-    --name android.permission.CAMERA --pid 1000 --uid 1000
-```
-
-</details>
-
-<details>
-<summary>Trace and logging</summary>
-
-```bash
-# Check if tracing is enabled
-adb shell /data/local/tmp/ndkcli trace is-enabled
-
-# Add a trace marker
-adb shell /data/local/tmp/ndkcli trace begin-section --section-name "my_operation"
-adb shell /data/local/tmp/ndkcli trace end-section
-
-# Set a trace counter
-adb shell /data/local/tmp/ndkcli trace set-counter --counter-name "frames" --counter-value 42
-
-# Write to Android log
-adb shell /data/local/tmp/ndkcli log write --tag myapp --text "hello from ndkcli" --prio 4
-```
-
-</details>
-
-<details>
-<summary>NNAPI (Neural Networks) probe</summary>
-
-```bash
-# Check if NNAPI is available
-adb shell /data/local/tmp/ndkcli nnapi probe
-
-# Create and inspect a model
-adb shell /data/local/tmp/ndkcli nnapi model new
-```
-
-</details>
-
-<details>
-<summary>Storage and OBB</summary>
-
-```bash
-# Check OBB mount status
-adb shell /data/local/tmp/ndkcli storage obb --file /sdcard/main.obb
-adb shell /data/local/tmp/ndkcli storage manager is-obb-mounted --filename /sdcard/main.obb
-```
-
-</details>
-
-<details>
-<summary>Looper and window utilities</summary>
-
-```bash
-# Test looper functionality (prepare, wake, poll)
-adb shell /data/local/tmp/ndkcli looper test
-
-# Query window properties via ImageReader-backed window
-adb shell /data/local/tmp/ndkcli window query
 ```
 
 </details>
