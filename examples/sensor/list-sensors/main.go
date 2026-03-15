@@ -31,7 +31,7 @@ func printSensor(mgr *sensor.Manager, label string, sensorType sensor.Type) (ok 
 		}
 	}()
 
-	s := mgr.DefaultSensor(int32(sensorType))
+	s := mgr.DefaultSensor(sensorType)
 
 	// Trigger a method call; if the internal pointer is NULL the NDK
 	// dereferences a null pointer and Go's signal handler turns it

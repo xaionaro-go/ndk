@@ -35,7 +35,7 @@ func probeSensor(
 		}
 	}()
 
-	s := mgr.DefaultSensor(int32(sensorType))
+	s := mgr.DefaultSensor(sensorType)
 	name = s.Name()
 	vendor = s.Vendor()
 	if name == "" || vendor == "" {
