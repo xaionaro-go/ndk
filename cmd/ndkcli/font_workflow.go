@@ -18,10 +18,25 @@ var fontMatchCmd = &cobra.Command{
 		matcher := font.NewMatcher()
 		defer matcher.Close()
 
+		fmt.Println("setting style...")
 		matcher.SetStyle(weight, italic)
 
-		matched := matcher.Match(family, nil, 0, nil)
-		if matched.Pointer() == nil {
+		// AFontMatcher_match requires non-nil text for script detection.
+		text := []uint16{'A'}
+		var runLength uint32
+		fmt.Printf("matching family=%q weight=%d italic=%v...\n", family, weight, italic)
+
+		var matched *font.Font
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					fmt.Printf("font matching crashed (recovered): %v\n", r)
+				}
+			}()
+			matched = matcher.Match(family, &text[0], uint32(len(text)), &runLength)
+		}()
+		fmt.Printf("match returned, runLength=%d\n", runLength)
+		if matched == nil || matched.Pointer() == nil {
 			fmt.Println("no matching font found")
 			return nil
 		}
