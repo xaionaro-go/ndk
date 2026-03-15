@@ -36,6 +36,26 @@ functions:
     output_params:
       outBundle: "*PersistableBundle"
 
+  # Get*Vector functions return size in bytes (>=0) or APERSISTABLEBUNDLE_KEY_NOT_FOUND (-1).
+  # Use pure:true so callers get the size back (needed for the two-call pattern:
+  # first call with nil buffer to get required size, second call to fill buffer).
+  APersistableBundle_getBooleanVector:
+    receiver: PersistableBundle
+    go_name: GetBooleanVector
+    pure: true
+  APersistableBundle_getIntVector:
+    receiver: PersistableBundle
+    go_name: GetIntVector
+    pure: true
+  APersistableBundle_getLongVector:
+    receiver: PersistableBundle
+    go_name: GetLongVector
+    pure: true
+  APersistableBundle_getDoubleVector:
+    receiver: PersistableBundle
+    go_name: GetDoubleVector
+    pure: true
+
   # Skip: takes const char* const* which is complex to wrap idiomatically
   APersistableBundle_putStringVector:
     skip: true

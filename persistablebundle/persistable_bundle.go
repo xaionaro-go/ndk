@@ -53,9 +53,9 @@ func (h *PersistableBundle) GetBoolean(key string, val *bool) bool {
 	return (bool)(capi.APersistableBundle_getBoolean(h.ptr, key, val))
 }
 
-// GetBooleanVector calls the underlying NDK function.
-func (h *PersistableBundle) GetBooleanVector(key string, buffer *bool, bufferSizeBytes int32) error {
-	return result(int32(capi.APersistableBundle_getBooleanVector(h.ptr, key, buffer, bufferSizeBytes)))
+// GetBooleanVector returns the value directly.
+func (h *PersistableBundle) GetBooleanVector(key string, buffer *bool, bufferSizeBytes int32) int32 {
+	return (int32)(capi.APersistableBundle_getBooleanVector(h.ptr, key, buffer, bufferSizeBytes))
 }
 
 // GetDouble returns the value directly.
@@ -63,9 +63,9 @@ func (h *PersistableBundle) GetDouble(key string, val *float64) bool {
 	return (bool)(capi.APersistableBundle_getDouble(h.ptr, key, val))
 }
 
-// GetDoubleVector calls the underlying NDK function.
-func (h *PersistableBundle) GetDoubleVector(key string, buffer *float64, bufferSizeBytes int32) error {
-	return result(int32(capi.APersistableBundle_getDoubleVector(h.ptr, key, buffer, bufferSizeBytes)))
+// GetDoubleVector returns the value directly.
+func (h *PersistableBundle) GetDoubleVector(key string, buffer *float64, bufferSizeBytes int32) int32 {
+	return (int32)(capi.APersistableBundle_getDoubleVector(h.ptr, key, buffer, bufferSizeBytes))
 }
 
 // GetInt returns the value directly.
@@ -73,9 +73,9 @@ func (h *PersistableBundle) GetInt(key string, val *int32) bool {
 	return (bool)(capi.APersistableBundle_getInt(h.ptr, key, val))
 }
 
-// GetIntVector calls the underlying NDK function.
-func (h *PersistableBundle) GetIntVector(key string, buffer *int32, bufferSizeBytes int32) error {
-	return result(int32(capi.APersistableBundle_getIntVector(h.ptr, key, buffer, bufferSizeBytes)))
+// GetIntVector returns the value directly.
+func (h *PersistableBundle) GetIntVector(key string, buffer *int32, bufferSizeBytes int32) int32 {
+	return (int32)(capi.APersistableBundle_getIntVector(h.ptr, key, buffer, bufferSizeBytes))
 }
 
 // GetLong returns the value directly.
@@ -83,9 +83,9 @@ func (h *PersistableBundle) GetLong(key string, val *int64) bool {
 	return (bool)(capi.APersistableBundle_getLong(h.ptr, key, val))
 }
 
-// GetLongVector calls the underlying NDK function.
-func (h *PersistableBundle) GetLongVector(key string, buffer *int64, bufferSizeBytes int32) error {
-	return result(int32(capi.APersistableBundle_getLongVector(h.ptr, key, buffer, bufferSizeBytes)))
+// GetLongVector returns the value directly.
+func (h *PersistableBundle) GetLongVector(key string, buffer *int64, bufferSizeBytes int32) int32 {
+	return (int32)(capi.APersistableBundle_getLongVector(h.ptr, key, buffer, bufferSizeBytes))
 }
 
 // GetPersistableBundle calls the underlying NDK function.
