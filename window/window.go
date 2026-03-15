@@ -74,8 +74,8 @@ func (h *Window) SetBuffersDataSpace(dataSpace int32) error {
 }
 
 // SetBuffersGeometry calls the underlying NDK function.
-func (h *Window) SetBuffersGeometry(width int32, height int32, format int32) error {
-	return result(int32(capi.ANativeWindow_setBuffersGeometry(h.ptr, width, height, format)))
+func (h *Window) SetBuffersGeometry(width int32, height int32, format Format) error {
+	return result(int32(capi.ANativeWindow_setBuffersGeometry(h.ptr, width, height, int32(format))))
 }
 
 // SetBuffersTransform calls the underlying NDK function.

@@ -224,8 +224,8 @@ func (h *Config) SetNavigation(navigation int32) {
 }
 
 // SetOrientation calls the underlying NDK function.
-func (h *Config) SetOrientation(orientation int32) {
-	capi.AConfiguration_setOrientation(h.ptr, orientation)
+func (h *Config) SetOrientation(orientation Orientation) {
+	capi.AConfiguration_setOrientation(h.ptr, int32(orientation))
 }
 
 // SetScreenHeightDp calls the underlying NDK function.
@@ -239,8 +239,8 @@ func (h *Config) SetScreenLong(screenLong int32) {
 }
 
 // SetScreenSize calls the underlying NDK function.
-func (h *Config) SetScreenSize(screenSize int32) {
-	capi.AConfiguration_setScreenSize(h.ptr, screenSize)
+func (h *Config) SetScreenSize(screenSize ScreenSize) {
+	capi.AConfiguration_setScreenSize(h.ptr, int32(screenSize))
 }
 
 // SetScreenWidthDp calls the underlying NDK function.

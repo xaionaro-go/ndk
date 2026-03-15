@@ -47,8 +47,8 @@ func __android_log_set_default_tag(tag string) {
 }
 
 // __android_log_set_minimum_priority calls the underlying C function.
-func __android_log_set_minimum_priority(priority int32) int32 {
-	return (int32)(capi.Android_log_set_minimum_priority(priority))
+func __android_log_set_minimum_priority(priority Priority) int32 {
+	return (int32)(capi.Android_log_set_minimum_priority(int32(priority)))
 }
 
 // __android_log_stderr_logger calls the underlying C function.

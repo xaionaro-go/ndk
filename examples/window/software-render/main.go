@@ -124,15 +124,15 @@ func main() {
 	// switching pixel formats.
 	//
 	//   // Set 720p resolution with RGBA8888 format.
-	//   if err := win.SetBuffersGeometry(1280, 720, int32(window.Rgba8888)); err != nil {
+	//   if err := win.SetBuffersGeometry(1280, 720, window.Rgba8888); err != nil {
 	//       log.Fatalf("set geometry: %v", err)
 	//   }
 	//
 	//   // Or keep current dimensions and only change the format:
-	//   win.SetBuffersGeometry(0, 0, int32(window.Rgb565))
+	//   win.SetBuffersGeometry(0, 0, window.Rgb565)
 
 	fmt.Println("Step 3: Configure buffer geometry")
-	fmt.Println("  win.SetBuffersGeometry(1280, 720, int32(window.Rgba8888))")
+	fmt.Println("  win.SetBuffersGeometry(1280, 720, window.Rgba8888)")
 	fmt.Println("  // Pass 0 for width/height to keep current dimensions.")
 	fmt.Println()
 

@@ -36,7 +36,7 @@ func main() {
 	// device lacks the requested sensor type, the underlying C pointer
 	// is NULL and any method call will crash. We call Name() first and
 	// treat an empty result (or panic) as "sensor not available."
-	accel := mgr.DefaultSensor(int32(sensor.Accelerometer))
+	accel := mgr.DefaultSensor(sensor.Accelerometer)
 
 	name := accel.Name()
 	if name == "" {

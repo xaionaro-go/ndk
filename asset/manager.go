@@ -24,8 +24,8 @@ func (h *Manager) Pointer() unsafe.Pointer {
 }
 
 // Open creates a new Asset from this Manager.
-func (h *Manager) Open(filename string, mode int32) *Asset {
-	return &Asset{ptr: capi.AAssetManager_open(h.ptr, filename, mode)}
+func (h *Manager) Open(filename string, mode Mode) *Asset {
+	return &Asset{ptr: capi.AAssetManager_open(h.ptr, filename, int32(mode))}
 }
 
 // OpenDir creates a new Dir from this Manager.

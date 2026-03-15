@@ -54,13 +54,13 @@ func (h *Manager) DestroyEventQueue(queue *EventQueue) error {
 }
 
 // DefaultSensor creates a new Sensor from this Manager.
-func (h *Manager) DefaultSensor(_type int32) *Sensor {
-	return &Sensor{ptr: capi.ASensorManager_getDefaultSensor(h.ptr, _type)}
+func (h *Manager) DefaultSensor(_type Type) *Sensor {
+	return &Sensor{ptr: capi.ASensorManager_getDefaultSensor(h.ptr, int32(_type))}
 }
 
 // GetDefaultSensorEx creates a new Sensor from this Manager.
-func (h *Manager) GetDefaultSensorEx(_type int32, wakeUp bool) *Sensor {
-	return &Sensor{ptr: capi.ASensorManager_getDefaultSensorEx(h.ptr, _type, wakeUp)}
+func (h *Manager) GetDefaultSensorEx(_type Type, wakeUp bool) *Sensor {
+	return &Sensor{ptr: capi.ASensorManager_getDefaultSensorEx(h.ptr, int32(_type), wakeUp)}
 }
 
 // GetDynamicSensorList returns the value directly.

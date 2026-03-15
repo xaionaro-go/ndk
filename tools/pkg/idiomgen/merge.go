@@ -56,6 +56,27 @@ func isScalarGoType(t string) bool {
 	return false
 }
 
+// inferEnumType checks whether an int32 param's name matches a value enum
+// GoName in this module. If so, returns the enum GoName; otherwise returns
+// goType unchanged. This replaces bare int32 with typed enums like sensor.Type.
+func inferEnumType(
+	specParamName string,
+	goType string,
+	enumGoNames map[string]bool,
+) string {
+	if goType != "int32" || specParamName == "" {
+		return goType
+	}
+
+	candidate := strings.ToUpper(specParamName[:1]) + specParamName[1:]
+	candidate = fixGoAcronyms(candidate)
+	if enumGoNames[candidate] {
+		return candidate
+	}
+
+	return goType
+}
+
 // autoGoTypeName derives an idiomatic Go type name from a C/spec type name.
 // It strips the common Android NDK "A" prefix when followed by an uppercase
 // letter: "AImageReader" → "ImageReader", "ALooper" → "Looper".
@@ -309,6 +330,30 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 	// typeMap resolves spec type names to Go type names.
 	typeMap := make(map[string]string)
 
+	// Build set of value enum GoNames for param-name-based enum inference.
+	// Constructed early so constructor params can also benefit.
+	// Includes both spec enums and overlay extra_enums (which may define
+	// enum types that don't exist in the generated spec).
+	enumGoNames := make(map[string]bool)
+	allEnumNames := make(map[string]bool)
+	for name := range spec.Enums {
+		allEnumNames[name] = true
+	}
+	for name := range overlay.ExtraEnums {
+		allEnumNames[name] = true
+	}
+	for enumName := range allEnumNames {
+		tov := overlay.Types[enumName]
+		if tov.GoError {
+			continue
+		}
+		goName := tov.GoName
+		if goName == "" {
+			goName = autoGoTypeName(enumName)
+		}
+		enumGoNames[goName] = true
+	}
+
 	// Build set of types that are callback structs or struct accessors (not opaque handles).
 	bridgeStructTypes := make(map[string]bool)
 	for specName := range overlay.CallbackStructs {
@@ -457,6 +502,8 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 						continue
 					}
 					goType := resolveType(p.Type, typeMap)
+					goType = inferEnumType(p.Name, goType, enumGoNames)
+					remapped := goType != resolveType(p.Type, typeMap)
 					isString := p.Type == "*byte"
 					if isString {
 						goType = "string"
@@ -475,6 +522,7 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 						Name:     safeGoParamName(p.Name, ctorParamIdx),
 						GoType:   goType,
 						CapiType: capiType,
+						Remapped: remapped,
 						IsString: isString,
 						IsHandle: isHandle,
 					})
@@ -758,9 +806,9 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 			// Overlay-directed processing (original behavior).
 			switch {
 			case fov.Receiver != "":
-				m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
+				m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
 			case fov.GoName != "":
-				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, opaqueSpecNames))
+				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames))
 			}
 		} else {
 			// Auto-generate: detect receiver and derive Go name.
@@ -798,7 +846,7 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 					autoFov.ReturnsNew = specToGoName[returnBase]
 				}
 
-				m.Methods = append(m.Methods, mergeMethod(funcName, fd, autoFov, overlay.APILevels, typeMap, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
+				m.Methods = append(m.Methods, mergeMethod(funcName, fd, autoFov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
 
 			default:
 				// Skip auto-generation for free functions that would produce
@@ -812,7 +860,7 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 				autoFov := overlaymodel.FuncOverlay{
 					GoName: goName,
 				}
-				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, autoFov, overlay.APILevels, typeMap, opaqueSpecNames))
+				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, autoFov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames))
 			}
 		}
 	}
@@ -837,9 +885,9 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 		}
 		switch {
 		case fov.Receiver != "":
-			m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
+			m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
 		case fov.GoName != "":
-			m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, opaqueSpecNames))
+			m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames))
 		}
 	}
 
@@ -1083,7 +1131,7 @@ func toTitleCase(s string) string {
 	return fixGoAcronyms(b.String())
 }
 
-func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, receiverCapiTypes map[string]string, opaqueSpecNames map[string]bool, callbackStructOverlays map[string]overlaymodel.CallbackStructOverlay, structAccessors map[string]overlaymodel.StructAccessorOverlay) MergedMethod {
+func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, enumGoNames map[string]bool, receiverCapiTypes map[string]string, opaqueSpecNames map[string]bool, callbackStructOverlays map[string]overlaymodel.CallbackStructOverlay, structAccessors map[string]overlaymodel.StructAccessorOverlay) MergedMethod {
 	var params []MergedParam
 	receiverFound := false
 	paramIdx := 0
@@ -1093,10 +1141,16 @@ func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOve
 			continue
 		}
 		goType := resolveType(p.Type, typeMap)
+		// Overlay explicit override takes priority over heuristic inference.
+		if override, ok := fov.ParamTypes[p.Name]; ok {
+			goType = override
+		} else {
+			goType = inferEnumType(p.Name, goType, enumGoNames)
+		}
 		baseType := strings.TrimPrefix(p.Type, "*")
 		isHandle := strings.HasPrefix(p.Type, "*") && opaqueSpecNames[baseType]
 		isString := p.Type == "*byte"
-		remapped := isTypeRemapped(p.Type, typeMap)
+		remapped := isTypeRemapped(p.Type, typeMap) || goType != resolveType(p.Type, typeMap)
 		if isString {
 			goType = "string"
 		}
@@ -1264,14 +1318,19 @@ func deriveGoName(funcName, receiver string, receiverCapiTypes map[string]string
 	return fixGoAcronyms(funcName)
 }
 
-func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, opaqueSpecNames map[string]bool) MergedFreeFunction {
+func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, enumGoNames map[string]bool, opaqueSpecNames map[string]bool) MergedFreeFunction {
 	var params []MergedParam
 	for i, p := range fd.Params {
 		goType := resolveType(p.Type, typeMap)
+		if override, ok := fov.ParamTypes[p.Name]; ok {
+			goType = override
+		} else {
+			goType = inferEnumType(p.Name, goType, enumGoNames)
+		}
 		baseType := strings.TrimPrefix(p.Type, "*")
 		isHandle := strings.HasPrefix(p.Type, "*") && opaqueSpecNames[baseType]
 		isString := p.Type == "*byte"
-		remapped := isTypeRemapped(p.Type, typeMap)
+		remapped := isTypeRemapped(p.Type, typeMap) || goType != resolveType(p.Type, typeMap)
 		if isString {
 			goType = "string"
 		}

@@ -43,8 +43,8 @@ func (h *Compilation) SetCaching(cacheDir string, token *uint8) error {
 }
 
 // SetPreference calls the underlying NDK function.
-func (h *Compilation) SetPreference(preference int32) error {
-	return result(int32(capi.ANeuralNetworksCompilation_setPreference(h.ptr, preference)))
+func (h *Compilation) SetPreference(preference Preference) error {
+	return result(int32(capi.ANeuralNetworksCompilation_setPreference(h.ptr, int32(preference))))
 }
 
 // SetPriority calls the underlying NDK function.

@@ -108,7 +108,7 @@ func main() {
 
 	if mgr != nil {
 		// Open a text file from the APK's assets/ directory.
-		a := mgr.Open("data/config.json", int32(asset.Streaming))
+		a := mgr.Open("data/config.json", asset.Streaming)
 		defer a.Close()
 
 		// Query total size. Length returns off_t (32-bit on older ABIs),
@@ -141,7 +141,7 @@ func main() {
 		// With Buffer mode, the entire asset is accessible through a
 		// direct pointer without calling Read:
 		//
-		//   a := mgr.Open("data/config.json", int32(asset.Buffer))
+		//   a := mgr.Open("data/config.json", asset.Buffer)
 		//   ptr := a.Buffer()  // unsafe.Pointer to the raw data
 		//   data := unsafe.Slice((*byte)(ptr), a.Length64())
 	}

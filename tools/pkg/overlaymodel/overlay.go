@@ -70,6 +70,7 @@ type FuncOverlay struct {
 	BridgeParams      []BridgeParam      `yaml:"bridge_params,omitempty"`  // params for bridge functions not in spec
 	BridgeReturns     string             `yaml:"bridge_returns,omitempty"` // return type for bridge functions not in spec
 	OutputParams      map[string]string  `yaml:"output_params,omitempty"`  // param name -> Go type; converted from C out-param to Go return value
+	ParamTypes        map[string]string  `yaml:"param_types,omitempty"`    // param name -> Go type; override or suppress enum inference
 }
 
 // BridgeParam is a parameter for a bridge function defined only in the overlay.

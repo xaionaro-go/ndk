@@ -50,7 +50,7 @@ func main() {
 	log.Println("sensor manager obtained")
 
 	// --- 2. Query default accelerometer ---
-	accel := mgr.DefaultSensor(int32(sensor.Accelerometer))
+	accel := mgr.DefaultSensor(sensor.Accelerometer)
 	name := accel.Name()
 	if name == "" {
 		log.Fatal("no default accelerometer on this device")

@@ -54,6 +54,11 @@ func capiArg(p MergedParam) string {
 			}
 			return "(" + strings.Repeat("*", stars) + "capi." + base + ")(" + p.Name + ")"
 		}
+		// Scalar Go types (int32, uint32, etc.) don't need a capi. prefix —
+		// they're built-in types, not capi package types.
+		if isScalarGoType(p.CapiType) {
+			return p.CapiType + "(" + p.Name + ")"
+		}
 		return "capi." + p.CapiType + "(" + p.Name + ")"
 	}
 	return p.Name
@@ -256,6 +261,9 @@ func FuncMap() template.FuncMap {
 				if strings.HasPrefix(p.CapiType, "*") {
 					return "(*capi." + p.CapiType[1:] + ")(" + p.Name + ")"
 				}
+				if isScalarGoType(p.CapiType) {
+					return p.CapiType + "(" + p.Name + ")"
+				}
 				return "capi." + p.CapiType + "(" + p.Name + ")"
 			}
 			return p.Name
@@ -286,6 +294,9 @@ func FuncMap() template.FuncMap {
 			if p.CapiType != "" && (p.CapiType != p.GoType || p.Remapped) {
 				if strings.HasPrefix(p.CapiType, "*") {
 					return "(*capi." + p.CapiType[1:] + ")(" + p.Name + ")"
+				}
+				if isScalarGoType(p.CapiType) {
+					return p.CapiType + "(" + p.Name + ")"
 				}
 				return "capi." + p.CapiType + "(" + p.Name + ")"
 			}
