@@ -1250,7 +1250,7 @@ adb shell /data/local/tmp/ndkcli trace end-section
 adb shell /data/local/tmp/ndkcli trace set-counter --counter-name "frames" --counter-value 42
 
 # Write to Android log
-adb shell /data/local/tmp/ndkcli log write --tag myapp --message "hello from ndkcli" --priority 4
+adb shell /data/local/tmp/ndkcli log write --tag myapp --text "hello from ndkcli" --prio 4
 ```
 
 </details>
