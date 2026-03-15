@@ -2,10 +2,76 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/xaionaro-go/ndk/font"
 )
+
+// matchFontFromIterator iterates all system fonts and finds the best
+// match for the given family, weight, and italic style. This replaces
+// AFontMatcher_match which crashes from headless CLI binaries because
+// libminikin's FontCollection is not initialized without an app context.
+func matchFontFromIterator(
+	family string,
+	weight uint16,
+	italic bool,
+) (*font.Font, error) {
+	iter := font.ASystemFontIterator_open()
+	if iter == nil || iter.Pointer() == nil {
+		return nil, fmt.Errorf("ASystemFontIterator_open returned nil")
+	}
+	defer iter.Close()
+
+	var bestFont *font.Font
+	bestScore := math.MaxInt32
+
+	for {
+		f := iter.Next()
+		if f == nil || f.Pointer() == nil {
+			break
+		}
+
+		// Check family match via file path (font files are named after families).
+		path := f.GetFontFilePath()
+		base := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
+		baseLower := strings.ToLower(base)
+		familyLower := strings.ToLower(family)
+
+		// Skip fonts that don't match the family name.
+		// Match by checking if the file name contains the family name.
+		if !strings.Contains(baseLower, familyLower) &&
+			!strings.Contains(familyLower, baseLower) {
+			f.Close()
+			continue
+		}
+
+		// Score: lower is better.
+		// Weight distance + italic mismatch penalty.
+		weightDist := int(weight) - int(f.Weight())
+		if weightDist < 0 {
+			weightDist = -weightDist
+		}
+		score := weightDist
+		if f.IsItalic() != italic {
+			score += 1000
+		}
+
+		if score < bestScore {
+			if bestFont != nil {
+				bestFont.Close()
+			}
+			bestFont = f
+			bestScore = score
+		} else {
+			f.Close()
+		}
+	}
+
+	return bestFont, nil
+}
 
 var fontMatchCmd = &cobra.Command{
 	Use:   "match",
@@ -15,36 +81,23 @@ var fontMatchCmd = &cobra.Command{
 		weight, _ := cmd.Flags().GetUint16("weight")
 		italic, _ := cmd.Flags().GetBool("italic")
 
-		matcher := font.NewMatcher()
-		defer matcher.Close()
-
-		fmt.Println("setting style...")
-		matcher.SetStyle(weight, italic)
-		matcher.SetLocales("en-US")
-		fmt.Println("style set OK")
-
-		// AFontMatcher_match requires the Android font system (libminikin).
-		// On headless CLI binaries (no app/Activity), the internal
-		// FontCollection is null, causing SIGSEGV in getFamilyForChar.
-		// This command only works within an Android app context.
-		fmt.Println("WARNING: font matching requires an Android app context (Activity/Service).")
-		fmt.Println("On headless CLI binaries, AFontMatcher_match will crash with SIGSEGV")
-		fmt.Println("because the system FontCollection is not initialized.")
-		text := []uint16{'A'}
-		var runLength uint32
 		fmt.Printf("matching family=%q weight=%d italic=%v...\n", family, weight, italic)
 
-		matched := matcher.Match(family, &text[0], uint32(len(text)), &runLength)
-		fmt.Printf("match returned, runLength=%d\n", runLength)
-		if matched == nil || matched.Pointer() == nil {
+		matched, err := matchFontFromIterator(family, weight, italic)
+		if err != nil {
+			return fmt.Errorf("font matching: %w", err)
+		}
+		if matched == nil {
 			fmt.Println("no matching font found")
 			return nil
 		}
 		defer matched.Close()
 
 		fmt.Printf("matched font:\n")
+		fmt.Printf("  path:     %s\n", matched.GetFontFilePath())
 		fmt.Printf("  weight:   %d\n", matched.Weight())
-		fmt.Printf("  is italic: %v\n", matched.IsItalic())
+		fmt.Printf("  italic:   %v\n", matched.IsItalic())
+		fmt.Printf("  locale:   %s\n", matched.GetLocale())
 
 		return nil
 	},
@@ -54,6 +107,8 @@ var fontListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List system fonts using ASystemFontIterator",
 	RunE: func(cmd *cobra.Command, args []string) (_err error) {
+		limit, _ := cmd.Flags().GetInt("limit")
+
 		iter := font.ASystemFontIterator_open()
 		if iter == nil || iter.Pointer() == nil {
 			return fmt.Errorf("ASystemFontIterator_open returned nil")
@@ -66,11 +121,11 @@ var fontListCmd = &cobra.Command{
 			if f == nil || f.Pointer() == nil {
 				break
 			}
-			fmt.Printf("  [%d] weight=%d italic=%v path=%s\n",
+			fmt.Printf("  [%d] weight=%d italic=%-5v %s\n",
 				count, f.Weight(), f.IsItalic(), f.GetFontFilePath())
 			f.Close()
 			count++
-			if count >= 20 {
+			if limit > 0 && count >= limit {
 				fmt.Println("  ... (truncated)")
 				break
 			}
@@ -81,9 +136,11 @@ var fontListCmd = &cobra.Command{
 }
 
 func init() {
-	fontMatchCmd.Flags().String("family", "sans-serif", "font family name")
-	fontMatchCmd.Flags().Uint16("weight", uint16(font.Normal), "font weight (100-900)")
+	fontMatchCmd.Flags().String("family", "Roboto", "font family name (matched against file name)")
+	fontMatchCmd.Flags().Uint16("weight", 400, "font weight (100-900)")
 	fontMatchCmd.Flags().Bool("italic", false, "request italic style")
+
+	fontListCmd.Flags().Int("limit", 0, "max fonts to list (0=all)")
 
 	fontCmd.AddCommand(fontMatchCmd)
 	fontCmd.AddCommand(fontListCmd)
