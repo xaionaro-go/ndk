@@ -42,7 +42,9 @@ jobs:
           go-version: "1.24"
 
       - name: Install Android NDK
-        run: make install-ndk
+        run: |
+          make install-ndk
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/28.0.13004108" >> "$GITHUB_ENV"
 
       - name: Cross-compile examples and ndkcli
         run: make check-examples
@@ -65,7 +67,9 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Install Android NDK
-        run: make install-ndk
+        run: |
+          make install-ndk
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/28.0.13004108" >> "$GITHUB_ENV"
 
       - name: Run examples on emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -88,7 +92,9 @@ jobs:
           go-version: "1.24"
 
       - name: Install Android NDK
-        run: make install-ndk
+        run: |
+          make install-ndk
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/28.0.13004108" >> "$GITHUB_ENV"
 
       - name: Build release binaries
         run: make ndkcli-release

@@ -105,6 +105,7 @@ check-no-capi:
 	@echo "OK: no capi imports in cmd/ or examples/"
 
 lint:
+	@which golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest; }
 	golangci-lint run ./tools/...
 
 # Cross-compile all examples and ndkcli for Android arm64 to catch compile errors (requires NDK)
@@ -134,18 +135,19 @@ e2e-examples-test:
 e2e-audio:
 	./tests/e2e/run-audio-e2e.sh
 
-# Install Android NDK (for CI; no-op if already present)
+# Install Android NDK r28 (for CI; no-op if the correct version is present)
 ANDROID_NDK_VERSION ?= r28
 ANDROID_NDK_DIR_NAME ?= 28.0.13004108
+NDK_INSTALL_PATH := $(ANDROID_HOME)/ndk/$(ANDROID_NDK_DIR_NAME)
 install-ndk:
-	@if [ -d "$(NDK_PATH)" ]; then echo "NDK already at $(NDK_PATH)"; exit 0; fi; \
+	@if [ -d "$(NDK_INSTALL_PATH)" ]; then echo "NDK $(ANDROID_NDK_VERSION) already at $(NDK_INSTALL_PATH)"; exit 0; fi; \
 	echo "Installing Android NDK $(ANDROID_NDK_VERSION)..."; \
 	wget -q "https://dl.google.com/android/repository/android-ndk-$(ANDROID_NDK_VERSION)-linux.zip" -O /tmp/ndk.zip; \
 	unzip -q /tmp/ndk.zip -d /tmp/ndk-extract/; \
 	mkdir -p "$(ANDROID_HOME)/ndk"; \
-	mv /tmp/ndk-extract/android-ndk-* "$(ANDROID_HOME)/ndk/$(ANDROID_NDK_DIR_NAME)"; \
+	mv /tmp/ndk-extract/android-ndk-* "$(NDK_INSTALL_PATH)"; \
 	rm -f /tmp/ndk.zip; \
-	echo "NDK installed to $(ANDROID_HOME)/ndk/$(ANDROID_NDK_DIR_NAME)"
+	echo "NDK installed to $(NDK_INSTALL_PATH)"
 
 # Build ndkcli for Android arm64 (requires NDK)
 ndkcli:
