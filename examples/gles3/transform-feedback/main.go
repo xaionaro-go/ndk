@@ -23,7 +23,6 @@ import (
 	"github.com/xaionaro-go/ndk/gles3"
 )
 
-
 // Input positions: three 2D points.
 var inputPositions = [...]float32{
 	1.0, 2.0,

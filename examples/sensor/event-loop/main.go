@@ -7,9 +7,9 @@
 // a documented pattern rather than executable code.
 //
 // The executable portion of this example:
-//   1. Gets the sensor manager singleton.
-//   2. Queries the default accelerometer and prints its properties.
-//   3. Enumerates common sensor types, checking availability on the device.
+//  1. Gets the sensor manager singleton.
+//  2. Queries the default accelerometer and prints its properties.
+//  3. Enumerates common sensor types, checking availability on the device.
 //
 // This program must run on an Android device.
 package main

@@ -18,8 +18,8 @@ import (
 func main() {
 	const (
 		sampleRate   = 44100
-		channelCount = 2                    // stereo
-		durationSec  = 2                    // seconds of silence to write
+		channelCount = 2 // stereo
+		durationSec  = 2 // seconds of silence to write
 		writeTimeout = time.Second
 	)
 

@@ -22,7 +22,6 @@ import (
 	"github.com/xaionaro-go/ndk/gles3"
 )
 
-
 var triVertices = [...]float32{
 	0.0, 0.5,
 	-0.5, -0.5,

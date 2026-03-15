@@ -65,11 +65,11 @@ type Callbacks struct {
 	OnTrimMemory           func(activity *Activity, level int)
 	OnWindowFocusChanged   func(activity *Activity, hasFocus bool)
 
-	OnNativeWindowCreated     func(activity *Activity, window unsafe.Pointer)
-	OnNativeWindowDestroyed   func(activity *Activity, window unsafe.Pointer)
-	OnNativeWindowResized     func(activity *Activity, window unsafe.Pointer, width, height int32)
+	OnNativeWindowCreated      func(activity *Activity, window unsafe.Pointer)
+	OnNativeWindowDestroyed    func(activity *Activity, window unsafe.Pointer)
+	OnNativeWindowResized      func(activity *Activity, window unsafe.Pointer, width, height int32)
 	OnNativeWindowRedrawNeeded func(activity *Activity, window unsafe.Pointer)
-	OnWindowInsetsChanged     func(activity *Activity)
+	OnWindowInsetsChanged      func(activity *Activity)
 
 	OnTouchEvent     func(activity *Activity, event MotionEvent) bool
 	OnKeyDown        func(activity *Activity, event KeyEvent) bool
@@ -78,7 +78,7 @@ type Callbacks struct {
 }
 
 var (
-	callbacksMu       sync.Mutex
+	callbacksMu         sync.Mutex
 	registeredCallbacks *Callbacks
 )
 

@@ -25,7 +25,6 @@ import (
 	"github.com/xaionaro-go/ndk/gles2"
 )
 
-
 func fatal(msg string) {
 	fmt.Fprintf(os.Stderr, "fatal: %s (EGL error 0x%04X)\n", msg, egl.GetError())
 	os.Exit(1)

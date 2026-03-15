@@ -43,9 +43,9 @@
 //
 // Pixel formats:
 //
-//   Rgba8888  -- 4 bytes/pixel: [R, G, B, A]
-//   Rgbx8888  -- 4 bytes/pixel: [R, G, B, x] (alpha ignored)
-//   Rgb565    -- 2 bytes/pixel: 5 red, 6 green, 5 blue bits
+//	Rgba8888  -- 4 bytes/pixel: [R, G, B, A]
+//	Rgbx8888  -- 4 bytes/pixel: [R, G, B, x] (alpha ignored)
+//	Rgb565    -- 2 bytes/pixel: 5 red, 6 green, 5 blue bits
 //
 // Prerequisites:
 //   - Android device with a running Activity that provides a native window.
