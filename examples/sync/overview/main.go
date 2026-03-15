@@ -28,11 +28,11 @@ package main
 import (
 	"fmt"
 
-	_ "github.com/xaionaro-go/ndk/sync"
+	_ "github.com/AndroidGoLab/ndk/sync"
 )
 
 func main() {
-	fmt.Println("github.com/xaionaro-go/ndk/sync — Android Native Sync Fence API")
+	fmt.Println("github.com/AndroidGoLab/ndk/sync — Android Native Sync Fence API")
 	fmt.Println()
 	fmt.Println("Sync fences coordinate GPU work completion with buffer consumers.")
 	fmt.Println()

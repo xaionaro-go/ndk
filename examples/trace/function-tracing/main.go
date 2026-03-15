@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/xaionaro-go/ndk/trace"
+	"github.com/AndroidGoLab/ndk/trace"
 )
 
 // traceSection begins a named trace section and returns a function that ends

@@ -5,7 +5,7 @@ package choreographer
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/choreographer"
+	capi "github.com/AndroidGoLab/ndk/capi/choreographer"
 )
 
 // Choreographer wraps the NDK AChoreographer handle.

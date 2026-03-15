@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/idiomgen"
+	"github.com/AndroidGoLab/ndk/tools/pkg/idiomgen"
 )
 
 func TestRenderTemplate_Enum(t *testing.T) {
@@ -131,7 +131,7 @@ func TestRenderTypeAliasFile(t *testing.T) {
 
 	data := idiomgen.PerTypeAliasData{
 		PackageName:   "vulkan",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/vulkan",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/vulkan",
 		Alias:         idiomgen.MergedTypeAlias{GoName: "VkInstance", CapiType: "VkInstance"},
 	}
 
@@ -323,7 +323,7 @@ func TestRenderErrors(t *testing.T) {
 
 	spec := idiomgen.MergedSpec{
 		PackageName:   "audio",
-		SourcePackage: "github.com/xaionaro-go/ndk/tools/pkg/capi/aaudio",
+		SourcePackage: "github.com/AndroidGoLab/ndk/tools/pkg/capi/aaudio",
 		ErrorEnums: []idiomgen.MergedErrorEnum{
 			{
 				GoName:       "Aaudio_result_t",
@@ -370,7 +370,7 @@ func TestRenderPerTypeFile(t *testing.T) {
 
 	data := idiomgen.PerTypeData{
 		PackageName:   "audio",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/aaudio",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/aaudio",
 		Type: idiomgen.MergedOpaqueType{
 			GoName:      "StreamBuilder",
 			CapiType:    "AAudioStreamBuilder",
@@ -423,7 +423,7 @@ func TestRenderPerTypeFile_OutputParams(t *testing.T) {
 
 	data := idiomgen.PerTypeData{
 		PackageName:   "media",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/media",
 		Type: idiomgen.MergedOpaqueType{
 			GoName:     "ImageReader",
 			CapiType:   "AImageReader",
@@ -501,7 +501,7 @@ func TestRenderPerTypeFile_OutputParams_Scalar(t *testing.T) {
 
 	data := idiomgen.PerTypeData{
 		PackageName:   "media",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/media",
 		Type: idiomgen.MergedOpaqueType{
 			GoName:     "Image",
 			CapiType:   "AImage",
@@ -556,7 +556,7 @@ func TestRenderFunctions(t *testing.T) {
 
 	spec := idiomgen.MergedSpec{
 		PackageName:   "egl",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/egl",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/egl",
 		FreeFunctions: []idiomgen.MergedFreeFunction{
 			{
 				GoName:  "GetDisplay",

@@ -1,6 +1,6 @@
 package idiomgen
 
-import "github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+import "github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 
 // MergedSpec is the fully resolved model passed to templates.
 type MergedSpec struct {

@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/font"
+	"github.com/AndroidGoLab/ndk/font"
 )
 
 // matchFontFromIterator iterates all system fonts and finds the best

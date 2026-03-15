@@ -2,7 +2,7 @@ module: gles2
 
 package:
   go_name: gles2
-  go_import: github.com/xaionaro-go/ndk/gles2
+  go_import: github.com/AndroidGoLab/ndk/gles2
   doc: "Package gles2 provides Go bindings for OpenGL ES 2.0."
 
 types:

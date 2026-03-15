@@ -25,7 +25,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/ndk/input"
+	"github.com/AndroidGoLab/ndk/input"
 )
 
 func main() {

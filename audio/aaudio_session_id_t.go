@@ -3,7 +3,7 @@
 package audio
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/aaudio"
+	capi "github.com/AndroidGoLab/ndk/capi/aaudio"
 )
 
 type aaudio_session_id_t = capi.Aaudio_session_id_t

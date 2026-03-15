@@ -2,7 +2,7 @@ module: camera
 
 package:
   go_name: camera
-  go_import: github.com/xaionaro-go/ndk/camera
+  go_import: github.com/AndroidGoLab/ndk/camera
   doc: "Package camera provides Go bindings for Android Camera2 NDK."
 
 types:

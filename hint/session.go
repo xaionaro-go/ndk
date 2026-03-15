@@ -6,7 +6,7 @@ import (
 	"time"
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/performancehint"
+	capi "github.com/AndroidGoLab/ndk/capi/performancehint"
 )
 
 // Session wraps the NDK APerformanceHintSession handle.

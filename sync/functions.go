@@ -3,7 +3,7 @@
 package sync
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/sync"
+	capi "github.com/AndroidGoLab/ndk/capi/sync"
 )
 
 // Sync_merge calls the underlying C function.

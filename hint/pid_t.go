@@ -3,7 +3,7 @@
 package hint
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/performancehint"
+	capi "github.com/AndroidGoLab/ndk/capi/performancehint"
 )
 
 type Pid_t = capi.Pid_t

@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 )
 
 // funcPtrTypedefRe matches: typedef RetType (*Name)(Params);

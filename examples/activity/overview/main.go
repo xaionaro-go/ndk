@@ -34,7 +34,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/ndk/activity"
+	"github.com/AndroidGoLab/ndk/activity"
 )
 
 func main() {

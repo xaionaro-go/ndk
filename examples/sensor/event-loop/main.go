@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xaionaro-go/ndk/sensor"
+	"github.com/AndroidGoLab/ndk/sensor"
 )
 
 // probeSensor checks whether a sensor type is present on the device.
@@ -130,7 +130,7 @@ func main() {
 	//
 	// Step 2 -- Prepare a looper for the current thread:
 	//
-	//   import "github.com/xaionaro-go/ndk/looper"
+	//   import "github.com/AndroidGoLab/ndk/looper"
 	//
 	//   const prepareAllowNonCallbacks = int32(1)
 	//   lp := looper.Prepare(prepareAllowNonCallbacks)

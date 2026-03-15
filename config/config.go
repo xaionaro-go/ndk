@@ -5,7 +5,7 @@ package config
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/configuration"
+	capi "github.com/AndroidGoLab/ndk/capi/configuration"
 )
 
 // Config wraps the NDK AConfiguration handle.

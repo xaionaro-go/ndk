@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
 )
 
 func runClangForTest(t *testing.T, includes []string) []byte {
@@ -62,7 +62,7 @@ func TestGenerateSpecLooper(t *testing.T) {
 		{Action: "accept", From: "^ALOOPER_"},
 	}
 	filtered := ApplyRules(decls, rules)
-	spec := GenerateSpec("looper", "github.com/xaionaro-go/ndk/capi/looper", filtered)
+	spec := GenerateSpec("looper", "github.com/AndroidGoLab/ndk/capi/looper", filtered)
 
 	// Types.
 	require.Contains(t, spec.Types, "ALooper")

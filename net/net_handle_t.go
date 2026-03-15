@@ -3,7 +3,7 @@
 package net
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/multinetwork"
+	capi "github.com/AndroidGoLab/ndk/capi/multinetwork"
 )
 
 type net_handle_t = capi.Net_handle_t

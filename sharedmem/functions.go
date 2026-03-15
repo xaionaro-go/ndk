@@ -3,7 +3,7 @@
 package sharedmem
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/sharedmem"
+	capi "github.com/AndroidGoLab/ndk/capi/sharedmem"
 )
 
 // ASharedMemory_create calls the underlying C function.

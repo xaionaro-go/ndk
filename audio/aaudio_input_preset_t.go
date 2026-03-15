@@ -3,7 +3,7 @@
 package audio
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/aaudio"
+	capi "github.com/AndroidGoLab/ndk/capi/aaudio"
 )
 
 type aaudio_input_preset_t = capi.Aaudio_input_preset_t

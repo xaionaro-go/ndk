@@ -5,7 +5,7 @@ package camera
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/camera"
+	capi "github.com/AndroidGoLab/ndk/capi/camera"
 )
 
 // CameraCaptureSession_captureCallbacksV2 wraps the NDK ACameraCaptureSession_captureCallbacksV2 handle.

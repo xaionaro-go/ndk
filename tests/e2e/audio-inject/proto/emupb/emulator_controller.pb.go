@@ -256,7 +256,7 @@ const file_emulator_controller_proto_rawDesc = "" +
 	"\ttimestamp\x18\x02 \x01(\x04R\ttimestamp\x12\x14\n" +
 	"\x05audio\x18\x03 \x01(\fR\x05audio2g\n" +
 	"\x12EmulatorController\x12Q\n" +
-	"\vinjectAudio\x12&.android.emulation.control.AudioPacket\x1a\x16.google.protobuf.Empty\"\x00(\x01B?Z=github.com/xaionaro-go/ndk/tests/e2e/audio-inject/proto/emupbb\x06proto3"
+	"\vinjectAudio\x12&.android.emulation.control.AudioPacket\x1a\x16.google.protobuf.Empty\"\x00(\x01B?Z=github.com/AndroidGoLab/ndk/tests/e2e/audio-inject/proto/emupbb\x06proto3"
 
 var (
 	file_emulator_controller_proto_rawDescOnce sync.Once

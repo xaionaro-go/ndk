@@ -19,7 +19,7 @@ import (
 	"unicode"
 )
 
-const goModule = "github.com/xaionaro-go/ndk"
+const goModule = "github.com/AndroidGoLab/ndk"
 
 var aliasMap = map[string]string{
 	"log":   "ndklog",

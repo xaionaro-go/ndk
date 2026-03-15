@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"syscall"
 
-	"github.com/xaionaro-go/ndk/permission"
+	"github.com/AndroidGoLab/ndk/permission"
 )
 
 func main() {

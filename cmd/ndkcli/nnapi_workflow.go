@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/nnapi"
+	"github.com/AndroidGoLab/ndk/nnapi"
 )
 
 var nnapiProbeCmd = &cobra.Command{

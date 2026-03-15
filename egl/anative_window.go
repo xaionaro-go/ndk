@@ -5,7 +5,7 @@ package egl
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/egl"
+	capi "github.com/AndroidGoLab/ndk/capi/egl"
 )
 
 // ANativeWindow wraps the NDK ANativeWindow handle.

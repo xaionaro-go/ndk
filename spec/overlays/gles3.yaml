@@ -2,7 +2,7 @@ module: gles3
 
 package:
   go_name: gles3
-  go_import: github.com/xaionaro-go/ndk/gles3
+  go_import: github.com/AndroidGoLab/ndk/gles3
   doc: "Package gles3 provides Go bindings for OpenGL ES 3.0."
 
 types:

@@ -2,7 +2,7 @@ module: sync
 
 package:
   go_name: sync
-  go_import: github.com/xaionaro-go/ndk/sync
+  go_import: github.com/AndroidGoLab/ndk/sync
   doc: "Package sync provides Go bindings for Android sync primitives."
 
 functions:

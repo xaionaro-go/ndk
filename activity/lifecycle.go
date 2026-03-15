@@ -5,7 +5,7 @@ package activity
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/nativeactivity"
+	capi "github.com/AndroidGoLab/ndk/capi/nativeactivity"
 )
 
 // LifecycleCallbacks holds Go callbacks for ANativeActivity lifecycle events.

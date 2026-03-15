@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/storage"
+	"github.com/AndroidGoLab/ndk/storage"
 )
 
 var storageCmd = &cobra.Command{

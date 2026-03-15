@@ -2,7 +2,7 @@ module: input
 
 package:
   go_name: input
-  go_import: github.com/xaionaro-go/ndk/input
+  go_import: github.com/AndroidGoLab/ndk/input
   doc: "Package input provides Go bindings for Android Input events."
 
 types:

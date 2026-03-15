@@ -3,7 +3,7 @@
 package audio
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/aaudio"
+	capi "github.com/AndroidGoLab/ndk/capi/aaudio"
 )
 
 type AAudioStream_errorCallback = capi.AAudioStream_errorCallback

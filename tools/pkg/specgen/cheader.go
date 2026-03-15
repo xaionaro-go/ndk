@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 )
 
 // cFuncDeclRe matches a top-level C function declaration after comment stripping

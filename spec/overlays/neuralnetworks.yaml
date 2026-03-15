@@ -2,7 +2,7 @@ module: neuralnetworks
 
 package:
   go_name: nnapi
-  go_import: github.com/xaionaro-go/ndk/nnapi
+  go_import: github.com/AndroidGoLab/ndk/nnapi
   doc: "Package nnapi provides Go bindings for Android Neural Networks API (NNAPI)."
 
 types:

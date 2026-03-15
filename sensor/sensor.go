@@ -5,7 +5,7 @@ package sensor
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/sensor"
+	capi "github.com/AndroidGoLab/ndk/capi/sensor"
 )
 
 // Sensor wraps the NDK ASensor handle.

@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xaionaro-go/ndk/audio"
+	"github.com/AndroidGoLab/ndk/audio"
 )
 
 func main() {

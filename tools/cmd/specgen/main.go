@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/c2ffi"
-	"github.com/xaionaro-go/ndk/tools/pkg/specgen"
+	"github.com/AndroidGoLab/ndk/tools/pkg/c2ffi"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specgen"
 	"gopkg.in/yaml.v3"
 )
 
@@ -144,7 +144,7 @@ func convertAndWrite(
 		module = strings.TrimSuffix(filepath.Base(outPath), ".yaml")
 	}
 	if srcPkg == "" {
-		srcPkg = "github.com/xaionaro-go/ndk/capi/" + module
+		srcPkg = "github.com/AndroidGoLab/ndk/capi/" + module
 	}
 
 	var headerDirs []string
@@ -190,7 +190,7 @@ func runLegacy(
 		module = filepath.Base(pkgDir)
 	}
 	if srcPkg == "" {
-		srcPkg = "github.com/xaionaro-go/ndk/capi/" + module
+		srcPkg = "github.com/AndroidGoLab/ndk/capi/" + module
 	}
 
 	entries, err := os.ReadDir(pkgDir)

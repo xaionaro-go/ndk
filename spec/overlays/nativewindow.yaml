@@ -2,7 +2,7 @@ module: nativewindow
 
 package:
   go_name: window
-  go_import: github.com/xaionaro-go/ndk/window
+  go_import: github.com/AndroidGoLab/ndk/window
   doc: "Package window provides Go bindings for Android NativeWindow."
 
 types:

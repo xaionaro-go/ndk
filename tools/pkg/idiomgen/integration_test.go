@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/idiomgen"
-	"github.com/xaionaro-go/ndk/tools/pkg/overlaymodel"
-	"github.com/xaionaro-go/ndk/tools/pkg/specgen"
+	"github.com/AndroidGoLab/ndk/tools/pkg/idiomgen"
+	"github.com/AndroidGoLab/ndk/tools/pkg/overlaymodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specgen"
 )
 
 // projectRoot returns the absolute path to the project root.
@@ -39,7 +39,7 @@ func TestIntegration_FullPipeline(t *testing.T) {
 		t.Fatalf("fixture not found: %v", err)
 	}
 
-	spec, err := specgen.ParseSources("simple", "github.com/xaionaro-go/ndk/capi/simple", []string{fixturePath})
+	spec, err := specgen.ParseSources("simple", "github.com/AndroidGoLab/ndk/capi/simple", []string{fixturePath})
 	if err != nil {
 		t.Fatalf("ParseSources: %v", err)
 	}
@@ -78,7 +78,7 @@ func TestIntegration_FullPipeline(t *testing.T) {
 	if loadedSpec.Module != "simple" {
 		t.Errorf("round-trip Module = %q, want %q", loadedSpec.Module, "simple")
 	}
-	if loadedSpec.SourcePackage != "github.com/xaionaro-go/ndk/capi/simple" {
+	if loadedSpec.SourcePackage != "github.com/AndroidGoLab/ndk/capi/simple" {
 		t.Errorf("round-trip SourcePackage = %q", loadedSpec.SourcePackage)
 	}
 	if len(loadedSpec.Types) != len(spec.Types) {
@@ -90,7 +90,7 @@ func TestIntegration_FullPipeline(t *testing.T) {
 		Module: "simple",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "simple",
-			GoImport: "github.com/xaionaro-go/ndk/simple",
+			GoImport: "github.com/AndroidGoLab/ndk/simple",
 			Doc:      "Package simple is a test package.",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{

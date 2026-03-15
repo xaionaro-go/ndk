@@ -27,7 +27,7 @@ package main
 import (
 	"fmt"
 
-	androidlog "github.com/xaionaro-go/ndk/log"
+	androidlog "github.com/AndroidGoLab/ndk/log"
 )
 
 // logcatLetter returns the single-character abbreviation that logcat

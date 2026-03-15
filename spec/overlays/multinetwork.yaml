@@ -2,7 +2,7 @@ module: multinetwork
 
 package:
   go_name: net
-  go_import: github.com/xaionaro-go/ndk/net
+  go_import: github.com/AndroidGoLab/ndk/net
   doc: "Package net provides Go bindings for Android multinetwork APIs."
 
 types:

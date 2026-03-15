@@ -2,5 +2,5 @@ module: sharedmem
 
 package:
   go_name: sharedmem
-  go_import: github.com/xaionaro-go/ndk/sharedmem
+  go_import: github.com/AndroidGoLab/ndk/sharedmem
   doc: "Package sharedmem provides Go bindings for Android shared memory."

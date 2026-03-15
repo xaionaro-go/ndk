@@ -26,11 +26,11 @@ package main
 import (
 	"fmt"
 
-	_ "github.com/xaionaro-go/ndk/sharedmem"
+	_ "github.com/AndroidGoLab/ndk/sharedmem"
 )
 
 func main() {
-	fmt.Println("github.com/xaionaro-go/ndk/sharedmem — Android ASharedMemory API")
+	fmt.Println("github.com/AndroidGoLab/ndk/sharedmem — Android ASharedMemory API")
 	fmt.Println()
 	fmt.Println("ASharedMemory provides anonymous shared memory for IPC.")
 	fmt.Println()

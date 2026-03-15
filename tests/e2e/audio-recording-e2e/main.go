@@ -19,7 +19,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/audio"
+	"github.com/AndroidGoLab/ndk/audio"
 )
 
 // goertzelMagnitude computes the magnitude of a specific frequency in

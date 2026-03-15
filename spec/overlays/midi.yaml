@@ -2,7 +2,7 @@ module: midi
 
 package:
   go_name: midi
-  go_import: github.com/xaionaro-go/ndk/midi
+  go_import: github.com/AndroidGoLab/ndk/midi
   doc: "Package midi provides Go bindings for Android MIDI."
 
 types:

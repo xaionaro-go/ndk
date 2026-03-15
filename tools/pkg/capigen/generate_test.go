@@ -6,15 +6,15 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
 )
 
 func looperSpec() *specmodel.Spec {
 	return &specmodel.Spec{
 		Module:        "looper",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/looper",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/looper",
 		Types: map[string]specmodel.TypeDef{
 			"ALooper": {
 				Kind:   "opaque_ptr",

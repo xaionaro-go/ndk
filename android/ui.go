@@ -3,7 +3,7 @@
 package android
 
 import (
-	"github.com/xaionaro-go/ndk/jni"
+	"github.com/AndroidGoLab/ndk/jni"
 )
 
 // ShowToast displays an Android Toast message.

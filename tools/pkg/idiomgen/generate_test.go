@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/idiomgen"
-	"github.com/xaionaro-go/ndk/tools/pkg/overlaymodel"
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/idiomgen"
+	"github.com/AndroidGoLab/ndk/tools/pkg/overlaymodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 )
 
 func TestGenerate(t *testing.T) {
@@ -172,7 +172,7 @@ func TestGenerate_MissingTemplate_Skipped(t *testing.T) {
 
 func TestLoadSpec(t *testing.T) {
 	yaml := `module: aaudio
-source_package: github.com/xaionaro-go/ndk/capi/aaudio
+source_package: github.com/AndroidGoLab/ndk/capi/aaudio
 types:
   AAudioStream:
     kind: opaque_ptr
@@ -204,7 +204,7 @@ functions:
 	if spec.Module != "aaudio" {
 		t.Errorf("Module = %q, want %q", spec.Module, "aaudio")
 	}
-	if spec.SourcePackage != "github.com/xaionaro-go/ndk/capi/aaudio" {
+	if spec.SourcePackage != "github.com/AndroidGoLab/ndk/capi/aaudio" {
 		t.Errorf("SourcePackage = %q", spec.SourcePackage)
 	}
 	if len(spec.Types) != 1 {
@@ -232,7 +232,7 @@ func TestLoadOverlay(t *testing.T) {
 	yaml := `module: aaudio
 package:
   go_name: audio
-  go_import: github.com/xaionaro-go/ndk/audio
+  go_import: github.com/AndroidGoLab/ndk/audio
   doc: "Package audio provides Go bindings for Android AAudio."
 types:
   AAudioStream:
@@ -260,7 +260,7 @@ api_levels:
 	if ov.Package.GoName != "audio" {
 		t.Errorf("Package.GoName = %q", ov.Package.GoName)
 	}
-	if ov.Package.GoImport != "github.com/xaionaro-go/ndk/audio" {
+	if ov.Package.GoImport != "github.com/AndroidGoLab/ndk/audio" {
 		t.Errorf("Package.GoImport = %q", ov.Package.GoImport)
 	}
 	if len(ov.Types) != 1 {
@@ -298,7 +298,7 @@ func TestLoadOverlayOrEmpty_WithPath(t *testing.T) {
 	yaml := `module: test
 package:
   go_name: testpkg
-  go_import: github.com/xaionaro-go/ndk/testpkg
+  go_import: github.com/AndroidGoLab/ndk/testpkg
 `
 	path := filepath.Join(t.TempDir(), "overlay.yaml")
 	if err := os.WriteFile(path, []byte(yaml), 0o644); err != nil {
@@ -317,13 +317,13 @@ package:
 func TestGenerate_CreatesOutputDir(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 	}
 	overlay := overlaymodel.Overlay{
 		Module: "test",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "testpkg",
-			GoImport: "github.com/xaionaro-go/ndk/testpkg",
+			GoImport: "github.com/AndroidGoLab/ndk/testpkg",
 		},
 	}
 

@@ -3,7 +3,7 @@
 package media
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/media"
+	capi "github.com/AndroidGoLab/ndk/capi/media"
 )
 
 type Off64_t = capi.Off64_t

@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/media"
-	"github.com/xaionaro-go/ndk/window"
+	"github.com/AndroidGoLab/ndk/media"
+	"github.com/AndroidGoLab/ndk/window"
 )
 
 // imageFormatRGBA8888 is AIMAGE_FORMAT_RGBA_8888 from the NDK header.

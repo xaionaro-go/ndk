@@ -3,7 +3,7 @@
 package net
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/multinetwork"
+	capi "github.com/AndroidGoLab/ndk/capi/multinetwork"
 )
 
 // Android_getprocdns calls the underlying C function.

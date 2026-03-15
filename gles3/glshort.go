@@ -3,7 +3,7 @@
 package gles3
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/gles3"
+	capi "github.com/AndroidGoLab/ndk/capi/gles3"
 )
 
 type GLshort = capi.GLshort

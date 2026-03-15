@@ -3,7 +3,7 @@
 package permission
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/permission"
+	capi "github.com/AndroidGoLab/ndk/capi/permission"
 )
 
 type Uid_t = capi.Uid_t

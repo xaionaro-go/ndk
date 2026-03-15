@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/idiomgen"
+	"github.com/AndroidGoLab/ndk/tools/pkg/idiomgen"
 )
 
 func main() {

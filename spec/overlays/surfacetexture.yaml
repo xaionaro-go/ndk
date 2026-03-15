@@ -2,7 +2,7 @@ module: surfacetexture
 
 package:
   go_name: surfacetexture
-  go_import: github.com/xaionaro-go/ndk/surfacetexture
+  go_import: github.com/AndroidGoLab/ndk/surfacetexture
   doc: "Package surfacetexture provides Go bindings for Android SurfaceTexture."
 
 types:

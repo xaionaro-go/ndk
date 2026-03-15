@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 )
 
 // ParseSources parses Go source files and extracts types, enums, functions,

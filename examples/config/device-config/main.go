@@ -15,7 +15,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/ndk/config"
+	"github.com/AndroidGoLab/ndk/config"
 )
 
 // orientationName returns a human-readable label for an orientation code.

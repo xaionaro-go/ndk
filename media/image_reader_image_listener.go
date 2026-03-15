@@ -5,7 +5,7 @@ package media
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/media"
+	capi "github.com/AndroidGoLab/ndk/capi/media"
 )
 
 // ImageReader_ImageListener wraps the NDK AImageReader_ImageListener handle.

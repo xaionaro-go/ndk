@@ -5,7 +5,7 @@ package audio
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/aaudio"
+	capi "github.com/AndroidGoLab/ndk/capi/aaudio"
 )
 
 // StreamBuilder wraps the NDK AAudioStreamBuilder handle.

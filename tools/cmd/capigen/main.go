@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/capigen"
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/capigen"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 	"gopkg.in/yaml.v3"
 )
 

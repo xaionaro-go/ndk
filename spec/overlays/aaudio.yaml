@@ -2,7 +2,7 @@ module: aaudio
 
 package:
   go_name: audio
-  go_import: github.com/xaionaro-go/ndk/audio
+  go_import: github.com/AndroidGoLab/ndk/audio
   doc: "Package audio provides Go bindings for Android AAudio."
 
 types:

@@ -2,7 +2,7 @@ module: egl
 
 package:
   go_name: egl
-  go_import: github.com/xaionaro-go/ndk/egl
+  go_import: github.com/AndroidGoLab/ndk/egl
   doc: "Package egl provides Go bindings for EGL."
 
 types:

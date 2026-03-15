@@ -3,7 +3,7 @@
 package binder
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/binder"
+	capi "github.com/AndroidGoLab/ndk/capi/binder"
 )
 
 type Char16_t = capi.Char16_t

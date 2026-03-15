@@ -2,7 +2,7 @@ module: font
 
 package:
   go_name: font
-  go_import: github.com/xaionaro-go/ndk/font
+  go_import: github.com/AndroidGoLab/ndk/font
   doc: "Package font provides Go bindings for Android Font."
 
 types:

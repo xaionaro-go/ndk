@@ -5,7 +5,7 @@
 //
 //	headerspec -manifest capi/manifests/looper.yaml \
 //	    -ndk-sysroot $NDK_SYSROOT \
-//	    -module-path github.com/xaionaro-go/ndk \
+//	    -module-path github.com/AndroidGoLab/ndk \
 //	    -out-spec spec/generated/looper.yaml \
 //	    -out-capi capi/looper
 package main
@@ -18,14 +18,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/headerspec"
+	"github.com/AndroidGoLab/ndk/tools/pkg/headerspec"
 )
 
 func main() {
 	var (
 		manifestPath = flag.String("manifest", "", "path to manifest YAML (e.g. capi/manifests/looper.yaml)")
 		ndkSysroot   = flag.String("ndk-sysroot", "", "path to NDK sysroot (e.g. $NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot)")
-		modulePath   = flag.String("module-path", "github.com/xaionaro-go/ndk", "Go module path")
+		modulePath   = flag.String("module-path", "github.com/AndroidGoLab/ndk", "Go module path")
 		outSpec      = flag.String("out-spec", "", "output spec YAML path")
 		outCapi      = flag.String("out-capi", "", "output capi/ package directory (e.g. capi/looper)")
 		target       = flag.String("target", "aarch64-linux-android26", "clang target triple")

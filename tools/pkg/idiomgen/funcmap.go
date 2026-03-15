@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"unicode"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 )
 
 // capiArg returns the expression to pass a parameter to a capi function.

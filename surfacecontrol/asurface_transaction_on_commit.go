@@ -3,7 +3,7 @@
 package surfacecontrol
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/surfacecontrol"
+	capi "github.com/AndroidGoLab/ndk/capi/surfacecontrol"
 )
 
 type ASurfaceTransaction_OnCommit = capi.ASurfaceTransaction_OnCommit

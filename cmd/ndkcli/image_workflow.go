@@ -6,7 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/image"
+	"github.com/AndroidGoLab/ndk/image"
 )
 
 var imageDecodeCmd = &cobra.Command{

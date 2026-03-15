@@ -5,7 +5,7 @@ package activity
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/nativeactivity"
+	capi "github.com/AndroidGoLab/ndk/capi/nativeactivity"
 )
 
 // Activity wraps the NDK ANativeActivity handle.

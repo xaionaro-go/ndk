@@ -24,15 +24,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/xaionaro-go/ndk/audio"
-	"github.com/xaionaro-go/ndk/camera"
-	"github.com/xaionaro-go/ndk/config"
-	"github.com/xaionaro-go/ndk/egl"
-	"github.com/xaionaro-go/ndk/log"
-	"github.com/xaionaro-go/ndk/media"
-	"github.com/xaionaro-go/ndk/sensor"
-	"github.com/xaionaro-go/ndk/thermal"
-	"github.com/xaionaro-go/ndk/trace"
+	"github.com/AndroidGoLab/ndk/audio"
+	"github.com/AndroidGoLab/ndk/camera"
+	"github.com/AndroidGoLab/ndk/config"
+	"github.com/AndroidGoLab/ndk/egl"
+	"github.com/AndroidGoLab/ndk/log"
+	"github.com/AndroidGoLab/ndk/media"
+	"github.com/AndroidGoLab/ndk/sensor"
+	"github.com/AndroidGoLab/ndk/thermal"
+	"github.com/AndroidGoLab/ndk/trace"
 )
 
 // EGL query constants not in generated enum values.

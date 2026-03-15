@@ -3,7 +3,7 @@
 package log
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/logging"
+	capi "github.com/AndroidGoLab/ndk/capi/logging"
 )
 
 // __android_log_buf_write calls the underlying C function.

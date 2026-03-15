@@ -3,7 +3,7 @@
 package audio
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/aaudio"
+	capi "github.com/AndroidGoLab/ndk/capi/aaudio"
 )
 
 type Clockid_t = capi.Clockid_t

@@ -2,7 +2,7 @@ module: choreographer
 
 package:
   go_name: choreographer
-  go_import: github.com/xaionaro-go/ndk/choreographer
+  go_import: github.com/AndroidGoLab/ndk/choreographer
   doc: "Package choreographer provides Go bindings for Android AChoreographer."
 
 types:

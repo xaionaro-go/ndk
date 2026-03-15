@@ -3,7 +3,7 @@
 package egl
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/egl"
+	capi "github.com/AndroidGoLab/ndk/capi/egl"
 )
 
 type ARect = capi.ARect

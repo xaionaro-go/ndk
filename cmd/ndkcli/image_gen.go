@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	ndkimage "github.com/xaionaro-go/ndk/image"
+	ndkimage "github.com/AndroidGoLab/ndk/image"
 )
 
 var imageCmd = &cobra.Command{

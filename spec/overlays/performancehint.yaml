@@ -2,7 +2,7 @@ module: performancehint
 
 package:
   go_name: hint
-  go_import: github.com/xaionaro-go/ndk/hint
+  go_import: github.com/AndroidGoLab/ndk/hint
   doc: "Package hint provides Go bindings for Android performance hint management."
 
 types:

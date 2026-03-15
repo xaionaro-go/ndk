@@ -1,7 +1,7 @@
 package nnapi
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/neuralnetworks"
+	capi "github.com/AndroidGoLab/ndk/capi/neuralnetworks"
 )
 
 // NewModel creates a new empty neural network model.

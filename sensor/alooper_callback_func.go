@@ -3,7 +3,7 @@
 package sensor
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/sensor"
+	capi "github.com/AndroidGoLab/ndk/capi/sensor"
 )
 
 type ALooper_callbackFunc = capi.ALooper_callbackFunc

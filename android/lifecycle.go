@@ -5,8 +5,8 @@ package android
 import (
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/activity"
-	"github.com/xaionaro-go/ndk/input"
+	"github.com/AndroidGoLab/ndk/activity"
+	"github.com/AndroidGoLab/ndk/input"
 )
 
 // Handlers defines callbacks for Android lifecycle events and input.

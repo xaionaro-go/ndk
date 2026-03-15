@@ -5,7 +5,7 @@ package midi
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/midi"
+	capi "github.com/AndroidGoLab/ndk/capi/midi"
 )
 
 // Device wraps the NDK AMidiDevice handle.

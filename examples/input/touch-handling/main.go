@@ -28,7 +28,7 @@ import (
 	"runtime"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/input"
+	"github.com/AndroidGoLab/ndk/input"
 )
 
 // looperIdent is the identifier returned by ALooper_pollOnce when the
@@ -69,7 +69,7 @@ func main() {
 	// ALooper so that the looper wakes up when input is available.
 	// The idiomatic looper package provides Prepare and PollOnce:
 	//
-	//   import "github.com/xaionaro-go/ndk/looper"
+	//   import "github.com/AndroidGoLab/ndk/looper"
 	//
 	//   lp := looper.Prepare(int32(looper.ALOOPER_PREPARE_ALLOW_NON_CALLBACKS))
 	//   defer lp.Close()

@@ -5,7 +5,7 @@ package surfacecontrol
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/surfacecontrol"
+	capi "github.com/AndroidGoLab/ndk/capi/surfacecontrol"
 )
 
 // SurfaceControl wraps the NDK ASurfaceControl handle.

@@ -12,7 +12,7 @@ func TestEnumIDCollision(t *testing.T) {
 	}
 	spec, err := Convert(data, ConvertOptions{
 		Module:        "logging",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/logging",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/logging",
 	})
 	if err != nil {
 		t.Fatal(err)

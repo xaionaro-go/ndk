@@ -3,7 +3,7 @@
 package storage
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/storage"
+	capi "github.com/AndroidGoLab/ndk/capi/storage"
 )
 
 type AStorageManager_obbCallbackFunc = capi.AStorageManager_obbCallbackFunc

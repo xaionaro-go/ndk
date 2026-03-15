@@ -5,9 +5,9 @@ import (
 	"unsafe"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/egl"
-	"github.com/xaionaro-go/ndk/gles2"
-	"github.com/xaionaro-go/ndk/gles3"
+	"github.com/AndroidGoLab/ndk/egl"
+	"github.com/AndroidGoLab/ndk/gles2"
+	"github.com/AndroidGoLab/ndk/gles3"
 )
 
 // glUbyteToString converts a *GLubyte (C string) to a Go string by walking

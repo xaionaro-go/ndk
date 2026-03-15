@@ -5,7 +5,7 @@ package bitmap
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/bitmap"
+	capi "github.com/AndroidGoLab/ndk/capi/bitmap"
 )
 
 // GetInfo calls the underlying C function.

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/permission"
+	"github.com/AndroidGoLab/ndk/permission"
 )
 
 var permissionCmd = &cobra.Command{

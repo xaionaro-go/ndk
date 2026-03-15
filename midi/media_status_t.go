@@ -3,7 +3,7 @@
 package midi
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/midi"
+	capi "github.com/AndroidGoLab/ndk/capi/midi"
 )
 
 type Media_status_t = capi.Media_status_t

@@ -34,7 +34,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/midi"
+	"github.com/AndroidGoLab/ndk/midi"
 )
 
 // MIDI status byte constants (channel voice messages, channel 0).
@@ -169,7 +169,7 @@ func demonstrateLifecycle(dev *midi.Device) error {
 }
 
 func main() {
-	fmt.Println("github.com/xaionaro-go/ndk/midi API Overview")
+	fmt.Println("github.com/AndroidGoLab/ndk/midi API Overview")
 	fmt.Println("=======================")
 	fmt.Println()
 

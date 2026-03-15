@@ -5,7 +5,7 @@ package media
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/media"
+	capi "github.com/AndroidGoLab/ndk/capi/media"
 )
 
 // PsshInfo wraps the NDK PsshInfo handle.

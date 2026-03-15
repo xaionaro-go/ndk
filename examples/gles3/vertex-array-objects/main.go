@@ -17,9 +17,9 @@ import (
 	"log"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/egl"
-	"github.com/xaionaro-go/ndk/gles2"
-	"github.com/xaionaro-go/ndk/gles3"
+	"github.com/AndroidGoLab/ndk/egl"
+	"github.com/AndroidGoLab/ndk/gles2"
+	"github.com/AndroidGoLab/ndk/gles3"
 )
 
 // Triangle: three vertices with XY position.

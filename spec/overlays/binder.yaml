@@ -2,7 +2,7 @@ module: binder
 
 package:
   go_name: binder
-  go_import: github.com/xaionaro-go/ndk/binder
+  go_import: github.com/AndroidGoLab/ndk/binder
   doc: "Package binder provides Go bindings for Android Binder IPC."
 
 types:

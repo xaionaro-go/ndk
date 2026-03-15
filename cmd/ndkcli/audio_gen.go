@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/audio"
+	"github.com/AndroidGoLab/ndk/audio"
 )
 
 var audioCmd = &cobra.Command{

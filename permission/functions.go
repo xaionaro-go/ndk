@@ -3,7 +3,7 @@
 package permission
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/permission"
+	capi "github.com/AndroidGoLab/ndk/capi/permission"
 )
 
 // CheckPermission calls the underlying C function.

@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/media"
+	"github.com/AndroidGoLab/ndk/media"
 )
 
 var mediaCodecsCmd = &cobra.Command{

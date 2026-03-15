@@ -5,7 +5,7 @@ package binder
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/binder"
+	capi "github.com/AndroidGoLab/ndk/capi/binder"
 )
 
 // IBinder_Weak wraps the NDK AIBinder_Weak handle.

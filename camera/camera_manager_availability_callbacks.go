@@ -5,7 +5,7 @@ package camera
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/camera"
+	capi "github.com/AndroidGoLab/ndk/capi/camera"
 )
 
 // CameraManager_AvailabilityCallbacks wraps the NDK ACameraManager_AvailabilityCallbacks handle.

@@ -25,7 +25,7 @@ package main
 import (
 	"log"
 
-	"github.com/xaionaro-go/ndk/choreographer"
+	"github.com/AndroidGoLab/ndk/choreographer"
 )
 
 func main() {

@@ -3,7 +3,7 @@
 package net
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/multinetwork"
+	capi "github.com/AndroidGoLab/ndk/capi/multinetwork"
 )
 
 type Uid_t = capi.Uid_t

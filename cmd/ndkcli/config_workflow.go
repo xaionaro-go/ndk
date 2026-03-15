@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/config"
+	"github.com/AndroidGoLab/ndk/config"
 )
 
 var configShowCmd = &cobra.Command{

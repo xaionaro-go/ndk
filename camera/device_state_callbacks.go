@@ -3,7 +3,7 @@
 package camera
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/camera"
+	capi "github.com/AndroidGoLab/ndk/capi/camera"
 )
 
 type DeviceStateCallbacks = capi.DeviceStateCallbacks

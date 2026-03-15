@@ -3,7 +3,7 @@
 package binder
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/binder"
+	capi "github.com/AndroidGoLab/ndk/capi/binder"
 )
 
 type transaction_code_t = capi.Transaction_code_t

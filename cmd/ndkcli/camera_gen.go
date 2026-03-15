@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/camera"
+	"github.com/AndroidGoLab/ndk/camera"
 )
 
 var cameraCmd = &cobra.Command{

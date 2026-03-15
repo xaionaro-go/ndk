@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/egl"
+	"github.com/AndroidGoLab/ndk/egl"
 )
 
 var eglInfoCmd = &cobra.Command{

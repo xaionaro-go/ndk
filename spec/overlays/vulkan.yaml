@@ -2,7 +2,7 @@ module: vulkan
 
 package:
   go_name: vulkan
-  go_import: github.com/xaionaro-go/ndk/vulkan
+  go_import: github.com/AndroidGoLab/ndk/vulkan
   doc: "Package vulkan provides Go bindings for Vulkan on Android."
 
 types:

@@ -16,7 +16,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/ndk/bitmap"
+	"github.com/AndroidGoLab/ndk/bitmap"
 )
 
 // formatInfo pairs a Format constant with a human-readable description.

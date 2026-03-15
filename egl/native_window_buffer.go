@@ -5,7 +5,7 @@ package egl
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/egl"
+	capi "github.com/AndroidGoLab/ndk/capi/egl"
 )
 
 // NativeWindow_Buffer wraps the NDK ANativeWindow_Buffer handle.

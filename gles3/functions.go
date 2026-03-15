@@ -5,7 +5,7 @@ package gles3
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/gles3"
+	capi "github.com/AndroidGoLab/ndk/capi/gles3"
 )
 
 // BeginQuery calls the underlying C function.

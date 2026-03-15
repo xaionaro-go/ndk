@@ -5,7 +5,7 @@ package thermal
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/thermal"
+	capi "github.com/AndroidGoLab/ndk/capi/thermal"
 )
 
 // Manager wraps the NDK AThermalManager handle.

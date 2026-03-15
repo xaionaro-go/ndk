@@ -5,7 +5,7 @@ package surfacecontrol
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/surfacecontrol"
+	capi "github.com/AndroidGoLab/ndk/capi/surfacecontrol"
 )
 
 // SurfaceTransactionStats wraps the NDK ASurfaceTransactionStats handle.

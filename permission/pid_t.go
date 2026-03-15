@@ -3,7 +3,7 @@
 package permission
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/permission"
+	capi "github.com/AndroidGoLab/ndk/capi/permission"
 )
 
 type Pid_t = capi.Pid_t

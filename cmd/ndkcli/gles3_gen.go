@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/gles3"
+	"github.com/AndroidGoLab/ndk/gles3"
 )
 
 var gles3Cmd = &cobra.Command{

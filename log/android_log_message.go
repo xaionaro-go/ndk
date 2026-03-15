@@ -3,7 +3,7 @@
 package log
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/logging"
+	capi "github.com/AndroidGoLab/ndk/capi/logging"
 )
 
 type Android_log_message = capi.Android_log_message

@@ -2,7 +2,7 @@ module: sensor
 
 package:
   go_name: sensor
-  go_import: github.com/xaionaro-go/ndk/sensor
+  go_import: github.com/AndroidGoLab/ndk/sensor
   doc: "Package sensor provides Go bindings for Android Sensor NDK."
 
 types:

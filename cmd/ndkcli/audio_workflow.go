@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/audio"
+	"github.com/AndroidGoLab/ndk/audio"
 )
 
 var audioRecordCmd = &cobra.Command{

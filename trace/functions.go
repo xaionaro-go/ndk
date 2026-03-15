@@ -3,7 +3,7 @@
 package trace
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/trace"
+	capi "github.com/AndroidGoLab/ndk/capi/trace"
 )
 
 // BeginAsyncSection calls the underlying C function.

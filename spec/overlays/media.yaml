@@ -2,7 +2,7 @@ module: media
 
 package:
   go_name: media
-  go_import: github.com/xaionaro-go/ndk/media
+  go_import: github.com/AndroidGoLab/ndk/media
   doc: "Package media provides Go bindings for Android Media NDK."
 
 types:

@@ -15,7 +15,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/xaionaro-go/ndk/trace"
+	"github.com/AndroidGoLab/ndk/trace"
 )
 
 // simulateNetworkRequest wraps a simulated network call in nested trace

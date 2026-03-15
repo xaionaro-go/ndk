@@ -2,7 +2,7 @@ module: surfacecontrol
 
 package:
   go_name: surfacecontrol
-  go_import: github.com/xaionaro-go/ndk/surfacecontrol
+  go_import: github.com/AndroidGoLab/ndk/surfacecontrol
   doc: "Package surfacecontrol provides Go bindings for Android SurfaceControl."
 
 types:

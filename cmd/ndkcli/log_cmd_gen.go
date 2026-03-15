@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	ndklog "github.com/xaionaro-go/ndk/log"
+	ndklog "github.com/AndroidGoLab/ndk/log"
 )
 
 var logCmd = &cobra.Command{

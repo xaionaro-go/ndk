@@ -8,10 +8,10 @@ import (
 	"unsafe"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/camera"
-	"github.com/xaionaro-go/ndk/looper"
-	"github.com/xaionaro-go/ndk/media"
-	"github.com/xaionaro-go/ndk/window"
+	"github.com/AndroidGoLab/ndk/camera"
+	"github.com/AndroidGoLab/ndk/looper"
+	"github.com/AndroidGoLab/ndk/media"
+	"github.com/AndroidGoLab/ndk/window"
 )
 
 // cameraTagLensFacing is ACAMERA_LENS_FACING from the NDK header.

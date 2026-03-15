@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/surfacecontrol"
+	"github.com/AndroidGoLab/ndk/surfacecontrol"
 )
 
 var surfacecontrolCmd = &cobra.Command{

@@ -13,7 +13,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/xaionaro-go/ndk/thermal"
+	"github.com/AndroidGoLab/ndk/thermal"
 )
 
 // throttleForStatus returns a workload scale factor (0.0 to 1.0) based on

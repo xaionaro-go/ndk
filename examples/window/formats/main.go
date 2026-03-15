@@ -54,7 +54,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/ndk/window"
+	"github.com/AndroidGoLab/ndk/window"
 )
 
 func main() {

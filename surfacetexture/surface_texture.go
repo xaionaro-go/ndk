@@ -5,7 +5,7 @@ package surfacetexture
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/surfacetexture"
+	capi "github.com/AndroidGoLab/ndk/capi/surfacetexture"
 )
 
 // SurfaceTexture wraps the NDK ASurfaceTexture handle.

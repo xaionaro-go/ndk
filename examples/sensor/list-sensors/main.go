@@ -18,7 +18,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/ndk/sensor"
+	"github.com/AndroidGoLab/ndk/sensor"
 )
 
 // printSensor queries and prints sensor properties. It returns false

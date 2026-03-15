@@ -3,7 +3,7 @@
 package persistablebundle
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/persistablebundle"
+	capi "github.com/AndroidGoLab/ndk/capi/persistablebundle"
 )
 
 type Binder_status_t = capi.Binder_status_t

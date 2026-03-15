@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/sensor"
+	"github.com/AndroidGoLab/ndk/sensor"
 )
 
 var sensorCmd = &cobra.Command{

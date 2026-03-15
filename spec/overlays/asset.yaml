@@ -2,7 +2,7 @@ module: asset
 
 package:
   go_name: asset
-  go_import: github.com/xaionaro-go/ndk/asset
+  go_import: github.com/AndroidGoLab/ndk/asset
   doc: "Package asset provides Go bindings for Android Asset Manager."
 
 types:

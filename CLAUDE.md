@@ -27,4 +27,4 @@ After modifying sources, regenerate with `make idiomatic` (or `make regen` for a
 
 ### Examples must use only idiomatic bindings
 
-Code in `examples/` must import only the idiomatic top-level packages (e.g., `github.com/xaionaro-go/ndk/looper`, `github.com/xaionaro-go/ndk/camera`). Never import `capi/` packages or use `import "C"` / CGo directly in examples. If the idiomatic package is missing a needed function or type, add it via the overlay and regenerate rather than falling back to capi.
+Code in `examples/` must import only the idiomatic top-level packages (e.g., `github.com/AndroidGoLab/ndk/looper`, `github.com/AndroidGoLab/ndk/camera`). Never import `capi/` packages or use `import "C"` / CGo directly in examples. If the idiomatic package is missing a needed function or type, add it via the overlay and regenerate rather than falling back to capi.

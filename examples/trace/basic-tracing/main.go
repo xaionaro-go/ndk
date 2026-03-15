@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/xaionaro-go/ndk/trace"
+	"github.com/AndroidGoLab/ndk/trace"
 )
 
 func main() {

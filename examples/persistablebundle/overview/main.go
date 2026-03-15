@@ -22,7 +22,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xaionaro-go/ndk/persistablebundle"
+	"github.com/AndroidGoLab/ndk/persistablebundle"
 )
 
 func main() {

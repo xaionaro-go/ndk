@@ -5,7 +5,7 @@ package hwbuf
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/hardwarebuffer"
+	capi "github.com/AndroidGoLab/ndk/capi/hardwarebuffer"
 )
 
 // HardwareBuffer_Plane wraps the NDK AHardwareBuffer_Plane handle.

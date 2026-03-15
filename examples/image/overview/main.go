@@ -36,7 +36,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/ndk/image"
+	"github.com/AndroidGoLab/ndk/image"
 )
 
 // errorInfo pairs an Error constant with its name and meaning.

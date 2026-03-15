@@ -2,7 +2,7 @@ module: persistablebundle
 
 package:
   go_name: persistablebundle
-  go_import: github.com/xaionaro-go/ndk/persistablebundle
+  go_import: github.com/AndroidGoLab/ndk/persistablebundle
   doc: "Package persistablebundle provides Go bindings for Android PersistableBundle."
 
 types:

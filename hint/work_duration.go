@@ -5,7 +5,7 @@ package hint
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/performancehint"
+	capi "github.com/AndroidGoLab/ndk/capi/performancehint"
 )
 
 // WorkDuration wraps the NDK AWorkDuration handle.

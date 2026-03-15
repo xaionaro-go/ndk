@@ -5,7 +5,7 @@ package storage
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/storage"
+	capi "github.com/AndroidGoLab/ndk/capi/storage"
 )
 
 // Manager wraps the NDK AStorageManager handle.

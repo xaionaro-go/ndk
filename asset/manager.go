@@ -5,7 +5,7 @@ package asset
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/asset"
+	capi "github.com/AndroidGoLab/ndk/capi/asset"
 )
 
 // Manager wraps the NDK AAssetManager handle.

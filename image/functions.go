@@ -3,7 +3,7 @@
 package image
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/imagedecoder"
+	capi "github.com/AndroidGoLab/ndk/capi/imagedecoder"
 )
 
 // AImageDecoder_resultToString calls the underlying C function.

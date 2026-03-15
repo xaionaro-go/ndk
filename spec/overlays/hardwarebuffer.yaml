@@ -2,7 +2,7 @@ module: hardwarebuffer
 
 package:
   go_name: hwbuf
-  go_import: github.com/xaionaro-go/ndk/hwbuf
+  go_import: github.com/AndroidGoLab/ndk/hwbuf
   doc: "Package hwbuf provides Go bindings for Android HardwareBuffer."
 
 types:

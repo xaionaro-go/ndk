@@ -3,7 +3,7 @@
 package gles2
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/gles2"
+	capi "github.com/AndroidGoLab/ndk/capi/gles2"
 )
 
 type GLchar = capi.GLchar

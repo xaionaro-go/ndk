@@ -33,7 +33,7 @@ package main
 import (
 	"log"
 
-	"github.com/xaionaro-go/ndk/camera"
+	"github.com/AndroidGoLab/ndk/camera"
 )
 
 func main() {

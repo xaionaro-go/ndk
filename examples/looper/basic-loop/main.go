@@ -13,7 +13,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/looper"
+	"github.com/AndroidGoLab/ndk/looper"
 )
 
 func main() {

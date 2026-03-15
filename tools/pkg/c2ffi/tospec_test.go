@@ -27,7 +27,7 @@ func TestConvertLooper(t *testing.T) {
 
 	opts := ConvertOptions{
 		Module:        "looper",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/looper",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/looper",
 		TargetHeaders: []string{"android/looper.h"},
 		Rules: []Rule{
 			{Action: "accept", From: "^ALooper"},

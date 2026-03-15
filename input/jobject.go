@@ -3,7 +3,7 @@
 package input
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/input"
+	capi "github.com/AndroidGoLab/ndk/capi/input"
 )
 
 type Jobject = capi.Jobject

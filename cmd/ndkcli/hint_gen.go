@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/hint"
+	"github.com/AndroidGoLab/ndk/hint"
 )
 
 var hintCmd = &cobra.Command{

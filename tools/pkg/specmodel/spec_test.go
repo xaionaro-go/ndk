@@ -5,13 +5,13 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 )
 
 func TestSpecRoundTrip(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "aaudio",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/aaudio",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/aaudio",
 		Types: map[string]specmodel.TypeDef{
 			"AAudioStream": {
 				Kind:   "opaque_ptr",

@@ -2,7 +2,7 @@ module: imagedecoder
 
 package:
   go_name: image
-  go_import: github.com/xaionaro-go/ndk/image
+  go_import: github.com/AndroidGoLab/ndk/image
   doc: "Package image provides Go bindings for Android ImageDecoder."
 
 types:

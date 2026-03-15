@@ -3,7 +3,7 @@
 package nnapi
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/neuralnetworks"
+	capi "github.com/AndroidGoLab/ndk/capi/neuralnetworks"
 )
 
 type ANeuralNetworksSymmPerChannelQuantParams = capi.ANeuralNetworksSymmPerChannelQuantParams

@@ -2,7 +2,7 @@ module: storage
 
 package:
   go_name: storage
-  go_import: github.com/xaionaro-go/ndk/storage
+  go_import: github.com/AndroidGoLab/ndk/storage
   doc: "Package storage provides Go bindings for Android Storage Manager."
 
 types:

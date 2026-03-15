@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
 
 	"gopkg.in/yaml.v3"
 )
@@ -16,7 +16,7 @@ import (
 func TestWriteSpec(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"TestHandle": {
 				Kind:   "opaque_ptr",
@@ -64,8 +64,8 @@ func TestWriteSpec(t *testing.T) {
 	if roundTrip.Module != "test" {
 		t.Errorf("round-trip module = %q, want %q", roundTrip.Module, "test")
 	}
-	if roundTrip.SourcePackage != "github.com/xaionaro-go/ndk/capi/test" {
-		t.Errorf("round-trip source_package = %q, want %q", roundTrip.SourcePackage, "github.com/xaionaro-go/ndk/capi/test")
+	if roundTrip.SourcePackage != "github.com/AndroidGoLab/ndk/capi/test" {
+		t.Errorf("round-trip source_package = %q, want %q", roundTrip.SourcePackage, "github.com/AndroidGoLab/ndk/capi/test")
 	}
 	td, ok := roundTrip.Types["TestHandle"]
 	require.True(t, ok, "round-trip missing type TestHandle")
@@ -75,7 +75,7 @@ func TestWriteSpec(t *testing.T) {
 func TestWriteSpec_WithStructs(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "camera",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/camera",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/camera",
 		Structs: map[string]specmodel.StructDef{
 			"ACameraDevice_StateCallbacks": {
 				Fields: []specmodel.StructField{

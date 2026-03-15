@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/thermal"
+	"github.com/AndroidGoLab/ndk/thermal"
 )
 
 var thermalMonitorCmd = &cobra.Command{

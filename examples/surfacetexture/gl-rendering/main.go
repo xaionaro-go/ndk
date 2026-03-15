@@ -64,7 +64,7 @@ package main
 import (
 	"fmt"
 
-	_ "github.com/xaionaro-go/ndk/surfacetexture"
+	_ "github.com/AndroidGoLab/ndk/surfacetexture"
 )
 
 func main() {

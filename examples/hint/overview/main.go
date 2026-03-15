@@ -47,7 +47,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/xaionaro-go/ndk/hint"
+	"github.com/AndroidGoLab/ndk/hint"
 )
 
 func main() {

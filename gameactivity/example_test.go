@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/gameactivity"
+	"github.com/AndroidGoLab/ndk/gameactivity"
 )
 
 func Example() {

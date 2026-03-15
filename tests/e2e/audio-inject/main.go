@@ -14,7 +14,7 @@ import (
 	"math"
 	"time"
 
-	emupb "github.com/xaionaro-go/ndk/tests/e2e/audio-inject/proto/emupb"
+	emupb "github.com/AndroidGoLab/ndk/tests/e2e/audio-inject/proto/emupb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

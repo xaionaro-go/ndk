@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/apkbuild"
+	"github.com/AndroidGoLab/ndk/tools/pkg/apkbuild"
 )
 
 func main() {

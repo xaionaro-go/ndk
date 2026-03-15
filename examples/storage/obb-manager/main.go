@@ -28,7 +28,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xaionaro-go/ndk/storage"
+	"github.com/AndroidGoLab/ndk/storage"
 )
 
 func main() {

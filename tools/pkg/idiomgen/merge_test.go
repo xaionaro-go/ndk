@@ -3,16 +3,16 @@ package idiomgen_test
 import (
 	"testing"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/idiomgen"
-	"github.com/xaionaro-go/ndk/tools/pkg/overlaymodel"
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/idiomgen"
+	"github.com/AndroidGoLab/ndk/tools/pkg/overlaymodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 )
 
 // buildFixture creates AAudio-like spec and overlay data for testing.
 func buildFixture() (specmodel.Spec, overlaymodel.Overlay) {
 	spec := specmodel.Spec{
 		Module:        "aaudio",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/aaudio",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/aaudio",
 		Types: map[string]specmodel.TypeDef{
 			"AAudioStreamBuilder": {
 				Kind:   "opaque_ptr",
@@ -68,7 +68,7 @@ func buildFixture() (specmodel.Spec, overlaymodel.Overlay) {
 		Module: "aaudio",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "audio",
-			GoImport: "github.com/xaionaro-go/ndk/audio",
+			GoImport: "github.com/AndroidGoLab/ndk/audio",
 			Doc:      "Package audio provides Go bindings for Android AAudio.",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
@@ -111,14 +111,14 @@ func TestMerge_PackageName(t *testing.T) {
 	if merged.PackageName != "audio" {
 		t.Errorf("PackageName = %q, want %q", merged.PackageName, "audio")
 	}
-	if merged.PackageImport != "github.com/xaionaro-go/ndk/audio" {
-		t.Errorf("PackageImport = %q, want %q", merged.PackageImport, "github.com/xaionaro-go/ndk/audio")
+	if merged.PackageImport != "github.com/AndroidGoLab/ndk/audio" {
+		t.Errorf("PackageImport = %q, want %q", merged.PackageImport, "github.com/AndroidGoLab/ndk/audio")
 	}
 	if merged.PackageDoc != "Package audio provides Go bindings for Android AAudio." {
 		t.Errorf("PackageDoc = %q", merged.PackageDoc)
 	}
-	if merged.SourcePackage != "github.com/xaionaro-go/ndk/capi/aaudio" {
-		t.Errorf("SourcePackage = %q, want %q", merged.SourcePackage, "github.com/xaionaro-go/ndk/capi/aaudio")
+	if merged.SourcePackage != "github.com/AndroidGoLab/ndk/capi/aaudio" {
+		t.Errorf("SourcePackage = %q, want %q", merged.SourcePackage, "github.com/AndroidGoLab/ndk/capi/aaudio")
 	}
 }
 
@@ -273,7 +273,7 @@ func TestMerge_APILevels(t *testing.T) {
 func TestMerge_FunctionWithoutReceiver_Skipped(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Functions: map[string]specmodel.FuncDef{
 			"freeFunction": {
 				CName:   "freeFunction",
@@ -285,7 +285,7 @@ func TestMerge_FunctionWithoutReceiver_Skipped(t *testing.T) {
 		Module: "test",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "test",
-			GoImport: "github.com/xaionaro-go/ndk/test",
+			GoImport: "github.com/AndroidGoLab/ndk/test",
 		},
 		Functions: map[string]overlaymodel.FuncOverlay{
 			"freeFunction": {
@@ -303,7 +303,7 @@ func TestMerge_FunctionWithoutReceiver_Skipped(t *testing.T) {
 func TestMerge_TypeWithoutOverlayGoName_UsesSpecName(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"SomeOpaqueHandle": {
 				Kind:   "opaque_ptr",
@@ -316,7 +316,7 @@ func TestMerge_TypeWithoutOverlayGoName_UsesSpecName(t *testing.T) {
 		Module: "test",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "test",
-			GoImport: "github.com/xaionaro-go/ndk/test",
+			GoImport: "github.com/AndroidGoLab/ndk/test",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"SomeOpaqueHandle": {
@@ -344,7 +344,7 @@ func TestMerge_TypeWithoutOverlayGoName_UsesSpecName(t *testing.T) {
 func TestMerge_MethodAPILevel(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"Handle": {Kind: "opaque_ptr", CType: "Handle", GoType: "*C.Handle"},
 		},
@@ -362,7 +362,7 @@ func TestMerge_MethodAPILevel(t *testing.T) {
 		Module: "test",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "test",
-			GoImport: "github.com/xaionaro-go/ndk/test",
+			GoImport: "github.com/AndroidGoLab/ndk/test",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"Handle": {GoName: "Handle"},
@@ -389,7 +389,7 @@ func TestMerge_MethodAPILevel(t *testing.T) {
 func TestMerge_ValueEnum_NoStripPrefix(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"Color_t": {Kind: "typedef_int32", CType: "color_t", GoType: "int32"},
 		},
@@ -404,7 +404,7 @@ func TestMerge_ValueEnum_NoStripPrefix(t *testing.T) {
 		Module: "test",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "test",
-			GoImport: "github.com/xaionaro-go/ndk/test",
+			GoImport: "github.com/AndroidGoLab/ndk/test",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"Color_t": {GoName: "Color"},
@@ -423,7 +423,7 @@ func TestMerge_ValueEnum_NoStripPrefix(t *testing.T) {
 func TestMerge_CallbackWithoutOverlayAnnotation(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Callbacks: map[string]specmodel.CallbackDef{
 			"myCallback": {
 				Params:  []specmodel.Param{{Name: "x", Type: "int32"}},
@@ -435,7 +435,7 @@ func TestMerge_CallbackWithoutOverlayAnnotation(t *testing.T) {
 		Module: "test",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "test",
-			GoImport: "github.com/xaionaro-go/ndk/test",
+			GoImport: "github.com/AndroidGoLab/ndk/test",
 		},
 	}
 	merged := idiomgen.Merge(spec, overlay)
@@ -454,7 +454,7 @@ func TestMerge_CallbackWithoutOverlayAnnotation(t *testing.T) {
 func TestMerge_CallbackAnnotationMatchesByType(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Functions: map[string]specmodel.FuncDef{
 			"setDataCallback": {
 				CName: "setDataCallback",
@@ -490,7 +490,7 @@ func TestMerge_CallbackAnnotationMatchesByType(t *testing.T) {
 		Module: "test",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "test",
-			GoImport: "github.com/xaionaro-go/ndk/test",
+			GoImport: "github.com/AndroidGoLab/ndk/test",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"Handle": {GoName: "Handle"},
@@ -544,7 +544,7 @@ func TestMerge_CallbackAnnotationMatchesByType(t *testing.T) {
 func TestMerge_FunctionNotInOverlay_AutoGenerated(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Functions: map[string]specmodel.FuncDef{
 			"unknownFunc": {
 				CName:   "unknownFunc",
@@ -556,7 +556,7 @@ func TestMerge_FunctionNotInOverlay_AutoGenerated(t *testing.T) {
 		Module: "test",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "test",
-			GoImport: "github.com/xaionaro-go/ndk/test",
+			GoImport: "github.com/AndroidGoLab/ndk/test",
 		},
 	}
 	merged := idiomgen.Merge(spec, overlay)
@@ -575,7 +575,7 @@ func TestMerge_FunctionNotInOverlay_AutoGenerated(t *testing.T) {
 func TestMerge_ErrorEnumWithStripPrefix(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"Result_t": {Kind: "typedef_int32"},
 		},
@@ -589,7 +589,7 @@ func TestMerge_ErrorEnumWithStripPrefix(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"Result_t": {
 				GoError:      true,
@@ -620,7 +620,7 @@ func TestMerge_ErrorEnumWithStripPrefix(t *testing.T) {
 func TestMerge_AutoDeriveGoName(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"MyHandle": {Kind: "opaque_ptr", CType: "MyHandle", GoType: "*C.MyHandle"},
 		},
@@ -637,7 +637,7 @@ func TestMerge_AutoDeriveGoName(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"MyHandle": {GoName: "Handle"},
 		},
@@ -661,7 +661,7 @@ func TestMerge_AutoDeriveGoName(t *testing.T) {
 func TestMerge_ParamTypeMapping(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"Handle":      {Kind: "opaque_ptr", CType: "Handle", GoType: "*C.Handle"},
 			"Direction_t": {Kind: "typedef_int32", CType: "direction_t", GoType: "int32"},
@@ -682,7 +682,7 @@ func TestMerge_ParamTypeMapping(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"Handle":      {GoName: "Handle"},
 			"Direction_t": {GoName: "Direction", StripPrefix: "DIR_"},
@@ -711,7 +711,7 @@ func TestMerge_ParamTypeMapping(t *testing.T) {
 func TestMerge_EnumWithoutOverlay_AutoGenerated(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"Orphan_t": {Kind: "typedef_int32", CType: "orphan_t", GoType: "int32"},
 		},
@@ -721,7 +721,7 @@ func TestMerge_EnumWithoutOverlay_AutoGenerated(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		// No type overlay for Orphan_t — should be auto-generated with auto-naming.
 	}
 	merged := idiomgen.Merge(spec, overlay)
@@ -741,7 +741,7 @@ func TestMerge_EnumWithoutOverlay_AutoGenerated(t *testing.T) {
 func TestMerge_CallbackStructs(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "camera",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/camera",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/camera",
 		Types: map[string]specmodel.TypeDef{
 			"ACameraDevice_StateCallbacks": {Kind: "opaque_ptr", CType: "ACameraDevice_StateCallbacks"},
 		},
@@ -764,7 +764,7 @@ func TestMerge_CallbackStructs(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "camera",
-		Package: overlaymodel.PackageOverlay{GoName: "camera", GoImport: "github.com/xaionaro-go/ndk/camera"},
+		Package: overlaymodel.PackageOverlay{GoName: "camera", GoImport: "github.com/AndroidGoLab/ndk/camera"},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"ACameraDevice_StateCallbacks": {GoName: "DeviceStateCallbacks"},
 		},
@@ -811,11 +811,11 @@ func TestMerge_CallbackStructs(t *testing.T) {
 func TestMerge_StructAccessors(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "camera",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/camera",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/camera",
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "camera",
-		Package: overlaymodel.PackageOverlay{GoName: "camera", GoImport: "github.com/xaionaro-go/ndk/camera"},
+		Package: overlaymodel.PackageOverlay{GoName: "camera", GoImport: "github.com/AndroidGoLab/ndk/camera"},
 		StructAccessors: map[string]overlaymodel.StructAccessorOverlay{
 			"ACameraIdList": {
 				CountField: "numCameras",
@@ -848,7 +848,7 @@ func TestMerge_StructAccessors(t *testing.T) {
 func TestMerge_Lifecycle(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "nativeactivity",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/nativeactivity",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/nativeactivity",
 		Types: map[string]specmodel.TypeDef{
 			"ANativeActivity": {Kind: "opaque_ptr", CType: "ANativeActivity"},
 		},
@@ -867,7 +867,7 @@ func TestMerge_Lifecycle(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "nativeactivity",
-		Package: overlaymodel.PackageOverlay{GoName: "activity", GoImport: "github.com/xaionaro-go/ndk/activity"},
+		Package: overlaymodel.PackageOverlay{GoName: "activity", GoImport: "github.com/AndroidGoLab/ndk/activity"},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"ANativeActivity": {GoName: "Activity"},
 		},
@@ -903,7 +903,7 @@ func TestMerge_Lifecycle(t *testing.T) {
 func TestMerge_FixedParams(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "camera",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/camera",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/camera",
 		Types: map[string]specmodel.TypeDef{
 			"CaptureSession": {Kind: "opaque_ptr", CType: "CaptureSession"},
 		},
@@ -923,7 +923,7 @@ func TestMerge_FixedParams(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "camera",
-		Package: overlaymodel.PackageOverlay{GoName: "camera", GoImport: "github.com/xaionaro-go/ndk/camera"},
+		Package: overlaymodel.PackageOverlay{GoName: "camera", GoImport: "github.com/AndroidGoLab/ndk/camera"},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"CaptureSession": {GoName: "CaptureSession"},
 		},
@@ -959,7 +959,7 @@ func TestMerge_FixedParams(t *testing.T) {
 func TestMerge_MethodWithCallbackParam(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "camera",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/camera",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/camera",
 		Types: map[string]specmodel.TypeDef{
 			"ACameraManager": {Kind: "opaque_ptr", CType: "ACameraManager"},
 		},
@@ -978,7 +978,7 @@ func TestMerge_MethodWithCallbackParam(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "camera",
-		Package: overlaymodel.PackageOverlay{GoName: "camera", GoImport: "github.com/xaionaro-go/ndk/camera"},
+		Package: overlaymodel.PackageOverlay{GoName: "camera", GoImport: "github.com/AndroidGoLab/ndk/camera"},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"ACameraManager": {GoName: "Manager"},
 		},
@@ -1008,7 +1008,7 @@ func TestMerge_MethodWithCallbackParam(t *testing.T) {
 func TestMerge_ReturnsFrames(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"Stream": {Kind: "opaque_ptr", CType: "Stream", GoType: "*C.Stream"},
 		},
@@ -1026,7 +1026,7 @@ func TestMerge_ReturnsFrames(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"Stream": {GoName: "Stream"},
 		},
@@ -1050,7 +1050,7 @@ func TestMerge_ReturnsFrames(t *testing.T) {
 func TestMerge_OutputParams_Method(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "media",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/media",
 		Types: map[string]specmodel.TypeDef{
 			"AImageReader": {Kind: "opaque_ptr", CType: "AImageReader", GoType: "*C.AImageReader"},
 			"AImage":       {Kind: "opaque_ptr", CType: "AImage", GoType: "*C.AImage"},
@@ -1070,7 +1070,7 @@ func TestMerge_OutputParams_Method(t *testing.T) {
 		Module: "media",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "media",
-			GoImport: "github.com/xaionaro-go/ndk/media",
+			GoImport: "github.com/AndroidGoLab/ndk/media",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"AImageReader": {GoName: "ImageReader"},
@@ -1129,7 +1129,7 @@ func TestMerge_OutputParams_Method(t *testing.T) {
 func TestMerge_OutputParams_FreeFunction(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "media",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/media",
 		Types: map[string]specmodel.TypeDef{
 			"AImageReader": {Kind: "opaque_ptr", CType: "AImageReader", GoType: "*C.AImageReader"},
 		},
@@ -1151,7 +1151,7 @@ func TestMerge_OutputParams_FreeFunction(t *testing.T) {
 		Module: "media",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "media",
-			GoImport: "github.com/xaionaro-go/ndk/media",
+			GoImport: "github.com/AndroidGoLab/ndk/media",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"AImageReader": {GoName: "ImageReader"},
@@ -1195,7 +1195,7 @@ func TestMerge_OutputParams_FreeFunction(t *testing.T) {
 func TestMerge_OutputParams_ScalarTypes(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "media",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/media",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/media",
 		Types: map[string]specmodel.TypeDef{
 			"AImage": {Kind: "opaque_ptr", CType: "AImage", GoType: "*C.AImage"},
 		},
@@ -1216,7 +1216,7 @@ func TestMerge_OutputParams_ScalarTypes(t *testing.T) {
 		Module: "media",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "media",
-			GoImport: "github.com/xaionaro-go/ndk/media",
+			GoImport: "github.com/AndroidGoLab/ndk/media",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"AImage": {GoName: "Image"},
@@ -1273,7 +1273,7 @@ func TestMerge_OutputParams_ScalarTypes(t *testing.T) {
 func TestMerge_OutputParams_ReturnsBool_Method(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "persistablebundle",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/persistablebundle",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/persistablebundle",
 		Types: map[string]specmodel.TypeDef{
 			"APersistableBundle": {Kind: "opaque_ptr", CType: "APersistableBundle", GoType: "*C.APersistableBundle"},
 		},
@@ -1293,7 +1293,7 @@ func TestMerge_OutputParams_ReturnsBool_Method(t *testing.T) {
 		Module: "persistablebundle",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "persistablebundle",
-			GoImport: "github.com/xaionaro-go/ndk/persistablebundle",
+			GoImport: "github.com/AndroidGoLab/ndk/persistablebundle",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"APersistableBundle": {GoName: "PersistableBundle"},
@@ -1341,7 +1341,7 @@ func TestMerge_OutputParams_ReturnsBool_Method(t *testing.T) {
 func TestMerge_OutputParams_ReturnsBool_FreeFunction(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "persistablebundle",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/persistablebundle",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/persistablebundle",
 		Types: map[string]specmodel.TypeDef{
 			"APersistableBundle": {Kind: "opaque_ptr", CType: "APersistableBundle", GoType: "*C.APersistableBundle"},
 		},
@@ -1361,7 +1361,7 @@ func TestMerge_OutputParams_ReturnsBool_FreeFunction(t *testing.T) {
 		Module: "persistablebundle",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "persistablebundle",
-			GoImport: "github.com/xaionaro-go/ndk/persistablebundle",
+			GoImport: "github.com/AndroidGoLab/ndk/persistablebundle",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"APersistableBundle": {GoName: "PersistableBundle"},
@@ -1405,14 +1405,14 @@ func TestMerge_OutputParams_ReturnsBool_FreeFunction(t *testing.T) {
 func TestMerge_AutoOpaqueType_NoOverlay(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"AImageReader": {Kind: "opaque_ptr", CType: "AImageReader", GoType: "*C.AImageReader"},
 		},
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		// No type overlay — should auto-generate with stripped "A" prefix.
 	}
 	merged := idiomgen.Merge(spec, overlay)
@@ -1434,7 +1434,7 @@ func TestMerge_AutoOpaqueType_NoOverlay(t *testing.T) {
 func TestMerge_AutoMethod_NoOverlay(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"ASensor": {Kind: "opaque_ptr", CType: "ASensor", GoType: "*C.ASensor"},
 		},
@@ -1457,7 +1457,7 @@ func TestMerge_AutoMethod_NoOverlay(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		// No function overlays — should auto-generate methods.
 	}
 	merged := idiomgen.Merge(spec, overlay)
@@ -1481,7 +1481,7 @@ func TestMerge_AutoMethod_NoOverlay(t *testing.T) {
 func TestMerge_AutoDestructor_Detection(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"ABuffer": {Kind: "opaque_ptr", CType: "ABuffer", GoType: "*C.ABuffer"},
 		},
@@ -1504,7 +1504,7 @@ func TestMerge_AutoDestructor_Detection(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		// No overlays — should auto-detect ABuffer_release as destructor.
 	}
 	merged := idiomgen.Merge(spec, overlay)
@@ -1528,7 +1528,7 @@ func TestMerge_AutoDestructor_Detection(t *testing.T) {
 func TestMerge_AutoEnum_NoOverlay(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"ASENSOR_TYPE": {Kind: "typedef_int32", CType: "int32_t", GoType: "int32"},
 		},
@@ -1541,7 +1541,7 @@ func TestMerge_AutoEnum_NoOverlay(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		// No type overlay — enum should be auto-generated.
 	}
 	merged := idiomgen.Merge(spec, overlay)
@@ -1563,7 +1563,7 @@ func TestMerge_AutoEnum_NoOverlay(t *testing.T) {
 func TestMerge_OverlayOverridesAutoName(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"AImageReader": {Kind: "opaque_ptr", CType: "AImageReader", GoType: "*C.AImageReader"},
 		},
@@ -1579,7 +1579,7 @@ func TestMerge_OverlayOverridesAutoName(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		Types: map[string]overlaymodel.TypeOverlay{
 			"AImageReader": {GoName: "Reader"},
 		},
@@ -1611,7 +1611,7 @@ func TestMerge_OverlayOverridesAutoName(t *testing.T) {
 func TestMerge_SkipStillRespected(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Types: map[string]specmodel.TypeDef{
 			"AWidget": {Kind: "opaque_ptr", CType: "AWidget", GoType: "*C.AWidget"},
 		},
@@ -1634,7 +1634,7 @@ func TestMerge_SkipStillRespected(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 		Functions: map[string]overlaymodel.FuncOverlay{
 			"AWidget_internal": {Skip: true},
 		},
@@ -1653,7 +1653,7 @@ func TestMerge_SkipStillRespected(t *testing.T) {
 func TestMerge_AutoFreeFunction_NoReceiver(t *testing.T) {
 	spec := specmodel.Spec{
 		Module:        "test",
-		SourcePackage: "github.com/xaionaro-go/ndk/capi/test",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/test",
 		Functions: map[string]specmodel.FuncDef{
 			"globalInit": {
 				CName:   "globalInit",
@@ -1663,7 +1663,7 @@ func TestMerge_AutoFreeFunction_NoReceiver(t *testing.T) {
 	}
 	overlay := overlaymodel.Overlay{
 		Module:  "test",
-		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/xaionaro-go/ndk/test"},
+		Package: overlaymodel.PackageOverlay{GoName: "test", GoImport: "github.com/AndroidGoLab/ndk/test"},
 	}
 	merged := idiomgen.Merge(spec, overlay)
 	if len(merged.Methods) != 0 {

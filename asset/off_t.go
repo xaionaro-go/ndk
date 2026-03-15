@@ -3,7 +3,7 @@
 package asset
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/asset"
+	capi "github.com/AndroidGoLab/ndk/capi/asset"
 )
 
 type Off_t = capi.Off_t

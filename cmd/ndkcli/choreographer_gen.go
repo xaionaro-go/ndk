@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/choreographer"
+	"github.com/AndroidGoLab/ndk/choreographer"
 )
 
 var choreographerCmd = &cobra.Command{

@@ -16,7 +16,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/xaionaro-go/ndk/media"
+	"github.com/AndroidGoLab/ndk/media"
 )
 
 func main() {

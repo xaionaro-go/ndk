@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/overlaymodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/overlaymodel"
 )
 
 func TestOverlayRoundTrip(t *testing.T) {
@@ -18,7 +18,7 @@ func TestOverlayRoundTrip(t *testing.T) {
 		Module: "aaudio",
 		Package: overlaymodel.PackageOverlay{
 			GoName:   "audio",
-			GoImport: "github.com/xaionaro-go/ndk/audio",
+			GoImport: "github.com/AndroidGoLab/ndk/audio",
 			Doc:      "Package audio provides Go bindings for Android AAudio.",
 		},
 		Types: map[string]overlaymodel.TypeOverlay{
@@ -140,7 +140,7 @@ func TestLoadAAudioOverlay(t *testing.T) {
 	if ov.Package.GoName != "audio" {
 		t.Errorf("package.go_name = %q, want %q", ov.Package.GoName, "audio")
 	}
-	if ov.Package.GoImport != "github.com/xaionaro-go/ndk/audio" {
+	if ov.Package.GoImport != "github.com/AndroidGoLab/ndk/audio" {
 		t.Errorf("package.go_import = %q", ov.Package.GoImport)
 	}
 
@@ -222,7 +222,7 @@ func TestOverlay_NewFields(t *testing.T) {
 module: camera
 package:
   go_name: camera
-  go_import: github.com/xaionaro-go/ndk/camera
+  go_import: github.com/AndroidGoLab/ndk/camera
 callback_structs:
   ACameraDevice_StateCallbacks:
     go_name: DeviceStateCallbacks

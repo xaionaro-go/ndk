@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xaionaro-go/ndk/surfacecontrol"
+	"github.com/AndroidGoLab/ndk/surfacecontrol"
 )
 
 func main() {

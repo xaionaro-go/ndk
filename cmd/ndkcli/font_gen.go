@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/font"
+	"github.com/AndroidGoLab/ndk/font"
 )
 
 var fontCmd = &cobra.Command{

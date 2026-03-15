@@ -14,7 +14,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/looper"
+	"github.com/AndroidGoLab/ndk/looper"
 )
 
 func pollResultString(r looper.LOOPER_POLL) string {

@@ -2,7 +2,7 @@ module: permission
 
 package:
   go_name: permission
-  go_import: github.com/xaionaro-go/ndk/permission
+  go_import: github.com/AndroidGoLab/ndk/permission
   doc: "Package permission provides Go bindings for Android Permission Manager."
 
 types:

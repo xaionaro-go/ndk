@@ -58,7 +58,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xaionaro-go/ndk/hwbuf"
+	"github.com/AndroidGoLab/ndk/hwbuf"
 )
 
 func main() {

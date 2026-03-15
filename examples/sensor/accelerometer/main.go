@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xaionaro-go/ndk/sensor"
+	"github.com/AndroidGoLab/ndk/sensor"
 )
 
 func main() {
@@ -72,7 +72,7 @@ func main() {
 	//
 	// Step 1 -- Prepare a looper for the current thread:
 	//
-	//   import "github.com/xaionaro-go/ndk/looper"
+	//   import "github.com/AndroidGoLab/ndk/looper"
 	//
 	//   lp := looper.Prepare(0)
 	//   defer lp.Close()

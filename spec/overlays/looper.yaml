@@ -2,7 +2,7 @@ module: looper
 
 package:
   go_name: looper
-  go_import: github.com/xaionaro-go/ndk/looper
+  go_import: github.com/AndroidGoLab/ndk/looper
   doc: "Package looper provides Go bindings for Android ALooper."
 
 types:

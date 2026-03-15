@@ -3,7 +3,7 @@
 package binder
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/binder"
+	capi "github.com/AndroidGoLab/ndk/capi/binder"
 )
 
 type AIBinder_DeathRecipient_onBinderUnlinked = capi.AIBinder_DeathRecipient_onBinderUnlinked

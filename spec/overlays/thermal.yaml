@@ -2,7 +2,7 @@ module: thermal
 
 package:
   go_name: thermal
-  go_import: github.com/xaionaro-go/ndk/thermal
+  go_import: github.com/AndroidGoLab/ndk/thermal
   doc: "Package thermal provides Go bindings for Android thermal management."
 
 types:

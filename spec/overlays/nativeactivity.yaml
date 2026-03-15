@@ -2,7 +2,7 @@ module: nativeactivity
 
 package:
   go_name: activity
-  go_import: github.com/xaionaro-go/ndk/activity
+  go_import: github.com/AndroidGoLab/ndk/activity
   doc: "Package activity provides Go bindings for Android NativeActivity."
 
 types:

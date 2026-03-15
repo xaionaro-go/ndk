@@ -15,8 +15,8 @@ import (
 	"os"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/egl"
-	"github.com/xaionaro-go/ndk/gles2"
+	"github.com/AndroidGoLab/ndk/egl"
+	"github.com/AndroidGoLab/ndk/gles2"
 )
 
 func fatal(msg string) {

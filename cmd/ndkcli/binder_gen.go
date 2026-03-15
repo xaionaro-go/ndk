@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/binder"
+	"github.com/AndroidGoLab/ndk/binder"
 )
 
 var binderCmd = &cobra.Command{

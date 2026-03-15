@@ -1,7 +1,7 @@
 package input
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/input"
+	capi "github.com/AndroidGoLab/ndk/capi/input"
 )
 
 // GetEvent returns the next available input event from the queue.

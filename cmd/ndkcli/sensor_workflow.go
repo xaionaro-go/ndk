@@ -6,8 +6,8 @@ import (
 	"unsafe"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/looper"
-	"github.com/xaionaro-go/ndk/sensor"
+	"github.com/AndroidGoLab/ndk/looper"
+	"github.com/AndroidGoLab/ndk/sensor"
 )
 
 // sensorEventData extracts x, y, z from an ASensorEvent.

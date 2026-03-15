@@ -3,7 +3,7 @@
 package hwbuf
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/hardwarebuffer"
+	capi "github.com/AndroidGoLab/ndk/capi/hardwarebuffer"
 )
 
 type ARect = capi.ARect

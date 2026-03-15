@@ -5,7 +5,7 @@ package input
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/input"
+	capi "github.com/AndroidGoLab/ndk/capi/input"
 )
 
 // Event wraps the NDK AInputEvent handle.

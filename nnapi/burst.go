@@ -5,7 +5,7 @@ package nnapi
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/neuralnetworks"
+	capi "github.com/AndroidGoLab/ndk/capi/neuralnetworks"
 )
 
 // Burst wraps the NDK ANeuralNetworksBurst handle.

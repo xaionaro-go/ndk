@@ -3,7 +3,7 @@
 package choreographer
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/choreographer"
+	capi "github.com/AndroidGoLab/ndk/capi/choreographer"
 )
 
 type AChoreographer_vsyncCallback = capi.AChoreographer_vsyncCallback

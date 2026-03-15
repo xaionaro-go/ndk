@@ -5,7 +5,7 @@ package persistablebundle
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/persistablebundle"
+	capi "github.com/AndroidGoLab/ndk/capi/persistablebundle"
 )
 
 // PersistableBundle wraps the NDK APersistableBundle handle.

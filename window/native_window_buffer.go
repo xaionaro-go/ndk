@@ -5,7 +5,7 @@ package window
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/nativewindow"
+	capi "github.com/AndroidGoLab/ndk/capi/nativewindow"
 )
 
 // NativeWindow_Buffer wraps the NDK ANativeWindow_Buffer handle.

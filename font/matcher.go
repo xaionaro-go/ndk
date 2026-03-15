@@ -5,7 +5,7 @@ package font
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/font"
+	capi "github.com/AndroidGoLab/ndk/capi/font"
 )
 
 // Matcher wraps the NDK AFontMatcher handle.

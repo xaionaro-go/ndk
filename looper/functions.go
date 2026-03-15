@@ -6,7 +6,7 @@ import (
 	"time"
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/looper"
+	capi "github.com/AndroidGoLab/ndk/capi/looper"
 )
 
 // PollOnce calls the underlying C function.

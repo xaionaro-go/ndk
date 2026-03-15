@@ -7,9 +7,9 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/xaionaro-go/ndk/tools/pkg/capigen"
-	"github.com/xaionaro-go/ndk/tools/pkg/overlaymodel"
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/capigen"
+	"github.com/AndroidGoLab/ndk/tools/pkg/overlaymodel"
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 )
 
 // capiExportName returns the exported Go name that capigen generates for a C symbol.

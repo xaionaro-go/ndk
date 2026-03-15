@@ -6,13 +6,13 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/xaionaro-go/ndk/tools/pkg/specmodel"
 )
 
 func TestParseSource(t *testing.T) {
-	spec, err := ParseSources("fake", "github.com/xaionaro-go/ndk/capi/fake", []string{
+	spec, err := ParseSources("fake", "github.com/AndroidGoLab/ndk/capi/fake", []string{
 		"testdata/simple/simple.go",
 	})
 	if err != nil {
@@ -23,8 +23,8 @@ func TestParseSource(t *testing.T) {
 	if spec.Module != "fake" {
 		t.Errorf("module = %q, want %q", spec.Module, "fake")
 	}
-	if spec.SourcePackage != "github.com/xaionaro-go/ndk/capi/fake" {
-		t.Errorf("source_package = %q, want %q", spec.SourcePackage, "github.com/xaionaro-go/ndk/capi/fake")
+	if spec.SourcePackage != "github.com/AndroidGoLab/ndk/capi/fake" {
+		t.Errorf("source_package = %q, want %q", spec.SourcePackage, "github.com/AndroidGoLab/ndk/capi/fake")
 	}
 
 	// Types: at least 4 (2 opaque + 2 typedef).
@@ -243,7 +243,7 @@ func TestTypeString(t *testing.T) {
 }
 
 func TestParseSourceEdgeCases(t *testing.T) {
-	spec, err := ParseSources("edge", "github.com/xaionaro-go/ndk/capi/edge", []string{
+	spec, err := ParseSources("edge", "github.com/AndroidGoLab/ndk/capi/edge", []string{
 		"testdata/edgecases/edgecases.go",
 	})
 	if err != nil {

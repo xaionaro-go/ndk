@@ -6,7 +6,7 @@ import (
 	"time"
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/aaudio"
+	capi "github.com/AndroidGoLab/ndk/capi/aaudio"
 )
 
 // Stream wraps the NDK AAudioStream handle.

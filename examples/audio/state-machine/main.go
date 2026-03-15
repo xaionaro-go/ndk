@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xaionaro-go/ndk/audio"
+	"github.com/AndroidGoLab/ndk/audio"
 )
 
 // printState logs the current stream state with a label describing the

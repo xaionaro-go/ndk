@@ -2,7 +2,7 @@ module: bitmap
 
 package:
   go_name: bitmap
-  go_import: github.com/xaionaro-go/ndk/bitmap
+  go_import: github.com/AndroidGoLab/ndk/bitmap
   doc: "Package bitmap provides Go bindings for Android Bitmap (jnigraphics)."
 
 types:

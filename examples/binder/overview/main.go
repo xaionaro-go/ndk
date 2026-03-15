@@ -85,7 +85,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xaionaro-go/ndk/binder"
+	"github.com/AndroidGoLab/ndk/binder"
 )
 
 func main() {

@@ -3,7 +3,7 @@
 package media
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/media"
+	capi "github.com/AndroidGoLab/ndk/capi/media"
 )
 
 type AHardwareBuffer = capi.AHardwareBuffer

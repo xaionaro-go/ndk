@@ -3,7 +3,7 @@
 package bitmap
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/bitmap"
+	capi "github.com/AndroidGoLab/ndk/capi/bitmap"
 )
 
 type JNIEnv = capi.JNIEnv

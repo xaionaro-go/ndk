@@ -3,7 +3,7 @@
 package persistablebundle
 
 import (
-	capi "github.com/xaionaro-go/ndk/capi/persistablebundle"
+	capi "github.com/AndroidGoLab/ndk/capi/persistablebundle"
 )
 
 // ReadFromParcel calls the underlying C function.

@@ -5,7 +5,7 @@ package image
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/imagedecoder"
+	capi "github.com/AndroidGoLab/ndk/capi/imagedecoder"
 )
 
 // AssetManager wraps the NDK AAssetManager handle.

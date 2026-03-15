@@ -5,7 +5,7 @@ package input
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/input"
+	capi "github.com/AndroidGoLab/ndk/capi/input"
 )
 
 // Queue wraps the NDK AInputQueue handle.

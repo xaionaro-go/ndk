@@ -2,7 +2,7 @@ module: trace
 
 package:
   go_name: trace
-  go_import: github.com/xaionaro-go/ndk/trace
+  go_import: github.com/AndroidGoLab/ndk/trace
   doc: "Package trace provides Go bindings for Android native tracing."
 
 functions:

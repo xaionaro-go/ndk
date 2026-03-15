@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xaionaro-go/ndk/egl"
+	"github.com/AndroidGoLab/ndk/egl"
 )
 
 func fatal(msg string) {

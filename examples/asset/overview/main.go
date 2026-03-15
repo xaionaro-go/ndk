@@ -40,7 +40,7 @@ import (
 	"io"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/asset"
+	"github.com/AndroidGoLab/ndk/asset"
 )
 
 // modeName returns a human-readable description for an asset open mode.

@@ -5,7 +5,7 @@ package looper
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/looper"
+	capi "github.com/AndroidGoLab/ndk/capi/looper"
 )
 
 // Looper wraps the NDK ALooper handle.

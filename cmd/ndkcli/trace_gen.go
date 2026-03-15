@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/xaionaro-go/ndk/trace"
+	"github.com/AndroidGoLab/ndk/trace"
 )
 
 var traceCmd = &cobra.Command{

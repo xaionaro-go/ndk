@@ -6,8 +6,8 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/xaionaro-go/ndk/activity"
-	"github.com/xaionaro-go/ndk/window"
+	"github.com/AndroidGoLab/ndk/activity"
+	"github.com/AndroidGoLab/ndk/window"
 )
 
 // App provides a high-level interface to an Android NativeActivity.

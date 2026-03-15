@@ -2,7 +2,7 @@ module: configuration
 
 package:
   go_name: config
-  go_import: github.com/xaionaro-go/ndk/config
+  go_import: github.com/AndroidGoLab/ndk/config
   doc: "Package config provides Go bindings for Android AConfiguration."
 
 types:

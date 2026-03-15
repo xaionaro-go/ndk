@@ -1,4 +1,4 @@
-module github.com/xaionaro-go/ndk
+module github.com/AndroidGoLab/ndk
 
 go 1.24.2
 

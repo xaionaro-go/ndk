@@ -5,7 +5,7 @@ package gles2
 import (
 	"unsafe"
 
-	capi "github.com/xaionaro-go/ndk/capi/gles2"
+	capi "github.com/AndroidGoLab/ndk/capi/gles2"
 )
 
 // ActiveTexture calls the underlying C function.

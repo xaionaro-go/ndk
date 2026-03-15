@@ -2,7 +2,7 @@ module: logging
 
 package:
   go_name: log
-  go_import: github.com/xaionaro-go/ndk/log
+  go_import: github.com/AndroidGoLab/ndk/log
   doc: "Package log provides Go bindings for Android logging."
 
 types:
