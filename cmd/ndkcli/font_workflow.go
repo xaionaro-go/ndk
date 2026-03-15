@@ -11,9 +11,18 @@ import (
 )
 
 // matchFontFromIterator iterates all system fonts and finds the best
-// match for the given family, weight, and italic style. This replaces
-// AFontMatcher_match which crashes from headless CLI binaries because
-// libminikin's FontCollection is not initialized without an app context.
+// match for the given family, weight, and italic style.
+//
+// This replaces AFontMatcher_match which crashes (SIGSEGV) from headless
+// CLI binaries. Root cause: AFontMatcher_match calls
+// minikin::SystemFonts::findFontCollection(), which accesses a singleton
+// populated by Java's Typeface static initializer via JNI
+// (nativeAddFontCollections → minikin::SystemFonts::registerFallback).
+// Without Java/ART running, the singleton's mDefaultFallback is null,
+// causing a null pointer dereference in FontCollection::getFamilyForChar.
+//
+// ASystemFontIterator works from CLI because it reads /system/etc/fonts.xml
+// directly from the filesystem, bypassing minikin's singleton entirely.
 func matchFontFromIterator(
 	family string,
 	weight uint16,
