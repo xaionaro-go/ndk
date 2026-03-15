@@ -17,7 +17,14 @@ FIXTURE_MODULES := $(notdir $(wildcard tools/pkg/specgen/testdata/*/))
 NDK_SYSROOT := $(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include
 C2FFI_BIN   ?= c2ffi
 
-.PHONY: all capi specs idiomatic clean regen fixtures test lint check-examples e2e e2e-build e2e-examples e2e-examples-test e2e-audio ndkcli ndkcli-commands
+API_LEVEL      ?= 35
+NDK_CC_ARM64   := $(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android$(API_LEVEL)-clang
+NDK_CC_X86_64  := $(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android$(API_LEVEL)-clang
+BUILD_DIR      := build
+
+.PHONY: all capi specs idiomatic clean regen fixtures test lint check-examples check-no-capi \
+        e2e e2e-build e2e-examples e2e-examples-test e2e-audio \
+        ndkcli ndkcli-commands ndkcli-release install-ndk
 
 all: specs capi idiomatic
 
@@ -102,15 +109,14 @@ lint:
 
 # Cross-compile all examples and ndkcli for Android arm64 to catch compile errors (requires NDK)
 check-examples:
-	CGO_ENABLED=1 GOOS=android GOARCH=arm64 \
-		CC=$(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android35-clang \
+	CGO_ENABLED=1 GOOS=android GOARCH=arm64 CC=$(NDK_CC_ARM64) \
 		go build ./examples/... ./cmd/ndkcli/
 
 # Cross-compile E2E test binary for Android x86_64 (requires NDK)
 e2e-build:
-	CGO_ENABLED=1 GOOS=android GOARCH=amd64 \
-		CC=$(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android35-clang \
-		go build -o tests/e2e/e2e_test ./tests/e2e
+	@mkdir -p $(BUILD_DIR)
+	CGO_ENABLED=1 GOOS=android GOARCH=amd64 CC=$(NDK_CC_X86_64) \
+		go build -o $(BUILD_DIR)/e2e_test ./tests/e2e
 
 # Run full E2E test on Android emulator (requires SDK + NDK + KVM)
 e2e: e2e-build
@@ -128,11 +134,32 @@ e2e-examples-test:
 e2e-audio:
 	./tests/e2e/run-audio-e2e.sh
 
-# Build ndkcli for Android (requires NDK)
+# Install Android NDK (for CI; no-op if already present)
+ANDROID_NDK_VERSION ?= r28
+ANDROID_NDK_DIR_NAME ?= 28.0.13004108
+install-ndk:
+	@if [ -d "$(NDK_PATH)" ]; then echo "NDK already at $(NDK_PATH)"; exit 0; fi; \
+	echo "Installing Android NDK $(ANDROID_NDK_VERSION)..."; \
+	wget -q "https://dl.google.com/android/repository/android-ndk-$(ANDROID_NDK_VERSION)-linux.zip" -O /tmp/ndk.zip; \
+	unzip -q /tmp/ndk.zip -d /tmp/ndk-extract/; \
+	mkdir -p "$(ANDROID_HOME)/ndk"; \
+	mv /tmp/ndk-extract/android-ndk-* "$(ANDROID_HOME)/ndk/$(ANDROID_NDK_DIR_NAME)"; \
+	rm -f /tmp/ndk.zip; \
+	echo "NDK installed to $(ANDROID_HOME)/ndk/$(ANDROID_NDK_DIR_NAME)"
+
+# Build ndkcli for Android arm64 (requires NDK)
 ndkcli:
-	CGO_ENABLED=1 GOOS=android GOARCH=arm64 \
-		CC=$(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android$(APK_API)-clang \
-		go build -o ndkcli ./cmd/ndkcli/
+	@mkdir -p $(BUILD_DIR)
+	CGO_ENABLED=1 GOOS=android GOARCH=arm64 CC=$(NDK_CC_ARM64) \
+		go build -o $(BUILD_DIR)/ndkcli ./cmd/ndkcli/
+
+# Build release binaries for both architectures (stripped)
+ndkcli-release:
+	@mkdir -p $(BUILD_DIR)
+	CGO_ENABLED=1 GOOS=android GOARCH=arm64 CC=$(NDK_CC_ARM64) \
+		go build -trimpath -ldflags="-s -w" -o $(BUILD_DIR)/ndkcli-android-arm64 ./cmd/ndkcli/
+	CGO_ENABLED=1 GOOS=android GOARCH=amd64 CC=$(NDK_CC_X86_64) \
+		go build -trimpath -ldflags="-s -w" -o $(BUILD_DIR)/ndkcli-android-x86_64 ./cmd/ndkcli/
 
 # Print all ndkcli subcommands (extracted from source, no binary needed)
 ndkcli-commands:

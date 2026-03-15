@@ -11,10 +11,6 @@ on:
 permissions:
   contents: write
 
-env:
-  ANDROID_NDK_VERSION: r28
-  ANDROID_NDK_DIR_NAME: "28.0.13004108"
-
 jobs:
   test:
     name: Unit Tests & Lint
@@ -33,10 +29,7 @@ jobs:
         run: make check-no-capi
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v9
-        with:
-          version: latest
-          args: --timeout=5m ./tools/...
+        run: make lint
 
   check-examples:
     name: Cross-compile Examples
@@ -49,15 +42,9 @@ jobs:
           go-version: "1.24"
 
       - name: Install Android NDK
-        run: |
-          wget -q "https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip" -O /tmp/ndk.zip
-          unzip -q /tmp/ndk.zip -d /tmp/ndk-extract/
-          ls /tmp/ndk-extract/
-          mkdir -p "$ANDROID_HOME/ndk"
-          mv /tmp/ndk-extract/android-ndk-* "$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}"
-          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}" >> "$GITHUB_ENV"
+        run: make install-ndk
 
-      - name: Cross-compile examples for Android arm64
+      - name: Cross-compile examples and ndkcli
         run: make check-examples
 
   e2e-examples:
@@ -78,12 +65,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Install Android NDK
-        run: |
-          wget -q "https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip" -O /tmp/ndk.zip
-          unzip -q /tmp/ndk.zip -d /tmp/ndk-extract/
-          mkdir -p "$ANDROID_HOME/ndk"
-          mv /tmp/ndk-extract/android-ndk-* "$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}"
-          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}" >> "$GITHUB_ENV"
+        run: make install-ndk
 
       - name: Run examples on emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -106,27 +88,10 @@ jobs:
           go-version: "1.24"
 
       - name: Install Android NDK
-        run: |
-          wget -q "https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux.zip" -O /tmp/ndk.zip
-          unzip -q /tmp/ndk.zip -d /tmp/ndk-extract/
-          mkdir -p "$ANDROID_HOME/ndk"
-          mv /tmp/ndk-extract/android-ndk-* "$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}"
-          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}" >> "$GITHUB_ENV"
-          echo "NDK_CC_PREFIX=$ANDROID_HOME/ndk/${ANDROID_NDK_DIR_NAME}/toolchains/llvm/prebuilt/linux-x86_64/bin" >> "$GITHUB_ENV"
+        run: make install-ndk
 
-      - name: Build ndkcli for arm64
-        run: |
-          CGO_ENABLED=1 GOOS=android GOARCH=arm64 \
-            CC="${NDK_CC_PREFIX}/aarch64-linux-android35-clang" \
-            go build -trimpath -ldflags="-s -w" \
-            -o ndkcli-android-arm64 ./cmd/ndkcli/
-
-      - name: Build ndkcli for x86_64
-        run: |
-          CGO_ENABLED=1 GOOS=android GOARCH=amd64 \
-            CC="${NDK_CC_PREFIX}/x86_64-linux-android35-clang" \
-            go build -trimpath -ldflags="-s -w" \
-            -o ndkcli-android-x86_64 ./cmd/ndkcli/
+      - name: Build release binaries
+        run: make ndkcli-release
 
       - name: Create release
         env:
@@ -136,5 +101,5 @@ jobs:
           gh release create "$TAG_NAME" \
             --title "ndkcli $TAG_NAME" \
             --generate-notes \
-            ndkcli-android-arm64 \
-            ndkcli-android-x86_64
+            build/ndkcli-android-arm64 \
+            build/ndkcli-android-x86_64

@@ -28,3 +28,4 @@ capi/manifests/.gen_*.yaml
 
 cligen
 ndkcli
+build/
