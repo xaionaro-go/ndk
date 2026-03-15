@@ -1,0 +1,69 @@
+module: persistablebundle
+
+package:
+  go_name: persistablebundle
+  go_import: github.com/xaionaro-go/ndk/persistablebundle
+  doc: "Package persistablebundle provides Go bindings for Android PersistableBundle."
+
+types:
+  APersistableBundle:
+    go_name: PersistableBundle
+    destructor: APersistableBundle_delete
+
+functions:
+  APersistableBundle_writeToParcel:
+    receiver: PersistableBundle
+    go_name: WriteToParcel
+
+  APersistableBundle_readFromParcel:
+    go_name: ReadFromParcel
+    output_params:
+      outPBundle: "*PersistableBundle"
+
+  APersistableBundle_size:
+    receiver: PersistableBundle
+    go_name: Size
+    pure: true
+
+  APersistableBundle_erase:
+    receiver: PersistableBundle
+    go_name: Erase
+    pure: true
+
+  APersistableBundle_getPersistableBundle:
+    receiver: PersistableBundle
+    go_name: GetPersistableBundle
+    output_params:
+      outBundle: "*PersistableBundle"
+
+  # Skip: takes const char* const* which is complex to wrap idiomatically
+  APersistableBundle_putStringVector:
+    skip: true
+
+  # Skip: functions that require APersistableBundle_stringAllocator callback
+  APersistableBundle_getString:
+    skip: true
+  APersistableBundle_getStringVector:
+    skip: true
+  APersistableBundle_getBooleanKeys:
+    skip: true
+  APersistableBundle_getIntKeys:
+    skip: true
+  APersistableBundle_getLongKeys:
+    skip: true
+  APersistableBundle_getDoubleKeys:
+    skip: true
+  APersistableBundle_getStringKeys:
+    skip: true
+  APersistableBundle_getBooleanVectorKeys:
+    skip: true
+  APersistableBundle_getIntVectorKeys:
+    skip: true
+  APersistableBundle_getLongVectorKeys:
+    skip: true
+  APersistableBundle_getDoubleVectorKeys:
+    skip: true
+  APersistableBundle_getStringVectorKeys:
+    skip: true
+  APersistableBundle_getPersistableBundleKeys:
+    skip: true

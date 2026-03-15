@@ -86,6 +86,7 @@ type MergedMethod struct {
 	ReturnsListAccessor *MergedStructAccessor // if set, method returns a list via struct accessor
 	CustomCall          *MergedCustomCall     // if set, method uses custom capi call args
 	OutputParams        []MergedOutputParam   // C output params converted to Go return values
+	ReturnsBool         bool                  // true when the C function returns bool (not a numeric status code)
 }
 
 // MergedParam is a resolved parameter.
@@ -110,6 +111,7 @@ type MergedFreeFunction struct {
 	IsHandleReturn bool   // True if return is an opaque handle type
 	APILevel       int
 	OutputParams   []MergedOutputParam // C output params converted to Go return values
+	ReturnsBool    bool                // true when the C function returns bool (not a numeric status code)
 	ReturnsNew     string              // Go type name for constructor-style functions
 }
 

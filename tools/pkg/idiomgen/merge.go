@@ -1194,6 +1194,7 @@ func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOve
 	// Resolve output_params: convert C output pointer params to Go return values.
 	if len(fov.OutputParams) > 0 {
 		mm.OutputParams = resolveOutputParams(fov.OutputParams, fd, opaqueSpecNames)
+		mm.ReturnsBool = fd.Returns == "bool"
 		// Mark output params with direction "out" so skipAndFilterOut removes them.
 		for i := range mm.Params {
 			if _, isOutput := fov.OutputParams[mm.Params[i].Name]; isOutput {
@@ -1297,6 +1298,7 @@ func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.F
 	// Resolve output_params: convert C output pointer params to Go return values.
 	if len(fov.OutputParams) > 0 {
 		ff.OutputParams = resolveOutputParams(fov.OutputParams, fd, opaqueSpecNames)
+		ff.ReturnsBool = fd.Returns == "bool"
 		// Mark output params with direction "out" so they are filtered from visible params.
 		for i := range ff.Params {
 			if _, isOutput := fov.OutputParams[ff.Params[i].Name]; isOutput {
