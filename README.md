@@ -71,183 +71,224 @@ All three libraries talk to the same Android system services, but through differ
 - **Android NDK r28** (28.0.13004108) or later
 - **API level 35** (Android 15) target
 
-## Usage Examples
-
-### Audio Playback (AAudio)
-
-Configure a stream with the fluent builder, write samples, and clean up:
-
-```go
-import "github.com/AndroidGoLab/ndk/audio"
-
-    builder, err := audio.NewStreamBuilder()
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer builder.Close()
-
-    builder.
-        SetDirection(audio.Output).
-        SetSampleRate(44100).
-        SetChannelCount(2).
-        SetFormat(audio.PcmFloat).
-        SetPerformanceMode(audio.LowLatency).
-        SetSharingMode(audio.Shared)
-
-    stream, err := builder.Open()
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer stream.Close()
-
-    log.Printf("opened: %d Hz, %d ch, burst=%d",
-        stream.SampleRate(), stream.ChannelCount(), stream.FramesPerBurst())
-
-    stream.Start()
-    defer stream.Stop()
-
-    buf := make([]float32, int(stream.FramesPerBurst())*2)
-    stream.Write(unsafe.Pointer(&buf[0]), stream.FramesPerBurst(), 1_000_000_000)
-```
-
-### Camera Discovery
-
-List cameras and query capabilities through the Camera2 NDK API:
-
-```go
-import "github.com/AndroidGoLab/ndk/camera"
-
-    mgr := camera.NewManager()
-    defer mgr.Close()
-
-    ids, err := mgr.CameraIdList()
-    if err != nil {
-        log.Fatal(err) // camera.ErrPermissionDenied if CAMERA not granted
-    }
-
-    for _, id := range ids {
-        meta, _ := mgr.GetCameraCharacteristics(id)
-        orientation := meta.I32At(uint32(camera.SensorOrientation), 0)
-        log.Printf("camera %s: orientation=%d°", id, orientation)
-    }
-```
-
-### Sensor Querying
-
-Discover device sensors through the singleton sensor manager:
-
-```go
-import "github.com/AndroidGoLab/ndk/sensor"
-
-    mgr := sensor.GetInstance()
-    accel := mgr.DefaultSensor(sensor.Accelerometer)
-
-    fmt.Printf("Sensor: %s (%s)\n", accel.Name(), accel.Vendor())
-    fmt.Printf("Resolution: %g, min delay: %d µs\n",
-        accel.Resolution(), accel.MinDelay())
-```
-
-### Event Loop (ALooper)
-
-Prepare a thread-local looper and poll for events:
-
-```go
-import "github.com/AndroidGoLab/ndk/looper"
-
-    runtime.LockOSThread()
-    defer runtime.UnlockOSThread()
-
-    lp := looper.Prepare(1) // ALOOPER_PREPARE_ALLOW_NON_CALLBACKS
-    defer lp.Close()
-
-    go func() {
-        time.Sleep(100 * time.Millisecond)
-        lp.Acquire()
-        lp.Wake()
-    }()
-
-    var fd, events int32
-    var data unsafe.Pointer
-    switch looper.PollOnce(-1, &fd, &events, &data) {
-    case -1: // ALOOPER_POLL_WAKE
-        log.Println("woke up")
-    case -3: // ALOOPER_POLL_TIMEOUT
-        log.Println("timed out")
-    }
-```
-
-### Camera Preview (Full Pipeline)
-
-A complete camera-to-screen example using NativeActivity, EGL, and OpenGL ES:
-
-```go
-import (
-    "github.com/AndroidGoLab/ndk/activity"
-    "github.com/AndroidGoLab/ndk/camera"
-    "github.com/AndroidGoLab/ndk/egl"
-    "github.com/AndroidGoLab/ndk/gles2"
-    "github.com/AndroidGoLab/ndk/surfacetexture"
-    "github.com/AndroidGoLab/ndk/window"
-)
-
-    // 1. Open camera
-    mgr := camera.NewManager()
-    defer mgr.Close()
-
-    device, err := mgr.OpenCamera(cameraID, camera.DeviceStateCallbacks{
-        OnDisconnected: func() { log.Println("disconnected") },
-        OnError:        func(code int) { log.Printf("error: %d", code) },
-    })
-    defer device.Close()
-
-    // 2. Create capture request
-    request, _ := device.CreateCaptureRequest(camera.Preview)
-    defer request.Close()
-
-    // 3. Wire output surfaces
-    target, _ := camera.NewOutputTarget(nativeWindow)
-    request.AddTarget(target)
-
-    container, _ := camera.NewSessionOutputContainer()
-    output, _ := camera.NewSessionOutput(nativeWindow)
-    container.Add(output)
-
-    // 4. Start capture
-    session, _ := device.CreateCaptureSession(container,
-        camera.SessionStateCallbacks{
-            OnReady:  func() { log.Println("ready") },
-            OnActive: func() { log.Println("active") },
-        })
-    session.SetRepeatingRequest(request)
-
-    // 5. Cleanup (reverse order)
-    defer session.Close()
-    defer container.Close()
-    defer output.Close()
-    defer target.Close()
-```
-
-See [`examples/camera/display/`](examples/camera/display/) for the complete working application with EGL rendering and permission handling. Build it with `make apk-displaycamera`.
-
-### Asset Loading
-
-Read files from the APK's `assets/` directory:
-
-```go
-import "github.com/AndroidGoLab/ndk/asset"
-
-    // mgr obtained from activity.AssetManager
-    a := mgr.Open("textures/wood.png", asset.Streaming)
-    defer a.Close()
-
-    size := a.Length()
-    buf := make([]byte, size)
-    a.Read(buf)
-```
+## Examples
 
 All types implement idempotent, nil-safe `Close() error`. Error types wrap NDK status codes and work with `errors.Is`.
 
-### Other examples
+<details>
+<summary>Audio playback (AAudio)</summary>
+
+```go
+package main
+
+import (
+	"log"
+	"unsafe"
+
+	"github.com/AndroidGoLab/ndk/audio"
+)
+
+func main() {
+	builder, err := audio.NewStreamBuilder()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer builder.Close()
+
+	builder.
+		SetDirection(audio.Output).
+		SetSampleRate(44100).
+		SetChannelCount(2).
+		SetFormat(audio.PcmFloat).
+		SetPerformanceMode(audio.LowLatency).
+		SetSharingMode(audio.Shared)
+
+	stream, err := builder.Open()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stream.Close()
+
+	log.Printf("opened: %d Hz, %d ch, burst=%d",
+		stream.SampleRate(), stream.ChannelCount(), stream.FramesPerBurst())
+
+	if err := stream.Start(); err != nil {
+		log.Fatal(err)
+	}
+	defer stream.Stop()
+
+	buf := make([]float32, int(stream.FramesPerBurst())*2)
+	stream.Write(unsafe.Pointer(&buf[0]), stream.FramesPerBurst(), 1_000_000_000)
+}
+```
+
+</details>
+
+<details>
+<summary>Camera discovery</summary>
+
+```go
+package main
+
+import (
+	"log"
+
+	"github.com/AndroidGoLab/ndk/camera"
+)
+
+func main() {
+	mgr := camera.NewManager()
+	defer mgr.Close()
+
+	ids, err := mgr.CameraIdList()
+	if err != nil {
+		log.Fatal(err) // camera.ErrPermissionDenied if CAMERA not granted
+	}
+
+	for _, id := range ids {
+		meta, _ := mgr.GetCameraCharacteristics(id)
+		orientation := meta.I32At(uint32(camera.SensorOrientation), 0)
+		log.Printf("camera %s: orientation=%d°", id, orientation)
+	}
+}
+```
+
+</details>
+
+<details>
+<summary>Sensor querying</summary>
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/AndroidGoLab/ndk/sensor"
+)
+
+func main() {
+	mgr := sensor.GetInstance()
+	accel := mgr.DefaultSensor(sensor.Accelerometer)
+
+	fmt.Printf("Sensor: %s (%s)\n", accel.Name(), accel.Vendor())
+	fmt.Printf("Resolution: %g, min delay: %d µs\n",
+		accel.Resolution(), accel.MinDelay())
+}
+```
+
+</details>
+
+<details>
+<summary>Event loop (ALooper)</summary>
+
+```go
+package main
+
+import (
+	"log"
+	"runtime"
+	"time"
+	"unsafe"
+
+	"github.com/AndroidGoLab/ndk/looper"
+)
+
+func main() {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	lp := looper.Prepare(int32(looper.ALOOPER_PREPARE_ALLOW_NON_CALLBACKS))
+	defer func() { _ = lp.Close() }()
+
+	lp.Acquire()
+	go func() {
+		time.Sleep(100 * time.Millisecond)
+		lp.Wake()
+	}()
+
+	var fd, events int32
+	var data unsafe.Pointer
+	result := looper.LOOPER_POLL(looper.PollOnce(-1, &fd, &events, &data))
+
+	switch result {
+	case looper.ALOOPER_POLL_WAKE:
+		log.Println("woke up")
+	case looper.ALOOPER_POLL_TIMEOUT:
+		log.Println("timed out")
+	}
+}
+```
+
+</details>
+
+<details>
+<summary>Camera preview (full pipeline)</summary>
+
+A complete camera-to-screen example using NativeActivity, EGL, and OpenGL ES. See [`examples/camera/display/`](examples/camera/display/) for the full working application. Build it with `make apk-displaycamera`.
+
+```go
+// Sketch of the camera pipeline (requires NativeActivity context)
+
+mgr := camera.NewManager()
+defer mgr.Close()
+
+device, err := mgr.OpenCamera(cameraID, camera.DeviceStateCallbacks{
+	OnDisconnected: func() { log.Println("disconnected") },
+	OnError:        func(code int) { log.Printf("error: %d", code) },
+})
+defer device.Close()
+
+request, _ := device.CreateCaptureRequest(camera.Preview)
+defer request.Close()
+
+target, _ := camera.NewOutputTarget(nativeWindow)
+request.AddTarget(target)
+
+container, _ := camera.NewSessionOutputContainer()
+output, _ := camera.NewSessionOutput(nativeWindow)
+container.Add(output)
+
+session, _ := device.CreateCaptureSession(container,
+	camera.SessionStateCallbacks{
+		OnReady:  func() { log.Println("ready") },
+		OnActive: func() { log.Println("active") },
+	})
+session.SetRepeatingRequest(request)
+```
+
+</details>
+
+<details>
+<summary>Asset loading</summary>
+
+```go
+package main
+
+import (
+	"fmt"
+	"io"
+	"unsafe"
+
+	"github.com/AndroidGoLab/ndk/asset"
+)
+
+func main() {
+	// mgr obtained from activity.AssetManager in a real NativeActivity app.
+	// This example documents the API pattern.
+	var mgr *asset.Manager // = activity.AssetManager(nativeActivity)
+
+	a := mgr.Open("textures/wood.png", asset.Streaming)
+	defer a.Close()
+
+	size := a.Length()
+	buf := make([]byte, size)
+	_, _ = io.ReadFull(unsafe.NewReader(a), buf)
+	fmt.Printf("read %d bytes\n", len(buf))
+}
+```
+
+</details>
 
 <details>
 <summary>How to record from the microphone</summary>
@@ -849,9 +890,7 @@ func main() {
 
 </details>
 
-### More examples
-
-For more examples, see: [`examples/`](examples/).
+For more examples, see [`examples/`](examples/).
 
 ## ndkcli
 
