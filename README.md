@@ -252,7 +252,6 @@ All types implement idempotent, nil-safe `Close() error`. Error types wrap NDK s
 <details>
 <summary>How to record from the microphone</summary>
 
-> **Library:** [ndk](https://github.com/AndroidGoLab/ndk) (AAudio)
 
 ```go
 package main
@@ -342,7 +341,6 @@ func main() {
 <details>
 <summary>How to take a picture from the camera</summary>
 
-> **Library:** [ndk](https://github.com/AndroidGoLab/ndk) (Camera2 + ImageReader)
 
 ```go
 package main
@@ -496,7 +494,6 @@ func main() {
 <details>
 <summary>How to list available sensors</summary>
 
-> **Library:** [ndk](https://github.com/AndroidGoLab/ndk) (Sensor)
 
 ```go
 package main
@@ -577,7 +574,6 @@ func main() {
 <details>
 <summary>How to check device thermal status</summary>
 
-> **Library:** [ndk](https://github.com/AndroidGoLab/ndk) (Thermal)
 
 ```go
 package main
@@ -615,7 +611,6 @@ func main() {
 <details>
 <summary>How to query GPU capabilities</summary>
 
-> **Library:** [ndk](https://github.com/AndroidGoLab/ndk) (EGL + OpenGL ES 2.0)
 
 ```go
 package main
@@ -706,7 +701,6 @@ func main() {
 <details>
 <summary>How to probe available media codecs</summary>
 
-> **Library:** [ndk](https://github.com/AndroidGoLab/ndk) (MediaCodec)
 
 ```go
 package main
@@ -760,7 +754,6 @@ func main() {
 <details>
 <summary>How to read device configuration</summary>
 
-> **Library:** [ndk](https://github.com/AndroidGoLab/ndk) (Configuration)
 
 ```go
 package main
@@ -801,7 +794,6 @@ func main() {
 <details>
 <summary>How to decode an image file</summary>
 
-> **Library:** [ndk](https://github.com/AndroidGoLab/ndk) (ImageDecoder, API 30+)
 
 ```go
 package main
@@ -852,52 +844,6 @@ func main() {
 	}
 
 	fmt.Printf("Decoded %d bytes of RGBA pixel data.\n", bufSize)
-}
-```
-
-</details>
-
-<details>
-<summary>How to query battery status</summary>
-
-> **Library:** [binder](https://github.com/AndroidGoLab/binder) — Battery info is available via the AIDL interface.
-
-```go
-package main
-
-import (
-	"fmt"
-	"log"
-
-	"github.com/AndroidGoLab/binder/android/os"
-)
-
-func main() {
-	svc, err := os.NewBatteryService()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	level, err := svc.GetIntProperty("level")
-	if err != nil {
-		log.Fatal(err)
-	}
-	status, err := svc.GetIntProperty("status")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("Battery: %d%%\n", level)
-	switch status {
-	case 2:
-		fmt.Println("Status: Charging")
-	case 3:
-		fmt.Println("Status: Discharging")
-	case 5:
-		fmt.Println("Status: Full")
-	default:
-		fmt.Printf("Status: %d\n", status)
-	}
 }
 ```
 
