@@ -849,7 +849,7 @@ func main() {
 
 </details>
 
-> **More examples**
+### More examples
 
 For more examples, see: [`examples/`](examples/).
 
