@@ -256,6 +256,22 @@ func FuncMap() template.FuncMap {
 			if v, ok := fixedParams[p.Name]; ok {
 				return v
 			}
+			if p.GoType == "time.Duration" {
+				unit := p.DurationUnit
+				if unit == "" {
+					unit = "ns"
+				}
+				switch unit {
+				case "ms":
+					return p.CapiType + "(" + p.Name + ".Milliseconds())"
+				case "us":
+					return p.CapiType + "(" + p.Name + ".Microseconds())"
+				case "s":
+					return p.CapiType + "(" + p.Name + ".Seconds())"
+				default:
+					return p.CapiType + "(" + p.Name + ".Nanoseconds())"
+				}
+			}
 			if p.IsHandle {
 				if strings.HasPrefix(p.GoType, "*") {
 					return p.Name + ".cptr()"
@@ -266,8 +282,18 @@ func FuncMap() template.FuncMap {
 				return "&" + p.Name + "Bytes[0]"
 			}
 			if p.CapiType != "" && (p.CapiType != p.GoType || p.Remapped) {
+				if strings.HasPrefix(p.CapiType, "[]") {
+					return "*(*[]capi." + p.CapiType[2:] + ")(unsafe.Pointer(&" + p.Name + "))"
+				}
 				if strings.HasPrefix(p.CapiType, "*") {
-					return "(*capi." + p.CapiType[1:] + ")(" + p.Name + ")"
+					// Count all pointer levels to handle **Type correctly.
+					stars := 0
+					base := p.CapiType
+					for strings.HasPrefix(base, "*") {
+						stars++
+						base = base[1:]
+					}
+					return "(" + strings.Repeat("*", stars) + "capi." + base + ")(" + p.Name + ")"
 				}
 				if isScalarGoType(p.CapiType) {
 					return p.CapiType + "(" + p.Name + ")"
@@ -303,8 +329,18 @@ func FuncMap() template.FuncMap {
 				return p.Name + ".ptr"
 			}
 			if p.CapiType != "" && (p.CapiType != p.GoType || p.Remapped) {
+				if strings.HasPrefix(p.CapiType, "[]") {
+					return "*(*[]capi." + p.CapiType[2:] + ")(unsafe.Pointer(&" + p.Name + "))"
+				}
 				if strings.HasPrefix(p.CapiType, "*") {
-					return "(*capi." + p.CapiType[1:] + ")(" + p.Name + ")"
+					// Count all pointer levels to handle **Type correctly.
+					stars := 0
+					base := p.CapiType
+					for strings.HasPrefix(base, "*") {
+						stars++
+						base = base[1:]
+					}
+					return "(" + strings.Repeat("*", stars) + "capi." + base + ")(" + p.Name + ")"
 				}
 				if isScalarGoType(p.CapiType) {
 					return p.CapiType + "(" + p.Name + ")"

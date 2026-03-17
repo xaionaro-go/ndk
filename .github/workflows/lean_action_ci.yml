@@ -1,0 +1,36 @@
+name: Lean Proofs & Differential Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  proofs:
+    name: Lean 4 Proofs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: leanprover/lean-action@v1
+        with:
+          build-args: ""
+          lake-package-directory: proofs
+
+  differential:
+    name: Differential Tests (Lean <-> Go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - uses: leanprover/lean-action@v1
+        with:
+          build-args: ""
+          lake-package-directory: proofs
+
+      - name: Run differential tests
+        run: make test-differential

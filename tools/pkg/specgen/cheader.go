@@ -519,14 +519,21 @@ func stripCComments(source string) string {
 				i += 7
 				continue
 			}
-			// Block comment — skip.
+			// Block comment — skip until closing */.
 			i += 2
+			closed := false
 			for i+1 < len(source) {
 				if source[i] == '*' && source[i+1] == '/' {
 					i += 2
+					closed = true
 					break
 				}
 				i++
+			}
+			// If unterminated, consume all remaining bytes so the
+			// outer loop doesn't leak the last byte as non-comment.
+			if !closed {
+				i = len(source)
 			}
 			continue
 		}

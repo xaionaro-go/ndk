@@ -92,6 +92,10 @@ func autoGoTypeName(specName string) string {
 // isDestructorFunc returns true if funcName matches common destructor patterns
 // for the given spec type name: TypeName_delete, TypeName_free,
 // TypeName_destroy, TypeName_release, TypeName_close.
+//
+// Proven disjoint with isConstructorFunc for all type names
+// (proofs/Proofs/ConstructorDestructor.lean).
+// Differential tested against Lean oracle.
 func isDestructorFunc(funcName, specTypeName string) bool {
 	for _, suffix := range []string{"_delete", "_free", "_destroy", "_release", "_close"} {
 		if funcName == specTypeName+suffix {
@@ -123,6 +127,10 @@ func destructorPriority(funcName string) int {
 // isConstructorFunc returns true if funcName matches common constructor patterns
 // for the given spec type name: TypeName_create, TypeName_new.
 // Also matches ModuleName_createTypeName patterns (e.g. AAudio_createStreamBuilder).
+//
+// Proven disjoint with isDestructorFunc for all type names
+// (proofs/Proofs/ConstructorDestructor.lean).
+// Differential tested against Lean oracle.
 func isConstructorFunc(funcName, specTypeName string) bool {
 	for _, suffix := range []string{"_create", "_new"} {
 		if funcName == specTypeName+suffix {
@@ -161,20 +169,11 @@ func autoDetectReceiver(
 	})
 
 	if len(candidates) > 0 {
-		// Verify the first param is a pointer to this type (or any opaque type).
+		// Verify the first param is a pointer to this type.
 		best := candidates[0]
 		if len(fd.Params) > 0 {
 			firstParamBase := strings.TrimPrefix(fd.Params[0].Type, "*")
 			if firstParamBase == best.specName && fd.Params[0].Direction != "out" {
-				return best.goName
-			}
-		}
-		// Even without first-param match, if the function name matches,
-		// it's likely a method (e.g. static methods or getters that take
-		// the type as first param with a different name).
-		if len(fd.Params) > 0 && strings.HasPrefix(fd.Params[0].Type, "*") && fd.Params[0].Direction != "out" {
-			firstParamBase := strings.TrimPrefix(fd.Params[0].Type, "*")
-			if firstParamBase == best.specName {
 				return best.goName
 			}
 		}
@@ -1465,6 +1464,13 @@ func isTypeRemapped(specType string, typeMap map[string]string) bool {
 
 // resolveType maps a spec type to its Go equivalent using the typeMap.
 // Handles composite types like []EGLint → []Int and **EGLint → **Int.
+//
+// Proven properties (proofs/Proofs/ResolveType.lean):
+//   - Identity for empty typeMap
+//   - Direct lookup takes precedence over prefix-based
+//   - Preserves [], **, * prefix structure
+//
+// Differential tested against Lean oracle.
 func resolveType(specType string, typeMap map[string]string) string {
 	if goType, ok := typeMap[specType]; ok {
 		return goType
@@ -1499,6 +1505,9 @@ func isTypedefKind(kind string) bool {
 
 // countGoParams counts the number of parameters in a Go function signature string.
 // "func()" → 0, "func(int)" → 1, "func(int, string)" → 2.
+//
+// Verified by concrete cases (proofs/Proofs/CountGoParams.lean).
+// Differential tested against Lean oracle.
 func countGoParams(sig string) int {
 	// Extract content between ( and ).
 	start := strings.Index(sig, "(")

@@ -25,7 +25,8 @@ BUILD_DIR      := build
 
 .PHONY: all capi specs idiomatic clean regen fixtures test lint check-examples check-no-capi \
         e2e e2e-build e2e-examples e2e-examples-test e2e-audio \
-        ndkcli ndkcli-commands ndkcli-release install-ndk
+        ndkcli ndkcli-commands ndkcli-release install-ndk \
+        proofs test-differential
 
 all: specs capi idiomatic
 
@@ -96,6 +97,15 @@ regen: clean specs capi idiomatic
 
 test:
 	go test $$(go list ./... | grep -v -E '/(capi|cmd|tests|examples)/|/ndk/[a-z][a-z0-9]*$$') -count=1
+
+# Build Lean 4 proofs (requires elan/lake toolchain).
+proofs:
+	cd proofs && lake build
+
+# Run differential tests comparing Go implementations against Lean oracle.
+# Requires: elan/lake toolchain. Builds the oracle automatically.
+test-differential: proofs
+	go test ./tools/pkg/capigen/ ./tools/pkg/idiomgen/ -run TestDifferential -v
 
 # Verify cmd/ and examples/ do not import capi packages.
 check-no-capi:

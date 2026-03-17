@@ -1,0 +1,10 @@
+name = "proofs_tmp"
+version = "0.1.0"
+defaultTargets = ["proofs_tmp"]
+
+[[lean_lib]]
+name = "ProofsTmp"
+
+[[lean_exe]]
+name = "proofs_tmp"
+root = "Main"

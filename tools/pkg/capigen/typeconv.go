@@ -2,6 +2,7 @@ package capigen
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -169,14 +170,50 @@ func isFixedArrayType(t string) bool {
 // applyCGoStructPrefix converts a CGo type expression to use C.struct_ prefix
 // where needed. E.g., "*C.__android_log_message" → "*C.struct___android_log_message"
 // when "__android_log_message" is in the structPrefixSet.
+//
+// Uses longest-match-first ordering so that "C.foobar" is not corrupted by a
+// shorter prefix "C.foo" when only "foo" is in the set but "foobar" is not.
 func applyCGoStructPrefix(cgoExpr string, structPrefixSet map[string]bool) string {
+	// Sort names by length descending so longer names are replaced first,
+	// preventing shorter prefixes from matching substrings of longer names.
+	names := make([]string, 0, len(structPrefixSet))
 	for name := range structPrefixSet {
-		// Replace "C.name" with "C.struct_name" (not already prefixed)
+		names = append(names, name)
+	}
+	sort.Slice(names, func(i, j int) bool {
+		return len(names[i]) > len(names[j])
+	})
+
+	for _, name := range names {
 		old := "C." + name
-		new := "C.struct_" + name
-		if strings.Contains(cgoExpr, old) && !strings.Contains(cgoExpr, new) {
-			cgoExpr = strings.ReplaceAll(cgoExpr, old, new)
+		replacement := "C.struct_" + name
+		// Replace only exact token matches: "C.name" must not be followed
+		// by an alphanumeric or underscore character (which would indicate
+		// a longer identifier).
+		result := strings.Builder{}
+		remaining := cgoExpr
+		for {
+			idx := strings.Index(remaining, old)
+			if idx < 0 {
+				result.WriteString(remaining)
+				break
+			}
+			// Check that match is not a substring of a longer identifier.
+			afterIdx := idx + len(old)
+			if afterIdx < len(remaining) {
+				ch := remaining[afterIdx]
+				if ch == '_' || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') {
+					// Part of a longer identifier — skip this match.
+					result.WriteString(remaining[:afterIdx])
+					remaining = remaining[afterIdx:]
+					continue
+				}
+			}
+			result.WriteString(remaining[:idx])
+			result.WriteString(replacement)
+			remaining = remaining[afterIdx:]
 		}
+		cgoExpr = result.String()
 	}
 	return cgoExpr
 }
