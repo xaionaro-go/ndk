@@ -35,11 +35,6 @@ import (
 	"github.com/AndroidGoLab/ndk/trace"
 )
 
-// EGL query constants not in generated enum values.
-const (
-	eglVendor egl.Int = 0x3053
-)
-
 func TestExample_AudioStreamInfo(t *testing.T) {
 	builder, err := audio.NewStreamBuilder()
 	require.NoError(t, err, "NewStreamBuilder")
@@ -85,7 +80,7 @@ func TestExample_SensorList(t *testing.T) {
 	mgr := sensor.GetInstance()
 	require.NotNil(t, mgr, "GetInstance returned nil")
 
-	accel := mgr.DefaultSensor(int32(sensor.Accelerometer))
+	accel := mgr.DefaultSensor(sensor.Accelerometer)
 	require.NotNil(t, accel, "DefaultSensor(Accelerometer) returned nil")
 
 	name := accel.Name()
@@ -123,7 +118,7 @@ func TestExample_EGLInfo(t *testing.T) {
 
 	t.Logf("EGL %d.%d", major, minor)
 
-	vendor := egl.QueryString(dpy, eglVendor)
+	vendor := egl.QueryString(dpy, egl.EGL_VENDOR)
 	assert.NotEmpty(t, vendor, "EGL vendor string should be non-empty")
 	t.Logf("EGL vendor: %s", vendor)
 }

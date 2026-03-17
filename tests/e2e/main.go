@@ -90,12 +90,6 @@ import (
 	_ "github.com/AndroidGoLab/ndk/vulkan"
 )
 
-// EGL query constants not in generated enums.
-const (
-	eglVendor     egl.Int = 0x3053
-	eglVersion    egl.Int = 0x3054
-	eglExtensions egl.Int = 0x3055
-)
 
 // GL query constants not in generated enums.
 const (
@@ -178,7 +172,7 @@ func testSensor() {
 	mgr := sensor.GetInstance()
 	pass("sensor.GetInstance")
 
-	accel := mgr.DefaultSensor(int32(sensor.Accelerometer))
+	accel := mgr.DefaultSensor(sensor.Accelerometer)
 	name := accel.Name()
 	if name == "" {
 		skip("sensor.DefaultSensor/Accelerometer", "not available")
@@ -193,7 +187,7 @@ func testSensor() {
 	}
 
 	for _, st := range []sensor.Type{sensor.Gyroscope, sensor.Light, sensor.Proximity} {
-		s := mgr.DefaultSensor(int32(st))
+		s := mgr.DefaultSensor(st)
 		sname := s.Name()
 		if sname == "" {
 			skip(fmt.Sprintf("sensor.DefaultSensor/%s", st), "not available")
@@ -292,13 +286,13 @@ func testEGL() {
 	}
 	passf("egl.Initialize", fmt.Sprintf("EGL %d.%d", major, minor))
 
-	vendor := egl.QueryString(dpy, eglVendor)
+	vendor := egl.QueryString(dpy, egl.EGL_VENDOR)
 	passf("egl.QueryString/VENDOR", vendor)
 
-	version := egl.QueryString(dpy, eglVersion)
+	version := egl.QueryString(dpy, egl.EGL_VERSION)
 	passf("egl.QueryString/VERSION", version)
 
-	extensions := egl.QueryString(dpy, eglExtensions)
+	extensions := egl.QueryString(dpy, egl.EGL_EXTENSIONS)
 	if len(extensions) > 80 {
 		extensions = extensions[:80] + "..."
 	}
@@ -941,7 +935,7 @@ func testEnumsAndTypes() {
 		camera.Preview, camera.Record))
 
 	// ndk/surfacecontrol — verify Visibility and Transparency enums.
-	if surfacecontrol.Show == 0 && surfacecontrol.Hide == 1 {
+	if surfacecontrol.Hide == 0 && surfacecontrol.Show == 1 {
 		passf("surfacecontrol.Visibility", fmt.Sprintf("Show=%d Hide=%d",
 			surfacecontrol.Show, surfacecontrol.Hide))
 	} else {

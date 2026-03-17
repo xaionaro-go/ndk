@@ -103,7 +103,7 @@ func TestNdkcli_ThermalMonitor(t *testing.T) {
 
 func TestNdkcli_EGLInfo(t *testing.T) {
 	out := requireNdkcli(t, "egl", "info")
-	assert.Contains(t, out, "Vendor", "EGL info should contain Vendor")
+	assert.Contains(t, out, "vendor", "EGL info should contain vendor")
 	t.Logf("egl info:\n%s", out)
 }
 
@@ -141,7 +141,7 @@ func TestNdkcli_MediaNewDecoder(t *testing.T) {
 
 func TestNdkcli_ConfigShow(t *testing.T) {
 	out := requireNdkcli(t, "config", "show")
-	assert.Contains(t, out, "Density", "config show should contain Density")
+	assert.Contains(t, out, "density", "config show should contain density")
 	t.Logf("config show:\n%s", out)
 }
 
@@ -187,7 +187,7 @@ func TestNdkcli_TraceSetCounter(t *testing.T) {
 }
 
 func TestNdkcli_LogWrite(t *testing.T) {
-	out := requireNdkcli(t, "log", "write", "--tag", "ndktest", "--message", "e2e test", "--priority", "4")
+	out := requireNdkcli(t, "log", "write", "--tag", "ndktest", "--text", "e2e test", "--prio", "4")
 	t.Logf("log write: %q", out)
 }
 
