@@ -4,6 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/AndroidGoLab/ndk)](https://goreportcard.com/report/github.com/AndroidGoLab/ndk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/AndroidGoLab/ndk)](go.mod)
+[![Ask AI](https://img.shields.io/badge/Ask_AI-Context7-059669)](https://context7.com/androidgolab/ndk)
 
 Idiomatic Go bindings for the Android NDK, auto-generated from C headers to ensure full coverage and easy maintenance.
 
