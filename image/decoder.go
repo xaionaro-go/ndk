@@ -42,6 +42,19 @@ func (h *Decoder) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Decoder) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewDecoderFromUintPtr wraps a uintptr as a Decoder.
+// The caller must ensure ptr points to a valid AImageDecoder.
+func NewDecoderFromUintPtr(ptr uintptr) *Decoder {
+	return &Decoder{ptr: (*capi.AImageDecoder)(unsafe.Pointer(ptr))}
+}
+
 // AdvanceFrame calls the underlying NDK function.
 func (h *Decoder) AdvanceFrame() error {
 	return result(capi.AImageDecoder_advanceFrame(h.ptr))

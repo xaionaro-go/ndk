@@ -51,6 +51,19 @@ func (h *StreamBuilder) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *StreamBuilder) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewStreamBuilderFromUintPtr wraps a uintptr as a StreamBuilder.
+// The caller must ensure ptr points to a valid AAudioStreamBuilder.
+func NewStreamBuilderFromUintPtr(ptr uintptr) *StreamBuilder {
+	return &StreamBuilder{ptr: (*capi.AAudioStreamBuilder)(unsafe.Pointer(ptr))}
+}
+
 // Open creates a new Stream from this StreamBuilder.
 func (h *StreamBuilder) Open() (*Stream, error) {
 	var ptr *capi.AAudioStream

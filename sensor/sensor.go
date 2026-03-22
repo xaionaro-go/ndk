@@ -32,6 +32,19 @@ func (h *Sensor) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Sensor) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewSensorFromUintPtr wraps a uintptr as a Sensor.
+// The caller must ensure ptr points to a valid ASensor.
+func NewSensorFromUintPtr(ptr uintptr) *Sensor {
+	return &Sensor{ptr: (*capi.ASensor)(unsafe.Pointer(ptr))}
+}
+
 // GetFifoMaxEventCount calls the underlying NDK function.
 func (h *Sensor) GetFifoMaxEventCount() error {
 	return result(capi.ASensor_getFifoMaxEventCount(h.ptr))

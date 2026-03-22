@@ -47,6 +47,19 @@ func (h *MediaCodecCryptoInfo) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *MediaCodecCryptoInfo) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewMediaCodecCryptoInfoFromUintPtr wraps a uintptr as a MediaCodecCryptoInfo.
+// The caller must ensure ptr points to a valid AMediaCodecCryptoInfo.
+func NewMediaCodecCryptoInfoFromUintPtr(ptr uintptr) *MediaCodecCryptoInfo {
+	return &MediaCodecCryptoInfo{ptr: (*capi.AMediaCodecCryptoInfo)(unsafe.Pointer(ptr))}
+}
+
 // GetNumSubSamples returns the value directly.
 func (h *MediaCodecCryptoInfo) GetNumSubSamples() uint64 {
 	return (uint64)(capi.AMediaCodecCryptoInfo_getNumSubSamples(h.ptr))

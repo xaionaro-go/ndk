@@ -31,3 +31,16 @@ func NewCameraManager_AvailabilityCallbacksFromPointer(ptr unsafe.Pointer) *Came
 func (h *CameraManager_AvailabilityCallbacks) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *CameraManager_AvailabilityCallbacks) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewCameraManager_AvailabilityCallbacksFromUintPtr wraps a uintptr as a CameraManager_AvailabilityCallbacks.
+// The caller must ensure ptr points to a valid ACameraManager_AvailabilityCallbacks.
+func NewCameraManager_AvailabilityCallbacksFromUintPtr(ptr uintptr) *CameraManager_AvailabilityCallbacks {
+	return &CameraManager_AvailabilityCallbacks{ptr: (*capi.ACameraManager_AvailabilityCallbacks)(unsafe.Pointer(ptr))}
+}

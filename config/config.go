@@ -47,6 +47,19 @@ func (h *Config) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Config) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewConfigFromUintPtr wraps a uintptr as a Config.
+// The caller must ensure ptr points to a valid AConfiguration.
+func NewConfigFromUintPtr(ptr uintptr) *Config {
+	return &Config{ptr: (*capi.AConfiguration)(unsafe.Pointer(ptr))}
+}
+
 // Copy calls the underlying NDK function.
 func (h *Config) Copy(src *Config) {
 	capi.AConfiguration_copy(h.ptr, src.cptr())

@@ -31,3 +31,16 @@ func NewMetaDataEventFromPointer(ptr unsafe.Pointer) *MetaDataEvent {
 func (h *MetaDataEvent) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *MetaDataEvent) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewMetaDataEventFromUintPtr wraps a uintptr as a MetaDataEvent.
+// The caller must ensure ptr points to a valid AMetaDataEvent.
+func NewMetaDataEventFromUintPtr(ptr uintptr) *MetaDataEvent {
+	return &MetaDataEvent{ptr: (*capi.AMetaDataEvent)(unsafe.Pointer(ptr))}
+}

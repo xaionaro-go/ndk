@@ -47,6 +47,19 @@ func (h *PersistableBundle) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *PersistableBundle) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewPersistableBundleFromUintPtr wraps a uintptr as a PersistableBundle.
+// The caller must ensure ptr points to a valid APersistableBundle.
+func NewPersistableBundleFromUintPtr(ptr uintptr) *PersistableBundle {
+	return &PersistableBundle{ptr: (*capi.APersistableBundle)(unsafe.Pointer(ptr))}
+}
+
 // Dup creates a new PersistableBundle from this PersistableBundle.
 func (h *PersistableBundle) Dup() *PersistableBundle {
 	return &PersistableBundle{ptr: capi.APersistableBundle_dup(h.ptr)}

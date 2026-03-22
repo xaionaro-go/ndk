@@ -31,3 +31,16 @@ func NewAndroidBitmapInfoFromPointer(ptr unsafe.Pointer) *AndroidBitmapInfo {
 func (h *AndroidBitmapInfo) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *AndroidBitmapInfo) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewAndroidBitmapInfoFromUintPtr wraps a uintptr as a AndroidBitmapInfo.
+// The caller must ensure ptr points to a valid AndroidBitmapInfo.
+func NewAndroidBitmapInfoFromUintPtr(ptr uintptr) *AndroidBitmapInfo {
+	return &AndroidBitmapInfo{ptr: (*capi.AndroidBitmapInfo)(unsafe.Pointer(ptr))}
+}

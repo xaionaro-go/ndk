@@ -42,6 +42,19 @@ func (h *AssetDir) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *AssetDir) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewAssetDirFromUintPtr wraps a uintptr as a AssetDir.
+// The caller must ensure ptr points to a valid AAssetDir.
+func NewAssetDirFromUintPtr(ptr uintptr) *AssetDir {
+	return &AssetDir{ptr: (*capi.AAssetDir)(unsafe.Pointer(ptr))}
+}
+
 // GetNextFileName returns the value directly.
 func (h *AssetDir) GetNextFileName() string {
 	return (string)(capi.AAssetDir_getNextFileName(h.ptr))

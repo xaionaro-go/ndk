@@ -42,6 +42,19 @@ func (h *InputPort) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *InputPort) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewInputPortFromUintPtr wraps a uintptr as a InputPort.
+// The caller must ensure ptr points to a valid AMidiInputPort.
+func NewInputPortFromUintPtr(ptr uintptr) *InputPort {
+	return &InputPort{ptr: (*capi.AMidiInputPort)(unsafe.Pointer(ptr))}
+}
+
 // Send calls the underlying NDK function.
 func (h *InputPort) Send(buffer *uint8, numBytes uint64) error {
 	return result(capi.AMidiInputPort_send(h.ptr, buffer, numBytes))

@@ -42,6 +42,19 @@ func (h *CaptureRequest) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *CaptureRequest) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewCaptureRequestFromUintPtr wraps a uintptr as a CaptureRequest.
+// The caller must ensure ptr points to a valid ACaptureRequest.
+func NewCaptureRequestFromUintPtr(ptr uintptr) *CaptureRequest {
+	return &CaptureRequest{ptr: (*capi.ACaptureRequest)(unsafe.Pointer(ptr))}
+}
+
 // AddTarget sets a property and returns the receiver for chaining.
 func (h *CaptureRequest) AddTarget(output *OutputTarget) *CaptureRequest {
 	capi.ACaptureRequest_addTarget(h.ptr, output.cptr())

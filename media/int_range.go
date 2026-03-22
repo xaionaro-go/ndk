@@ -31,3 +31,16 @@ func NewIntRangeFromPointer(ptr unsafe.Pointer) *IntRange {
 func (h *IntRange) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *IntRange) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewIntRangeFromUintPtr wraps a uintptr as a IntRange.
+// The caller must ensure ptr points to a valid AIntRange.
+func NewIntRangeFromUintPtr(ptr uintptr) *IntRange {
+	return &IntRange{ptr: (*capi.AIntRange)(unsafe.Pointer(ptr))}
+}

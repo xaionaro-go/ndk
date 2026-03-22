@@ -42,6 +42,19 @@ func (h *Asset) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Asset) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewAssetFromUintPtr wraps a uintptr as a Asset.
+// The caller must ensure ptr points to a valid AAsset.
+func NewAssetFromUintPtr(ptr uintptr) *Asset {
+	return &Asset{ptr: (*capi.AAsset)(unsafe.Pointer(ptr))}
+}
+
 // Buffer returns the value directly.
 func (h *Asset) Buffer() unsafe.Pointer {
 	return (unsafe.Pointer)(capi.AAsset_getBuffer(h.ptr))

@@ -47,6 +47,19 @@ func (h *Matcher) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Matcher) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewMatcherFromUintPtr wraps a uintptr as a Matcher.
+// The caller must ensure ptr points to a valid AFontMatcher.
+func NewMatcherFromUintPtr(ptr uintptr) *Matcher {
+	return &Matcher{ptr: (*capi.AFontMatcher)(unsafe.Pointer(ptr))}
+}
+
 // Match creates a new Font from this Matcher.
 func (h *Matcher) Match(familyName string, text *uint16, textLength uint32, runLengthOut *uint32) *Font {
 	return &Font{ptr: capi.AFontMatcher_match(h.ptr, familyName, text, textLength, runLengthOut)}

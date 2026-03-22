@@ -31,3 +31,16 @@ func NewHeadTrackerEventFromPointer(ptr unsafe.Pointer) *HeadTrackerEvent {
 func (h *HeadTrackerEvent) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *HeadTrackerEvent) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewHeadTrackerEventFromUintPtr wraps a uintptr as a HeadTrackerEvent.
+// The caller must ensure ptr points to a valid AHeadTrackerEvent.
+func NewHeadTrackerEventFromUintPtr(ptr uintptr) *HeadTrackerEvent {
+	return &HeadTrackerEvent{ptr: (*capi.AHeadTrackerEvent)(unsafe.Pointer(ptr))}
+}

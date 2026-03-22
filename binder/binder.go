@@ -47,6 +47,19 @@ func (h *Binder) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Binder) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewBinderFromUintPtr wraps a uintptr as a Binder.
+// The caller must ensure ptr points to a valid AIBinder.
+func NewBinderFromUintPtr(ptr uintptr) *Binder {
+	return &Binder{ptr: (*capi.AIBinder)(unsafe.Pointer(ptr))}
+}
+
 // AssociateClass returns the value directly.
 func (h *Binder) AssociateClass(clazz *Class) bool {
 	return (bool)(capi.AIBinder_associateClass(h.ptr, clazz.cptr()))

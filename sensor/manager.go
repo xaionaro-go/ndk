@@ -32,6 +32,19 @@ func (h *Manager) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Manager) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewManagerFromUintPtr wraps a uintptr as a Manager.
+// The caller must ensure ptr points to a valid ASensorManager.
+func NewManagerFromUintPtr(ptr uintptr) *Manager {
+	return &Manager{ptr: (*capi.ASensorManager)(unsafe.Pointer(ptr))}
+}
+
 // ConfigureDirectReport calls the underlying NDK function.
 func (h *Manager) ConfigureDirectReport(sensor *Sensor, channelID int32, rate int32) error {
 	return result(capi.ASensorManager_configureDirectReport(h.ptr, sensor.cptr(), channelID, rate))

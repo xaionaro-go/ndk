@@ -32,6 +32,19 @@ func (h *Model) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Model) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewModelFromUintPtr wraps a uintptr as a Model.
+// The caller must ensure ptr points to a valid ANeuralNetworksModel.
+func NewModelFromUintPtr(ptr uintptr) *Model {
+	return &Model{ptr: (*capi.ANeuralNetworksModel)(unsafe.Pointer(ptr))}
+}
+
 // NewCompilation creates a new Compilation from this Model.
 func (h *Model) NewCompilation() (*Compilation, error) {
 	var ptr *capi.ANeuralNetworksCompilation

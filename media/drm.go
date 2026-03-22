@@ -42,6 +42,19 @@ func (h *Drm) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Drm) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewDrmFromUintPtr wraps a uintptr as a Drm.
+// The caller must ensure ptr points to a valid AMediaDrm.
+func NewDrmFromUintPtr(ptr uintptr) *Drm {
+	return &Drm{ptr: (*capi.AMediaDrm)(unsafe.Pointer(ptr))}
+}
+
 // AMediaDrm_createByUUID calls the underlying C function.
 func AMediaDrm_createByUUID(uuid *uint8) *Drm {
 	return &Drm{ptr: capi.AMediaDrm_createByUUID(uuid)}

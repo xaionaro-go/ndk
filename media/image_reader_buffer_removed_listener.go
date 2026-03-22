@@ -31,3 +31,16 @@ func NewImageReader_BufferRemovedListenerFromPointer(ptr unsafe.Pointer) *ImageR
 func (h *ImageReader_BufferRemovedListener) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *ImageReader_BufferRemovedListener) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewImageReader_BufferRemovedListenerFromUintPtr wraps a uintptr as a ImageReader_BufferRemovedListener.
+// The caller must ensure ptr points to a valid AImageReader_BufferRemovedListener.
+func NewImageReader_BufferRemovedListenerFromUintPtr(ptr uintptr) *ImageReader_BufferRemovedListener {
+	return &ImageReader_BufferRemovedListener{ptr: (*capi.AImageReader_BufferRemovedListener)(unsafe.Pointer(ptr))}
+}

@@ -31,3 +31,16 @@ func NewMemoryFromPointer(ptr unsafe.Pointer) *Memory {
 func (h *Memory) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Memory) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewMemoryFromUintPtr wraps a uintptr as a Memory.
+// The caller must ensure ptr points to a valid ANeuralNetworksMemory.
+func NewMemoryFromUintPtr(ptr uintptr) *Memory {
+	return &Memory{ptr: (*capi.ANeuralNetworksMemory)(unsafe.Pointer(ptr))}
+}

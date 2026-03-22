@@ -46,3 +46,16 @@ func NewIBinder_DeathRecipientFromPointer(ptr unsafe.Pointer) *IBinder_DeathReci
 func (h *IBinder_DeathRecipient) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *IBinder_DeathRecipient) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewIBinder_DeathRecipientFromUintPtr wraps a uintptr as a IBinder_DeathRecipient.
+// The caller must ensure ptr points to a valid AIBinder_DeathRecipient.
+func NewIBinder_DeathRecipientFromUintPtr(ptr uintptr) *IBinder_DeathRecipient {
+	return &IBinder_DeathRecipient{ptr: (*capi.AIBinder_DeathRecipient)(unsafe.Pointer(ptr))}
+}

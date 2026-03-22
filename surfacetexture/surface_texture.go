@@ -42,6 +42,19 @@ func (h *SurfaceTexture) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *SurfaceTexture) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewSurfaceTextureFromUintPtr wraps a uintptr as a SurfaceTexture.
+// The caller must ensure ptr points to a valid ASurfaceTexture.
+func NewSurfaceTextureFromUintPtr(ptr uintptr) *SurfaceTexture {
+	return &SurfaceTexture{ptr: (*capi.ASurfaceTexture)(unsafe.Pointer(ptr))}
+}
+
 // AcquireWindow creates a new NativeWindow from this SurfaceTexture.
 func (h *SurfaceTexture) AcquireWindow() *NativeWindow {
 	return &NativeWindow{ptr: capi.ASurfaceTexture_acquireANativeWindow(h.ptr)}

@@ -47,6 +47,19 @@ func (h *Parcel) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Parcel) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewParcelFromUintPtr wraps a uintptr as a Parcel.
+// The caller must ensure ptr points to a valid AParcel.
+func NewParcelFromUintPtr(ptr uintptr) *Parcel {
+	return &Parcel{ptr: (*capi.AParcel)(unsafe.Pointer(ptr))}
+}
+
 // GetDataPosition calls the underlying NDK function.
 func (h *Parcel) GetDataPosition() error {
 	return result(capi.AParcel_getDataPosition(h.ptr))

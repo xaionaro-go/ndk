@@ -31,3 +31,16 @@ func NewCodecVideoCapabilitiesFromPointer(ptr unsafe.Pointer) *CodecVideoCapabil
 func (h *CodecVideoCapabilities) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *CodecVideoCapabilities) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewCodecVideoCapabilitiesFromUintPtr wraps a uintptr as a CodecVideoCapabilities.
+// The caller must ensure ptr points to a valid ACodecVideoCapabilities.
+func NewCodecVideoCapabilitiesFromUintPtr(ptr uintptr) *CodecVideoCapabilities {
+	return &CodecVideoCapabilities{ptr: (*capi.ACodecVideoCapabilities)(unsafe.Pointer(ptr))}
+}

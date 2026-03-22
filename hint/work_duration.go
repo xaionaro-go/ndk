@@ -47,6 +47,19 @@ func (h *WorkDuration) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *WorkDuration) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewWorkDurationFromUintPtr wraps a uintptr as a WorkDuration.
+// The caller must ensure ptr points to a valid AWorkDuration.
+func NewWorkDurationFromUintPtr(ptr uintptr) *WorkDuration {
+	return &WorkDuration{ptr: (*capi.AWorkDuration)(unsafe.Pointer(ptr))}
+}
+
 // SetActualCpuDurationNanos calls the underlying NDK function.
 func (h *WorkDuration) SetActualCpuDurationNanos(actualCpuDurationNanos int64) {
 	capi.AWorkDuration_setActualCpuDurationNanos(h.ptr, actualCpuDurationNanos)

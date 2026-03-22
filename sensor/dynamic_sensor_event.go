@@ -31,3 +31,16 @@ func NewDynamicSensorEventFromPointer(ptr unsafe.Pointer) *DynamicSensorEvent {
 func (h *DynamicSensorEvent) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *DynamicSensorEvent) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewDynamicSensorEventFromUintPtr wraps a uintptr as a DynamicSensorEvent.
+// The caller must ensure ptr points to a valid ADynamicSensorEvent.
+func NewDynamicSensorEventFromUintPtr(ptr uintptr) *DynamicSensorEvent {
+	return &DynamicSensorEvent{ptr: (*capi.ADynamicSensorEvent)(unsafe.Pointer(ptr))}
+}

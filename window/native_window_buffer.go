@@ -31,3 +31,16 @@ func NewNativeWindow_BufferFromPointer(ptr unsafe.Pointer) *NativeWindow_Buffer 
 func (h *NativeWindow_Buffer) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *NativeWindow_Buffer) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewNativeWindow_BufferFromUintPtr wraps a uintptr as a NativeWindow_Buffer.
+// The caller must ensure ptr points to a valid ANativeWindow_Buffer.
+func NewNativeWindow_BufferFromUintPtr(ptr uintptr) *NativeWindow_Buffer {
+	return &NativeWindow_Buffer{ptr: (*capi.ANativeWindow_Buffer)(unsafe.Pointer(ptr))}
+}

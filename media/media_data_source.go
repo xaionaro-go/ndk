@@ -47,6 +47,19 @@ func (h *MediaDataSource) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *MediaDataSource) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewMediaDataSourceFromUintPtr wraps a uintptr as a MediaDataSource.
+// The caller must ensure ptr points to a valid AMediaDataSource.
+func NewMediaDataSourceFromUintPtr(ptr uintptr) *MediaDataSource {
+	return &MediaDataSource{ptr: (*capi.AMediaDataSource)(unsafe.Pointer(ptr))}
+}
+
 // SetUserdata calls the underlying NDK function.
 func (h *MediaDataSource) SetUserdata(userdata unsafe.Pointer) {
 	capi.AMediaDataSource_setUserdata(h.ptr, userdata)

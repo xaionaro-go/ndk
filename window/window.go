@@ -42,6 +42,19 @@ func (h *Window) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Window) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewWindowFromUintPtr wraps a uintptr as a Window.
+// The caller must ensure ptr points to a valid ANativeWindow.
+func NewWindowFromUintPtr(ptr uintptr) *Window {
+	return &Window{ptr: (*capi.ANativeWindow)(unsafe.Pointer(ptr))}
+}
+
 // Acquire calls the underlying NDK function.
 func (h *Window) Acquire() {
 	capi.ANativeWindow_acquire(h.ptr)

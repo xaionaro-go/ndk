@@ -69,6 +69,19 @@ func New{{ .Type.GoName }}FromPointer(ptr unsafe.Pointer) *{{ .Type.GoName }} {
 func (h *{{ .Type.GoName }}) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *{{ .Type.GoName }}) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// New{{ .Type.GoName }}FromUintPtr wraps a uintptr as a {{ .Type.GoName }}.
+// The caller must ensure ptr points to a valid {{ .Type.CapiType }}.
+func New{{ .Type.GoName }}FromUintPtr(ptr uintptr) *{{ .Type.GoName }} {
+	return &{{ .Type.GoName }}{ptr: (*capi.{{ .Type.CapiType }})(unsafe.Pointer(ptr))}
+}
 {{ range $m := .Methods }}
 {{- if $m.CustomCall }}
 // {{ $m.GoName }} calls the underlying NDK function.

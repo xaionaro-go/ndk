@@ -42,6 +42,19 @@ func (h *Image) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Image) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewImageFromUintPtr wraps a uintptr as a Image.
+// The caller must ensure ptr points to a valid AImage.
+func NewImageFromUintPtr(ptr uintptr) *Image {
+	return &Image{ptr: (*capi.AImage)(unsafe.Pointer(ptr))}
+}
+
 // DeleteAsync calls the underlying NDK function.
 func (h *Image) DeleteAsync(releaseFenceFd int32) {
 	capi.AImage_deleteAsync(h.ptr, releaseFenceFd)

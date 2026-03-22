@@ -32,6 +32,19 @@ func (h *ChoreographerFrameCallbackData) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *ChoreographerFrameCallbackData) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewChoreographerFrameCallbackDataFromUintPtr wraps a uintptr as a ChoreographerFrameCallbackData.
+// The caller must ensure ptr points to a valid AChoreographerFrameCallbackData.
+func NewChoreographerFrameCallbackDataFromUintPtr(ptr uintptr) *ChoreographerFrameCallbackData {
+	return &ChoreographerFrameCallbackData{ptr: (*capi.AChoreographerFrameCallbackData)(unsafe.Pointer(ptr))}
+}
+
 // GetFrameTimeNanos returns the value directly.
 func (h *ChoreographerFrameCallbackData) GetFrameTimeNanos() int64 {
 	return (int64)(capi.AChoreographerFrameCallbackData_getFrameTimeNanos(h.ptr))

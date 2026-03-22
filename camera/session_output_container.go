@@ -51,6 +51,19 @@ func (h *SessionOutputContainer) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *SessionOutputContainer) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewSessionOutputContainerFromUintPtr wraps a uintptr as a SessionOutputContainer.
+// The caller must ensure ptr points to a valid ACaptureSessionOutputContainer.
+func NewSessionOutputContainerFromUintPtr(ptr uintptr) *SessionOutputContainer {
+	return &SessionOutputContainer{ptr: (*capi.ACaptureSessionOutputContainer)(unsafe.Pointer(ptr))}
+}
+
 // Add calls the underlying NDK function.
 func (h *SessionOutputContainer) Add(output *SessionOutput) error {
 	return result(capi.ACaptureSessionOutputContainer_add(h.ptr, output.cptr()))

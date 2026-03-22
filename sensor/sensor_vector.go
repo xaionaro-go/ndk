@@ -31,3 +31,16 @@ func NewSensorVectorFromPointer(ptr unsafe.Pointer) *SensorVector {
 func (h *SensorVector) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *SensorVector) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewSensorVectorFromUintPtr wraps a uintptr as a SensorVector.
+// The caller must ensure ptr points to a valid ASensorVector.
+func NewSensorVectorFromUintPtr(ptr uintptr) *SensorVector {
+	return &SensorVector{ptr: (*capi.ASensorVector)(unsafe.Pointer(ptr))}
+}

@@ -42,6 +42,19 @@ func (h *OutputPort) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *OutputPort) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewOutputPortFromUintPtr wraps a uintptr as a OutputPort.
+// The caller must ensure ptr points to a valid AMidiOutputPort.
+func NewOutputPortFromUintPtr(ptr uintptr) *OutputPort {
+	return &OutputPort{ptr: (*capi.AMidiOutputPort)(unsafe.Pointer(ptr))}
+}
+
 // Receive returns the value directly.
 func (h *OutputPort) Receive(opcodePtr *int32, buffer *uint8, maxBytes uint64, numBytesReceivedPtr *uint64, outTimestampPtr *int64) int64 {
 	return (int64)(capi.AMidiOutputPort_receive(h.ptr, opcodePtr, buffer, maxBytes, numBytesReceivedPtr, outTimestampPtr))

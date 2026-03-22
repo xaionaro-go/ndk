@@ -31,3 +31,16 @@ func Newcryptoinfo_pattern_tFromPointer(ptr unsafe.Pointer) *cryptoinfo_pattern_
 func (h *cryptoinfo_pattern_t) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *cryptoinfo_pattern_t) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// Newcryptoinfo_pattern_tFromUintPtr wraps a uintptr as a cryptoinfo_pattern_t.
+// The caller must ensure ptr points to a valid Cryptoinfo_pattern_t.
+func Newcryptoinfo_pattern_tFromUintPtr(ptr uintptr) *cryptoinfo_pattern_t {
+	return &cryptoinfo_pattern_t{ptr: (*capi.Cryptoinfo_pattern_t)(unsafe.Pointer(ptr))}
+}

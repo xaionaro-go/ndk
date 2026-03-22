@@ -43,6 +43,19 @@ func (h *Session) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Session) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewSessionFromUintPtr wraps a uintptr as a Session.
+// The caller must ensure ptr points to a valid APerformanceHintSession.
+func NewSessionFromUintPtr(ptr uintptr) *Session {
+	return &Session{ptr: (*capi.APerformanceHintSession)(unsafe.Pointer(ptr))}
+}
+
 // ReportActualWorkDuration calls the underlying NDK function.
 func (h *Session) ReportActualWorkDuration(actualDuration time.Duration) error {
 	return result(capi.APerformanceHint_reportActualWorkDuration(h.ptr, int64(actualDuration.Nanoseconds())))

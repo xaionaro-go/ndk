@@ -50,3 +50,16 @@ func NewOutputTargetFromPointer(ptr unsafe.Pointer) *OutputTarget {
 func (h *OutputTarget) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *OutputTarget) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewOutputTargetFromUintPtr wraps a uintptr as a OutputTarget.
+// The caller must ensure ptr points to a valid ACameraOutputTarget.
+func NewOutputTargetFromUintPtr(ptr uintptr) *OutputTarget {
+	return &OutputTarget{ptr: (*capi.ACameraOutputTarget)(unsafe.Pointer(ptr))}
+}

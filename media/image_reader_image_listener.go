@@ -31,3 +31,16 @@ func NewImageReader_ImageListenerFromPointer(ptr unsafe.Pointer) *ImageReader_Im
 func (h *ImageReader_ImageListener) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *ImageReader_ImageListener) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewImageReader_ImageListenerFromUintPtr wraps a uintptr as a ImageReader_ImageListener.
+// The caller must ensure ptr points to a valid AImageReader_ImageListener.
+func NewImageReader_ImageListenerFromUintPtr(ptr uintptr) *ImageReader_ImageListener {
+	return &ImageReader_ImageListener{ptr: (*capi.AImageReader_ImageListener)(unsafe.Pointer(ptr))}
+}

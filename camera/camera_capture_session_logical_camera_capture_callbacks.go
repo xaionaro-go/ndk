@@ -31,3 +31,16 @@ func NewCameraCaptureSession_logicalCamera_captureCallbacksFromPointer(ptr unsaf
 func (h *CameraCaptureSession_logicalCamera_captureCallbacks) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *CameraCaptureSession_logicalCamera_captureCallbacks) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewCameraCaptureSession_logicalCamera_captureCallbacksFromUintPtr wraps a uintptr as a CameraCaptureSession_logicalCamera_captureCallbacks.
+// The caller must ensure ptr points to a valid ACameraCaptureSession_logicalCamera_captureCallbacks.
+func NewCameraCaptureSession_logicalCamera_captureCallbacksFromUintPtr(ptr uintptr) *CameraCaptureSession_logicalCamera_captureCallbacks {
+	return &CameraCaptureSession_logicalCamera_captureCallbacks{ptr: (*capi.ACameraCaptureSession_logicalCamera_captureCallbacks)(unsafe.Pointer(ptr))}
+}

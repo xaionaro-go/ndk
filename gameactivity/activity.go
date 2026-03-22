@@ -27,15 +27,36 @@ func (a *Activity) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(a.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+func (a *Activity) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(a.ptr))
+}
+
+// NewActivityFromUintPtr wraps a uintptr as an Activity.
+func NewActivityFromUintPtr(ptr uintptr) *Activity {
+	return &Activity{ptr: (*C.GameActivity)(unsafe.Pointer(ptr))}
+}
+
 // VM returns the Java VM handle.
 func (a *Activity) VM() unsafe.Pointer {
 	return unsafe.Pointer(a.ptr.vm)
+}
+
+// VMUintPtr returns the Java VM handle as uintptr.
+func (a *Activity) VMUintPtr() uintptr {
+	return uintptr(unsafe.Pointer(a.ptr.vm))
 }
 
 // Env returns the JNI environment for the main thread.
 // This must only be used from the main thread.
 func (a *Activity) Env() unsafe.Pointer {
 	return unsafe.Pointer(a.ptr.env)
+}
+
+// EnvUintPtr returns the JNI environment as uintptr.
+// This must only be used from the main thread.
+func (a *Activity) EnvUintPtr() uintptr {
+	return uintptr(unsafe.Pointer(a.ptr.env))
 }
 
 // JavaGameActivity returns the Java GameActivity jobject handle.

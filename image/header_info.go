@@ -32,6 +32,19 @@ func (h *HeaderInfo) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *HeaderInfo) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewHeaderInfoFromUintPtr wraps a uintptr as a HeaderInfo.
+// The caller must ensure ptr points to a valid AImageDecoderHeaderInfo.
+func NewHeaderInfoFromUintPtr(ptr uintptr) *HeaderInfo {
+	return &HeaderInfo{ptr: (*capi.AImageDecoderHeaderInfo)(unsafe.Pointer(ptr))}
+}
+
 // GetAlphaFlags calls the underlying NDK function.
 func (h *HeaderInfo) GetAlphaFlags() error {
 	return result(capi.AImageDecoderHeaderInfo_getAlphaFlags(h.ptr))

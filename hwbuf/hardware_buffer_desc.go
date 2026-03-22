@@ -31,3 +31,16 @@ func NewHardwareBuffer_DescFromPointer(ptr unsafe.Pointer) *HardwareBuffer_Desc 
 func (h *HardwareBuffer_Desc) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *HardwareBuffer_Desc) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewHardwareBuffer_DescFromUintPtr wraps a uintptr as a HardwareBuffer_Desc.
+// The caller must ensure ptr points to a valid AHardwareBuffer_Desc.
+func NewHardwareBuffer_DescFromUintPtr(ptr uintptr) *HardwareBuffer_Desc {
+	return &HardwareBuffer_Desc{ptr: (*capi.AHardwareBuffer_Desc)(unsafe.Pointer(ptr))}
+}

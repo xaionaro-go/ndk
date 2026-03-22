@@ -31,3 +31,16 @@ func NewMediaDrmKeyStatusFromPointer(ptr unsafe.Pointer) *MediaDrmKeyStatus {
 func (h *MediaDrmKeyStatus) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *MediaDrmKeyStatus) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewMediaDrmKeyStatusFromUintPtr wraps a uintptr as a MediaDrmKeyStatus.
+// The caller must ensure ptr points to a valid AMediaDrmKeyStatus.
+func NewMediaDrmKeyStatusFromUintPtr(ptr uintptr) *MediaDrmKeyStatus {
+	return &MediaDrmKeyStatus{ptr: (*capi.AMediaDrmKeyStatus)(unsafe.Pointer(ptr))}
+}

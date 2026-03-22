@@ -32,6 +32,19 @@ func (h *Queue) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Queue) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewQueueFromUintPtr wraps a uintptr as a Queue.
+// The caller must ensure ptr points to a valid AInputQueue.
+func NewQueueFromUintPtr(ptr uintptr) *Queue {
+	return &Queue{ptr: (*capi.AInputQueue)(unsafe.Pointer(ptr))}
+}
+
 // DetachLooper calls the underlying NDK function.
 func (h *Queue) DetachLooper() {
 	capi.AInputQueue_detachLooper(h.ptr)

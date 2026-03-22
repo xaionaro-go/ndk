@@ -31,3 +31,16 @@ func NewHardwareBuffer_PlanesFromPointer(ptr unsafe.Pointer) *HardwareBuffer_Pla
 func (h *HardwareBuffer_Planes) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *HardwareBuffer_Planes) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewHardwareBuffer_PlanesFromUintPtr wraps a uintptr as a HardwareBuffer_Planes.
+// The caller must ensure ptr points to a valid AHardwareBuffer_Planes.
+func NewHardwareBuffer_PlanesFromUintPtr(ptr uintptr) *HardwareBuffer_Planes {
+	return &HardwareBuffer_Planes{ptr: (*capi.AHardwareBuffer_Planes)(unsafe.Pointer(ptr))}
+}

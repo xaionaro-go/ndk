@@ -31,3 +31,16 @@ func NewImageCropRectFromPointer(ptr unsafe.Pointer) *ImageCropRect {
 func (h *ImageCropRect) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *ImageCropRect) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewImageCropRectFromUintPtr wraps a uintptr as a ImageCropRect.
+// The caller must ensure ptr points to a valid AImageCropRect.
+func NewImageCropRectFromUintPtr(ptr uintptr) *ImageCropRect {
+	return &ImageCropRect{ptr: (*capi.AImageCropRect)(unsafe.Pointer(ptr))}
+}

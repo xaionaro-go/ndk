@@ -47,6 +47,19 @@ func (h *IBinder_Weak) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *IBinder_Weak) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewIBinder_WeakFromUintPtr wraps a uintptr as a IBinder_Weak.
+// The caller must ensure ptr points to a valid AIBinder_Weak.
+func NewIBinder_WeakFromUintPtr(ptr uintptr) *IBinder_Weak {
+	return &IBinder_Weak{ptr: (*capi.AIBinder_Weak)(unsafe.Pointer(ptr))}
+}
+
 // Clone creates a new IBinder_Weak from this IBinder_Weak.
 func (h *IBinder_Weak) Clone() *IBinder_Weak {
 	return &IBinder_Weak{ptr: capi.AIBinder_Weak_clone(h.ptr)}

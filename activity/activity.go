@@ -32,6 +32,19 @@ func (h *Activity) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Activity) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewActivityFromUintPtr wraps a uintptr as a Activity.
+// The caller must ensure ptr points to a valid ANativeActivity.
+func NewActivityFromUintPtr(ptr uintptr) *Activity {
+	return &Activity{ptr: (*capi.ANativeActivity)(unsafe.Pointer(ptr))}
+}
+
 // Finish calls the underlying NDK function.
 func (h *Activity) Finish() {
 	capi.ANativeActivity_finish(h.ptr)

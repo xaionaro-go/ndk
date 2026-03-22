@@ -42,6 +42,19 @@ func (h *SystemFontIterator) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *SystemFontIterator) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewSystemFontIteratorFromUintPtr wraps a uintptr as a SystemFontIterator.
+// The caller must ensure ptr points to a valid ASystemFontIterator.
+func NewSystemFontIteratorFromUintPtr(ptr uintptr) *SystemFontIterator {
+	return &SystemFontIterator{ptr: (*capi.ASystemFontIterator)(unsafe.Pointer(ptr))}
+}
+
 // Next creates a new Font from this SystemFontIterator.
 func (h *SystemFontIterator) Next() *Font {
 	return &Font{ptr: capi.ASystemFontIterator_next(h.ptr)}

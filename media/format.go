@@ -47,6 +47,19 @@ func (h *Format) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Format) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewFormatFromUintPtr wraps a uintptr as a Format.
+// The caller must ensure ptr points to a valid AMediaFormat.
+func NewFormatFromUintPtr(ptr uintptr) *Format {
+	return &Format{ptr: (*capi.AMediaFormat)(unsafe.Pointer(ptr))}
+}
+
 // Clear calls the underlying NDK function.
 func (h *Format) Clear() {
 	capi.AMediaFormat_clear(h.ptr)

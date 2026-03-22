@@ -31,3 +31,16 @@ func NewCameraMetadata_const_entryFromPointer(ptr unsafe.Pointer) *CameraMetadat
 func (h *CameraMetadata_const_entry) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *CameraMetadata_const_entry) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewCameraMetadata_const_entryFromUintPtr wraps a uintptr as a CameraMetadata_const_entry.
+// The caller must ensure ptr points to a valid ACameraMetadata_const_entry.
+func NewCameraMetadata_const_entryFromUintPtr(ptr uintptr) *CameraMetadata_const_entry {
+	return &CameraMetadata_const_entry{ptr: (*capi.ACameraMetadata_const_entry)(unsafe.Pointer(ptr))}
+}

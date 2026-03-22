@@ -46,3 +46,16 @@ func NewCryptoFromPointer(ptr unsafe.Pointer) *Crypto {
 func (h *Crypto) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Crypto) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewCryptoFromUintPtr wraps a uintptr as a Crypto.
+// The caller must ensure ptr points to a valid AMediaCrypto.
+func NewCryptoFromUintPtr(ptr uintptr) *Crypto {
+	return &Crypto{ptr: (*capi.AMediaCrypto)(unsafe.Pointer(ptr))}
+}

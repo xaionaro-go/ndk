@@ -32,6 +32,19 @@ func (h *Choreographer) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *Choreographer) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewChoreographerFromUintPtr wraps a uintptr as a Choreographer.
+// The caller must ensure ptr points to a valid AChoreographer.
+func NewChoreographerFromUintPtr(ptr uintptr) *Choreographer {
+	return &Choreographer{ptr: (*capi.AChoreographer)(unsafe.Pointer(ptr))}
+}
+
 // GetInstance calls the underlying C function.
 func GetInstance() *Choreographer {
 	return &Choreographer{ptr: capi.AChoreographer_getInstance()}

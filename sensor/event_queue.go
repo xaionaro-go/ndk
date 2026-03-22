@@ -32,6 +32,19 @@ func (h *EventQueue) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
 
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *EventQueue) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewEventQueueFromUintPtr wraps a uintptr as a EventQueue.
+// The caller must ensure ptr points to a valid ASensorEventQueue.
+func NewEventQueueFromUintPtr(ptr uintptr) *EventQueue {
+	return &EventQueue{ptr: (*capi.ASensorEventQueue)(unsafe.Pointer(ptr))}
+}
+
 // DisableSensor calls the underlying NDK function.
 func (h *EventQueue) DisableSensor(sensor *Sensor) error {
 	return result(capi.ASensorEventQueue_disableSensor(h.ptr, sensor.cptr()))

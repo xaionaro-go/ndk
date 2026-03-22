@@ -31,3 +31,16 @@ func NewPsshEntryFromPointer(ptr unsafe.Pointer) *PsshEntry {
 func (h *PsshEntry) Pointer() unsafe.Pointer {
 	return unsafe.Pointer(h.ptr)
 }
+
+// UintPtr returns the underlying pointer as a uintptr.
+// This is useful for interop with gomobile bind, golang.org/x/mobile,
+// gioui.org, and other packages that represent native handles as uintptr.
+func (h *PsshEntry) UintPtr() uintptr {
+	return uintptr(unsafe.Pointer(h.ptr))
+}
+
+// NewPsshEntryFromUintPtr wraps a uintptr as a PsshEntry.
+// The caller must ensure ptr points to a valid PsshEntry.
+func NewPsshEntryFromUintPtr(ptr uintptr) *PsshEntry {
+	return &PsshEntry{ptr: (*capi.PsshEntry)(unsafe.Pointer(ptr))}
+}
