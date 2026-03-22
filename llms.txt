@@ -1,0 +1,993 @@
+# Android Go NDK
+
+> Idiomatic Go bindings for the Android NDK, auto-generated from C headers. Covers 34 modules: camera, audio, sensors, EGL, OpenGL ES, Vulkan, media codecs, input, looper, window, assets, thermal, permissions, and more. All types have nil-safe Close() methods, error types wrap NDK status codes, and builder types support method chaining. No runtime.SetFinalizer — all resource cleanup is explicit via Close() and defer.
+
+## Resource Lifecycle and Memory Management
+
+Native NDK resources (camera devices, audio streams, media codecs, etc.) are wrapped in Go structs that hold a C pointer. The project does NOT use `runtime.SetFinalizer` — all cleanup is explicit:
+
+### Close Pattern
+
+Every closeable type follows this pattern:
+
+```go
+func (h *Device) Close() error {
+    if h.ptr == nil {
+        return nil  // nil-safe, idempotent
+    }
+    err := result(capi.ACameraDevice_close(h.ptr))
+    h.ptr = nil  // prevent double-free
+    return err
+}
+```
+
+Key properties:
+- **Nil-safe**: Calling Close() on a nil receiver or already-closed handle is a no-op.
+- **Idempotent**: Multiple Close() calls are safe.
+- **Sets pointer to nil**: Prevents use-after-free and double-free.
+
+### Defer-Based Cleanup
+
+Always use `defer` to ensure cleanup in reverse creation order:
+
+```go
+mgr := camera.NewManager()
+defer func() {
+    if err := mgr.Close(); err != nil {
+        log.Printf("manager close: %v", err)
+    }
+}()
+
+dev, err := mgr.OpenCamera(camID, callbacks)
+if err != nil {
+    log.Fatal(err)
+}
+defer dev.Close()
+
+req, err := dev.CreateCaptureRequest(camera.Preview)
+if err != nil {
+    log.Fatal(err)
+}
+defer req.Close()
+// Cleanup order: req -> dev -> mgr (reverse creation order)
+```
+
+### Framework-Owned vs Application-Owned Resources
+
+Some resources are singletons owned by the Android framework and must NOT be closed:
+
+- `sensor.GetInstance()` — returns the singleton ASensorManager. No Close().
+- `activity.AssetManager` — the AAssetManager from ANativeActivity. No Close().
+
+Application-created resources MUST be closed:
+
+- `camera.NewManager()` → `mgr.Close()`
+- `audio.NewStreamBuilder()` → `builder.Close()`
+- `media.NewDecoder(mime)` → `codec.Close()`
+- All `New*()` constructors return resources that need Close().
+
+### Preventing Memory Leaks
+
+Since there is no GC integration for native resources:
+
+1. **Always defer Close()** immediately after creation.
+2. **Check errors from Close()** — some resources (camera devices) may return errors on close.
+3. **Clean up in reverse order** — defers naturally handle this.
+4. **Reference counting for windows**: Call `window.Acquire()` when sharing an ANativeWindow across goroutines, and `window.Close()` (which calls ANativeWindow_release) from each user.
+5. **Looper reference counting**: Call `looper.Acquire()` before sharing across goroutines, each user calls Close().
+
+### CGo Pointer Pinning
+
+When passing Go-allocated pointers to C functions, use `runtime.Pinner`:
+
+```go
+src := glStr(shaderSource)  // Go-allocated string
+var pinner runtime.Pinner
+pinner.Pin(src)
+defer pinner.Unpin()
+gles2.ShaderSource(shader, 1, &src, &length)
+```
+
+For `**T` parameters, pin BOTH the outer and inner pointers. For structs with Go pointer fields, pin the struct before passing to C.
+
+## Error Handling
+
+NDK functions return negative int32 status codes on failure. Each module defines typed error constants:
+
+```go
+// camera/errors.go
+type Error int32
+
+const (
+    ErrUnknown              Error = -10000
+    ErrInvalidParameter     Error = -10001
+    ErrCameraDisconnected   Error = -10002
+    ErrNotEnoughMemory      Error = -10003
+    ErrCameraInUse          Error = -10010
+    ErrPermissionDenied     Error = -10013
+    // ... more error codes
+)
+
+func (e Error) Error() string {
+    return fmt.Sprintf("camera: error %d", int(e))
+}
+```
+
+Usage with errors.Is:
+
+```go
+dev, err := mgr.OpenCamera(camID, callbacks)
+if errors.Is(err, camera.ErrPermissionDenied) {
+    log.Fatal("CAMERA permission not granted")
+}
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+## Thread Safety
+
+Some Android NDK APIs are thread-local and require `runtime.LockOSThread()`:
+
+### Thread-Local APIs
+
+- **ALooper**: Thread-local event loop. Must call `looper.Prepare()` and `looper.PollOnce()` on the same OS thread.
+- **EGL context**: EGL contexts are bound to a thread via `egl.MakeCurrent()`. All GL calls must happen on that thread.
+- **AInputQueue**: Input event polling must happen on the thread that attached the queue.
+
+Pattern:
+
+```go
+func renderLoop(display egl.EGLDisplay, surface egl.EGLSurface, context egl.EGLContext) {
+    runtime.LockOSThread()
+    defer runtime.UnlockOSThread()
+
+    egl.MakeCurrent(display, surface, surface, context)
+    defer egl.MakeCurrent(display, egl.NoSurface, egl.NoSurface, egl.NoContext)
+
+    for {
+        // All OpenGL ES calls must happen on this thread
+        gles2.Clear(gles2.ColorBufferBit)
+        egl.SwapBuffers(display, surface)
+    }
+}
+```
+
+### Thread-Safe APIs
+
+- Camera callbacks (OnDisconnected, OnError, OnReady) are called from NDK threads — use `sync.Mutex` or channels for synchronization.
+- `audio.Stream.Write()` and `audio.Stream.Read()` are thread-safe.
+- `looper.Wake()` is safe to call from any goroutine (after Acquire).
+
+### Cross-Goroutine Coordination
+
+```go
+var wg sync.WaitGroup
+wg.Add(1)
+var readyOnce sync.Once
+
+session, err := dev.CreateCaptureSession(container,
+    camera.SessionStateCallbacks{
+        OnReady: func() {
+            readyOnce.Do(wg.Done)
+        },
+    },
+)
+wg.Wait()  // Block until session is ready
+session.SetRepeatingRequest(req)
+```
+
+## Handle Interoperability
+
+All handle types implement the `handle.NativeHandle` interface for interop with golang.org/x/mobile, gioui.org, and gomobile bind:
+
+```go
+// handle/handle.go
+type NativeHandle interface {
+    Pointer() unsafe.Pointer
+    UintPtr() uintptr
+}
+```
+
+Every handle provides:
+
+```go
+mgr := camera.NewManager()
+ptr := mgr.UintPtr()                         // Get as uintptr
+mgr2 := camera.NewManagerFromUintPtr(ptr)     // Reconstruct
+mgr3 := camera.NewManagerFromPointer(rawPtr)  // From unsafe.Pointer
+```
+
+For gomobile bind (which doesn't support uintptr), transport as int64:
+
+```go
+// Go side (exported to Java via gomobile bind)
+func NewBridge(handle int64) *Bridge {
+    mgr := sensor.NewManagerFromUintPtr(uintptr(handle))
+    return &Bridge{mgr: mgr}
+}
+func (b *Bridge) Handle() int64 {
+    return int64(b.mgr.UintPtr())
+}
+```
+
+```java
+// Java side
+long ptr = nativeGetSensorManager();
+Bridge bridge = Mypackage.newBridge(ptr);
+```
+
+## Audio (AAudio)
+
+### Playback
+
+```go
+import (
+    "time"
+    "unsafe"
+    "github.com/AndroidGoLab/ndk/audio"
+)
+
+builder, err := audio.NewStreamBuilder()
+if err != nil {
+    log.Fatal(err)
+}
+defer builder.Close()
+
+builder.
+    SetDirection(audio.Output).
+    SetSampleRate(44100).
+    SetChannelCount(2).
+    SetFormat(audio.PcmFloat).
+    SetPerformanceMode(audio.LowLatency).
+    SetSharingMode(audio.Shared)
+
+stream, err := builder.Open()
+if err != nil {
+    log.Fatal(err)
+}
+defer stream.Close()
+
+stream.Start()
+
+framesPerBurst := stream.FramesPerBurst()
+buf := make([]float32, int(framesPerBurst)*2)
+bufBytes := unsafe.Slice((*byte)(unsafe.Pointer(&buf[0])), len(buf)*int(unsafe.Sizeof(buf[0])))
+
+totalFrames := int32(44100 * 2)  // 2 seconds
+written := int32(0)
+for written < totalFrames {
+    framesToWrite := framesPerBurst
+    if remaining := totalFrames - written; remaining < framesToWrite {
+        framesToWrite = remaining
+    }
+    n, err := stream.Write(bufBytes, framesToWrite, time.Second)
+    if err != nil {
+        log.Fatal(err)
+    }
+    written += n
+}
+
+stream.Stop()
+```
+
+### Recording
+
+```go
+builder.
+    SetDirection(audio.Input).
+    SetSampleRate(48000).
+    SetChannelCount(1).
+    SetFormat(audio.PcmI16).
+    SetPerformanceMode(audio.LowLatency).
+    SetSharingMode(audio.Shared)
+
+stream, _ := builder.Open()
+defer stream.Close()
+stream.Start()
+
+buf := make([]int16, 1024)
+bufBytes := unsafe.Slice((*byte)(unsafe.Pointer(&buf[0])), len(buf)*int(unsafe.Sizeof(buf[0])))
+totalFrames := stream.SampleRate()  // 1 second
+var captured []int16
+
+for int32(len(captured)) < totalFrames {
+    framesToRead := int32(len(buf))
+    if remaining := totalFrames - int32(len(captured)); remaining < framesToRead {
+        framesToRead = remaining
+    }
+    n, err := stream.Read(bufBytes, framesToRead, time.Second)
+    if err != nil {
+        log.Fatal(err)
+    }
+    captured = append(captured, buf[:n]...)
+}
+stream.Stop()
+```
+
+### Stream Properties
+
+```go
+stream.SampleRate()       // int32
+stream.ChannelCount()     // int32
+stream.FramesPerBurst()   // int32
+stream.State()            // StreamState
+stream.XRunCount()        // int32 (underrun count)
+stream.GetFramesRead()    // int64
+stream.GetFramesWritten() // int64
+```
+
+## Camera (Camera2 NDK)
+
+### Complete Capture Pipeline
+
+```go
+import "github.com/AndroidGoLab/ndk/camera"
+
+// 1. Create manager
+mgr := camera.NewManager()
+defer mgr.Close()
+
+// 2. Discover cameras
+ids, err := mgr.CameraIDList()
+if err != nil {
+    log.Fatal(err)
+}
+
+// 3. Read characteristics
+chars, err := mgr.GetCameraCharacteristics(ids[0])
+if err != nil {
+    log.Fatal(err)
+}
+defer chars.Close()
+
+// Query sensor orientation
+if chars.I32Count(uint32(camera.SensorOrientation)) > 0 {
+    orient := chars.I32At(uint32(camera.SensorOrientation), 0)
+    log.Printf("orientation: %d degrees", orient)
+}
+
+// Query stream configurations (format, width, height, isInput tuples)
+scTag := uint32(camera.ScalerAvailableStreamConfigurations)
+count := chars.I32Count(scTag)
+for i := int32(0); i+3 < count; i += 4 {
+    format := chars.I32At(scTag, i)
+    w := chars.I32At(scTag, i+1)
+    h := chars.I32At(scTag, i+2)
+    isInput := chars.I32At(scTag, i+3)
+    if isInput == 0 {
+        log.Printf("output: format=%d %dx%d", format, w, h)
+    }
+}
+
+// 4. Open camera with state callbacks
+dev, err := mgr.OpenCamera(ids[0], camera.DeviceStateCallbacks{
+    OnDisconnected: func() { log.Println("disconnected") },
+    OnError:        func(code int) { log.Printf("error %d", code) },
+})
+if err != nil {
+    log.Fatal(err)
+}
+defer dev.Close()
+
+// 5. Create capture request
+req, err := dev.CreateCaptureRequest(camera.Preview)
+if err != nil {
+    log.Fatal(err)
+}
+defer req.Close()
+
+// 6. Create output target from ANativeWindow (from Surface/SurfaceTexture)
+outTarget, err := camera.NewOutputTarget(nativeWindow)
+if err != nil {
+    log.Fatal(err)
+}
+defer outTarget.Close()
+req.AddTarget(outTarget)
+
+// 7. Create session output container
+sessOut, err := camera.NewSessionOutput(nativeWindow)
+if err != nil {
+    log.Fatal(err)
+}
+defer sessOut.Close()
+
+container, err := camera.NewSessionOutputContainer()
+if err != nil {
+    log.Fatal(err)
+}
+defer container.Close()
+container.Add(sessOut)
+
+// 8. Create capture session with readiness gate
+var wg sync.WaitGroup
+wg.Add(1)
+var readyOnce sync.Once
+
+session, err := dev.CreateCaptureSession(container,
+    camera.SessionStateCallbacks{
+        OnReady:  func() { readyOnce.Do(wg.Done) },
+        OnActive: func() { log.Println("session active") },
+        OnClosed: func() { log.Println("session closed") },
+    },
+)
+if err != nil {
+    log.Fatal(err)
+}
+defer session.Close()
+
+wg.Wait()
+
+// 9. Start repeating capture
+session.SetRepeatingRequest(req)
+// ... render frames ...
+session.StopRepeating()
+
+// Cleanup order (via defers): session -> container -> sessOut -> outTarget -> req -> dev -> mgr
+```
+
+### Template Types
+
+Available capture request templates: `camera.Preview`, `camera.StillCapture`, `camera.Record`, `camera.VideoSnapshot`, `camera.ZeroShutterLag`, `camera.Manual`.
+
+## Sensor
+
+### Sensor Discovery
+
+```go
+import "github.com/AndroidGoLab/ndk/sensor"
+
+mgr := sensor.GetInstance()  // Singleton, no Close() needed
+
+accel := mgr.DefaultSensor(sensor.Accelerometer)
+fmt.Println(accel.Name())       // e.g. "LSM6DSO Accelerometer"
+fmt.Println(accel.Vendor())     // e.g. "STMicroelectronics"
+fmt.Println(accel.Resolution()) // float32
+fmt.Println(accel.MinDelay())   // microseconds between events
+```
+
+### Sensor Types
+
+Available sensor types: `sensor.Accelerometer`, `sensor.MagneticField`, `sensor.Gyroscope`, `sensor.Light`, `sensor.Pressure`, `sensor.Proximity`, `sensor.Gravity`, `sensor.LinearAcceleration`, `sensor.RotationVector`, `sensor.RelativeHumidity`, `sensor.AmbientTemperature`, `sensor.GameRotationVector`, `sensor.StepDetector`, `sensor.StepCounter`, `sensor.GeomagneticRotationVector`, `sensor.HeartRate`, `sensor.HingeAngle`, `sensor.HeadTracker`, `sensor.Heading`.
+
+### Checking Sensor Availability
+
+DefaultSensor always returns a non-nil wrapper. If the sensor is absent, the C pointer is NULL and Name() will panic:
+
+```go
+func probeSensor(mgr *sensor.Manager, t sensor.Type) (name string, ok bool) {
+    defer func() {
+        if r := recover(); r != nil {
+            ok = false
+        }
+    }()
+    s := mgr.DefaultSensor(t)
+    name = s.Name()
+    return name, name != ""
+}
+```
+
+### Sensor Event Loop (ALooper-Based)
+
+Reading continuous sensor data requires an ALooper-based event queue:
+
+```go
+import (
+    "runtime"
+    "github.com/AndroidGoLab/ndk/sensor"
+    "github.com/AndroidGoLab/ndk/looper"
+)
+
+// Step 1: Lock goroutine to OS thread (ALooper is thread-local)
+runtime.LockOSThread()
+defer runtime.UnlockOSThread()
+
+// Step 2: Get sensor manager and accelerometer
+mgr := sensor.GetInstance()
+accel := mgr.DefaultSensor(sensor.Accelerometer)
+
+// Step 3: Prepare a looper for the current thread
+lp := looper.Prepare(int32(looper.ALOOPER_PREPARE_ALLOW_NON_CALLBACKS))
+defer lp.Close()
+
+// Step 4: Create an event queue bound to the looper
+const sensorIdent = 1
+queue := mgr.CreateEventQueue(lp.Pointer(), sensorIdent, nil, nil)
+defer mgr.DestroyEventQueue(queue)
+
+// Step 5: Enable sensor and set sampling rate
+queue.EnableSensor(accel)
+queue.SetEventRate(accel, 100000)  // 100ms between events
+defer queue.DisableSensor(accel)
+
+// Step 6: Poll loop — read sensor events
+for {
+    ident := looper.PollOnce(-1, nil, nil, nil)  // -1 = block forever
+    if ident == sensorIdent {
+        for queue.HasEvents() > 0 {
+            // Read ASensorEvent from queue.
+            // Each event has: type, timestamp, and data union.
+            // For accelerometer:
+            //   data[0] = X acceleration (m/s^2)
+            //   data[1] = Y acceleration (m/s^2)
+            //   data[2] = Z acceleration (m/s^2)
+        }
+    }
+}
+```
+
+## Media Codecs (AMediaCodec)
+
+### Codec State Machine
+
+```
+Created -> Configured -> Started -> (buffer processing) -> Flushed -> Started -> Stopped -> Released
+```
+
+### Decoder Setup
+
+```go
+import "github.com/AndroidGoLab/ndk/media"
+
+// Create H.264 decoder
+codec := media.NewDecoder("video/avc")
+if codec == nil {
+    log.Fatal("H.264 decoder not available")
+}
+defer codec.Close()
+
+// Configure format
+format := media.NewFormat()
+defer format.Close()
+
+format.
+    SetString("mime", "video/avc").
+    SetInt32("width", 1920).
+    SetInt32("height", 1080)
+
+// Verify properties
+var width int32
+format.GetInt32("width", &width)  // returns bool
+
+// Configure and start (requires Activity context)
+codec.Configure(format, nil, nil, 0)
+codec.Start()
+```
+
+### Buffer Processing Loop
+
+```go
+for {
+    // 1. Dequeue input buffer
+    idx := codec.DequeueInputBuffer(timeoutUs)
+    if idx < 0 { continue }
+
+    // 2. Fill with compressed data
+    buf := codec.GetInputBuffer(idx)
+    n := copy(buf, nalUnit)
+
+    // 3. Queue for decoding
+    codec.QueueInputBuffer(idx, 0, uint64(n), presentationTimeUs, 0)
+    // End of stream: pass media.BufferFlagEndOfStream as flags
+
+    // 4. Dequeue output buffer
+    outIdx := codec.DequeueOutputBuffer(&info, timeoutUs)
+    if outIdx < 0 { continue }
+
+    // 5. Consume decoded frame
+    outBuf := codec.GetOutputBuffer(outIdx, nil)
+    processFrame(outBuf)
+
+    // 6. Release back to codec
+    codec.ReleaseOutputBuffer(outIdx, false)
+}
+```
+
+### Lifecycle Operations
+
+```go
+codec.Flush()  // Discard pending buffers, stay in Started state
+codec.Stop()   // Started -> Stopped
+codec.Close()  // Release all resources
+```
+
+### Encoder
+
+```go
+codec := media.NewEncoder("video/avc")    // H.264 encoder
+codec := media.NewEncoder("audio/mp4a-latm") // AAC encoder
+```
+
+## Assets
+
+### Obtaining the Asset Manager
+
+The AAssetManager comes from the ANativeActivity struct. It is framework-owned — do not Close() it:
+
+```go
+import "github.com/AndroidGoLab/ndk/asset"
+
+// In a NativeActivity app:
+mgr := activity.AssetManager  // from ANativeActivity, no Close()
+```
+
+### Reading an Asset File
+
+```go
+a := mgr.Open("data/config.json", asset.Streaming)
+defer a.Close()
+
+totalLen := a.Length64()
+buf := make([]byte, totalLen)
+err := a.Read(unsafe.Pointer(&buf[0]), uint64(totalLen))
+```
+
+### Asset Open Modes
+
+- `asset.Unknown` — NDK chooses defaults
+- `asset.Random` — random access via Seek; NDK may memory-map
+- `asset.Streaming` — sequential forward reads; smaller buffer
+- `asset.Buffer` — entire asset loaded into memory; `Buffer()` returns direct pointer
+
+### Direct Buffer Access
+
+```go
+a := mgr.Open("data/config.json", asset.Buffer)
+defer a.Close()
+ptr := a.Buffer()  // unsafe.Pointer to raw data
+data := unsafe.Slice((*byte)(ptr), a.Length64())
+```
+
+### Seeking
+
+```go
+newPos := a.Seek(0, int32(io.SeekStart))  // SEEK_SET
+remaining := a.RemainingLength64()
+```
+
+### Directory Iteration
+
+```go
+dir := mgr.OpenDir("")  // empty string = assets root
+defer dir.Close()
+
+for {
+    name := dir.NextFileName()
+    if name == "" {
+        break
+    }
+    fmt.Println(name)
+}
+dir.Rewind()  // reset iterator
+```
+
+## Looper (ALooper)
+
+### Basic Event Loop
+
+```go
+import (
+    "runtime"
+    "github.com/AndroidGoLab/ndk/looper"
+)
+
+runtime.LockOSThread()
+defer runtime.UnlockOSThread()
+
+lp := looper.Prepare(int32(looper.ALOOPER_PREPARE_ALLOW_NON_CALLBACKS))
+defer lp.Close()
+
+// Cross-goroutine wake
+lp.Acquire()  // extra reference for other goroutine
+go func() {
+    time.Sleep(100 * time.Millisecond)
+    lp.Wake()  // safe after Acquire
+}()
+
+// Poll
+result := looper.PollOnce(-1, nil, nil, nil)
+switch {
+case result == int32(looper.ALOOPER_POLL_WAKE):
+    log.Println("woken up")
+case result == int32(looper.ALOOPER_POLL_TIMEOUT):
+    log.Println("timed out")
+case result >= 0:
+    log.Printf("event from ident %d", result)
+}
+```
+
+## EGL and OpenGL ES
+
+### EGL Context Setup
+
+```go
+import (
+    "runtime"
+    "github.com/AndroidGoLab/ndk/egl"
+    "github.com/AndroidGoLab/ndk/gles2"
+)
+
+runtime.LockOSThread()
+defer runtime.UnlockOSThread()
+
+display := egl.GetDisplay(egl.DefaultDisplay)
+egl.Initialize(display, nil, nil)
+
+config := egl.ChooseConfig(display, attribs)
+surface := egl.CreateWindowSurface(display, config, nativeWindow, nil)
+context := egl.CreateContext(display, config, egl.NoContext, contextAttribs)
+
+egl.MakeCurrent(display, surface, surface, context)
+defer egl.MakeCurrent(display, egl.NoSurface, egl.NoSurface, egl.NoContext)
+defer egl.DestroyContext(display, context)
+defer egl.DestroySurface(display, surface)
+defer egl.Terminate(display)
+
+// Now use OpenGL ES on this thread
+gles2.ClearColor(0.2, 0.3, 0.3, 1.0)
+gles2.Clear(gles2.ColorBufferBit)
+egl.SwapBuffers(display, surface)
+```
+
+### Shader Compilation
+
+```go
+shader := gles2.CreateShader(gles2.VertexShader)
+src := gles2.Str(vertexShaderSource)
+var pinner runtime.Pinner
+pinner.Pin(src)
+defer pinner.Unpin()
+length := gles2.GLint(len(vertexShaderSource))
+gles2.ShaderSource(shader, 1, &src, &length)
+gles2.CompileShader(shader)
+defer gles2.DeleteShader(shader)
+```
+
+## Thermal Monitoring
+
+```go
+import "github.com/AndroidGoLab/ndk/thermal"
+
+mgr := thermal.NewManager()
+defer mgr.Close()
+
+status := mgr.CurrentThermalStatus()
+switch status {
+case thermal.StatusNone:
+    log.Println("cool")
+case thermal.StatusLight, thermal.StatusModerate:
+    log.Println("warm — consider reducing workload")
+case thermal.StatusSevere, thermal.StatusCritical:
+    log.Println("hot — reduce workload immediately")
+case thermal.StatusEmergency, thermal.StatusShutdown:
+    log.Println("critical — shutting down")
+}
+```
+
+## Window (ANativeWindow)
+
+```go
+import "github.com/AndroidGoLab/ndk/window"
+
+win := window.NewWindowFromPointer(rawPtr)
+// Reference counting
+win.Acquire()  // increment ref count
+defer win.Close()  // decrement ref count (calls ANativeWindow_release)
+
+w := win.Width()
+h := win.Height()
+fmt.Printf("%dx%d\n", w, h)
+
+win.SetBuffersGeometry(1920, 1080, window.Rgba8888)
+win.SetFrameRate(60.0, 0)
+```
+
+## Input Events
+
+```go
+import (
+    "runtime"
+    "github.com/AndroidGoLab/ndk/input"
+)
+
+runtime.LockOSThread()
+defer runtime.UnlockOSThread()
+
+queue := input.NewQueueFromPointer(rawQueuePtr)
+
+for queue.HasEvents() == nil {
+    event := queue.GetEvent()
+    if queue.PreDispatchEvent(event) {
+        continue
+    }
+
+    switch event.Type() {
+    case input.EventTypeMotion:
+        action := event.MotionAction()
+        x := event.X(0)
+        y := event.Y(0)
+        pressure := event.Pressure(0)
+        log.Printf("touch action=%d at (%.1f, %.1f) pressure=%.2f", action, x, y, pressure)
+    case input.EventTypeKey:
+        keyCode := event.KeyCode()
+        log.Printf("key code=%d action=%d", keyCode, event.KeyAction())
+    }
+
+    queue.FinishEvent(event, 1)  // 1 = handled
+}
+```
+
+## Image Decoding
+
+```go
+import "github.com/AndroidGoLab/ndk/image"
+
+decoder := image.NewDecoderFromFd(fd)
+defer decoder.Close()
+
+info := decoder.HeaderInfo()
+w := info.Width()
+h := info.Height()
+stride := decoder.MinimumStride()
+
+pixels := make([]byte, int(stride)*int(h))
+decoder.Decode(unsafe.Pointer(&pixels[0]), int(stride)*int(h), int(stride))
+```
+
+## SurfaceTexture
+
+```go
+import "github.com/AndroidGoLab/ndk/surfacetexture"
+
+st := surfacetexture.NewSurfaceTextureFromPointer(ptr)
+defer st.Close()
+
+win := st.AcquireWindow()  // Get ANativeWindow for camera/video output
+defer win.Close()
+
+st.AttachToGLContext(textureID)
+defer st.DetachFromGLContext()
+
+st.UpdateTexImage()  // Pull latest frame to GL texture
+ts := st.Timestamp()  // Frame timestamp in nanoseconds
+
+var mat [16]float32
+st.TransformMatrix(&mat)  // Get texture coordinate transform
+```
+
+## Trace (Performance)
+
+```go
+import "github.com/AndroidGoLab/ndk/trace"
+
+if trace.IsEnabled() {
+    trace.BeginSection("myOperation")
+    defer trace.EndSection()
+    // ... measured code ...
+}
+```
+
+## Log
+
+```go
+import ndklog "github.com/AndroidGoLab/ndk/log"
+
+// Priority levels: ndklog.Verbose, ndklog.Debug, ndklog.Info, ndklog.Warn, ndklog.Error, ndklog.Fatal
+ndklog.Write(int32(ndklog.Info), "MyApp", "Hello from NDK")
+ndklog.Write(int32(ndklog.Error), "MyApp", "Something went wrong")
+```
+
+## Choreographer (VSync)
+
+The choreographer is a per-thread singleton tied to the calling thread's Looper. It does not require Close().
+
+```go
+import "github.com/AndroidGoLab/ndk/choreographer"
+
+// Obtain the per-thread singleton (requires an active Looper on the thread)
+ch := choreographer.GetInstance()
+if ch == nil {
+    log.Fatal("no choreographer — is a Looper prepared on this thread?")
+}
+// Frame callbacks are registered via the NDK's AChoreographer_postFrameCallback.
+// Typical game loop: GetInstance -> register callback -> render -> re-register.
+```
+
+## Configuration
+
+```go
+import "github.com/AndroidGoLab/ndk/config"
+
+cfg := config.NewConfig()
+defer cfg.Close()
+
+log.Printf("density: %d", cfg.Density())
+log.Printf("orientation: %d", cfg.Orientation())
+log.Printf("screen size: %d", cfg.ScreenSize())
+log.Printf("SDK version: %d", cfg.SdkVersion())
+log.Printf("screen: %dx%d dp", cfg.ScreenWidthDp(), cfg.ScreenHeightDp())
+```
+
+## Permission
+
+```go
+import "github.com/AndroidGoLab/ndk/permission"
+
+// APermissionManager_checkPermission only checks — doesn't request
+var result int32
+permission.CheckPermission("android.permission.CAMERA", pid, uid, &result)
+// result: 0 = granted, -1 = denied
+// For requesting permissions at runtime, use the companion jni package.
+```
+
+## Shared Memory
+
+```go
+import "github.com/AndroidGoLab/ndk/sharedmem"
+
+fd := sharedmem.ASharedMemory_create("my_buffer", 4096)
+defer syscall.Close(int(fd))
+size := sharedmem.ASharedMemory_getSize(fd)
+sharedmem.ASharedMemory_setProt(fd, 0x1)  // PROT_READ
+// Map the fd with mmap for zero-copy IPC
+```
+
+## Hardware Buffer
+
+AHardwareBuffer lifecycle: Describe -> Allocate -> Lock -> Access -> Unlock -> Close.
+
+Format constants: `hwbuf.R8g8b8a8Unorm`, `hwbuf.R8g8b8Unorm`, `hwbuf.R5g6b5Unorm`, `hwbuf.R16g16b16a16Float`, etc.
+Usage constants: `hwbuf.CpuReadOften`, `hwbuf.CpuWriteOften`, `hwbuf.GpuSampledImage`, `hwbuf.GpuFramebuffer`, `hwbuf.ComposerOverlay`, `hwbuf.VideoEncode`, etc.
+
+```go
+import "github.com/AndroidGoLab/ndk/hwbuf"
+
+// Allocation uses the capi layer (not yet in idiomatic package):
+//   desc := capi.AHardwareBuffer_Desc{Width: 1920, Height: 1080, Layers: 1,
+//       Format: uint32(hwbuf.R8g8b8a8Unorm),
+//       Usage:  uint64(hwbuf.CpuWriteOften | hwbuf.GpuSampledImage)}
+//   var rawBuf *capi.AHardwareBuffer
+//   capi.AHardwareBuffer_allocate(&desc, &rawBuf)
+//   buf := hwbuf.NewBufferFromPointer(unsafe.Pointer(rawBuf))
+
+// Once you have a Buffer:
+buf.Acquire()          // Increment ref count for sharing
+buf.Unlock(nil)        // Release CPU mapping (nil = synchronous)
+buf.LockPlanes(usage, fence, rect, outPlanes) // Multi-plane lock
+buf.SendHandleToUnixSocket(fd)                // IPC sharing
+buf.Close()            // Decrement ref count, free when zero
+```
+
+## Supported Modules
+
+34 modules with idiomatic Go packages:
+
+| Category | Modules |
+|----------|---------|
+| Graphics & Rendering | egl, gles2, gles3, vulkan, surfacecontrol, surfacetexture, hwbuf, window, bitmap |
+| Camera & Imaging | camera, image |
+| Audio & Media | audio, media, midi |
+| Sensors & Input | sensor, input, choreographer |
+| Activity & Lifecycle | activity, config, thermal, hint, permission |
+| Storage & Assets | asset, storage |
+| System & IPC | binder, persistablebundle, looper, log, sharedmem, sync, net |
+| Machine Learning | nnapi |
+| Debugging & Fonts | trace, font |
+
+Import pattern: `github.com/AndroidGoLab/ndk/{module}`
+
+## Requirements
+
+- Android NDK r28 (28.0.13004108) or later
+- API level 35 (Android 15) target
+- Go 1.24+
+
+## Architecture
+
+Three-stage auto-generation pipeline:
+
+1. **Stage 1** (`make specs`): c2ffi extracts structured YAML specs from NDK C headers
+2. **Stage 2** (`make capi`): capigen generates raw CGo bindings from specs + manifests
+3. **Stage 3** (`make idiomatic`): idiomgen generates idiomatic Go packages from specs + overlays + templates
+
+Never edit generated files in `capi/` or top-level module packages directly. Instead modify overlays in `spec/overlays/` and templates in `templates/`, then regenerate with `make idiomatic`.
