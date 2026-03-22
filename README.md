@@ -42,8 +42,8 @@ graph TD
     CAPI -. "some use" .-> BINDER
 ```
 
-| Library                                                      | Interface                    | Requires            | Best for                                                                                            |
-| ------------------------------------------------------------ | ---------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| Library                                                       | Interface                    | Requires            | Best for                                                                                            |
+| ------------------------------------------------------------- | ---------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
 | **[ndk](https://github.com/AndroidGoLab/ndk)** (this project) | Android NDK C APIs           | cgo + NDK toolchain | High-performance hardware access: camera, audio, sensors, OpenGL/Vulkan, media codecs               |
 | **[jni](https://github.com/AndroidGoLab/jni)**                | Java Android SDK via JNI     | cgo + JNI + JVM/ART | Java-only APIs with no NDK equivalent: Bluetooth, WiFi, NFC, location, telephony, content providers |
 | **[binder](https://github.com/AndroidGoLab/binder)**          | Binder IPC (system services) | pure Go (no cgo)    | Direct system service calls without Java: works on non-Android Linux with binder, minimal footprint |
@@ -293,7 +293,6 @@ func main() {
 <details>
 <summary>How to record from the microphone</summary>
 
-
 ```go
 package main
 
@@ -381,7 +380,6 @@ func main() {
 
 <details>
 <summary>How to take a picture from the camera</summary>
-
 
 ```go
 package main
@@ -535,7 +533,6 @@ func main() {
 <details>
 <summary>How to list available sensors</summary>
 
-
 ```go
 package main
 
@@ -615,7 +612,6 @@ func main() {
 <details>
 <summary>How to check device thermal status</summary>
 
-
 ```go
 package main
 
@@ -651,7 +647,6 @@ func main() {
 
 <details>
 <summary>How to query GPU capabilities</summary>
-
 
 ```go
 package main
@@ -742,7 +737,6 @@ func main() {
 <details>
 <summary>How to probe available media codecs</summary>
 
-
 ```go
 package main
 
@@ -795,7 +789,6 @@ func main() {
 <details>
 <summary>How to read device configuration</summary>
 
-
 ```go
 package main
 
@@ -834,7 +827,6 @@ func main() {
 
 <details>
 <summary>How to decode an image file</summary>
-
 
 ```go
 package main
@@ -1194,9 +1186,9 @@ adb shell /data/local/tmp/ndkcli window query
 
 ## Supported Modules
 
-| NDK Module                                                                                                                                                       | Go Package          | Import Path                                    |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ---------------------------------------------- |
-| **Graphics & Rendering**                                                                                                                                         |                     |                                                |
+| NDK Module                                                                                                                                                        | Go Package          | Import Path                                     |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------- |
+| **Graphics & Rendering**                                                                                                                                          |                     |                                                 |
 | [![egl](https://img.shields.io/badge/egl-EGL-2962FF)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/egl)                                                         | `egl`               | `github.com/AndroidGoLab/ndk/egl`               |
 | [![gles2](https://img.shields.io/badge/gles2-OpenGL_ES_2.0-2962FF)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/gles2)                                         | `gles2`             | `github.com/AndroidGoLab/ndk/gles2`             |
 | [![gles3](https://img.shields.io/badge/gles3-OpenGL_ES_3.0-2962FF)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/gles3)                                         | `gles3`             | `github.com/AndroidGoLab/ndk/gles3`             |
@@ -1206,27 +1198,27 @@ adb shell /data/local/tmp/ndkcli window query
 | [![hwbuf](https://img.shields.io/badge/hwbuf-HardwareBuffer-2962FF)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/hwbuf)                                        | `hwbuf`             | `github.com/AndroidGoLab/ndk/hwbuf`             |
 | [![window](https://img.shields.io/badge/window-NativeWindow-2962FF)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/window)                                       | `window`            | `github.com/AndroidGoLab/ndk/window`            |
 | [![bitmap](https://img.shields.io/badge/bitmap-Bitmap-2962FF)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/bitmap)                                             | `bitmap`            | `github.com/AndroidGoLab/ndk/bitmap`            |
-| **Camera & Imaging**                                                                                                                                             |                     |                                                |
+| **Camera & Imaging**                                                                                                                                              |                     |                                                 |
 | [![camera](https://img.shields.io/badge/camera-Camera2-2E7D32)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/camera)                                            | `camera`            | `github.com/AndroidGoLab/ndk/camera`            |
 | [![image](https://img.shields.io/badge/image-ImageDecoder-2E7D32)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/image)                                          | `image`             | `github.com/AndroidGoLab/ndk/image`             |
-| **Audio & Media**                                                                                                                                                |                     |                                                |
+| **Audio & Media**                                                                                                                                                 |                     |                                                 |
 | [![audio](https://img.shields.io/badge/audio-AAudio-7B1FA2)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/audio)                                                | `audio`             | `github.com/AndroidGoLab/ndk/audio`             |
 | [![media](https://img.shields.io/badge/media-MediaCodec-7B1FA2)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/media)                                            | `media`             | `github.com/AndroidGoLab/ndk/media`             |
 | [![midi](https://img.shields.io/badge/midi-MIDI-7B1FA2)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/midi)                                                     | `midi`              | `github.com/AndroidGoLab/ndk/midi`              |
-| **Sensors & Input**                                                                                                                                              |                     |                                                |
+| **Sensors & Input**                                                                                                                                               |                     |                                                 |
 | [![sensor](https://img.shields.io/badge/sensor-Sensors-E65100)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/sensor)                                            | `sensor`            | `github.com/AndroidGoLab/ndk/sensor`            |
 | [![input](https://img.shields.io/badge/input-Input-E65100)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/input)                                                 | `input`             | `github.com/AndroidGoLab/ndk/input`             |
 | [![choreographer](https://img.shields.io/badge/choreographer-Choreographer-E65100)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/choreographer)                 | `choreographer`     | `github.com/AndroidGoLab/ndk/choreographer`     |
-| **Activity & Lifecycle**                                                                                                                                         |                     |                                                |
+| **Activity & Lifecycle**                                                                                                                                          |                     |                                                 |
 | [![activity](https://img.shields.io/badge/activity-NativeActivity-00838F)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/activity)                               | `activity`          | `github.com/AndroidGoLab/ndk/activity`          |
 | [![config](https://img.shields.io/badge/config-Configuration-00838F)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/config)                                      | `config`            | `github.com/AndroidGoLab/ndk/config`            |
 | [![thermal](https://img.shields.io/badge/thermal-ThermalManager-00838F)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/thermal)                                  | `thermal`           | `github.com/AndroidGoLab/ndk/thermal`           |
 | [![hint](https://img.shields.io/badge/hint-PerformanceHint-00838F)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/hint)                                          | `hint`              | `github.com/AndroidGoLab/ndk/hint`              |
 | [![permission](https://img.shields.io/badge/permission-Permission-00838F)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/permission)                             | `permission`        | `github.com/AndroidGoLab/ndk/permission`        |
-| **Storage & Assets**                                                                                                                                             |                     |                                                |
+| **Storage & Assets**                                                                                                                                              |                     |                                                 |
 | [![asset](https://img.shields.io/badge/asset-AssetManager-6D4C41)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/asset)                                          | `asset`             | `github.com/AndroidGoLab/ndk/asset`             |
 | [![storage](https://img.shields.io/badge/storage-StorageManager-6D4C41)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/storage)                                  | `storage`           | `github.com/AndroidGoLab/ndk/storage`           |
-| **System & IPC**                                                                                                                                                 |                     |                                                |
+| **System & IPC**                                                                                                                                                  |                     |                                                 |
 | [![binder](https://img.shields.io/badge/binder-Binder-546E7A)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/binder)                                             | `binder`            | `github.com/AndroidGoLab/ndk/binder`            |
 | [![persistablebundle](https://img.shields.io/badge/persistablebundle-PersistableBundle-546E7A)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/persistablebundle) | `persistablebundle` | `github.com/AndroidGoLab/ndk/persistablebundle` |
 | [![looper](https://img.shields.io/badge/looper-ALooper-546E7A)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/looper)                                            | `looper`            | `github.com/AndroidGoLab/ndk/looper`            |
@@ -1234,9 +1226,9 @@ adb shell /data/local/tmp/ndkcli window query
 | [![sharedmem](https://img.shields.io/badge/sharedmem-SharedMemory-546E7A)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/sharedmem)                              | `sharedmem`         | `github.com/AndroidGoLab/ndk/sharedmem`         |
 | [![sync](https://img.shields.io/badge/sync-SyncFence-546E7A)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/sync)                                                | `sync`              | `github.com/AndroidGoLab/ndk/sync`              |
 | [![net](https://img.shields.io/badge/net-Multinetwork-546E7A)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/net)                                                | `net`               | `github.com/AndroidGoLab/ndk/net`               |
-| **Machine Learning**                                                                                                                                             |                     |                                                |
+| **Machine Learning**                                                                                                                                              |                     |                                                 |
 | [![nnapi](https://img.shields.io/badge/nnapi-NNAPI-C62828)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/nnapi)                                                 | `nnapi`             | `github.com/AndroidGoLab/ndk/nnapi`             |
-| **Debugging & Fonts**                                                                                                                                            |                     |                                                |
+| **Debugging & Fonts**                                                                                                                                             |                     |                                                 |
 | [![trace](https://img.shields.io/badge/trace-Trace-455A64)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/trace)                                                 | `trace`             | `github.com/AndroidGoLab/ndk/trace`             |
 | [![font](https://img.shields.io/badge/font-FontManager-455A64)](https://pkg.go.dev/github.com/AndroidGoLab/ndk/font)                                              | `font`              | `github.com/AndroidGoLab/ndk/font`              |
 
@@ -1626,6 +1618,88 @@ bindings, proper resource lifecycle (Close), error handling, and callback
 bridging. Writing CGo from scratch duplicates this work and lacks the
 automated test coverage this project maintains.
 -->
+
+## Interoperability with related projects
+
+All handle types expose `UintPtr() uintptr` and `NewXFromUintPtr(uintptr)` methods alongside the existing `Pointer()`/`NewXFromPointer()` pair. This enables interop with Go packages that represent native Android handles as `uintptr` — including `golang.org/x/mobile`, `gioui.org`, and `github.com/xlab/android-go`.
+
+For generic code, all handles satisfy the `handle.NativeHandle` interface:
+
+```go
+import "github.com/AndroidGoLab/ndk/handle"
+
+func logHandle(h handle.NativeHandle) {
+    log.Printf("native handle: 0x%x", h.UintPtr())
+}
+```
+
+EGL types (`EGLDisplay`, `EGLContext`, etc.) are `unsafe.Pointer` aliases and use free functions instead: `egl.EGLDisplayToUintPtr(d)` / `egl.EGLDisplayFromUintPtr(p)`.
+
+<details>
+<summary>gomobile bind</summary>
+
+`gomobile bind` does not support `unsafe.Pointer` or `uintptr` in exported APIs. Transport native handles as `int64` (Java `long`) and convert inside Go:
+
+```go
+package sensorbridge
+
+import "github.com/AndroidGoLab/ndk/sensor"
+
+// Bridge wraps an ASensorManager for cross-language use.
+// Unexported fields are invisible to Java/Kotlin.
+type Bridge struct {
+	mgr *sensor.Manager
+}
+
+// NewBridge creates a Bridge from a raw ASensorManager* passed as int64
+// (Java long). gomobile bind does not support unsafe.Pointer or uintptr,
+// so native handles must be transported as int64.
+func NewBridge(managerHandle int64) *Bridge {
+	return &Bridge{
+		mgr: sensor.NewManagerFromUintPtr(uintptr(managerHandle)),
+	}
+}
+
+// Handle returns the underlying ASensorManager* as int64 for passing
+// back to Java/JNI code.
+func (b *Bridge) Handle() int64 {
+	return int64(b.mgr.UintPtr())
+}
+
+// AccelerometerName returns the name of the default accelerometer,
+// or empty string if unavailable.
+func (b *Bridge) AccelerometerName() string {
+	s := b.mgr.DefaultSensor(sensor.Accelerometer)
+	if s.UintPtr() == 0 {
+		return ""
+	}
+	return s.Name()
+}
+
+// SensorName returns the name of a sensor by its Android type code,
+// or empty string if the sensor is not available.
+func (b *Bridge) SensorName(sensorType int32) string {
+	s := b.mgr.DefaultSensor(sensor.Type(sensorType))
+	if s.UintPtr() == 0 {
+		return ""
+	}
+	return s.Name()
+}
+```
+
+Build AAR: `gomobile bind -target=android -androidapi=35 ./examples/gomobile/sensorbridge`
+
+Java usage:
+
+```java
+long ptr = nativeGetSensorManager(); // from JNI
+Bridge bridge = Sensorbridge.newBridge(ptr);
+String name = bridge.accelerometerName();
+```
+
+See [`examples/gomobile/sensorbridge/`](examples/gomobile/sensorbridge/) for the complete buildable example.
+
+</details>
 
 ## FAQ
 
