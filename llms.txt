@@ -911,11 +911,14 @@ log.Printf("screen: %dx%d dp", cfg.ScreenWidthDp(), cfg.ScreenHeightDp())
 ## Permission
 
 ```go
-import "github.com/AndroidGoLab/ndk/permission"
+import (
+    "github.com/AndroidGoLab/ndk/permission"
+    jperm "github.com/xaionaro-go/jni/content/permission"
+)
 
 // APermissionManager_checkPermission only checks — doesn't request
 var result int32
-permission.CheckPermission("android.permission.CAMERA", pid, uid, &result)
+permission.CheckPermission(jperm.Camera, pid, uid, &result)
 // result: 0 = granted, -1 = denied
 // For requesting permissions at runtime, use the companion jni package.
 ```
