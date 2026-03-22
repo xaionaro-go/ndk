@@ -1,135 +1,76 @@
-// Exposing NDK sensors to Java/Kotlin via gomobile bind.
+// gomobile bind sensor bridge: round-trip NDK handles through int64.
 //
-// gomobile bind generates Java/Kotlin bindings for exported Go functions.
-// It supports signed integers, floats, strings, booleans, []byte, errors,
-// interfaces, and structs — but NOT unsafe.Pointer or uintptr.
+// Demonstrates the pattern for passing NDK sensor handles across the
+// Go/Java boundary via gomobile bind. gomobile bind does not support
+// unsafe.Pointer or uintptr, so native handles are transported as int64
+// (Java long).
 //
-// To pass NDK handles across the Go/Java boundary, use int64 (Java long)
-// as the transport type and convert via uintptr inside Go:
+// This example obtains a real ASensorManager, converts it to int64
+// (simulating the gomobile boundary), converts back, and uses the
+// restored handle to query sensors — proving the round-trip is lossless.
 //
-//	func NewSensorBridge(managerHandle int64) *SensorBridge {
-//	    mgr := sensor.NewManagerFromUintPtr(uintptr(managerHandle))
-//	    return &SensorBridge{mgr: mgr}
+// A gomobile-bindable Go package would expose these operations as
+// exported methods on a struct:
+//
+//	package sensorbridge
+//
+//	type Bridge struct{ mgr *sensor.Manager }
+//
+//	func NewBridge(h int64) *Bridge {
+//	    return &Bridge{mgr: sensor.NewManagerFromUintPtr(uintptr(h))}
 //	}
 //
-// The Java side obtains native handles as long values (e.g. from JNI)
-// and passes them to Go:
-//
-//	// Java
-//	long sensorManagerPtr = nativeGetSensorManager();
-//	SensorBridge bridge = Sensorbridge.newSensorBridge(sensorManagerPtr);
-//	String name = bridge.defaultAccelerometerName();
-//
-// # Go library package (bindable via gomobile bind)
-//
-// The pattern for a gomobile-bindable Go package:
-//
-//	// Package sensorbridge exposes NDK sensor access to Java/Kotlin.
-//	// Build with: gomobile bind -target=android ./sensorbridge
-//	package sensorbbridge
-//
-//	import "github.com/AndroidGoLab/ndk/sensor"
-//
-//	// SensorBridge wraps a sensor.Manager for cross-language use.
-//	// Exported struct fields and methods with supported types are
-//	// automatically exposed to Java/Kotlin by gomobile bind.
-//	type SensorBridge struct {
-//	    mgr *sensor.Manager // unexported: invisible to Java
+//	func (b *Bridge) AccelerometerName() string {
+//	    return b.mgr.DefaultSensor(sensor.Accelerometer).Name()
 //	}
 //
-//	// NewSensorBridge creates a bridge from a raw ASensorManager handle.
-//	// The handle is passed as int64 because gomobile bind does not
-//	// support unsafe.Pointer or uintptr.
-//	func NewSensorBridge(managerHandle int64) *SensorBridge {
-//	    mgr := sensor.NewManagerFromUintPtr(uintptr(managerHandle))
-//	    return &SensorBridge{mgr: mgr}
-//	}
-//
-//	// DefaultAccelerometerName returns the name of the default accelerometer.
-//	func (b *SensorBridge) DefaultAccelerometerName() string {
-//	    s := b.mgr.DefaultSensor(sensor.Accelerometer)
-//	    return s.Name()
-//	}
-//
-//	// Handle returns the underlying ASensorManager handle for passing
-//	// back to Java/JNI code.
-//	func (b *SensorBridge) Handle() int64 {
+//	func (b *Bridge) Handle() int64 {
 //	    return int64(b.mgr.UintPtr())
 //	}
 //
-// # Java usage
+// Java side:
 //
-//	import sensorbbridge.SensorBridge;
-//
-//	// Obtain the native ASensorManager* from JNI or the NDK.
-//	long ptr = nativeGetSensorManager();
-//
-//	// Create the Go bridge, passing the handle as a long.
-//	SensorBridge bridge = Sensorbbridge.newSensorBridge(ptr);
-//
-//	// Call Go methods — gomobile generates Java proxy methods.
-//	String name = bridge.defaultAccelerometerName();
-//	Log.d("Sensor", "Accelerometer: " + name);
-//
-//	// Retrieve the handle back (e.g. to pass to another native call).
-//	long handle = bridge.handle();
-//
-// # Key rules
-//
-//   - Use int64 (Java long) to transport native pointers across the boundary.
-//   - Convert int64 <-> uintptr inside Go; never expose uintptr to gomobile.
-//   - Keep NDK handle fields unexported — gomobile cannot serialize them.
-//   - Exported methods must use only gomobile-supported types.
-//   - Close/release NDK resources from Go, not from Java.
+//	long ptr = nativeGetSensorManager(); // from JNI
+//	Bridge b = Sensorbridge.newBridge(ptr);
+//	String name = b.accelerometerName();
 //
 // This program must run on an Android device.
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/AndroidGoLab/ndk/sensor"
 )
 
 func main() {
-	fmt.Println("=== gomobile bind: sensor bridge ===")
-	fmt.Println()
+	log.Println("=== gomobile sensor bridge ===")
 
-	// Demonstrate the int64 <-> uintptr <-> NDK handle conversion chain.
-	//
-	// In a real app, the int64 comes from Java (JNI native handle).
-	// Here we show the Go-side conversion pattern.
+	// Step 1: Obtain a real sensor manager from the NDK.
+	mgr := sensor.ASensorManager_getInstanceForPackage("com.example.gomobile")
+	original := mgr.UintPtr()
+	log.Printf("sensor manager obtained: 0x%x", original)
 
-	fmt.Println("Pattern: Java long -> Go int64 -> uintptr -> NDK handle")
-	fmt.Println()
+	// Step 2: Simulate the gomobile boundary — convert to int64.
+	// In a real app, this int64 crosses the Go/Java boundary.
+	javaHandle := int64(original)
+	log.Printf("converted to int64 (Java long): %d", javaHandle)
 
-	// Step 1: Receive a handle from Java as int64.
-	fmt.Println("Step 1: Java passes native handle as long (int64)")
-	fmt.Println("  Java:  long ptr = nativeGetSensorManager();")
-	fmt.Println("  Java:  SensorBridge bridge = Sensorbbridge.newSensorBridge(ptr);")
-	fmt.Println()
+	// Step 3: On the "Java side", pass the int64 back to Go.
+	// Reconstruct the sensor.Manager from int64.
+	restored := sensor.NewManagerFromUintPtr(uintptr(javaHandle))
+	log.Printf("restored from int64: 0x%x", restored.UintPtr())
 
-	// Step 2: Convert int64 -> uintptr -> NDK type in Go.
-	fmt.Println("Step 2: Go converts int64 -> uintptr -> sensor.Manager")
-	fmt.Println("  Go:    mgr := sensor.NewManagerFromUintPtr(uintptr(handle))")
-	fmt.Println()
+	// Step 4: Verify the round-trip — pointers must match.
+	if restored.UintPtr() != original {
+		log.Fatalf("FAIL: pointer mismatch: original=0x%x restored=0x%x", original, restored.UintPtr())
+	}
+	log.Println("round-trip OK: pointers match")
 
-	// Step 3: Use the NDK type normally.
-	fmt.Println("Step 3: Use NDK types normally in Go")
-	fmt.Println("  Go:    s := mgr.DefaultSensor(sensor.Accelerometer)")
-	fmt.Println("  Go:    name := s.Name()")
-	fmt.Println()
-
-	// Step 4: Return results to Java using supported types.
-	fmt.Println("Step 4: Return results as gomobile-supported types (string, int64, error)")
-	fmt.Println("  Go:    return s.Name()  // string -> Java String")
-	fmt.Println("  Go:    return int64(mgr.UintPtr())  // handle -> Java long")
-	fmt.Println()
-
-	// Show the available sensor type constants that a bridge might expose.
-	types := []struct {
-		name  string
-		value sensor.Type
+	// Step 5: Use the restored handle to query real sensors.
+	sensorTypes := []struct {
+		name     string
+		typeCode sensor.Type
 	}{
 		{"Accelerometer", sensor.Accelerometer},
 		{"Gyroscope", sensor.Gyroscope},
@@ -138,25 +79,14 @@ func main() {
 		{"Proximity", sensor.Proximity},
 	}
 
-	fmt.Println("Sensor type constants (use int32 for gomobile):")
-	for _, t := range types {
-		fmt.Printf("  %-25s = %d\n", t.name, int32(t.value))
+	for _, st := range sensorTypes {
+		s := restored.DefaultSensor(st.typeCode)
+		if s.UintPtr() == 0 {
+			log.Printf("  %-15s not available", st.name)
+			continue
+		}
+		log.Printf("  %-15s name=%q vendor=%q", st.name, s.Name(), s.Vendor())
 	}
-	fmt.Println()
 
-	// gomobile bind type mapping summary.
-	fmt.Println("gomobile bind type mapping:")
-	fmt.Println("  Go int64       <-> Java long       (native handle transport)")
-	fmt.Println("  Go string      <-> Java String")
-	fmt.Println("  Go int32       <-> Java int         (sensor type constants)")
-	fmt.Println("  Go float32     <-> Java float       (sensor values)")
-	fmt.Println("  Go float64     <-> Java double")
-	fmt.Println("  Go bool        <-> Java boolean")
-	fmt.Println("  Go []byte      <-> Java byte[]")
-	fmt.Println("  Go error       <-> Java Exception")
-	fmt.Println("  Go struct      <-> Java class       (exported methods only)")
-	fmt.Println("  Go interface   <-> Java interface")
-	fmt.Println()
-
-	fmt.Println("sensor-bridge example complete")
+	log.Println("sensor-bridge done")
 }
