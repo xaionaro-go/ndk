@@ -501,6 +501,14 @@ func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterOutputP
 	}
 	return {{ range $op := $m.OutputParams }}{{ if $op.IsValueStruct }}{{ lowerFirst (trimStarPrefix $op.GoType) }}FromCapi(&{{ $op.CParamName }}Val){{ else if $op.IsHandle }}&{{ trimStarPrefix $op.GoType }}{ptr: {{ $op.CParamName }}Ptr}{{ else }}{{ $op.CParamName }}Ptr{{ end }}, {{ end }}true
 }
+{{- else if eq $m.Returns "" }}
+// {{ $m.GoName }} calls the underlying NDK function.
+func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterOutputParams (skipAndFilterOut $m.Params) $m.OutputParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) ({{ range $i, $op := $m.OutputParams }}{{ if $i }}, {{ end }}{{ $op.GoType }}{{ end }}) {
+{{ range $op := $m.OutputParams }}{{ if $op.IsValueStruct }}	var {{ $op.CParamName }}Val {{ $op.CapiType }}
+{{ else }}	var {{ $op.CParamName }}Ptr {{ $op.CapiType }}
+{{ end }}{{ end }}	capi.{{ $m.CName }}(h.ptr{{ range skipAndFilterOut $m.Params }}, {{ capiArg . }}{{ end }}{{ range $op := $m.OutputParams }}{{ if $op.IsValueStruct }}, &{{ $op.CParamName }}Val{{ else }}, &{{ $op.CParamName }}Ptr{{ end }}{{ end }})
+	return {{ range $i, $op := $m.OutputParams }}{{ if $i }}, {{ end }}{{ if $op.IsValueStruct }}{{ lowerFirst (trimStarPrefix $op.GoType) }}FromCapi(&{{ $op.CParamName }}Val){{ else if $op.IsHandle }}&{{ trimStarPrefix $op.GoType }}{ptr: {{ $op.CParamName }}Ptr}{{ else }}{{ $op.CParamName }}Ptr{{ end }}{{ end }}
+}
 {{- else }}
 // {{ $m.GoName }} calls the underlying NDK function.
 func (h *{{ $m.ReceiverType }}) {{ $m.GoName }}({{ range $i, $p := filterOutputParams (skipAndFilterOut $m.Params) $m.OutputParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) ({{ range $i, $op := $m.OutputParams }}{{ if $i }}, {{ end }}{{ $op.GoType }}{{ end }}, error) {
@@ -629,6 +637,15 @@ func {{ $f.GoName }}({{ range $i, $p := filterOutputParams $f.Params $f.OutputPa
 		return {{ range $op := $f.OutputParams }}{{ zeroValue $op }}, {{ end }}false
 	}
 	return {{ range $op := $f.OutputParams }}{{ if $op.IsValueStruct }}{{ lowerFirst (trimStarPrefix $op.GoType) }}FromCapi(&{{ $op.CParamName }}Val){{ else if $op.IsHandle }}&{{ trimStarPrefix $op.GoType }}{ptr: {{ $op.CParamName }}Ptr}{{ else }}{{ $op.CParamName }}Ptr{{ end }}, {{ end }}true
+}
+{{- else if eq $f.Returns "" }}
+// {{ $f.GoName }} calls the underlying C function.
+func {{ $f.GoName }}({{ range $i, $p := filterOutputParams $f.Params $f.OutputParams }}{{ if $i }}, {{ end }}{{ $p.Name }} {{ $p.GoType }}{{ end }}) ({{ range $i, $op := $f.OutputParams }}{{ if $i }}, {{ end }}{{ $op.GoType }}{{ end }}) {
+{{ range $p := stringParams (filterOutputParams $f.Params $f.OutputParams) }}	{{ $p.Name }}Bytes := append([]byte({{ $p.Name }}), 0)
+{{ end }}{{ range $op := $f.OutputParams }}{{ if $op.IsValueStruct }}	var {{ $op.CParamName }}Val {{ $op.CapiType }}
+{{ else }}	var {{ $op.CParamName }}Ptr {{ $op.CapiType }}
+{{ end }}{{ end }}	capi.{{ $f.CName }}({{ range $i, $p := filterOutputParams $f.Params $f.OutputParams }}{{ if $i }}, {{ end }}{{ capiArg $p }}{{ end }}{{ if filterOutputParams $f.Params $f.OutputParams }}{{ range $op := $f.OutputParams }}{{ if $op.IsValueStruct }}, &{{ $op.CParamName }}Val{{ else }}, &{{ $op.CParamName }}Ptr{{ end }}{{ end }}{{ else }}{{ range $i, $op := $f.OutputParams }}{{ if $i }}, {{ end }}{{ if $op.IsValueStruct }}&{{ $op.CParamName }}Val{{ else }}&{{ $op.CParamName }}Ptr{{ end }}{{ end }}{{ end }})
+	return {{ range $i, $op := $f.OutputParams }}{{ if $i }}, {{ end }}{{ if $op.IsValueStruct }}{{ lowerFirst (trimStarPrefix $op.GoType) }}FromCapi(&{{ $op.CParamName }}Val){{ else if $op.IsHandle }}&{{ trimStarPrefix $op.GoType }}{ptr: {{ $op.CParamName }}Ptr}{{ else }}{{ $op.CParamName }}Ptr{{ end }}{{ end }}
 }
 {{- else }}
 // {{ $f.GoName }} calls the underlying C function.

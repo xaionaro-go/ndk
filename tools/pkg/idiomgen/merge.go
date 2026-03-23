@@ -1492,9 +1492,9 @@ func resolveOutputParams(
 		// Build the capi type for the local variable declaration.
 		// Opaque types need capi. prefix (e.g., *capi.AImageReader).
 		// Value structs need capi. prefix without pointer (e.g., capi.AHardwareBuffer_Desc).
-		// Scalar types use the Go type directly (e.g., *uint8, int32).
+		// Scalar types and unsafe.Pointer use the Go type directly.
 		var capiType string
-		if isHandle || isValueStruct || !isScalarGoType(specBase) {
+		if isHandle || isValueStruct || (!isScalarGoType(specBase) && specBase != "unsafe.Pointer") {
 			// Reconstruct with capi. prefix on the base type.
 			stars := strings.TrimSuffix(localType, specBase)
 			capiType = stars + "capi." + capiExportName(specBase)

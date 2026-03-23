@@ -60,6 +60,16 @@ func (h *Codec) Configure(format *Format, surface *Window, crypto *Crypto, flags
 	return result(capi.AMediaCodec_configure(h.ptr, format.cptr(), surface.cptr(), crypto.cptr(), flags))
 }
 
+// DequeueInputBuffer returns the value directly.
+func (h *Codec) DequeueInputBuffer(timeoutUs int64) int64 {
+	return (int64)(capi.AMediaCodec_dequeueInputBuffer(h.ptr, timeoutUs))
+}
+
+// DequeueOutputBuffer returns the value directly.
+func (h *Codec) DequeueOutputBuffer(info *BufferInfo, timeoutUs int64) int64 {
+	return (int64)(capi.AMediaCodec_dequeueOutputBuffer(h.ptr, info.cptr(), timeoutUs))
+}
+
 // Flush calls the underlying NDK function.
 func (h *Codec) Flush() error {
 	return result(capi.AMediaCodec_flush(h.ptr))

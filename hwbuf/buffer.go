@@ -60,9 +60,26 @@ func (h *Buffer) Acquire() {
 	capi.AHardwareBuffer_acquire(h.ptr)
 }
 
+// Describe calls the underlying NDK function.
+func (h *Buffer) Describe() *Desc {
+	var outDescVal capi.AHardwareBuffer_Desc
+	capi.AHardwareBuffer_describe(h.ptr, &outDescVal)
+	return descFromCapi(&outDescVal)
+}
+
 // GetID calls the underlying NDK function.
 func (h *Buffer) GetID(outID *uint64) error {
 	return result(capi.AHardwareBuffer_getId(h.ptr, outID))
+}
+
+// Lock calls the underlying NDK function.
+func (h *Buffer) Lock(usage uint64, fence int32, rect *ARect) (unsafe.Pointer, error) {
+	var outVirtualAddressPtr unsafe.Pointer
+	ret := capi.AHardwareBuffer_lock(h.ptr, usage, fence, (*capi.ARect)(rect), &outVirtualAddressPtr)
+	if err := result(ret); err != nil {
+		return nil, err
+	}
+	return outVirtualAddressPtr, nil
 }
 
 // LockPlanes calls the underlying NDK function.

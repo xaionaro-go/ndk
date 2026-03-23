@@ -378,9 +378,9 @@ func FuncMap() template.FuncMap {
 		},
 		// zeroValue returns the Go zero value literal for a type.
 		// Pointer and handle types return "nil", value structs return "Type{}",
-		// numeric types return "0".
+		// unsafe.Pointer returns "nil", numeric types return "0".
 		"zeroValue": func(op MergedOutputParam) string {
-			if strings.HasPrefix(op.GoType, "*") || op.IsHandle {
+			if strings.HasPrefix(op.GoType, "*") || op.IsHandle || op.GoType == "unsafe.Pointer" {
 				return "nil"
 			}
 			if op.IsValueStruct {

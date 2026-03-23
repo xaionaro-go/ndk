@@ -434,6 +434,7 @@ func TestRenderPerTypeFile_OutputParams(t *testing.T) {
 				GoName:       "AcquireNextImage",
 				CName:        "AImageReader_acquireNextImage",
 				ReceiverType: "ImageReader",
+				Returns:      "int32",
 				Params: []idiomgen.MergedParam{
 					{Name: "image", GoType: "**Image", Direction: "out"},
 				},
@@ -446,6 +447,7 @@ func TestRenderPerTypeFile_OutputParams(t *testing.T) {
 			{
 				GoName:     "NewImageReader",
 				CName:      "AImageReader_new",
+				Returns:    "int32",
 				ReturnsNew: "ImageReader",
 				Params: []idiomgen.MergedParam{
 					{Name: "width", GoType: "int32"},
@@ -512,6 +514,7 @@ func TestRenderPerTypeFile_OutputParams_Scalar(t *testing.T) {
 				GoName:       "PlaneData",
 				CName:        "AImage_getPlaneData",
 				ReceiverType: "Image",
+				Returns:      "int32",
 				Params: []idiomgen.MergedParam{
 					{Name: "planeIdx", GoType: "int32"},
 					{Name: "data", GoType: "*uint8", Direction: "out"},
