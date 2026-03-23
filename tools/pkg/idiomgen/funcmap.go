@@ -377,10 +377,14 @@ func FuncMap() template.FuncMap {
 			return strings.TrimPrefix(s, "*")
 		},
 		// zeroValue returns the Go zero value literal for a type.
-		// Pointer and handle types return "nil", numeric types return "0".
+		// Pointer and handle types return "nil", value structs return "Type{}",
+		// numeric types return "0".
 		"zeroValue": func(op MergedOutputParam) string {
 			if strings.HasPrefix(op.GoType, "*") || op.IsHandle {
 				return "nil"
+			}
+			if op.IsValueStruct {
+				return op.GoType + "{}"
 			}
 			return "0"
 		},

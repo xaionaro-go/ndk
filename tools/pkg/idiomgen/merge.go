@@ -394,9 +394,12 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 
 	// Value struct types also need to be in opaqueSpecNames so that
 	// capiArg calls .cptr() on value struct params in merged functions.
+	// Build a separate set for value struct detection in output params.
+	valueStructSpecNames := make(map[string]bool)
 	for specName, tov := range overlay.Types {
 		if tov.ValueStruct {
 			opaqueSpecNames[specName] = true
+			valueStructSpecNames[specName] = true
 		}
 	}
 
@@ -860,9 +863,9 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 			// Overlay-directed processing (original behavior).
 			switch {
 			case fov.Receiver != "":
-				m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
+				m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors, valueStructSpecNames))
 			case fov.GoName != "":
-				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames))
+				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames, valueStructSpecNames))
 			}
 		} else {
 			// Auto-generate: detect receiver and derive Go name.
@@ -900,7 +903,7 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 					autoFov.ReturnsNew = specToGoName[returnBase]
 				}
 
-				m.Methods = append(m.Methods, mergeMethod(funcName, fd, autoFov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
+				m.Methods = append(m.Methods, mergeMethod(funcName, fd, autoFov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors, valueStructSpecNames))
 
 			default:
 				// Skip auto-generation for free functions that would produce
@@ -914,7 +917,7 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 				autoFov := overlaymodel.FuncOverlay{
 					GoName: goName,
 				}
-				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, autoFov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames))
+				m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, autoFov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames, valueStructSpecNames))
 			}
 		}
 	}
@@ -939,9 +942,9 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 		}
 		switch {
 		case fov.Receiver != "":
-			m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors))
+			m.Methods = append(m.Methods, mergeMethod(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors, valueStructSpecNames))
 		case fov.GoName != "":
-			m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames))
+			m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, fov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames, valueStructSpecNames))
 		}
 	}
 
@@ -1185,7 +1188,7 @@ func toTitleCase(s string) string {
 	return fixGoAcronyms(b.String())
 }
 
-func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, enumGoNames map[string]bool, receiverCapiTypes map[string]string, opaqueSpecNames map[string]bool, callbackStructOverlays map[string]overlaymodel.CallbackStructOverlay, structAccessors map[string]overlaymodel.StructAccessorOverlay) MergedMethod {
+func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, enumGoNames map[string]bool, receiverCapiTypes map[string]string, opaqueSpecNames map[string]bool, callbackStructOverlays map[string]overlaymodel.CallbackStructOverlay, structAccessors map[string]overlaymodel.StructAccessorOverlay, valueStructSpecNames map[string]bool) MergedMethod {
 	var params []MergedParam
 	receiverFound := false
 	paramIdx := 0
@@ -1324,7 +1327,7 @@ func mergeMethod(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOve
 
 	// Resolve output_params: convert C output pointer params to Go return values.
 	if len(fov.OutputParams) > 0 {
-		mm.OutputParams = resolveOutputParams(fov.OutputParams, fd, opaqueSpecNames)
+		mm.OutputParams = resolveOutputParams(fov.OutputParams, fd, opaqueSpecNames, valueStructSpecNames)
 		mm.ReturnsBool = fd.Returns == "bool"
 		// Mark output params with direction "out" so skipAndFilterOut removes them.
 		for i := range mm.Params {
@@ -1372,7 +1375,7 @@ func deriveGoName(funcName, receiver string, receiverCapiTypes map[string]string
 	return fixGoAcronyms(funcName)
 }
 
-func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, enumGoNames map[string]bool, opaqueSpecNames map[string]bool) MergedFreeFunction {
+func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.FuncOverlay, apiLevels map[string]int, typeMap map[string]string, enumGoNames map[string]bool, opaqueSpecNames map[string]bool, valueStructSpecNames map[string]bool) MergedFreeFunction {
 	var params []MergedParam
 	for i, p := range fd.Params {
 		goType := resolveType(p.Type, typeMap)
@@ -1433,7 +1436,7 @@ func mergeFreeFunction(funcName string, fd specmodel.FuncDef, fov overlaymodel.F
 
 	// Resolve output_params: convert C output pointer params to Go return values.
 	if len(fov.OutputParams) > 0 {
-		ff.OutputParams = resolveOutputParams(fov.OutputParams, fd, opaqueSpecNames)
+		ff.OutputParams = resolveOutputParams(fov.OutputParams, fd, opaqueSpecNames, valueStructSpecNames)
 		ff.ReturnsBool = fd.Returns == "bool"
 		// Mark output params with direction "out" so they are filtered from visible params.
 		for i := range ff.Params {
@@ -1455,6 +1458,7 @@ func resolveOutputParams(
 	outputParams map[string]string,
 	fd specmodel.FuncDef,
 	opaqueSpecNames map[string]bool,
+	valueStructSpecNames map[string]bool,
 ) []MergedOutputParam {
 	// Process output params in the order they appear in the function signature.
 	var result []MergedOutputParam
@@ -1468,6 +1472,7 @@ func resolveOutputParams(
 		// **AImageReader -> *AImageReader (opaque handle pointer)
 		// **uint8 -> *uint8 (scalar pointer)
 		// *int32 -> int32 (scalar value)
+		// *AHardwareBuffer_Desc -> AHardwareBuffer_Desc (value struct)
 		localType := strings.TrimPrefix(p.Type, "*")
 
 		// Determine the base type name (without pointer stars).
@@ -1476,14 +1481,20 @@ func resolveOutputParams(
 			specBase = specBase[1:]
 		}
 
+		// Check if this is a value struct (before checking opaque handles,
+		// since value struct names are also in opaqueSpecNames).
+		isValueStruct := valueStructSpecNames[specBase]
+
 		// Determine if the Go type is an opaque handle wrapper.
-		isHandle := opaqueSpecNames[specBase]
+		// Value structs are NOT opaque handles even though they appear in opaqueSpecNames.
+		isHandle := !isValueStruct && opaqueSpecNames[specBase]
 
 		// Build the capi type for the local variable declaration.
 		// Opaque types need capi. prefix (e.g., *capi.AImageReader).
+		// Value structs need capi. prefix without pointer (e.g., capi.AHardwareBuffer_Desc).
 		// Scalar types use the Go type directly (e.g., *uint8, int32).
 		var capiType string
-		if isHandle || !isScalarGoType(specBase) {
+		if isHandle || isValueStruct || !isScalarGoType(specBase) {
 			// Reconstruct with capi. prefix on the base type.
 			stars := strings.TrimSuffix(localType, specBase)
 			capiType = stars + "capi." + capiExportName(specBase)
@@ -1492,10 +1503,11 @@ func resolveOutputParams(
 		}
 
 		result = append(result, MergedOutputParam{
-			CParamName: p.Name,
-			GoType:     goType,
-			CapiType:   capiType,
-			IsHandle:   isHandle,
+			CParamName:    p.Name,
+			GoType:        goType,
+			CapiType:      capiType,
+			IsHandle:      isHandle,
+			IsValueStruct: isValueStruct,
 		})
 	}
 	return result

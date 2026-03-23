@@ -186,10 +186,11 @@ type MergedValueStruct struct {
 
 // MergedOutputParam describes a C output parameter converted to a Go return value.
 type MergedOutputParam struct {
-	CParamName string // Original C param name (e.g., "reader")
-	GoType     string // Go idiomatic type (e.g., "*ImageReader")
-	CapiType   string // Capi pointer type to declare (e.g., "*capi.AImageReader")
-	IsHandle   bool   // True if the Go type is an opaque handle wrapper
+	CParamName    string // Original C param name (e.g., "reader")
+	GoType        string // Go idiomatic type (e.g., "*ImageReader")
+	CapiType      string // Capi pointer type to declare (e.g., "*capi.AImageReader")
+	IsHandle      bool   // True if the Go type is an opaque handle wrapper
+	IsValueStruct bool   // True if the Go type is a value struct (not an opaque handle)
 }
 
 // MergedCustomCall holds custom call information for methods with non-standard capi patterns.
