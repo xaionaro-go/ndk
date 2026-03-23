@@ -72,6 +72,22 @@ All three libraries talk to the same Android system services, but through differ
 - **Android NDK r28** (28.0.13004108) or later
 - **API level 35** (Android 15) target
 
+## Idiomatic vs `capi/` Packages
+
+Always import the **idiomatic top-level packages** (`github.com/AndroidGoLab/ndk/{module}`) in your application code. These provide Go-friendly types with proper lifecycle management (`Close()`, `defer`), typed error handling, and method receivers.
+
+The `capi/` packages (`github.com/AndroidGoLab/ndk/capi/{module}`) are the raw CGo bindings generated in Stage 2 of the pipeline. They mirror the C API directly — C-style function names, `unsafe.Pointer` parameters, raw integer return codes. **They are intended for power users** who need access to NDK functions not yet wrapped by the idiomatic layer. A few functions (e.g., `AHardwareBuffer_allocate`, `AHardwareBuffer_lock`, `AMediaCodec_dequeueInputBuffer`) are not yet exposed idiomatically and require a `capi/` import as a temporary fallback.
+
+When using `capi/` functions, wrap the resulting C pointers in idiomatic types as soon as possible:
+
+```go
+// Advanced: allocate via capi, then wrap in idiomatic type
+var rawBuf *capihw.AHardwareBuffer
+capihw.AHardwareBuffer_allocate(&desc, &rawBuf)
+buf := hwbuf.NewBufferFromPointer(unsafe.Pointer(rawBuf))
+defer buf.Close()  // use idiomatic lifecycle from here on
+```
+
 ## Examples
 
 All types implement idempotent, nil-safe `Close() error`. Error types wrap NDK status codes and work with `errors.Is`.
