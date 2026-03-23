@@ -6,6 +6,8 @@ import (
 	"github.com/AndroidGoLab/ndk/tools/pkg/idiomgen"
 	"github.com/AndroidGoLab/ndk/tools/pkg/overlaymodel"
 	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // buildFixture creates AAudio-like spec and overlay data for testing.
@@ -1675,4 +1677,37 @@ func TestMerge_AutoFreeFunction_NoReceiver(t *testing.T) {
 	if merged.FreeFunctions[0].GoName != "GlobalInit" {
 		t.Errorf("GoName = %q, want %q", merged.FreeFunctions[0].GoName, "GlobalInit")
 	}
+}
+
+func TestMerge_ValueStruct(t *testing.T) {
+	spec := specmodel.Spec{
+		Module:        "test",
+		SourcePackage: "example.com/capi/test",
+		Types: map[string]specmodel.TypeDef{
+			"TestDesc": {Kind: "opaque_ptr", CType: "TestDesc", GoType: "*C.TestDesc"},
+		},
+		Structs: map[string]specmodel.StructDef{
+			"TestDesc": {
+				Fields: []specmodel.StructField{
+					{Name: "width", Type: "uint32"},
+					{Name: "height", Type: "uint32"},
+				},
+			},
+		},
+	}
+	overlay := overlaymodel.Overlay{
+		Package: overlaymodel.PackageOverlay{GoName: "test"},
+		Types: map[string]overlaymodel.TypeOverlay{
+			"TestDesc": {GoName: "Desc", ValueStruct: true},
+		},
+	}
+	merged := idiomgen.Merge(spec, overlay)
+	require.Len(t, merged.ValueStructs, 1)
+	vs := merged.ValueStructs[0]
+	assert.Equal(t, "Desc", vs.GoName)
+	assert.Equal(t, "TestDesc", vs.CapiType)
+	require.Len(t, vs.Fields, 2)
+	assert.Equal(t, "Width", vs.Fields[0].GoName)
+	assert.Equal(t, "uint32", vs.Fields[0].GoType)
+	assert.Equal(t, "Height", vs.Fields[1].GoName)
 }

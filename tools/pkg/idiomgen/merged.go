@@ -20,6 +20,7 @@ type MergedSpec struct {
 	CallbackStructs       []MergedCallbackStruct
 	CallbackStructAliases []MergedTypeAlias // type aliases re-exporting capi callback struct types
 	StructAccessors       []MergedStructAccessor
+	ValueStructs          []MergedValueStruct
 	Lifecycle             *MergedLifecycle
 	ExtraBridgeC          string
 	ExtraBridgeGo         string
@@ -168,6 +169,21 @@ type MergedStructAccessor struct {
 	DeleteFunc string // capi function to free the list
 }
 
+// MergedValueStructField describes one field of a value struct.
+type MergedValueStructField struct {
+	GoName   string
+	CName    string
+	GoType   string
+	CapiType string
+}
+
+// MergedValueStruct describes a C struct mapped to a Go value struct with exported fields.
+type MergedValueStruct struct {
+	GoName   string
+	CapiType string
+	Fields   []MergedValueStructField
+}
+
 // MergedOutputParam describes a C output parameter converted to a Go return value.
 type MergedOutputParam struct {
 	CParamName string // Original C param name (e.g., "reader")
@@ -210,6 +226,13 @@ type PerTypeAliasData struct {
 	PackageName   string
 	SourcePackage string
 	Alias         MergedTypeAlias
+}
+
+// PerValueStructData holds data for rendering a single value struct file.
+type PerValueStructData struct {
+	PackageName   string
+	SourcePackage string
+	Type          MergedValueStruct
 }
 
 // PerCallbackData holds data for rendering a single callback type file.

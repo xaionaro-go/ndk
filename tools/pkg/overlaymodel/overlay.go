@@ -43,6 +43,7 @@ type TypeOverlay struct {
 	Pattern      string   `yaml:"pattern,omitempty"` // builder, ref_counted, singleton
 	Interfaces   []string `yaml:"interfaces,omitempty"`
 	Transparent  bool     `yaml:"transparent,omitempty"` // type alias instead of struct wrapper
+	ValueStruct  bool     `yaml:"value_struct,omitempty"`
 	EnumSource   string   `yaml:"enum_source,omitempty"` // spec enum key when typedef name differs from enum group name
 }
 

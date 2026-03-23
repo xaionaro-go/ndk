@@ -46,6 +46,14 @@ func capiExportType(specType string) string {
 	return stars + capiExportName(base)
 }
 
+// exportName capitalizes the first letter of a string to make it an exported Go name.
+func exportName(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
+}
+
 // isScalarGoType returns true for Go scalar types.
 func isScalarGoType(t string) bool {
 	switch t {
@@ -384,6 +392,14 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 		opaqueSpecNames[specName] = true
 	}
 
+	// Value struct types also need to be in opaqueSpecNames so that
+	// capiArg calls .cptr() on value struct params in merged functions.
+	for specName, tov := range overlay.Types {
+		if tov.ValueStruct {
+			opaqueSpecNames[specName] = true
+		}
+	}
+
 	// Auto-detect destructors and constructors from spec function names.
 	// These are used when the overlay doesn't specify them explicitly.
 	// Functions with explicit overlay entries are NOT auto-claimed, because
@@ -463,6 +479,14 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 				GoName:   goName,
 				CapiType: capiExportName(specName),
 			})
+			typeMap[specName] = goName
+			typeMap["*"+specName] = "*" + goName
+			continue
+		}
+
+		// Value struct types are handled separately — they get exported Go
+		// fields instead of an opaque pointer wrapper.
+		if hasOverlay && tov.ValueStruct {
 			typeMap[specName] = goName
 			typeMap["*"+specName] = "*" + goName
 			continue
@@ -673,6 +697,37 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 			typeMap[enumName] = goName
 			typeMap["*"+enumName] = "*" + goName
 		}
+	}
+
+	// Build value structs from overlay annotations + spec struct definitions.
+	for _, specName := range sortedKeys(overlay.Types) {
+		tov := overlay.Types[specName]
+		if !tov.ValueStruct {
+			continue
+		}
+		sd, ok := spec.Structs[specName]
+		if !ok {
+			continue
+		}
+		goName := tov.GoName
+		if goName == "" {
+			goName = specName
+		}
+		capiType := capiExportName(specName)
+		var fields []MergedValueStructField
+		for _, sf := range sd.Fields {
+			fields = append(fields, MergedValueStructField{
+				GoName:   exportName(sf.Name),
+				CName:    sf.Name,
+				GoType:   sf.Type,
+				CapiType: sf.Type,
+			})
+		}
+		m.ValueStructs = append(m.ValueStructs, MergedValueStruct{
+			GoName:   goName,
+			CapiType: capiType,
+			Fields:   fields,
+		})
 	}
 
 	// Build callback annotation lookup by cross-referencing function overlays
