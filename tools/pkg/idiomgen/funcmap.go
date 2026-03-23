@@ -199,6 +199,12 @@ func FuncMap() template.FuncMap {
 		"trimStar": func(s string) string {
 			return strings.TrimPrefix(s, "*")
 		},
+		"lowerFirst": func(s string) string {
+			if s == "" {
+				return s
+			}
+			return strings.ToLower(s[:1]) + s[1:]
+		},
 		"toSnakeCase": toSnakeCase,
 		// skipSpecParams skips the first n parameters from a specmodel.Param slice.
 		"skipSpecParams": func(params []specmodel.Param, n int) []specmodel.Param {

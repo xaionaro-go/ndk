@@ -177,6 +177,28 @@ func Generate(
 		}
 	}
 
+	// Per-value-struct files: one file per value struct type.
+	vsTmplPath := filepath.Join(tmplDir, "value_struct_file.go.tmpl")
+	if _, err := os.Stat(vsTmplPath); err == nil {
+		for _, vs := range merged.ValueStructs {
+			data := PerValueStructData{
+				PackageName:   merged.PackageName,
+				SourcePackage: merged.SourcePackage,
+				Type:          vs,
+			}
+			content, err := RenderAny(vsTmplPath, data)
+			if err != nil {
+				return fmt.Errorf("render value struct %s: %w", vs.GoName, err)
+			}
+			fileName := toSnakeCase(vs.GoName) + ".go"
+			outPath := filepath.Join(outDir, fileName)
+			if err := os.WriteFile(outPath, []byte(content), 0o644); err != nil {
+				return fmt.Errorf("write %s: %w", fileName, err)
+			}
+			written[fileName] = true
+		}
+	}
+
 	// Collect higher-API-level methods and free functions for separate files.
 	// Methods and functions at or below BaseAPILevel stay in the main files;
 	// those above go into build-tagged files ({type}_api{N}.go, functions_api{N}.go).
