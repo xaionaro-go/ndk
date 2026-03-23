@@ -524,19 +524,21 @@ for {
 Created -> Configured -> Started -> (buffer processing) -> Flushed -> Started -> Stopped -> Released
 ```
 
+Wraps the NDK `AMediaCodec` API. Key C functions: `AMediaCodec_createDecoderByType`, `AMediaCodec_createEncoderByType`, `AMediaCodec_configure`, `AMediaCodec_start`, `AMediaCodec_stop`, `AMediaCodec_flush`, `AMediaCodec_delete`.
+
 ### Decoder Setup
 
 ```go
 import "github.com/AndroidGoLab/ndk/media"
 
-// Create H.264 decoder
+// Create H.264 decoder (wraps AMediaCodec_createDecoderByType)
 codec := media.NewDecoder("video/avc")
 if codec == nil {
     log.Fatal("H.264 decoder not available")
 }
 defer codec.Close()
 
-// Configure format
+// Configure format (wraps AMediaFormat)
 format := media.NewFormat()
 defer format.Close()
 
@@ -549,53 +551,162 @@ format.
 var width int32
 format.GetInt32("width", &width)  // returns bool
 
-// Configure and start (requires Activity context)
+// Configure as decoder: flags=0 (requires Activity context)
 codec.Configure(format, nil, nil, 0)
 codec.Start()
 ```
 
-### Buffer Processing Loop
+### H.264 Encoder Setup
 
 ```go
+import (
+    "github.com/AndroidGoLab/ndk/media"
+    capimedia "github.com/AndroidGoLab/ndk/capi/media"
+)
+
+// Create H.264 encoder (wraps AMediaCodec_createEncoderByType)
+codec := media.NewEncoder("video/avc")
+if codec == nil {
+    log.Fatal("H.264 encoder not available")
+}
+defer codec.Close()
+
+// Configure encoder format with required parameters.
+// Format keys are plain strings matching the NDK AMEDIAFORMAT_KEY_* constants.
+format := media.NewFormat()
+defer format.Close()
+
+format.
+    SetString("mime", "video/avc").       // AMEDIAFORMAT_KEY_MIME
+    SetInt32("width", 1920).              // AMEDIAFORMAT_KEY_WIDTH
+    SetInt32("height", 1080).             // AMEDIAFORMAT_KEY_HEIGHT
+    SetInt32("bitrate", 4_000_000).       // AMEDIAFORMAT_KEY_BIT_RATE (bits/sec)
+    SetInt32("frame-rate", 30).           // AMEDIAFORMAT_KEY_FRAME_RATE
+    SetInt32("i-frame-interval", 1).      // AMEDIAFORMAT_KEY_I_FRAME_INTERVAL (seconds)
+    SetInt32("color-format", 21)          // COLOR_FormatYUV420SemiPlanar (0x15)
+
+// Optional: set bitrate mode (CBR for streaming, VBR for quality)
+// media.ABITRATE_MODE_CBR = 2, media.ABITRATE_MODE_VBR = 1
+format.SetInt32("bitrate-mode", int32(media.ABITRATE_MODE_CBR))
+
+// Optional: set H.264 profile and level
+format.SetInt32("profile", 8)   // AVCProfileHigh
+format.SetInt32("level", 512)  // AVCLevel31
+
+// Configure as encoder: flags = AMEDIACODEC_CONFIGURE_FLAG_ENCODE (1)
+// surface=nil for buffer-mode input, crypto=nil for no DRM
+codec.Configure(format, nil, nil, capimedia.AMEDIACODEC_CONFIGURE_FLAG_ENCODE)
+codec.Start()
+```
+
+Common MIME types: `"video/avc"` (H.264), `"video/hevc"` (H.265), `"video/x-vnd.on2.vp8"` (VP8), `"video/x-vnd.on2.vp9"` (VP9), `"video/av01"` (AV1), `"audio/mp4a-latm"` (AAC), `"audio/opus"` (Opus).
+
+### Common AMediaFormat Keys
+
+Format keys are passed as strings to `SetInt32`/`SetString`/`SetFloat`/`SetInt64`:
+
+| Key string | NDK constant | Type | Description |
+|---|---|---|---|
+| `"mime"` | AMEDIAFORMAT_KEY_MIME | string | MIME type |
+| `"width"` | AMEDIAFORMAT_KEY_WIDTH | int32 | Frame width in pixels |
+| `"height"` | AMEDIAFORMAT_KEY_HEIGHT | int32 | Frame height in pixels |
+| `"bitrate"` | AMEDIAFORMAT_KEY_BIT_RATE | int32 | Target bitrate (bits/sec) |
+| `"frame-rate"` | AMEDIAFORMAT_KEY_FRAME_RATE | int32 | Frame rate (fps) |
+| `"i-frame-interval"` | AMEDIAFORMAT_KEY_I_FRAME_INTERVAL | int32 | I-frame interval (seconds) |
+| `"color-format"` | AMEDIAFORMAT_KEY_COLOR_FORMAT | int32 | Color format enum |
+| `"bitrate-mode"` | AMEDIAFORMAT_KEY_BITRATE_MODE | int32 | BitrateMode (0=CQ, 1=VBR, 2=CBR) |
+| `"profile"` | AMEDIAFORMAT_KEY_PROFILE | int32 | Codec profile |
+| `"level"` | AMEDIAFORMAT_KEY_LEVEL | int32 | Codec level |
+| `"channel-count"` | AMEDIAFORMAT_KEY_CHANNEL_COUNT | int32 | Audio channel count |
+| `"sample-rate"` | AMEDIAFORMAT_KEY_SAMPLE_RATE | int32 | Audio sample rate (Hz) |
+
+### Buffer Processing Loop
+
+The dequeue functions are available in the `capi/media` package (not the idiomatic `media` package). The idiomatic layer provides `GetInputBuffer`, `QueueInputBuffer`, `GetOutputBuffer`, and `ReleaseOutputBuffer`.
+
+```go
+import (
+    "unsafe"
+    capimedia "github.com/AndroidGoLab/ndk/capi/media"
+)
+
+// Get the raw capi pointer for dequeue calls
+rawCodec := (*capimedia.AMediaCodec)(codec.Pointer())
+
+// Use capi for dequeue operations (returns int64 buffer index or negative info code)
 for {
-    // 1. Dequeue input buffer
-    idx := codec.DequeueInputBuffer(timeoutUs)
-    if idx < 0 { continue }
+    // 1. Dequeue input buffer (capi call — wraps AMediaCodec_dequeueInputBuffer)
+    idx := capimedia.AMediaCodec_dequeueInputBuffer(rawCodec, timeoutUs)
+    if idx < 0 { continue }  // no buffer available yet
 
-    // 2. Fill with compressed data
-    buf := codec.GetInputBuffer(idx)
-    n := copy(buf, nalUnit)
+    // 2. Fill with data (NAL units for video, PCM for audio)
+    var bufSize uint64
+    buf := codec.GetInputBuffer(uint64(idx), &bufSize)
+    data := unsafe.Slice(buf, bufSize)
+    n := copy(data, inputFrame)
 
-    // 3. Queue for decoding
-    codec.QueueInputBuffer(idx, 0, uint64(n), presentationTimeUs, 0)
-    // End of stream: pass media.BufferFlagEndOfStream as flags
+    // 3. Queue for processing
+    codec.QueueInputBuffer(uint64(idx), 0, uint64(n), presentationTimeUs, 0)
+    // End of stream: use capimedia.AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM as flags
 
-    // 4. Dequeue output buffer
-    outIdx := codec.DequeueOutputBuffer(&info, timeoutUs)
+    // 4. Dequeue output buffer (capi call — wraps AMediaCodec_dequeueOutputBuffer)
+    var info capimedia.AMediaCodecBufferInfo
+    outIdx := capimedia.AMediaCodec_dequeueOutputBuffer(rawCodec, &info, timeoutUs)
+    if outIdx == int64(capimedia.AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED) {
+        // Output format changed, query new format
+        continue
+    }
     if outIdx < 0 { continue }
 
-    // 5. Consume decoded frame
-    outBuf := codec.GetOutputBuffer(outIdx, nil)
-    processFrame(outBuf)
+    // 5. Consume output (decoded frame or encoded bitstream)
+    var outSize uint64
+    outBuf := codec.GetOutputBuffer(uint64(outIdx), &outSize)
+    outData := unsafe.Slice(outBuf, outSize)
+    processOutput(outData)
 
-    // 6. Release back to codec
-    codec.ReleaseOutputBuffer(outIdx, false)
+    // 6. Release back to codec (render=true to send to surface)
+    codec.ReleaseOutputBuffer(uint64(outIdx), false)
 }
 ```
+
+### Buffer Flags
+
+Available in `capi/media` package:
+
+- `AMEDIACODEC_BUFFER_FLAG_KEY_FRAME` (1) — output buffer contains a key frame
+- `AMEDIACODEC_BUFFER_FLAG_CODEC_CONFIG` (2) — buffer contains codec config data (SPS/PPS)
+- `AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM` (4) — signals end of stream
+- `AMEDIACODEC_BUFFER_FLAG_PARTIAL_FRAME` (8) — buffer contains partial frame data
 
 ### Lifecycle Operations
 
 ```go
 codec.Flush()  // Discard pending buffers, stay in Started state
 codec.Stop()   // Started -> Stopped
-codec.Close()  // Release all resources
+codec.Close()  // Release all resources (wraps AMediaCodec_delete)
 ```
 
-### Encoder
+### Error Handling
+
+Media functions return errors wrapping `media_status_t` codes. Check with `errors.Is`:
 
 ```go
-codec := media.NewEncoder("video/avc")    // H.264 encoder
-codec := media.NewEncoder("audio/mp4a-latm") // AAC encoder
+if err := codec.Configure(format, nil, nil, flags); err != nil {
+    log.Fatalf("configure failed: %v", err)
+    // Common causes: unsupported format, missing codec, wrong flags
+}
+if err := codec.Start(); err != nil {
+    log.Fatalf("start failed: %v", err)
+}
+```
+
+### Bitrate Modes
+
+```go
+media.ABITRATE_MODE_CQ      // 0 — Constant Quality
+media.ABITRATE_MODE_VBR     // 1 — Variable Bitrate
+media.ABITRATE_MODE_CBR     // 2 — Constant Bitrate
+media.ABITRATE_MODE_CBR_FD  // 3 — Constant Bitrate with Frame Drop
 ```
 
 ## Assets
@@ -923,43 +1034,214 @@ permission.CheckPermission(jperm.Camera, pid, uid, &result)
 // For requesting permissions at runtime, use the companion jni package.
 ```
 
-## Shared Memory
+## Shared Memory (ASharedMemory)
+
+Wraps the NDK `ASharedMemory` API for anonymous shared memory regions. The fd-based interface enables zero-copy IPC between processes via Binder or Unix sockets.
+
+### Creating and Mapping Shared Memory
 
 ```go
-import "github.com/AndroidGoLab/ndk/sharedmem"
+import (
+    "syscall"
+    "unsafe"
+    "github.com/AndroidGoLab/ndk/sharedmem"
+)
 
-fd := sharedmem.ASharedMemory_create("my_buffer", 4096)
+// 1. Create a shared memory region (wraps ASharedMemory_create)
+//    Returns a file descriptor, or negative error code on failure.
+const size = 4096
+fd := sharedmem.ASharedMemory_create("my_buffer", size)
+if fd < 0 {
+    log.Fatalf("ASharedMemory_create failed: %d", fd)
+}
 defer syscall.Close(int(fd))
-size := sharedmem.ASharedMemory_getSize(fd)
-sharedmem.ASharedMemory_setProt(fd, 0x1)  // PROT_READ
-// Map the fd with mmap for zero-copy IPC
+
+// 2. Query the actual size (wraps ASharedMemory_getSize)
+actualSize := sharedmem.ASharedMemory_getSize(fd)
+
+// 3. Map into process address space using syscall.Mmap
+data, err := syscall.Mmap(int(fd), 0, int(actualSize),
+    syscall.PROT_READ|syscall.PROT_WRITE, syscall.MAP_SHARED)
+if err != nil {
+    log.Fatalf("mmap: %v", err)
+}
+defer syscall.Munmap(data)
+
+// 4. Read/write the shared memory region directly
+copy(data, []byte("hello from producer"))
+msg := string(data[:19])
+
+// 5. Optionally restrict access before sharing (wraps ASharedMemory_setProt)
+//    Once restricted, further setProt calls can only remove permissions.
+sharedmem.ASharedMemory_setProt(fd, syscall.PROT_READ)  // make read-only
+
+// 6. Share the fd with another process via Unix socket or Binder.
+//    The other process mmaps the same fd for zero-copy access.
 ```
 
-## Hardware Buffer
+### Functions
 
-AHardwareBuffer lifecycle: Describe -> Allocate -> Lock -> Access -> Unlock -> Close.
+- `ASharedMemory_create(name string, size uint64) int32` — create region, returns fd
+- `ASharedMemory_getSize(fd int32) uint64` — query region size in bytes
+- `ASharedMemory_setProt(fd int32, prot int32) int32` — restrict access (PROT_READ, PROT_WRITE); returns 0 on success
 
-Format constants: `hwbuf.R8g8b8a8Unorm`, `hwbuf.R8g8b8Unorm`, `hwbuf.R5g6b5Unorm`, `hwbuf.R16g16b16a16Float`, etc.
-Usage constants: `hwbuf.CpuReadOften`, `hwbuf.CpuWriteOften`, `hwbuf.GpuSampledImage`, `hwbuf.GpuFramebuffer`, `hwbuf.ComposerOverlay`, `hwbuf.VideoEncode`, etc.
+### Allocating and Freeing Native Memory
+
+For generic native memory allocation (not shared between processes), use standard Go or syscall:
 
 ```go
-import "github.com/AndroidGoLab/ndk/hwbuf"
+// Option A: Go-allocated memory (managed by GC, pin before passing to C)
+buf := make([]byte, 4096)
+var pinner runtime.Pinner
+pinner.Pin(&buf[0])
+defer pinner.Unpin()
+// pass &buf[0] to C functions via unsafe.Pointer
 
-// Allocation uses the capi layer (not yet in idiomatic package):
-//   desc := capi.AHardwareBuffer_Desc{Width: 1920, Height: 1080, Layers: 1,
-//       Format: uint32(hwbuf.R8g8b8a8Unorm),
-//       Usage:  uint64(hwbuf.CpuWriteOften | hwbuf.GpuSampledImage)}
-//   var rawBuf *capi.AHardwareBuffer
-//   capi.AHardwareBuffer_allocate(&desc, &rawBuf)
-//   buf := hwbuf.NewBufferFromPointer(unsafe.Pointer(rawBuf))
-
-// Once you have a Buffer:
-buf.Acquire()          // Increment ref count for sharing
-buf.Unlock(nil)        // Release CPU mapping (nil = synchronous)
-buf.LockPlanes(usage, fence, rect, outPlanes) // Multi-plane lock
-buf.SendHandleToUnixSocket(fd)                // IPC sharing
-buf.Close()            // Decrement ref count, free when zero
+// Option B: syscall.Mmap for page-aligned anonymous memory
+mem, err := syscall.Mmap(-1, 0, 4096,
+    syscall.PROT_READ|syscall.PROT_WRITE,
+    syscall.MAP_PRIVATE|syscall.MAP_ANONYMOUS)
+if err != nil {
+    log.Fatal(err)
+}
+defer syscall.Munmap(mem)
+// mem is a []byte backed by native memory, not GC-managed
 ```
+
+## Hardware Buffer (AHardwareBuffer)
+
+Wraps the NDK `AHardwareBuffer` API for GPU/CPU-shared buffers. Lifecycle: Describe -> Allocate -> Lock -> Access -> Unlock -> Close.
+
+### Complete Allocate-Lock-Unlock Lifecycle
+
+Allocation and locking use the `capi/hardwarebuffer` package; the idiomatic `hwbuf` package provides format/usage constants, Buffer type, Acquire, Unlock, and Close.
+
+```go
+import (
+    "unsafe"
+    "github.com/AndroidGoLab/ndk/hwbuf"
+    capihw "github.com/AndroidGoLab/ndk/capi/hardwarebuffer"
+)
+
+// 1. Describe: fill the buffer descriptor
+desc := capihw.AHardwareBuffer_Desc{
+    Width:  1920,
+    Height: 1080,
+    Layers: 1,
+    Format: uint32(hwbuf.R8g8b8a8Unorm),
+    Usage:  uint64(hwbuf.CpuWriteOften | hwbuf.GpuSampledImage),
+}
+
+// 2. Allocate (wraps AHardwareBuffer_allocate)
+var rawBuf *capihw.AHardwareBuffer
+rc := capihw.AHardwareBuffer_allocate(&desc, &rawBuf)
+if rc != 0 {
+    log.Fatalf("AHardwareBuffer_allocate failed: %d", rc)
+}
+buf := hwbuf.NewBufferFromPointer(unsafe.Pointer(rawBuf))
+defer buf.Close()  // decrements ref count, frees when zero
+
+// 3. Lock for CPU access (wraps AHardwareBuffer_lock)
+//    usage must be a subset of allocation usage flags.
+//    fence=-1 means no fence; rect=nil means full buffer.
+var pixelPtr unsafe.Pointer
+rc = capihw.AHardwareBuffer_lock(rawBuf,
+    uint64(hwbuf.CpuWriteOften),  // CPU write access
+    -1,                            // fence fd (-1 = none)
+    nil,                           // rect (nil = full buffer)
+    &pixelPtr,
+)
+if rc != 0 {
+    log.Fatalf("AHardwareBuffer_lock failed: %d", rc)
+}
+
+// 4. Access: read/write pixel data via the mapped pointer
+//    For R8G8B8A8: 4 bytes per pixel (R, G, B, A)
+pixels := unsafe.Slice((*byte)(pixelPtr), 1920*1080*4)
+for y := 0; y < 1080; y++ {
+    for x := 0; x < 1920; x++ {
+        off := (y*1920 + x) * 4
+        pixels[off+0] = byte(x % 256) // R
+        pixels[off+1] = byte(y % 256) // G
+        pixels[off+2] = 0             // B
+        pixels[off+3] = 255           // A
+    }
+}
+
+// 5. Unlock: release CPU mapping (nil fence = synchronous)
+if err := buf.Unlock(nil); err != nil {
+    log.Fatalf("unlock: %v", err)
+}
+
+// After unlock, the buffer is ready for GPU/compositor/encoder consumption.
+```
+
+### Format Constants
+
+`hwbuf.R8g8b8a8Unorm`, `hwbuf.R8g8b8Unorm`, `hwbuf.R8g8b8x8Unorm`, `hwbuf.R5g6b5Unorm`, `hwbuf.R16g16b16a16Float`, `hwbuf.R8Unorm`, `hwbuf.D16Unorm`, `hwbuf.D24Unorm`, `hwbuf.D24UnormS8Uint`, `hwbuf.D32Float`, `hwbuf.D32FloatS8Uint`, `hwbuf.S8Uint`, `hwbuf.Y8cb8cr8420`, `hwbuf.Ycbcr420P010`, `hwbuf.Blob`, `hwbuf.R10g10b10a2Unorm`.
+
+### Usage Flag Constants
+
+| Constant | Description |
+|---|---|
+| `hwbuf.CpuReadNever / CpuReadRarely / CpuReadOften` | CPU read access tier |
+| `hwbuf.CpuWriteNever / CpuWriteRarely / CpuWriteOften` | CPU write access tier |
+| `hwbuf.GpuSampledImage` | Sampled by GPU as texture |
+| `hwbuf.GpuFramebuffer` | GPU framebuffer attachment |
+| `hwbuf.GpuColorOutput` | GPU color output |
+| `hwbuf.ComposerOverlay` | SurfaceFlinger/HWC overlay |
+| `hwbuf.VideoEncode` | Video encoder input |
+| `hwbuf.SensorDirectData` | Sensor direct report |
+| `hwbuf.GpuDataBuffer` | GPU SSBO/UBO |
+| `hwbuf.GpuCubeMap` | GPU cubemap texture |
+
+### Common Usage Patterns
+
+```go
+// CPU write + GPU texture (upload textures)
+hwbuf.CpuWriteOften | hwbuf.GpuSampledImage
+
+// GPU render + CPU readback (screenshots)
+hwbuf.GpuColorOutput | hwbuf.CpuReadOften
+
+// GPU render + compositor display
+hwbuf.GpuColorOutput | hwbuf.ComposerOverlay
+
+// CPU write + video encode (encoding pipeline)
+hwbuf.CpuWriteOften | hwbuf.VideoEncode
+```
+
+### Idiomatic Buffer Methods
+
+```go
+buf.Acquire()                                       // increment ref count for sharing
+buf.Unlock(fence *int32)                            // release CPU mapping
+buf.LockPlanes(usage, fence, rect, outPlanes)       // multi-plane lock (YUV)
+buf.SendHandleToUnixSocket(socketFd int32)          // IPC: send to another process
+buf.GetID(outID *uint64)                            // get unique buffer ID
+buf.Close()                                         // decrement ref count, free at zero
+```
+
+### IPC: Sharing Between Processes
+
+```go
+// Sender process:
+buf.SendHandleToUnixSocket(socketFd)
+
+// Receiver process (capi):
+var recvBuf *capihw.AHardwareBuffer
+capihw.AHardwareBuffer_recvHandleFromUnixSocket(socketFd, &recvBuf)
+received := hwbuf.NewBufferFromPointer(unsafe.Pointer(recvBuf))
+defer received.Close()
+```
+
+### Efficient Large Data Transfer
+
+For minimizing CGo overhead when transferring large buffers between Go and C:
+
+1. **AHardwareBuffer** (above): Best for GPU-accessible data. Allocate once, lock/write/unlock per frame. Zero-copy GPU path.
+2. **ASharedMemory** (previous section): Best for IPC. Create once, mmap, share fd. Zero-copy across processes.
+3. **syscall.Mmap with MAP_ANONYMOUS**: Best for large working buffers that only need CPU access. No CGo call per access.
 
 ## Supported Modules
 
