@@ -6,9 +6,10 @@
 //
 //	Created -> Configured -> Started -> (processing) -> Flushed -> Started -> Stopped -> Released
 //
-// The input/output buffer loop is shown as documented comments because
-// DequeueInputBuffer and DequeueOutputBuffer are not yet wrapped in the
-// idiomatic layer. All other lifecycle methods are exercised for real.
+// The configure and start steps require an Activity context, so they are
+// skipped here. The buffer processing loop is shown as commented-out code
+// using the idiomatic media.DequeueInputBuffer, media.DequeueOutputBuffer,
+// and media.BufferInfo APIs.
 //
 // This program must run on an Android device with NDK media support.
 package main
@@ -70,31 +71,47 @@ func main() {
 
 	// -- Buffer processing loop (documented pattern) --
 	//
-	// In a real application the loop looks like this:
+	// In a real application the loop uses the idiomatic media package:
+	//
+	//   const timeoutUs int64 = 10000 // 10ms
 	//
 	//   for {
-	//       // 1. Dequeue an input buffer (not yet in idiomatic layer).
-	//       //    idx := codec.DequeueInputBuffer(timeoutUs)
-	//       //    if idx < 0 { continue }  // no buffer available yet
+	//       // 1. Dequeue an input buffer.
+	//       idx := codec.DequeueInputBuffer(timeoutUs)
+	//       if idx < 0 {
+	//           continue // no buffer available yet
+	//       }
 	//
 	//       // 2. Fill the buffer with compressed data (NAL units for H.264).
-	//       //    buf := codec.GetInputBuffer(idx)
-	//       //    n := copy(buf, nalUnit)
+	//       var bufSize uint64
+	//       buf := codec.GetInputBuffer(uint64(idx), &bufSize)
+	//       data := unsafe.Slice(buf, bufSize)
+	//       n := copy(data, nalUnit)
 	//
 	//       // 3. Queue the filled buffer for decoding.
-	//       //    codec.QueueInputBuffer(idx, 0, uint64(n), presentationTimeUs, 0)
-	//       //    For end-of-stream, pass media.BufferFlagEndOfStream as flags.
+	//       codec.QueueInputBuffer(uint64(idx), 0, uint64(n), presentationTimeUs, 0)
+	//       // For end-of-stream, pass uint32(media.AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM) as flags.
 	//
-	//       // 4. Dequeue an output buffer (not yet in idiomatic layer).
-	//       //    outIdx := codec.DequeueOutputBuffer(&info, timeoutUs)
-	//       //    if outIdx < 0 { continue }  // format change or try again
+	//       // 4. Dequeue an output buffer using media.BufferInfo.
+	//       var info media.BufferInfo
+	//       outIdx := codec.DequeueOutputBuffer(&info, timeoutUs)
+	//       if outIdx == int64(media.AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED) {
+	//           continue // output format changed, query new format
+	//       }
+	//       if outIdx < 0 {
+	//           continue // try again
+	//       }
 	//
 	//       // 5. Consume the decoded frame from the output buffer.
-	//       //    outBuf := codec.GetOutputBuffer(outIdx)
-	//       //    processFrame(outBuf)
+	//       //    info.Offset, info.Size, info.PresentationTimeUs, info.Flags
+	//       //    describe the output buffer contents.
+	//       var outSize uint64
+	//       outBuf := codec.GetOutputBuffer(uint64(outIdx), &outSize)
+	//       outData := unsafe.Slice(outBuf, outSize)
+	//       processFrame(outData)
 	//
 	//       // 6. Release the output buffer back to the codec.
-	//       //    codec.ReleaseOutputBuffer(outIdx, false)
+	//       codec.ReleaseOutputBuffer(uint64(outIdx), false)
 	//   }
 	fmt.Println("state: Started (buffer loop would run here)")
 
