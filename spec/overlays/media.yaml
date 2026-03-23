@@ -47,6 +47,10 @@ types:
   ANativeWindow:
     go_name: Window
 
+  AMediaCodecBufferInfo:
+    go_name: BufferInfo
+    value_struct: true
+
 functions:
   # --- ImageReader lifecycle ---
   AImageReader_new:
@@ -140,9 +144,13 @@ functions:
 
   # --- Codec buffer operations ---
   AMediaCodec_dequeueInputBuffer:
-    skip: true  # returns int32, not Media_status_t
+    receiver: Codec
+    go_name: DequeueInputBuffer
+    pure: true
   AMediaCodec_dequeueOutputBuffer:
-    skip: true  # returns int32, not Media_status_t; has AMediaCodecBufferInfo param
+    receiver: Codec
+    go_name: DequeueOutputBuffer
+    pure: true
   AMediaCodec_queueInputBuffer:
     receiver: Codec
   AMediaCodec_releaseOutputBuffer:

@@ -11,6 +11,10 @@ types:
     destructor: AHardwareBuffer_release
     doc: "Buffer represents a hardware-allocated buffer."
 
+  AHardwareBuffer_Desc:
+    go_name: Desc
+    value_struct: true
+
   AHardwareBuffer_Format:
     go_name: Format
     strip_prefix: AHARDWAREBUFFER_FORMAT_
@@ -23,7 +27,9 @@ types:
 functions:
   # Buffer lifecycle
   AHardwareBuffer_allocate:
-    skip: true
+    go_name: Allocate
+    output_params:
+      outBuffer: "*Buffer"
 
   AHardwareBuffer_acquire:
     receiver: Buffer
@@ -33,11 +39,17 @@ functions:
     skip: true
 
   AHardwareBuffer_describe:
-    skip: true
+    receiver: Buffer
+    go_name: Describe
+    output_params:
+      outDesc: "*Desc"
 
   # Buffer access
   AHardwareBuffer_lock:
-    skip: true
+    receiver: Buffer
+    go_name: Lock
+    output_params:
+      outVirtualAddress: "unsafe.Pointer"
 
   AHardwareBuffer_unlock:
     receiver: Buffer
@@ -45,7 +57,13 @@ functions:
 
   # Query
   AHardwareBuffer_isSupported:
-    skip: true
+    go_name: IsSupported
+    pure: true
+
+  AHardwareBuffer_recvHandleFromUnixSocket:
+    go_name: RecvHandleFromUnixSocket
+    output_params:
+      outBuffer: "*Buffer"
 
 api_levels:
   AHardwareBuffer_isSupported: 29
