@@ -626,16 +626,21 @@ Format keys are passed as strings to `SetInt32`/`SetString`/`SetFloat`/`SetInt64
 
 The idiomatic `media` package provides `GetInputBuffer`, `QueueInputBuffer`, `GetOutputBuffer`, `ReleaseOutputBuffer`, and all constants (`media.AMEDIACODEC_INFO_*`, `media.AMEDIACODEC_BUFFER_FLAG_*`). The `DequeueInputBuffer` and `DequeueOutputBuffer` functions are not yet in the idiomatic layer and require a `capi/media` import (see **Advanced** note below).
 
+The dequeue functions (`DequeueInputBuffer`, `DequeueOutputBuffer`) are not yet in the idiomatic layer and require a `capi/media` import. All other buffer operations use the idiomatic `media` package.
+
 ```go
 import (
     "unsafe"
     "github.com/AndroidGoLab/ndk/media"
+    capimedia "github.com/AndroidGoLab/ndk/capi/media"  // needed for dequeue (not yet idiomatic)
 )
 
+// Get the raw capi pointer for dequeue calls
+rawCodec := (*capimedia.AMediaCodec)(codec.Pointer())
+
 for {
-    // 1. Dequeue input buffer
-    //    Not yet in idiomatic layer; see "Advanced (capi)" below for the call.
-    idx := dequeueInputBuffer(codec, timeoutUs)
+    // 1. Dequeue input buffer (capi — not yet in idiomatic layer)
+    idx := capimedia.AMediaCodec_dequeueInputBuffer(rawCodec, timeoutUs)
     if idx < 0 { continue }  // no buffer available yet
 
     // 2. Fill with data (NAL units for video, PCM for audio)
@@ -644,43 +649,27 @@ for {
     data := unsafe.Slice(buf, bufSize)
     n := copy(data, inputFrame)
 
-    // 3. Queue for processing
+    // 3. Queue for processing (idiomatic)
     codec.QueueInputBuffer(uint64(idx), 0, uint64(n), presentationTimeUs, 0)
     // End of stream: pass uint32(media.AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM)
 
-    // 4. Dequeue output buffer
-    //    Not yet in idiomatic layer; see "Advanced (capi)" below.
-    outIdx := dequeueOutputBuffer(codec, &info, timeoutUs)
+    // 4. Dequeue output buffer (capi — not yet in idiomatic layer)
+    var info capimedia.AMediaCodecBufferInfo
+    outIdx := capimedia.AMediaCodec_dequeueOutputBuffer(rawCodec, &info, timeoutUs)
     if outIdx == int64(media.AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED) {
-        // Output format changed, query new format
-        continue
+        continue  // output format changed, query new format
     }
     if outIdx < 0 { continue }
 
-    // 5. Consume output (decoded frame or encoded bitstream)
+    // 5. Consume output (idiomatic)
     var outSize uint64
     outBuf := codec.GetOutputBuffer(uint64(outIdx), &outSize)
     outData := unsafe.Slice(outBuf, outSize)
     processOutput(outData)
 
-    // 6. Release back to codec (render=true to send to surface)
+    // 6. Release back to codec (idiomatic; render=true to send to surface)
     codec.ReleaseOutputBuffer(uint64(outIdx), false)
 }
-```
-
-**Advanced (capi)**: The dequeue functions require the `capi/media` package until idiomatic wrappers are added:
-
-```go
-import capimedia "github.com/AndroidGoLab/ndk/capi/media"
-
-rawCodec := (*capimedia.AMediaCodec)(codec.Pointer())
-
-// DequeueInputBuffer returns buffer index (>= 0) or negative info code
-idx := capimedia.AMediaCodec_dequeueInputBuffer(rawCodec, timeoutUs)
-
-// DequeueOutputBuffer returns buffer index (>= 0) or negative info code
-var info capimedia.AMediaCodecBufferInfo
-outIdx := capimedia.AMediaCodec_dequeueOutputBuffer(rawCodec, &info, timeoutUs)
 ```
 
 ### Buffer Flags

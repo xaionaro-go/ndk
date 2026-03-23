@@ -81,6 +81,8 @@ The `capi/` packages (`github.com/AndroidGoLab/ndk/capi/{module}`) are the raw C
 When using `capi/` functions, wrap the resulting C pointers in idiomatic types as soon as possible:
 
 ```go
+import capihw "github.com/AndroidGoLab/ndk/capi/hardwarebuffer"
+
 // Advanced: allocate via capi, then wrap in idiomatic type
 var rawBuf *capihw.AHardwareBuffer
 capihw.AHardwareBuffer_allocate(&desc, &rawBuf)
