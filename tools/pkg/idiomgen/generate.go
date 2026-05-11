@@ -780,8 +780,8 @@ func generateBridgeFiles(
 
 	bridgeWritten := make(map[string]bool)
 
-	// Render callback bridge files if there are callback structs or struct accessors.
-	if len(merged.CallbackStructs) > 0 || len(merged.StructAccessors) > 0 {
+	// Render bridge files if there are callbacks, struct accessors, or generated bridge helpers.
+	if len(merged.CallbackStructs) > 0 || len(merged.StructAccessors) > 0 || merged.ExtraBridgeC != "" || merged.ExtraBridgeGo != "" {
 		bridgeTemplates := map[string]string{
 			"bridge_registry.go": "bridge_registry.go.tmpl",
 			"bridge_c.go":        "bridge_c.go.tmpl",

@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/AndroidGoLab/ndk/tools/pkg/specgen"
 	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 )
 
@@ -93,6 +94,42 @@ func supplementCallbacks(
 				}
 			}
 			spec.Structs[sname] = sd
+		}
+	}
+}
+
+func supplementFunctionParams(
+	spec *specmodel.Spec,
+	headerDirs []string,
+) {
+	for _, dir := range headerDirs {
+		funcs, err := specgen.ParseFunctionsFromDir(dir)
+		if err != nil {
+			continue
+		}
+		for name, headerFunc := range funcs {
+			specFunc, ok := spec.Functions[name]
+			if !ok {
+				continue
+			}
+			if len(specFunc.Params) != len(headerFunc.Params) {
+				continue
+			}
+			for idx := range specFunc.Params {
+				if specFunc.Params[idx].Name != headerFunc.Params[idx].Name {
+					continue
+				}
+				if specFunc.Params[idx].Type != headerFunc.Params[idx].Type {
+					continue
+				}
+				if headerFunc.Params[idx].Direction != "" {
+					specFunc.Params[idx].Direction = headerFunc.Params[idx].Direction
+				}
+				if headerFunc.Params[idx].Const {
+					specFunc.Params[idx].Const = true
+				}
+			}
+			spec.Functions[name] = specFunc
 		}
 	}
 }

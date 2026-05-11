@@ -2313,6 +2313,7 @@ functions:
               type: '*ACameraMetadata'
             - name: numEntries
               type: '*int32'
+              direction: out
             - name: tags
               type: '**uint32'
               direction: out
@@ -2326,6 +2327,7 @@ functions:
               type: uint32
             - name: entry
               type: '*ACameraMetadata_const_entry'
+              direction: out
         returns: camera_status_t
     ACameraMetadata_getTagFromName:
         c_name: ACameraMetadata_getTagFromName
@@ -2390,6 +2392,7 @@ functions:
               type: '*ACaptureRequest'
             - name: numTags
               type: '*int32'
+              direction: out
             - name: tags
               type: '**uint32'
               direction: out
@@ -3328,6 +3331,19 @@ structs:
               type: uint32
             - name: data
               type: union
+              fields:
+                - name: u8
+                  type: '*uint8'
+                - name: i32
+                  type: '*int32'
+                - name: f
+                  type: '*float32'
+                - name: i64
+                  type: '*int64'
+                - name: d
+                  type: '*float64'
+                - name: r
+                  type: '*ACameraMetadata_rational'
     ACameraMetadata_entry:
         fields:
             - name: tag
@@ -3338,6 +3354,19 @@ structs:
               type: uint32
             - name: data
               type: union
+              fields:
+                - name: u8
+                  type: '*uint8'
+                - name: i32
+                  type: '*int32'
+                - name: f
+                  type: '*float32'
+                - name: i64
+                  type: '*int64'
+                - name: d
+                  type: '*float64'
+                - name: r
+                  type: '*ACameraMetadata_rational'
     ACameraMetadata_rational:
         fields:
             - name: numerator

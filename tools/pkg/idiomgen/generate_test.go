@@ -148,6 +148,77 @@ func TestGenerate_APILevelSplitting(t *testing.T) {
 	}
 }
 
+func TestGenerate_CameraMissingFeatureWrappers(t *testing.T) {
+	specPath := filepath.Join("..", "..", "..", "spec", "generated", "camera.yaml")
+	spec, err := idiomgen.LoadSpec(specPath)
+	if err != nil {
+		t.Fatalf("LoadSpec(%s): %v", specPath, err)
+	}
+
+	overlayPath := filepath.Join("..", "..", "..", "spec", "overlays", "camera.yaml")
+	overlay, err := idiomgen.LoadOverlay(overlayPath)
+	if err != nil {
+		t.Fatalf("LoadOverlay(%s): %v", overlayPath, err)
+	}
+
+	tmplDir := filepath.Join("..", "..", "..", "templates")
+	outDir := t.TempDir()
+	capiDir := filepath.Join(t.TempDir(), "camera")
+
+	if err := idiomgen.Generate(spec, overlay, tmplDir, outDir, capiDir); err != nil {
+		t.Fatalf("Generate camera: %v", err)
+	}
+
+	metadataContent, err := os.ReadFile(filepath.Join(outDir, "metadata.go"))
+	if err != nil {
+		t.Fatalf("read metadata.go: %v", err)
+	}
+	metadata := string(metadataContent)
+	for _, want := range []string{
+		"func (h *Metadata) U8Count(tag uint32) int32",
+		"func (h *Metadata) U8At(tag uint32, idx int32) uint8",
+		"func (h *Metadata) FloatCount(tag uint32) int32",
+		"func (h *Metadata) FloatAt(tag uint32, idx int32) float32",
+	} {
+		if !strings.Contains(metadata, want) {
+			t.Errorf("metadata.go missing %q", want)
+		}
+	}
+
+	sessionOutputContent, err := os.ReadFile(filepath.Join(outDir, "session_output.go"))
+	if err != nil {
+		t.Fatalf("read session_output.go: %v", err)
+	}
+	sessionOutput := string(sessionOutputContent)
+	for _, want := range []string{
+		"func NewPhysicalSessionOutput(anw *ANativeWindow, physicalID string) (*SessionOutput, error)",
+		"capi.ACaptureSessionPhysicalOutput_create((*capi.ANativeWindow)(anw), physicalID, &outputPtr)",
+	} {
+		if !strings.Contains(sessionOutput, want) {
+			t.Errorf("session_output.go missing %q", want)
+		}
+	}
+	if strings.Contains(sessionOutput, "func NewSharedSessionOutput(") {
+		t.Error("session_output.go generated same-signature shared output factory")
+	}
+
+	bridgeContent, err := os.ReadFile(filepath.Join(capiDir, "bridge_c.go"))
+	if err != nil {
+		t.Fatalf("read bridge_c.go: %v", err)
+	}
+	bridge := string(bridgeContent)
+	for _, want := range []string{
+		"entry.data.u8[idx]",
+		"entry.data.f[idx]",
+		"func BridgeMetadataU8Count(metadata *ACameraMetadata, tag uint32) int32",
+		"func BridgeMetadataFloatAt(metadata *ACameraMetadata, tag uint32, idx int32) float32",
+	} {
+		if !strings.Contains(bridge, want) {
+			t.Errorf("bridge_c.go missing %q", want)
+		}
+	}
+}
+
 func TestGenerate_MissingTemplate_Skipped(t *testing.T) {
 	spec, overlay := buildFixture()
 

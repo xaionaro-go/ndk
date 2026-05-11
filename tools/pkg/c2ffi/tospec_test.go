@@ -3,6 +3,7 @@ package c2ffi
 import (
 	"testing"
 
+	"github.com/AndroidGoLab/ndk/tools/pkg/specmodel"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -64,6 +65,42 @@ func TestConvertLooper(t *testing.T) {
 
 	// Callback (empty params — no header dirs for supplement).
 	assert.Contains(t, spec.Callbacks, "ALooper_callbackFunc")
+}
+
+func TestConvertStructInlineUnionFields(t *testing.T) {
+	input := `[
+		{"tag":"struct","ns":0,"name":"ACameraMetadata_const_entry","id":1,"location":"camera/NdkCameraMetadata.h:143:16","bit-size":192,"bit-alignment":64,"fields":[
+			{"tag":"field","name":"tag","type":{"tag":"uint32_t"}},
+			{"tag":"field","name":"count","type":{"tag":"uint32_t"}},
+			{"tag":"field","name":"data","type":{"tag":"union","fields":[
+				{"tag":"field","name":"u8","type":{"tag":":pointer","type":{"tag":"uint8_t"}}},
+				{"tag":"field","name":"i32","type":{"tag":":pointer","type":{"tag":"int32_t"}}},
+				{"tag":"field","name":"f","type":{"tag":":pointer","type":{"tag":":float","bit-size":32,"bit-alignment":32}}}
+			]}}
+		]}
+	]`
+
+	opts := ConvertOptions{
+		Module:        "camera",
+		SourcePackage: "github.com/AndroidGoLab/ndk/capi/camera",
+		TargetHeaders: []string{"camera/NdkCameraMetadata.h"},
+	}
+
+	spec, err := Convert([]byte(input), opts)
+	require.NoError(t, err)
+
+	entry, ok := spec.Structs["ACameraMetadata_const_entry"]
+	require.True(t, ok)
+
+	require.Len(t, entry.Fields, 3)
+	data := entry.Fields[2]
+	assert.Equal(t, "data", data.Name)
+	assert.Equal(t, "union", data.Type)
+
+	require.Len(t, data.Fields, 3)
+	assert.Equal(t, specmodel.StructField{Name: "u8", Type: "*uint8"}, data.Fields[0])
+	assert.Equal(t, specmodel.StructField{Name: "i32", Type: "*int32"}, data.Fields[1])
+	assert.Equal(t, specmodel.StructField{Name: "f", Type: "*float32"}, data.Fields[2])
 }
 
 func TestToSignedInt64(t *testing.T) {

@@ -60,12 +60,32 @@ func (h *Metadata) Copy() *Metadata {
 	return &Metadata{ptr: capi.ACameraMetadata_copy(h.ptr)}
 }
 
-// I32At returns the value directly.
-func (h *Metadata) I32At(tag uint32, idx int32) int32 {
-	return (int32)(capi.BridgeMetadataI32At(h.ptr, tag, idx))
+// U8Count returns the value directly.
+func (h *Metadata) U8Count(tag uint32) int32 {
+	return (int32)(capi.BridgeMetadataU8Count(h.ptr, tag))
+}
+
+// U8At returns the value directly.
+func (h *Metadata) U8At(tag uint32, idx int32) uint8 {
+	return (uint8)(capi.BridgeMetadataU8At(h.ptr, tag, idx))
 }
 
 // I32Count returns the value directly.
 func (h *Metadata) I32Count(tag uint32) int32 {
 	return (int32)(capi.BridgeMetadataI32Count(h.ptr, tag))
+}
+
+// I32At returns the value directly.
+func (h *Metadata) I32At(tag uint32, idx int32) int32 {
+	return (int32)(capi.BridgeMetadataI32At(h.ptr, tag, idx))
+}
+
+// FloatCount returns the value directly.
+func (h *Metadata) FloatCount(tag uint32) int32 {
+	return (int32)(capi.BridgeMetadataFloatCount(h.ptr, tag))
+}
+
+// FloatAt returns the value directly.
+func (h *Metadata) FloatAt(tag uint32, idx int32) float32 {
+	return (float32)(capi.BridgeMetadataFloatAt(h.ptr, tag, idx))
 }

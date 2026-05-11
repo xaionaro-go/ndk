@@ -41,6 +41,24 @@ static const char* bridge_ACameraIdList_item(ACameraIdList* list, int i) {
 	return list->cameraIds[i];
 }
 
+
+static inline int32_t bridge_metadataU8Count(
+    const ACameraMetadata* metadata, uint32_t tag
+) {
+    ACameraMetadata_const_entry entry;
+    if (ACameraMetadata_getConstEntry(metadata, tag, &entry) != ACAMERA_OK) return 0;
+    return (int32_t)entry.count;
+}
+
+static inline uint8_t bridge_metadataU8At(
+    const ACameraMetadata* metadata, uint32_t tag, int32_t idx
+) {
+    ACameraMetadata_const_entry entry;
+    if (ACameraMetadata_getConstEntry(metadata, tag, &entry) != ACAMERA_OK) return 0;
+    if ((uint32_t)idx >= entry.count) return 0;
+    return entry.data.u8[idx];
+}
+
 static inline int32_t bridge_metadataI32Count(
     const ACameraMetadata* metadata, uint32_t tag
 ) {
@@ -56,6 +74,23 @@ static inline int32_t bridge_metadataI32At(
     if (ACameraMetadata_getConstEntry(metadata, tag, &entry) != ACAMERA_OK) return 0;
     if ((uint32_t)idx >= entry.count) return 0;
     return entry.data.i32[idx];
+}
+
+static inline int32_t bridge_metadataFloatCount(
+    const ACameraMetadata* metadata, uint32_t tag
+) {
+    ACameraMetadata_const_entry entry;
+    if (ACameraMetadata_getConstEntry(metadata, tag, &entry) != ACAMERA_OK) return 0;
+    return (int32_t)entry.count;
+}
+
+static inline float bridge_metadataFloatAt(
+    const ACameraMetadata* metadata, uint32_t tag, int32_t idx
+) {
+    ACameraMetadata_const_entry entry;
+    if (ACameraMetadata_getConstEntry(metadata, tag, &entry) != ACAMERA_OK) return 0;
+    if ((uint32_t)idx >= entry.count) return 0;
+    return entry.data.f[idx];
 }
 
 */
@@ -118,12 +153,32 @@ func BridgeACameraIdListItem(list *ACameraIdList, i int) string {
 	return C.GoString(C.bridge_ACameraIdList_item((*C.ACameraIdList)(unsafe.Pointer(list)), C.int(i)))
 }
 
-// BridgeMetadataI32Count returns the count of i32 values for a metadata tag.
+// BridgeMetadataU8Count returns the count of uint8 values for a metadata tag.
+func BridgeMetadataU8Count(metadata *ACameraMetadata, tag uint32) int32 {
+	return int32(C.bridge_metadataU8Count((*C.ACameraMetadata)(unsafe.Pointer(metadata)), C.uint32_t(tag)))
+}
+
+// BridgeMetadataU8At returns the uint8 value at the given index for a metadata tag.
+func BridgeMetadataU8At(metadata *ACameraMetadata, tag uint32, idx int32) uint8 {
+	return uint8(C.bridge_metadataU8At((*C.ACameraMetadata)(unsafe.Pointer(metadata)), C.uint32_t(tag), C.int32_t(idx)))
+}
+
+// BridgeMetadataI32Count returns the count of int32 values for a metadata tag.
 func BridgeMetadataI32Count(metadata *ACameraMetadata, tag uint32) int32 {
 	return int32(C.bridge_metadataI32Count((*C.ACameraMetadata)(unsafe.Pointer(metadata)), C.uint32_t(tag)))
 }
 
-// BridgeMetadataI32At returns the i32 value at the given index for a metadata tag.
+// BridgeMetadataI32At returns the int32 value at the given index for a metadata tag.
 func BridgeMetadataI32At(metadata *ACameraMetadata, tag uint32, idx int32) int32 {
 	return int32(C.bridge_metadataI32At((*C.ACameraMetadata)(unsafe.Pointer(metadata)), C.uint32_t(tag), C.int32_t(idx)))
+}
+
+// BridgeMetadataFloatCount returns the count of float32 values for a metadata tag.
+func BridgeMetadataFloatCount(metadata *ACameraMetadata, tag uint32) int32 {
+	return int32(C.bridge_metadataFloatCount((*C.ACameraMetadata)(unsafe.Pointer(metadata)), C.uint32_t(tag)))
+}
+
+// BridgeMetadataFloatAt returns the float32 value at the given index for a metadata tag.
+func BridgeMetadataFloatAt(metadata *ACameraMetadata, tag uint32, idx int32) float32 {
+	return float32(C.bridge_metadataFloatAt((*C.ACameraMetadata)(unsafe.Pointer(metadata)), C.uint32_t(tag), C.int32_t(idx)))
 }

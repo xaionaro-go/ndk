@@ -906,6 +906,11 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 				m.Methods = append(m.Methods, mergeMethod(funcName, fd, autoFov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors, valueStructSpecNames))
 
 			default:
+				if autoFov, ok := detectOutputFactory(funcName, fd, spec.Functions, errorTypes, opaqueSpecNames, specToGoName); ok {
+					m.FreeFunctions = append(m.FreeFunctions, mergeFreeFunction(funcName, fd, autoFov, overlay.APILevels, typeMap, enumGoNames, opaqueSpecNames, valueStructSpecNames))
+					break
+				}
+
 				// Skip auto-generation for free functions that would produce
 				// invalid code without overlay annotations.
 				if !isAutoGeneratable(fd, opaqueSpecNames) {
@@ -1067,8 +1072,400 @@ func Merge(spec specmodel.Spec, overlay overlaymodel.Overlay) MergedSpec {
 
 	m.ExtraBridgeC = overlay.ExtraBridgeC
 	m.ExtraBridgeGo = overlay.ExtraBridgeGo
+	addAutoMetadataUnionAccessors(&m, spec, overlay, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, valueStructSpecNames)
 
 	return m
+}
+
+func detectOutputFactory(
+	funcName string,
+	fd specmodel.FuncDef,
+	functions map[string]specmodel.FuncDef,
+	errorTypes map[string]bool,
+	opaqueSpecNames map[string]bool,
+	specToGoName map[string]string,
+) (overlaymodel.FuncOverlay, bool) {
+	if !isCreateFunction(funcName) {
+		return overlaymodel.FuncOverlay{}, false
+	}
+	if !errorTypes[fd.Returns] {
+		return overlaymodel.FuncOverlay{}, false
+	}
+
+	var outputParam *specmodel.Param
+	var outputSpecName string
+	for i := range fd.Params {
+		p := &fd.Params[i]
+		if p.Direction != "out" {
+			continue
+		}
+		if outputParam != nil {
+			return overlaymodel.FuncOverlay{}, false
+		}
+		if !strings.HasPrefix(p.Type, "**") {
+			return overlaymodel.FuncOverlay{}, false
+		}
+		base := strings.TrimPrefix(p.Type, "**")
+		if !opaqueSpecNames[base] {
+			return overlaymodel.FuncOverlay{}, false
+		}
+		outputParam = p
+		outputSpecName = base
+	}
+	if outputParam == nil {
+		return overlaymodel.FuncOverlay{}, false
+	}
+
+	outputGoName := specToGoName[outputSpecName]
+	if outputGoName == "" {
+		return overlaymodel.FuncOverlay{}, false
+	}
+
+	subject := strings.TrimSuffix(strings.TrimSuffix(funcName, "_create"), "_new")
+	inserted := insertedTypeQualifier(subject, outputSpecName)
+	if inserted != "" && !hasDistinctFactoryParams(fd, functions, outputSpecName) {
+		return overlaymodel.FuncOverlay{}, false
+	}
+
+	return overlaymodel.FuncOverlay{
+		GoName:     deriveOutputFactoryGoName(funcName, outputSpecName, outputGoName),
+		ReturnsNew: outputGoName,
+		OutputParams: map[string]string{
+			outputParam.Name: "*" + outputGoName,
+		},
+	}, true
+}
+
+func hasDistinctFactoryParams(
+	fd specmodel.FuncDef,
+	functions map[string]specmodel.FuncDef,
+	outputSpecName string,
+) bool {
+	params := visibleParamTypes(fd.Params)
+	for _, suffix := range []string{"_create", "_new"} {
+		baseFD, ok := functions[outputSpecName+suffix]
+		if !ok {
+			continue
+		}
+		if equalStrings(params, visibleParamTypes(baseFD.Params)) {
+			return false
+		}
+	}
+	return true
+}
+
+func visibleParamTypes(params []specmodel.Param) []string {
+	result := make([]string, 0, len(params))
+	for _, p := range params {
+		if p.Direction == "out" {
+			continue
+		}
+		result = append(result, p.Type)
+	}
+	return result
+}
+
+func equalStrings(a []string, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func isCreateFunction(funcName string) bool {
+	return strings.HasSuffix(funcName, "_create") || strings.HasSuffix(funcName, "_new")
+}
+
+func deriveOutputFactoryGoName(
+	funcName string,
+	outputSpecName string,
+	outputGoName string,
+) string {
+	subject := strings.TrimSuffix(strings.TrimSuffix(funcName, "_create"), "_new")
+	if subject == outputSpecName {
+		return "New" + outputGoName
+	}
+
+	inserted := insertedTypeQualifier(subject, outputSpecName)
+	if inserted != "" {
+		return "New" + fixGoAcronyms(exportName(inserted)) + outputGoName
+	}
+
+	return "New" + autoGoTypeName(subject)
+}
+
+func insertedTypeQualifier(subject string, base string) string {
+	prefixLen := commonPrefixLen(subject, base)
+	subjectTail := subject[prefixLen:]
+	baseTail := base[prefixLen:]
+	suffixLen := commonSuffixLen(subjectTail, baseTail)
+	if suffixLen == 0 {
+		return subjectTail
+	}
+	return subjectTail[:len(subjectTail)-suffixLen]
+}
+
+func commonPrefixLen(a string, b string) int {
+	n := len(a)
+	if len(b) < n {
+		n = len(b)
+	}
+	for i := 0; i < n; i++ {
+		if a[i] != b[i] {
+			return i
+		}
+	}
+	return n
+}
+
+func commonSuffixLen(a string, b string) int {
+	n := len(a)
+	if len(b) < n {
+		n = len(b)
+	}
+	for i := 0; i < n; i++ {
+		if a[len(a)-1-i] != b[len(b)-1-i] {
+			return i
+		}
+	}
+	return n
+}
+
+func addAutoMetadataUnionAccessors(
+	m *MergedSpec,
+	spec specmodel.Spec,
+	overlay overlaymodel.Overlay,
+	typeMap map[string]string,
+	enumGoNames map[string]bool,
+	receiverCapiTypes map[string]string,
+	opaqueSpecNames map[string]bool,
+	valueStructSpecNames map[string]bool,
+) {
+	methodKeys := make(map[string]bool)
+	for _, method := range m.Methods {
+		methodKeys[method.ReceiverType+"."+method.GoName] = true
+	}
+
+	for _, funcName := range sortedKeys(spec.Functions) {
+		fd := spec.Functions[funcName]
+		accessor, ok := metadataUnionAccessorFromFunction(funcName, fd, spec, opaqueSpecNames, specToGoNameFromMerged(m))
+		if !ok {
+			continue
+		}
+
+		for _, field := range accessor.Fields {
+			for _, suffix := range []string{"Count", "At"} {
+				goName := field.MethodStem + suffix
+				methodKey := accessor.ReceiverGoName + "." + goName
+				if methodKeys[methodKey] {
+					continue
+				}
+
+				bridgeName := "Bridge" + accessor.ReceiverGoName + field.MethodStem + suffix
+				methodFD := specmodel.FuncDef{
+					CName: bridgeName,
+					Params: []specmodel.Param{
+						{Name: unexport(accessor.ReceiverGoName), Type: "*" + accessor.ReceiverSpecName},
+						{Name: "tag", Type: "uint32"},
+					},
+					Returns: "int32",
+				}
+				if suffix == "At" {
+					methodFD.Params = append(methodFD.Params, specmodel.Param{Name: "idx", Type: "int32"})
+					methodFD.Returns = field.GoType
+				}
+
+				fov := overlaymodel.FuncOverlay{
+					Receiver: accessor.ReceiverGoName,
+					GoName:   goName,
+					Pure:     true,
+				}
+				m.Methods = append(m.Methods, mergeMethod(bridgeName, methodFD, fov, overlay.APILevels, typeMap, enumGoNames, receiverCapiTypes, opaqueSpecNames, overlay.CallbackStructs, overlay.StructAccessors, valueStructSpecNames))
+				methodKeys[methodKey] = true
+			}
+		}
+
+		m.ExtraBridgeC += renderMetadataUnionBridgeC(accessor)
+		m.ExtraBridgeGo += renderMetadataUnionBridgeGo(accessor)
+	}
+}
+
+type metadataUnionAccessor struct {
+	ReceiverSpecName string
+	ReceiverGoName   string
+	GetterCName      string
+	EntrySpecName    string
+	Fields           []metadataUnionAccessorField
+}
+
+type metadataUnionAccessorField struct {
+	CName      string
+	MethodStem string
+	GoType     string
+	CType      string
+	CastType   string
+}
+
+func specToGoNameFromMerged(m *MergedSpec) map[string]string {
+	result := make(map[string]string, len(m.OpaqueTypes))
+	for goName, opaqueType := range m.OpaqueTypes {
+		result[opaqueType.CapiType] = goName
+	}
+	return result
+}
+
+func metadataUnionAccessorFromFunction(
+	funcName string,
+	fd specmodel.FuncDef,
+	spec specmodel.Spec,
+	opaqueSpecNames map[string]bool,
+	specToGoName map[string]string,
+) (metadataUnionAccessor, bool) {
+	if !strings.HasSuffix(funcName, "_getConstEntry") {
+		return metadataUnionAccessor{}, false
+	}
+	if len(fd.Params) < 3 {
+		return metadataUnionAccessor{}, false
+	}
+
+	receiverParam := fd.Params[0]
+	if !strings.HasPrefix(receiverParam.Type, "*") || receiverParam.Direction == "out" {
+		return metadataUnionAccessor{}, false
+	}
+	receiverSpecName := strings.TrimPrefix(receiverParam.Type, "*")
+	if !opaqueSpecNames[receiverSpecName] {
+		return metadataUnionAccessor{}, false
+	}
+	receiverGoName := specToGoName[receiverSpecName]
+	if receiverGoName == "" {
+		return metadataUnionAccessor{}, false
+	}
+
+	tagParam := fd.Params[1]
+	if tagParam.Type != "uint32" {
+		return metadataUnionAccessor{}, false
+	}
+
+	entryParam := fd.Params[len(fd.Params)-1]
+	if entryParam.Direction != "out" || !strings.HasPrefix(entryParam.Type, "*") {
+		return metadataUnionAccessor{}, false
+	}
+	entrySpecName := strings.TrimPrefix(entryParam.Type, "*")
+	entryStruct, ok := spec.Structs[entrySpecName]
+	if !ok {
+		return metadataUnionAccessor{}, false
+	}
+
+	unionFields := metadataDataUnionFields(entryStruct)
+	if len(unionFields) == 0 {
+		return metadataUnionAccessor{}, false
+	}
+
+	return metadataUnionAccessor{
+		ReceiverSpecName: receiverSpecName,
+		ReceiverGoName:   receiverGoName,
+		GetterCName:      funcName,
+		EntrySpecName:    entrySpecName,
+		Fields:           unionFields,
+	}, true
+}
+
+func metadataDataUnionFields(entryStruct specmodel.StructDef) []metadataUnionAccessorField {
+	hasCount := false
+	var dataField *specmodel.StructField
+	for i := range entryStruct.Fields {
+		field := &entryStruct.Fields[i]
+		switch field.Name {
+		case "count":
+			hasCount = field.Type == "uint32"
+		case "data":
+			if field.Type == "union" || field.Type == ":union" {
+				dataField = field
+			}
+		}
+	}
+	if !hasCount || dataField == nil {
+		return nil
+	}
+
+	var result []metadataUnionAccessorField
+	for _, field := range dataField.Fields {
+		accessorField, ok := metadataUnionAccessorFieldFromStructField(field)
+		if !ok {
+			continue
+		}
+		result = append(result, accessorField)
+	}
+	return result
+}
+
+func metadataUnionAccessorFieldFromStructField(
+	field specmodel.StructField,
+) (metadataUnionAccessorField, bool) {
+	baseType := strings.TrimPrefix(field.Type, "*")
+	if baseType == field.Type {
+		return metadataUnionAccessorField{}, false
+	}
+
+	switch baseType {
+	case "uint8":
+		return metadataUnionAccessorField{CName: field.Name, MethodStem: "U8", GoType: "uint8", CType: "uint8_t", CastType: "uint8"}, true
+	case "int32":
+		return metadataUnionAccessorField{CName: field.Name, MethodStem: "I32", GoType: "int32", CType: "int32_t", CastType: "int32"}, true
+	case "float32":
+		return metadataUnionAccessorField{CName: field.Name, MethodStem: "Float", GoType: "float32", CType: "float", CastType: "float32"}, true
+	default:
+		return metadataUnionAccessorField{}, false
+	}
+}
+
+func renderMetadataUnionBridgeC(accessor metadataUnionAccessor) string {
+	var b strings.Builder
+	for _, field := range accessor.Fields {
+		cPrefix := "bridge_" + unexport(accessor.ReceiverGoName) + field.MethodStem
+		fmt.Fprintf(&b, "\nstatic inline int32_t %sCount(\n", cPrefix)
+		fmt.Fprintf(&b, "    const %s* %s, uint32_t tag\n", accessor.ReceiverSpecName, unexport(accessor.ReceiverGoName))
+		b.WriteString(") {\n")
+		fmt.Fprintf(&b, "    %s entry;\n", accessor.EntrySpecName)
+		fmt.Fprintf(&b, "    if (%s(%s, tag, &entry) != ACAMERA_OK) return 0;\n", accessor.GetterCName, unexport(accessor.ReceiverGoName))
+		b.WriteString("    return (int32_t)entry.count;\n")
+		b.WriteString("}\n\n")
+
+		fmt.Fprintf(&b, "static inline %s %sAt(\n", field.CType, cPrefix)
+		fmt.Fprintf(&b, "    const %s* %s, uint32_t tag, int32_t idx\n", accessor.ReceiverSpecName, unexport(accessor.ReceiverGoName))
+		b.WriteString(") {\n")
+		fmt.Fprintf(&b, "    %s entry;\n", accessor.EntrySpecName)
+		fmt.Fprintf(&b, "    if (%s(%s, tag, &entry) != ACAMERA_OK) return 0;\n", accessor.GetterCName, unexport(accessor.ReceiverGoName))
+		b.WriteString("    if ((uint32_t)idx >= entry.count) return 0;\n")
+		fmt.Fprintf(&b, "    return entry.data.%s[idx];\n", field.CName)
+		b.WriteString("}\n")
+	}
+	return b.String()
+}
+
+func renderMetadataUnionBridgeGo(accessor metadataUnionAccessor) string {
+	var b strings.Builder
+	receiverParamName := unexport(accessor.ReceiverGoName)
+	for _, field := range accessor.Fields {
+		bridgePrefix := "Bridge" + accessor.ReceiverGoName + field.MethodStem
+		cPrefix := "bridge_" + unexport(accessor.ReceiverGoName) + field.MethodStem
+
+		fmt.Fprintf(&b, "\n// %sCount returns the count of %s values for a metadata tag.\n", bridgePrefix, field.GoType)
+		fmt.Fprintf(&b, "func %sCount(%s *%s, tag uint32) int32 {\n", bridgePrefix, receiverParamName, capiExportName(accessor.ReceiverSpecName))
+		fmt.Fprintf(&b, "\treturn int32(C.%sCount((*C.%s)(unsafe.Pointer(%s)), C.uint32_t(tag)))\n", cPrefix, accessor.ReceiverSpecName, receiverParamName)
+		b.WriteString("}\n\n")
+
+		fmt.Fprintf(&b, "// %sAt returns the %s value at the given index for a metadata tag.\n", bridgePrefix, field.GoType)
+		fmt.Fprintf(&b, "func %sAt(%s *%s, tag uint32, idx int32) %s {\n", bridgePrefix, receiverParamName, capiExportName(accessor.ReceiverSpecName), field.GoType)
+		fmt.Fprintf(&b, "\treturn %s(C.%sAt((*C.%s)(unsafe.Pointer(%s)), C.uint32_t(tag), C.int32_t(idx)))\n", field.CastType, cPrefix, accessor.ReceiverSpecName, receiverParamName)
+		b.WriteString("}\n")
+	}
+	return b.String()
 }
 
 func mergeErrorEnum(specName string, tov overlaymodel.TypeOverlay, values []specmodel.EnumValue) MergedErrorEnum {

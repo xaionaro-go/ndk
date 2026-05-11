@@ -63,3 +63,13 @@ func (h *SessionOutput) UintPtr() uintptr {
 func NewSessionOutputFromUintPtr(ptr uintptr) *SessionOutput {
 	return &SessionOutput{ptr: (*capi.ACaptureSessionOutput)(unsafe.Pointer(ptr))}
 }
+
+// NewPhysicalSessionOutput calls the underlying C function.
+func NewPhysicalSessionOutput(anw *ANativeWindow, physicalID string) (*SessionOutput, error) {
+	var outputPtr *capi.ACaptureSessionOutput
+	ret := capi.ACaptureSessionPhysicalOutput_create((*capi.ANativeWindow)(anw), physicalID, &outputPtr)
+	if err := result(ret); err != nil {
+		return nil, err
+	}
+	return &SessionOutput{ptr: outputPtr}, nil
+}

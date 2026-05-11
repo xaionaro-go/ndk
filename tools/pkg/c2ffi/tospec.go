@@ -130,6 +130,7 @@ func Convert(
 	// Supplement callback params from C headers.
 	if len(opts.NDKHeaderDirs) > 0 {
 		supplementCallbacks(spec, opts.NDKHeaderDirs)
+		supplementFunctionParams(spec, opts.NDKHeaderDirs)
 	}
 
 	// Extract #define macro constants from original headers.
@@ -343,6 +344,9 @@ func addStruct(spec *specmodel.Spec, d *Declaration) {
 			// Mark as func_ptr; params/returns will be filled by
 			// supplementCallbacks from the C header source.
 			sf.Type = "func_ptr"
+		} else if isInlineAggregate(f.Type) {
+			sf.Type = f.Type.Tag
+			sf.Fields = convertInlineAggregateFields(f.Type.Fields)
 		} else {
 			sf.Type = typeRefToGoType(f.Type)
 		}
@@ -353,6 +357,41 @@ func addStruct(spec *specmodel.Spec, d *Declaration) {
 	if len(sd.Fields) > 0 {
 		spec.Structs[d.Name] = sd
 	}
+}
+
+func isInlineAggregate(t *TypeRef) bool {
+	if t == nil {
+		return false
+	}
+	switch t.Tag {
+	case "union", ":union", "struct", ":struct":
+		return len(t.Fields) > 0
+	default:
+		return false
+	}
+}
+
+func convertInlineAggregateFields(fields []Field) []specmodel.StructField {
+	result := make([]specmodel.StructField, 0, len(fields))
+	for _, f := range fields {
+		if f.Tag != "field" || f.Type == nil {
+			continue
+		}
+
+		sf := specmodel.StructField{
+			Name: f.Name,
+		}
+		if f.Type.Tag == ":function-pointer" {
+			sf.Type = "func_ptr"
+		} else if isInlineAggregate(f.Type) {
+			sf.Type = f.Type.Tag
+			sf.Fields = convertInlineAggregateFields(f.Type.Fields)
+		} else {
+			sf.Type = typeRefToGoType(f.Type)
+		}
+		result = append(result, sf)
+	}
+	return result
 }
 
 // typeRefToGoType converts a c2ffi TypeRef to a Go type string.
